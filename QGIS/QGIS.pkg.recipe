@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Description</key>
+	<string>Downloads the latest version of QGIS and creates a package.  This includes all packages in the .dmg:  QGIS, GDAL, NumPy, and matplotlib.</string>
+	<key>Identifier</key>
+	<string>com.github.mlbz521.pkg.QGIS</string>
+	<key>Input</key>
+	<dict>
+		<key>NAME</key>
+		<string>QGIS</string>
+		<key>CATEGORY</key>
+		<string>Testing</string>
+		<key>DESCRIPTION</key>
+		<string>QGIS is an Open Source Geographic Information System that allows you to create, edit, visualize, analyze and publish geospatial information.</string>
+		<key>os_requirements</key>
+		<string>10.12.x,10.11.x,10.10.x,10.9.x,10.8.x</string>
+	</dict>
+	<key>ParentRecipe</key>
+	<string>com.github.robperc.download.QGIS</string>
+	<key>Process</key>
+	<array>
+		<dict>
+			<key>Processor</key>
+			<string>PkgRootCreator</string>
+			<key>Arguments</key>
+			<dict>
+				<key>pkgdirs</key>
+				<dict/>
+				<key>pkgroot</key>
+				<string>%RECIPE_CACHE_DIR%/pkgroot</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>PkgRootCreator</string>
+			<key>Arguments</key>
+			<dict>
+				<key>pkgdirs</key>
+				<dict/>
+				<key>pkgroot</key>
+				<string>%RECIPE_CACHE_DIR%/Scripts</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>FlatPkgUnpacker</string>
+			<key>Arguments</key>
+			<dict>
+				<key>flat_pkg_path</key>
+				<string>%pathname%/*QGIS*.pkg</string>
+				<key>destination_path</key>
+				<string>%RECIPE_CACHE_DIR%/unpack</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>PkgPayloadUnpacker</string>
+			<key>Arguments</key>
+			<dict>
+				<key>pkg_payload_path</key>
+				<string>%RECIPE_CACHE_DIR%/unpack/qgis.pkg/Payload</string>
+				<key>destination_path</key>
+				<string>%RECIPE_CACHE_DIR%/unpack/root/</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>PlistReader</string>
+			<key>Arguments</key>
+			<dict>
+				<key>info_path</key>
+				<string>%RECIPE_CACHE_DIR%/unpack/root/Contents/Info.plist</string>
+				<key>plist_keys</key>
+				<dict>
+					<key>CFBundleShortVersionString</key>
+					<string>version</string>
+				</dict>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>Copier</string>
+			<key>Arguments</key>
+			<dict>
+				<key>source_path</key>
+				<string>%pathname%/*GDAL*.pkg</string>
+				<key>destination_path</key>
+				<string>%RECIPE_CACHE_DIR%/Scripts/GDAL.pkg</string>
+				<key>overwrite</key>
+				<true/>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>Copier</string>
+			<key>Arguments</key>
+			<dict>
+				<key>source_path</key>
+				<string>%pathname%/*NumPy*.pkg</string>
+				<key>destination_path</key>
+				<string>%RECIPE_CACHE_DIR%/Scripts/NumPy.pkg</string>
+				<key>overwrite</key>
+				<true/>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>Copier</string>
+			<key>Arguments</key>
+			<dict>
+				<key>source_path</key>
+				<string>%pathname%/*matplotlib*.pkg</string>
+				<key>destination_path</key>
+				<string>%RECIPE_CACHE_DIR%/Scripts/matplotlib.pkg</string>
+				<key>overwrite</key>
+				<true/>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>Copier</string>
+			<key>Arguments</key>
+			<dict>
+				<key>source_path</key>
+				<string>%pathname%/*QGIS*.pkg</string>
+				<key>destination_path</key>
+				<string>%RECIPE_CACHE_DIR%/Scripts/QGIS.pkg</string>
+				<key>overwrite</key>
+				<true/>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>FileCreator</string>
+			<key>Arguments</key>
+			<dict>
+				<key>file_content</key>
+				<string>#!/bin/bash
+
+###################################################################################################
+# Script Name:  install_QGIS.sh
+# By:  Zack Thompson / Created:  7/26/2017
+# Version:  1.0 / Updated:  7/26/2017 / By:  ZT
+#
+# Description:  This script installs all the packages that are contained in this package.
+#
+###################################################################################################
+
+/bin/echo "**************************************************"
+/bin/echo 'Starting PostInstall Script'
+/bin/echo "**************************************************"
+
+# Set working directory
+pkgDir=$(dirname $0)
+
+# Check if QGIS is currently installed...
+if [[ -e /Applications/QGIS.app ]]; then
+	/bin/echo "QGIS is currently installed; removing this instance before continuing..."
+	rm -rf /Applications/QGIS.app
+	/bin/echo "QGIS has been removed."
+fi
+
+/bin/echo "Gathering packages that need to be installed for QGIS..."
+
+# Loop through each .pkg in the directory...
+for pkg in $(/bin/ls $pkgDir | /usr/bin/grep .pkg)
+	do
+		/bin/echo "Installing ${pkg}..."
+		/usr/sbin/installer -dumplog -verbose -pkg $pkg -allowUntrusted -target /
+		/bin/echo "${pkg} has been installed!"
+	done
+
+/bin/echo "All packages have been installed!"
+
+# Disable version check (this is done because the version compared is not always the latest available for macOS).
+/bin/echo "Disabling version check on launch..."
+/usr/bin/defaults write org.qgis.QGIS2.plist qgis.checkVersion -boolean false
+
+/bin/echo "**************************************************"
+/bin/echo 'PostInstall Script Finished'
+/bin/echo "**************************************************"
+
+exit 0</string>
+				<key>file_mode</key>
+				<string>0755</string>
+				<key>file_path</key>
+				<string>%RECIPE_CACHE_DIR%/Scripts/postinstall</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>PkgCreator</string>
+			<key>Arguments</key>
+			<dict>
+				<key>pkg_request</key>
+				<dict>
+					<key>chown</key>
+					<array/>
+					<key>id</key>
+					<string>edu.asu.QGIS.pkg</string>
+					<key>pkgname</key>
+					<string>%NAME%-%version%</string>
+					<key>pkgroot</key>
+					<string>%RECIPE_CACHE_DIR%/pkgroot</string>
+					<key>pkgtype</key>
+					<string>flat</string>
+					<key>scripts</key>
+					<string>Scripts</string>
+					<key>version</key>
+					<string>%version%</string>
+				</dict>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>PathDeleter</string>
+			<key>Arguments</key>
+			<dict>
+				<key>path_list</key>
+				<array>
+					<string>%RECIPE_CACHE_DIR%/pkgroot</string>
+					<string>%RECIPE_CACHE_DIR%/Scripts</string>
+					<string>%RECIPE_CACHE_DIR%/unpack</string>
+				</array>
+			</dict>
+		</dict>
+	</array>
+</dict>
+</plist>

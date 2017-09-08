@@ -37,7 +37,7 @@ This recipe uses my pkg recipe instead of homebysix's recipe..</string>
 		<key>SELF_SERVICE_DESCRIPTION</key>
 		<string>Parallels Desktop is a virtualization software that enables a Mac to run virtual Operating Systems and their applications within a native macOS environment.  The software integrates the guest operating system into macOS, allowing it to mimic native OS performance.  Guests include Apple's macOS, Microsoft Windows, Linux, Google's ChromeOS, Android, and more.</string>
 		<key>SELF_SERVICE_ICON</key>
-		<string>%RECIPE_DIR%/Parallels.png</string>
+		<string>%RECIPE_DIR%/Parallels%MAJOR_VERSION%.png</string>
 		<key>os_requirements</key>
 		<string>10.12.x,10.11.6,10.11.5,10.10.5</string>
 	</dict>

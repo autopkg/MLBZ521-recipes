@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Description</key>
+	<string>Downloads the latest version of Parallels Desktop and creates a package.  This recipe has been tested with major versions 9, 10, 11, 12, and 13.
+
+This recipe correctly installs Parallels as there is an issue with pkg produced in homebysix's recipe.</string>
+	<key>Identifier</key>
+	<string>com.github.mlbz521.pkg.Parallels Desktop</string>
+	<key>Input</key>
+	<dict>
+		<key>BUNDLE_ID</key>
+		<string>com.parallels.desktop.installer</string>
+		<key>MAJOR_VERSION</key>
+		<string>13</string>
+		<key>NAME</key>
+		<string>Parallels Desktop</string>
+	</dict>
+	<key>MinimumVersion</key>
+	<string>0.6.1</string>
+	<key>ParentRecipe</key>
+	<string>com.github.homebysix.download.ParallelsDesktop</string>
+	<key>Process</key>
+	<array>
+		<dict>
+			<key>Processor</key>
+			<string>PkgRootCreator</string>
+			<key>Arguments</key>
+			<dict>
+				<key>pkgdirs</key>
+				<dict/>
+				<key>pkgroot</key>
+				<string>%RECIPE_CACHE_DIR%/pkgroot</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>PkgRootCreator</string>
+			<key>Arguments</key>
+			<dict>
+				<key>pkgdirs</key>
+				<dict/>
+				<key>pkgroot</key>
+				<string>%RECIPE_CACHE_DIR%/Scripts</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>Copier</string>
+			<key>Arguments</key>
+			<dict>
+				<key>source_path</key>
+				<string>%pathname%</string>
+				<key>destination_path</key>
+				<string>%RECIPE_CACHE_DIR%/Scripts/%NAME%.dmg</string>
+				<key>overwrite</key>
+				<true/>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>FileCreator</string>
+			<key>Arguments</key>
+			<dict>
+				<key>file_content</key>
+				<string>#!/bin/bash
+
+###################################################################################################
+# Script Name:  install_ParallelsDesktop.sh
+# By:  Zack Thompson / Created:  8/1/2017
+# Version:  1.0 / Updated:  8/1/2017 / By:  ZT
+#
+# Description:  This script installs the Parallels Desktop {MAJOR VERSION} downloaded by AutoPkg.
+#
+###################################################################################################
+
+/bin/echo "**************************************************"
+/bin/echo 'Starting PostInstall Script'
+/bin/echo "**************************************************"
+
+# Set working directory
+pkgDir=$(/usr/bin/dirname $0)
+
+# Check if Parallels Desktop is currently installed...
+if [[ -e /Applications/Parallels\ Desktop.app ]]; then
+	/bin/echo "Parallels Desktop is currently installed; removing this instance before continuing..."
+	/Applications/Parallels\ Desktop.app/Contents/MacOS/Uninstaller remove
+	/bin/echo "Parallels Desktop has been removed."
+fi
+
+# Get the filename of the .dmg file (allows this script to be used with different versions).
+ParallelsDMG=$(/bin/ls $pkgDir | /usr/bin/grep .dmg)
+
+# Mounting the .dmg found...
+/bin/echo "Mounting ${ParallelsDMG}..."
+/usr/bin/hdiutil attach "${ParallelsDMG}" -nobrowse -noverify -noautoopen
+/bin/sleep 2
+
+# Get the name of the mount (allows this script to be used with different versions).
+ParallelsMount=$(/bin/ls /Volumes/ | /usr/bin/grep Parallels)
+
+# Install Parallels Desktop.app...
+/bin/echo "Installing ${ParallelsMount}..."
+/Volumes/"${ParallelsMount}"/Parallels\ Desktop.app/Contents/MacOS/inittool install -t /Applications/Parallels\ Desktop.app
+/bin/sleep 2
+/bin/echo "${ParallelsMount} has been installed!"
+
+# Ejecting the .dmg...
+/usr/bin/hdiutil eject /Volumes/"${ParallelsMount}"
+
+/bin/echo "**************************************************"
+/bin/echo 'PostInstall Script Finished'
+/bin/echo "**************************************************"
+
+exit 0</string>
+				<key>file_mode</key>
+				<string>0755</string>
+				<key>file_path</key>
+				<string>%RECIPE_CACHE_DIR%/Scripts/postinstall</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>PkgCreator</string>
+			<key>Arguments</key>
+			<dict>
+				<key>pkg_request</key>
+				<dict>
+					<key>chown</key>
+					<array/>
+					<key>id</key>
+					<string>%BUNDLE_ID%</string>
+					<key>options</key>
+					<string>purge_ds_store</string>
+					<key>pkgname</key>
+					<string>%NAME%-%version%</string>
+					<key>pkgroot</key>
+					<string>%RECIPE_CACHE_DIR%/pkgroot</string>
+					<key>pkgtype</key>
+					<string>flat</string>
+					<key>scripts</key>
+					<string>Scripts</string>
+					<key>version</key>
+					<string>%version%</string>
+				</dict>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>PathDeleter</string>
+			<key>Arguments</key>
+			<dict>
+				<key>path_list</key>
+				<array>
+					<string>%RECIPE_CACHE_DIR%/pkgroot</string>
+					<string>%RECIPE_CACHE_DIR%/Scripts</string>
+				</array>
+			</dict>
+		</dict>
+	</array>
+</dict>
+</plist>

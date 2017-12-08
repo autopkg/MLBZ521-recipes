@@ -29,7 +29,7 @@
 		<key>ICON</key>
 		<string>%RECIPE_DIR%/qgis.png</string>
 		<key>os_requirements</key>
-		<string>10.12.x,10.11.x,10.10.x,10.9.x,10.8.x</string>
+		<string>10.13.x,10.12.x,10.11.x,10.10.x,10.9.x,10.8.x</string>
 	</dict>
 	<key>ParentRecipe</key>
 	<string>com.github.mlbz521.pkg.QGIS</string>

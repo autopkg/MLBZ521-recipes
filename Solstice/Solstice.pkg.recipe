@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Description</key>
+	<string>Creates a package the will build the latest version of Mersive's Solstice.  (This is a hack-ish way of getting the end result, but it works. ¯\_(ツ)_/)
+
+Download recipe's original author was @joshua-d-miller (https://github.com/autopkg/joshua-d-miller-recipes)</string>
+	<key>Identifier</key>
+	<string>com.github.mlbz521.pkg.Solstice</string>
+	<key>Input</key>
+	<dict>
+		<key>NAME</key>
+		<string>Solstice</string>
+	</dict>
+	<key>MinimumVersion</key>
+	<string>1.0.0</string>
+	<key>ParentRecipe</key>
+	<string>com.github.mlbz521.download.Solstice</string>
+	<key>Process</key>
+	<array>
+		<dict>
+			<key>Processor</key>
+			<string>PkgRootCreator</string>
+			<key>Arguments</key>
+			<dict>
+				<key>pkgdirs</key>
+				<dict/>
+				<key>pkgroot</key>
+				<string>%RECIPE_CACHE_DIR%/pkgroot</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>PkgRootCreator</string>
+			<key>Arguments</key>
+			<dict>
+				<key>pkgdirs</key>
+				<dict/>
+				<key>pkgroot</key>
+				<string>%RECIPE_CACHE_DIR%/Scripts</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>FileMover</string>
+			<key>Arguments</key>
+			<dict>
+				<key>source</key>
+				<string>%RECIPE_CACHE_DIR%/%NAME%/%EXPECTED_FILENAME%</string>
+				<key>target</key>
+				<string>%RECIPE_CACHE_DIR%/Scripts/%EXPECTED_FILENAME%</string>
+			</dict>
+		</dict>
+
+		<dict>
+			<key>Processor</key>
+			<string>FileCreator</string>
+			<key>Arguments</key>
+			<dict>
+				<key>file_content</key>
+				<string>#!/bin/bash
+
+###################################################################################################
+# Script Name:  install_SolsticeClient.sh
+# By:  Zack Thompson / Created:  12/21/2017
+# Version:  1.0 / Updated:  12/21/2017 / By:  ZT
+#
+# Description:  This script installs the Solstice Client downloaded by AutoPkg.
+#
+###################################################################################################
+
+/bin/echo "*****  PostInstall Script process:  START  *****"
+
+if [[ $3 != "/" ]]; then
+	/bin/echo "[ERROR] Target disk is not the startup disk."
+	/bin/echo "*****  PostInstall Script process:  FAILED  *****"
+	exit 1
+fi
+
+# Set working directory
+	pkgDir=$(/usr/bin/dirname $0)
+# Get current user
+currentUser=$(/usr/bin/python -c 'from SystemConfiguration import SCDynamicStoreCopyConsoleUser; import sys; username = (SCDynamicStoreCopyConsoleUser(None, None, None) or [None])[0]; username = [username,""][username in [u"loginwindow", None, u""]]; sys.stdout.write(username + "\n");')
+
+# Check if the Solstice Client is currently installed...
+if [[ -e /Applications/Solstice\ Client.app ]]; then
+	/bin/echo "The Solstice Client is currently installed; removing this instance before continuing..."
+	rm /Applications/Solstice\ Client.app
+	/bin/echo "The Solstice Client has been removed."
+fi
+
+# Get the filename of the .app file (in case the name changes for whatever reason).
+	SolsticeWebApp=$(/bin/ls $pkgDir | /usr/bin/grep .app)
+
+/bin/echo "Creating Client..."
+$SolsticeWebApp/Contents/MacOS/SolsticeClientInstallerMac &amp;
+
+# Get the PID, wait a couple seconds for it to be built, and then kill the process (so it doesn't Auto Launch)
+SolsticePID=$!
+/bin/sleep 5
+kill $SolsticePID
+
+# Move the Client to the Applications folder
+mv /Users/${currentUser}/Desktop/Solstice\ Client.app /Applications/
+
+/bin/echo "The Solstice Client has been installed!"
+
+/bin/echo "*****  PostInstall Script process:  COMPLETE  *****"
+
+exit 0</string>
+				<key>file_mode</key>
+				<string>0755</string>
+				<key>file_path</key>
+				<string>%RECIPE_CACHE_DIR%/Scripts/postinstall</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>PkgCreator</string>
+			<key>Arguments</key>
+			<dict>
+				<key>pkg_request</key>
+				<dict>
+					<key>chown</key>
+					<array/>
+					<key>id</key>
+					<string>%bundle_id%</string>
+					<key>options</key>
+					<string>purge_ds_store</string>
+					<key>pkgname</key>
+					<string>%NAME%-%version%</string>
+					<key>pkgroot</key>
+					<string>%RECIPE_CACHE_DIR%/pkgroot</string>
+					<key>pkgtype</key>
+					<string>flat</string>
+					<key>scripts</key>
+					<string>Scripts</string>
+					<key>version</key>
+					<string>%version%</string>
+				</dict>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>PathDeleter</string>
+			<key>Arguments</key>
+			<dict>
+				<key>path_list</key>
+				<array>
+					<string>%RECIPE_CACHE_DIR%/pkgroot</string>
+					<string>%RECIPE_CACHE_DIR%/Scripts</string>
+				</array>
+			</dict>
+		</dict>
+	</array>
+</dict>
+</plist>

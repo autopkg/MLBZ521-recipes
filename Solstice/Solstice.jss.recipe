@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Description</key>
+	<string>Downloads the latest version of Solstice and imports it into your JSS.  (The pkg recipe is a hack-ish way of getting the end result, but it works. ¯\_(ツ)_/)
+
+Download recipe's original author was @joshua-d-miller (https://github.com/autopkg/joshua-d-miller-recipes)</string>
+	<key>Identifier</key>
+	<string>com.github.mlbz521.jss.Solstice</string>
+	<key>Input</key>
+	<dict>
+		<key>GROUP_TEMPLATE</key>
+		<string>GroupTemplate.xml</string>
+		<key>POLICY_TEMPLATE</key>
+		<string>PolicyTemplate.xml</string>
+		<key>POLICY_CATEGORY</key>
+		<string>%CATEGORY%</string>
+		<key>GROUP_NAME</key>
+		<string>%NAME%-update-smart</string>
+		<key>version</key>
+		<string></string>
+
+		<key>NAME</key>
+		<string>Solstice</string>
+		<key>CATEGORY</key>
+		<string>Testing</string>
+		<key>SELF_SERVICE_DESCRIPTION</key>
+		<string>Solstice removes technical barriers to better collaboration in the meeting room by allowing any number of connected users to share unlimited content.
+
+Stream device screens, share videos, post individual application windows, and view web content — bridge them all into your meetings seamlessly with Solstice.
+		</string>
+		<key>SELF_SERVICE_ICON</key>
+		<string>%NAME%.png</string>
+	</dict>
+	<key>MinimumVersion</key>
+	<string>1.0.0</string>
+	<key>ParentRecipe</key>
+	<string>com.github.mlbz521.pkg.Solstice</string>
+	<key>Process</key>
+	<array>
+		<dict>
+			<key>Processor</key>
+			<string>JSSImporter</string>
+			<key>Arguments</key>
+			<dict>
+				<key>category</key>
+				<string>%CATEGORY%</string>
+				<key>groups</key>
+				<array>
+					<dict>
+						<key>name</key>
+						<string>%GROUP_NAME%</string>
+						<key>smart</key>
+						<true/>
+						<key>template_path</key>
+						<string>%GROUP_TEMPLATE%</string>
+					</dict>
+				</array>
+				<key>policy_category</key>
+				<string>%POLICY_CATEGORY%</string>
+				<key>policy_template</key>
+				<string>%POLICY_TEMPLATE%</string>
+				<key>prod_name</key>
+				<string>%NAME%</string>
+				<key>self_service_description</key>
+				<string>%SELF_SERVICE_DESCRIPTION%</string>
+				<key>self_service_icon</key>
+				<string>%SELF_SERVICE_ICON%</string>
+			</dict>
+		</dict>
+	</array>
+</dict>
+</plist>

@@ -5,7 +5,7 @@
 	<key>Identifier</key>
 	<string>com.github.mlbz521.jss.GoogleDriveFileStream</string>
 	<key>Description</key>
-	<string>Downloads the latest version of Drive File Stream and creates a package.</string>
+	<string>Downloads the latest version of Drive File Stream, creates a package, and uploads to the JSS.</string>
 	<key>Input</key>
 	<dict>
 		<key>GROUP_TEMPLATE</key>

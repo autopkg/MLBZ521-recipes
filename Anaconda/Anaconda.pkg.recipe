@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Identifier</key>
+	<string>com.github.mlbz521.pkg.Anaconda</string>
+	<key>Description</key>
+	<string>Downloads the latest version of Anaconda CLI (.sh) installer, set permissions as executable, and creates a package.</string>
+	<key>Input</key>
+	<dict>
+		<key>NAME</key>
+		<string>Anaconda</string>
+		<key>PACKAGE_ID</key>
+		<string>com.github.mlbz521.Anaconda.pkg</string>
+	</dict>
+	<key>ParentRecipe</key>
+	<string>com.github.hansen-m.download.Anaconda</string>
+	<key>Process</key>
+	<array>
+		<dict>
+			<key>Processor</key>
+			<string>PkgRootCreator</string>
+			<key>Arguments</key>
+			<dict>
+				<key>pkgdirs</key>
+				<dict/>
+				<key>pkgroot</key>
+				<string>%RECIPE_CACHE_DIR%/pkgroot</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>PkgRootCreator</string>
+			<key>Arguments</key>
+			<dict>
+				<key>pkgdirs</key>
+				<dict/>
+				<key>pkgroot</key>
+				<string>%RECIPE_CACHE_DIR%/Scripts</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>FileMode</string>
+			<key>Arguments</key>
+			<dict>
+				<key>file_mode</key>
+				<string>0755</string>
+				<key>file_path</key>
+				<string>%pathname%</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>Copier</string>
+			<key>Arguments</key>
+			<dict>
+				<key>source_path</key>
+				<string>%pathname%</string>
+				<key>destination_path</key>
+				<string>%RECIPE_CACHE_DIR%/Scripts/</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>FileCreator</string>
+			<key>Arguments</key>
+			<dict>
+				<key>file_content</key>
+				<string>#!/bin/bash
+
+###################################################################################################
+# Script Name:  install_Anaconda.sh
+# By:  Zack Thompson / Created:  2/7/2018
+# Version:  1.0 / Updated:  2/7/2018 / By:  ZT
+#
+# Description:  This script installs all the packages that are contained in this package.
+#
+###################################################################################################
+
+/bin/echo "*****  Install Anaconda process:  START  *****"
+
+if [[ $3 != "/" ]]; then
+    /bin/echo "ERROR:  Target disk is not the startup disk."
+    /bin/echo "*****  Install Anaconda process:  FAILED  *****"
+    exit 1
+fi
+
+# Set working directory
+pkgDir=$(dirname $0)
+
+# Get the name of the .sh file in the directory.
+installScript=$(/bin/ls $pkgDir | /usr/bin/grep .sh)
+/bin/echo "Running Anaconda CLI install script..."
+
+# Install using CLI installer
+exitStatus=$("${pkgDir}/${installScript}" -b -u)
+
+if [[ $exitStatus == *"Thank you for installing Anaconda!"* ]]; then
+	/bin/echo "Anaconda has been installed!"
+else
+	/bin/echo "ERROR:  Failed to install Anaconda"
+	/bin/echo "ERROR Contents:  $(/bin/echo ${exitStatus} | /usr/bin/xargs)"
+	/bin/echo "*****  Install Anaconda process:  FAILED  *****"
+	exit 2
+fi
+
+/bin/echo "*****  Install Anaconda process:  COMPLETE  *****"
+
+exit 0</string>
+				<key>file_mode</key>
+				<string>0755</string>
+				<key>file_path</key>
+				<string>%RECIPE_CACHE_DIR%/Scripts/postinstall</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>PkgCreator</string>
+			<key>Arguments</key>
+			<dict>
+				<key>pkg_request</key>
+				<dict>
+					<key>chown</key>
+					<array/>
+					<key>id</key>
+					<string>%PACKAGE_ID%</string>
+					<key>pkgname</key>
+					<string>%NAME%-%version%</string>
+					<key>pkgroot</key>
+					<string>%RECIPE_CACHE_DIR%/pkgroot</string>
+					<key>pkgtype</key>
+					<string>flat</string>
+					<key>scripts</key>
+					<string>Scripts</string>
+					<key>version</key>
+					<string>%version%</string>
+				</dict>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>PathDeleter</string>
+			<key>Arguments</key>
+			<dict>
+				<key>path_list</key>
+				<array>
+					<string>%RECIPE_CACHE_DIR%/pkgroot</string>
+					<string>%RECIPE_CACHE_DIR%/Scripts</string>
+				</array>
+			</dict>
+		</dict>
+</array>
+</dict>
+</plist>

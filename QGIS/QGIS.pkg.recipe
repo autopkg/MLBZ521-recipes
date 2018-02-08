@@ -12,6 +12,8 @@
 		<string>QGIS</string>
 		<key>CATEGORY</key>
 		<string>Testing</string>
+		<key>PACKAGE_ID</key>
+		<string>com.github.mlbz521.QGIS.pkg</string>
 		<key>DESCRIPTION</key>
 		<string>QGIS is an Open Source Geographic Information System that allows you to create, edit, visualize, analyze and publish geospatial information.</string>
 		<key>os_requirements</key>
@@ -142,15 +144,19 @@
 ###################################################################################################
 # Script Name:  install_QGIS.sh
 # By:  Zack Thompson / Created:  7/26/2017
-# Version:  1.0 / Updated:  7/26/2017 / By:  ZT
+# Version:  1.1 / Updated:  2/7/2018 / By:  ZT
 #
 # Description:  This script installs all the packages that are contained in this package.
 #
 ###################################################################################################
 
-/bin/echo "**************************************************"
-/bin/echo 'Starting PostInstall Script'
-/bin/echo "**************************************************"
+/bin/echo "*****  Install QGIS process:  START  *****"
+
+if [[ $3 != "/" ]]; then
+    /bin/echo "ERROR:  Target disk is not the startup disk."
+    /bin/echo "*****  Install QGIS process:  FAILED  *****"
+    exit 1
+fi
 
 # Set working directory
 pkgDir=$(dirname $0)
@@ -178,9 +184,7 @@ for pkg in $(/bin/ls $pkgDir | /usr/bin/grep .pkg)
 /bin/echo "Disabling version check on launch..."
 /usr/bin/defaults write org.qgis.QGIS2.plist qgis.checkVersion -boolean false
 
-/bin/echo "**************************************************"
-/bin/echo 'PostInstall Script Finished'
-/bin/echo "**************************************************"
+/bin/echo "*****  Install QGIS process:  COMPLETE  *****"
 
 exit 0</string>
 				<key>file_mode</key>
@@ -199,7 +203,7 @@ exit 0</string>
 					<key>chown</key>
 					<array/>
 					<key>id</key>
-					<string>edu.asu.QGIS.pkg</string>
+					<string>%PACKAGE_ID%</string>
 					<key>pkgname</key>
 					<string>%NAME%-%version%</string>
 					<key>pkgroot</key>

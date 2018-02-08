@@ -45,7 +45,7 @@ Install path is set to:  /Users/Shared/anaconda2</string>
 		</dict>
 		<dict>
 			<key>Processor</key>
-			<string>FileMode</string>
+			<string>com.github.mlbz521.SharedProcessors/FileMode</string>
 			<key>Arguments</key>
 			<dict>
 				<key>file_mode</key>

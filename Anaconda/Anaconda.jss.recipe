@@ -5,7 +5,9 @@
 	<key>Identifier</key>
 	<string>com.github.mlbz521.jss.Anaconda</string>
 	<key>Description</key>
-	<string>Downloads the latest version of Drive File Stream, creates a package, and uploads to the JSS.</string>
+	<string>Downloads the latest version of Anaconda CLI (.sh) installer, set permissions as executable, and creates a package, and uploads to the JSS.
+
+Install path is set to:  /Users/Shared/anaconda2</string>
 	<key>Input</key>
 	<dict>
 		<key>GROUP_TEMPLATE</key>
@@ -18,10 +20,12 @@
 		<string>Product of AutoPkg</string>
 
 		<key>GROUP_NAME</key>
-		<string>%NAME%-Testing</string>
+		<string>%NAME%%PYTHON_MAJOR_VERSION%-Testing</string>
 
 		<key>NAME</key>
-		<string>Google Drive File Stream</string>
+		<string>Anaconda2</string>
+		<key>PYTHON_MAJOR_VERSION</key>
+		<string>2</string>
 		<key>CATEGORY</key>
 		<string>Testing</string>
 		<key>DESCRIPTION</key>
@@ -39,9 +43,9 @@
 			<key>Arguments</key>
 			<dict>
 				<key>pkg_path</key>
-				<string>%RECIPE_CACHE_DIR%/%NAME%-%version%.pkg</string>
+				<string>%RECIPE_CACHE_DIR%/%NAME%%PYTHON_MAJOR_VERSION%-%version%.pkg</string>
 				<key>prod_name</key>
-				<string>%NAME%</string>
+				<string>%NAME%%PYTHON_MAJOR_VERSION%</string>
 				<key>category</key>
 				<string>%CATEGORY%</string>
 				<key>policy_category</key>

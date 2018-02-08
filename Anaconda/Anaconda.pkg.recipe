@@ -5,11 +5,15 @@
 	<key>Identifier</key>
 	<string>com.github.mlbz521.pkg.Anaconda</string>
 	<key>Description</key>
-	<string>Downloads the latest version of Anaconda CLI (.sh) installer, set permissions as executable, and creates a package.</string>
+	<string>Downloads the latest version of Anaconda CLI (.sh) installer, set permissions as executable, and creates a package.
+
+Install path is set to:  /Users/Shared/anaconda2</string>
 	<key>Input</key>
 	<dict>
 		<key>NAME</key>
 		<string>Anaconda</string>
+		<key>PYTHON_MAJOR_VERSION</key>
+		<string>2</string>
 		<key>PACKAGE_ID</key>
 		<string>com.github.mlbz521.Anaconda.pkg</string>
 	</dict>
@@ -81,9 +85,9 @@
 /bin/echo "*****  Install Anaconda process:  START  *****"
 
 if [[ $3 != "/" ]]; then
-    /bin/echo "ERROR:  Target disk is not the startup disk."
-    /bin/echo "*****  Install Anaconda process:  FAILED  *****"
-    exit 1
+	/bin/echo "ERROR:  Target disk is not the startup disk."
+	/bin/echo "*****  Install Anaconda process:  FAILED  *****"
+	exit 1
 fi
 
 # Set working directory
@@ -94,9 +98,9 @@ installScript=$(/bin/ls $pkgDir | /usr/bin/grep .sh)
 /bin/echo "Running Anaconda CLI install script..."
 
 # Install using CLI installer
-exitStatus=$("${pkgDir}/${installScript}" -b -u)
+exitStatus=$("${pkgDir}/${installScript}" -b -u -p /Users/Shared/anaconda2)
 
-if [[ $exitStatus == *"Thank you for installing Anaconda!"* ]]; then
+if [[ $exitStatus == *"installation finished"* ]]; then
 	/bin/echo "Anaconda has been installed!"
 else
 	/bin/echo "ERROR:  Failed to install Anaconda"
@@ -126,7 +130,7 @@ exit 0</string>
 					<key>id</key>
 					<string>%PACKAGE_ID%</string>
 					<key>pkgname</key>
-					<string>%NAME%-%version%</string>
+					<string>%NAME%%PYTHON_MAJOR_VERSION%-%version%</string>
 					<key>pkgroot</key>
 					<string>%RECIPE_CACHE_DIR%/pkgroot</string>
 					<key>pkgtype</key>
@@ -150,6 +154,6 @@ exit 0</string>
 				</array>
 			</dict>
 		</dict>
-</array>
+	</array>
 </dict>
 </plist>

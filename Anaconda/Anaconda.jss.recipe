@@ -25,7 +25,7 @@ Install path is set to:  /Users/Shared/anaconda2</string>
 		<string>%NAME%%PYTHON_MAJOR_VERSION%-Testing</string>
 
 		<key>NAME</key>
-		<string>Anaconda2</string>
+		<string>Anaconda</string>
 		<key>PYTHON_MAJOR_VERSION</key>
 		<string>2</string>
 		<key>CATEGORY</key>

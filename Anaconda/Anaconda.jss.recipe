@@ -16,6 +16,8 @@ Install path is set to:  /Users/Shared/anaconda2</string>
 		<string>PolicyTemplate.xml</string>
 		<key>POLICY_CATEGORY</key>
 		<string>%CATEGORY%</string>
+		<key>version</key>
+		<string>%VERSION%</string>
 		<key>package_notes</key>
 		<string>Product of AutoPkg</string>
 

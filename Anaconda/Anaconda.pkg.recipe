@@ -15,7 +15,7 @@ Default install path is set to:  /Users/Shared/anaconda2 -- adjustable via subst
 		<key>PYTHON_MAJOR_VERSION</key>
 		<string>2</string>
 		<key>PACKAGE_ID</key>
-		<string>com.github.mlbz521.Anaconda.pkg</string>
+		<string>com.github.mlbz521.Anaconda-%version%.pkg</string>
 		<key>PKG_INSTALL_LOCATION</key>
 		<string>/Users/Shared/anaconda2</string>
 	</dict>
@@ -78,7 +78,7 @@ Default install path is set to:  /Users/Shared/anaconda2 -- adjustable via subst
 ###################################################################################################
 # Script Name:  install_Anaconda.sh
 # By:  Zack Thompson / Created:  2/7/2018
-# Version:  1.1.1 / Updated:  2/14/2018 / By:  ZT
+# Version:  1.2 / Updated:  2/14/2018 / By:  ZT
 #
 # Description:  This script installs all the packages that are contained in this package.
 #
@@ -104,13 +104,6 @@ exitStatus=$("${pkgDir}/${installScript}" -b -u -p %PKG_INSTALL_LOCATION%)
 
 if [[ $exitStatus == *"installation finished"* ]]; then
 	/bin/echo "Anaconda has been installed!"
-
-	if [[ $(/usr/bin/defaults read "%PKG_INSTALL_LOCATION%/Anaconda-Navigator.app/Contents/Info.plist" CFBundleShortVersionString) != "%version%" ]]; then
-		/bin/echo "Injecting the proper version string into Anaconda Navigator's Info.plist"
-		# Inject the proper version into the Info.plist file -- this may not be required for every version; but 5.0.1 showed $PKG_VERSION
-			/usr/bin/sed -i '' 's/$PKG_VERSION/%version%/g' "%PKG_INSTALL_LOCATION%/Anaconda-Navigator.app/Contents/Info.plist"
-	fi
-
 else
 	/bin/echo "ERROR:  Failed to install Anaconda"
 	/bin/echo "ERROR Contents:  $(/bin/echo ${exitStatus} | /usr/bin/xargs)"

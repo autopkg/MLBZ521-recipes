@@ -5,9 +5,9 @@
 	<key>Identifier</key>
 	<string>com.github.mlbz521.pkg.Anaconda</string>
 	<key>Description</key>
-	<string>Downloads the latest version of Anaconda CLI (.sh) installer, set permissions as executable, and creates a package.
+	<string>Downloads the latest version of Anaconda CLI (.sh) installer, sets permissions as executable, and creates a package.
 
-Install path is set to:  /Users/Shared/anaconda2</string>
+Default install path is set to:  /Users/Shared/anaconda2 -- adjustable via substitution variable in an override.</string>
 	<key>Input</key>
 	<dict>
 		<key>NAME</key>
@@ -16,6 +16,8 @@ Install path is set to:  /Users/Shared/anaconda2</string>
 		<string>2</string>
 		<key>PACKAGE_ID</key>
 		<string>com.github.mlbz521.Anaconda.pkg</string>
+		<key>PKG_INSTALL_LOCATION</key>
+		<string>/Users/Shared/anaconda2</string>
 	</dict>
 	<key>ParentRecipe</key>
 	<string>com.github.hansen-m.download.Anaconda</string>
@@ -98,15 +100,15 @@ installScript=$(/bin/ls $pkgDir | /usr/bin/grep .sh)
 /bin/echo "Running Anaconda CLI install script..."
 
 # Install using CLI installer
-exitStatus=$("${pkgDir}/${installScript}" -b -u -p /Users/Shared/anaconda2)
+exitStatus=$("${pkgDir}/${installScript}" -b -u -p %PKG_INSTALL_LOCATION%)
 
 if [[ $exitStatus == *"installation finished"* ]]; then
 	/bin/echo "Anaconda has been installed!"
 
-	if [[ $(/usr/bin/defaults read "/Users/Shared/anaconda2/Anaconda-Navigator.app/Contents/Info.plist" CFBundleShortVersionString) != "%version%" ]]; then
+	if [[ $(/usr/bin/defaults read "%PKG_INSTALL_LOCATION%/Anaconda-Navigator.app/Contents/Info.plist" CFBundleShortVersionString) != "%version%" ]]; then
 		/bin/echo "Injecting the proper version string into Anaconda Navigator's Info.plist"
-		# Inject the proper version into the Info.plist file -- this may not be required for every version; but 5.0.1 showed $PKG_Version
-			/usr/bin/sed -i '' 's/$PKG_Version/%version%/g' "/Users/Shared/anaconda2/Anaconda-Navigator.app/Contents/Info.plist"
+		# Inject the proper version into the Info.plist file -- this may not be required for every version; but 5.0.1 showed $PKG_VERSION
+			/usr/bin/sed -i '' 's/$PKG_VERSION/%version%/g' "%PKG_INSTALL_LOCATION%/Anaconda-Navigator.app/Contents/Info.plist"
 	fi
 
 else

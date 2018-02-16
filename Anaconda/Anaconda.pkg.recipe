@@ -10,12 +10,12 @@
 Default install path is set to:  /Users/Shared/anaconda2 -- adjustable via substitution variable in an override.</string>
 	<key>Input</key>
 	<dict>
-		<key>NAME</key>
-		<string>Anaconda</string>
 		<key>PYTHON_MAJOR_VERSION</key>
 		<string>2</string>
-		<key>PACKAGE_ID</key>
-		<string>com.github.mlbz521.Anaconda-%version%.pkg</string>
+		<key>NAME</key>
+		<string>Anaconda%PYTHON_MAJOR_VERSION%</string>
+		<key>PKG_ID_PREFIX</key>
+		<string>com.github.mlbz521</string>
 		<key>PKG_INSTALL_LOCATION</key>
 		<string>/Users/Shared/anaconda2</string>
 	</dict>
@@ -130,9 +130,9 @@ exit 0</string>
 					<key>chown</key>
 					<array/>
 					<key>id</key>
-					<string>%PACKAGE_ID%</string>
+					<string>%PKG_ID_PREFIX%.%NAME%-%version%.pkg</string>
 					<key>pkgname</key>
-					<string>%NAME%%PYTHON_MAJOR_VERSION%-%version%</string>
+					<string>%NAME%-%version%</string>
 					<key>pkgroot</key>
 					<string>%RECIPE_CACHE_DIR%/pkgroot</string>
 					<key>pkgtype</key>

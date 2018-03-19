@@ -3,7 +3,12 @@
 <plist version="1.0">
 <dict>
 	<key>Description</key>
-	<string>Downloads the latest version of QGIS, creates a package, and uploads it to the JSS.  This includes all packages in the .dmg:  QGIS, GDAL, NumPy, and matplotlib.</string>
+	<string>Downloads the latest version of QGIS, creates a package, and uploads it to the JSS.  The created pkg installs all packages in the .dmg.
+
+Notes:  
+- This recipe is updated for QGIS 3 only.
+- Pyhton 3.6 is a prerequisite before installing QGIS 3.
+- The installer will also install the necessary Python modules using pip. This requires an internet connection during installation.</string>
 	<key>Identifier</key>
 	<string>com.github.mlbz521.jss.QGIS</string>
 	<key>Input</key>
@@ -22,14 +27,16 @@
 
 		<key>NAME</key>
 		<string>QGIS</string>
+		<key>VERSION</key>
+		<string>latest</string>
 		<key>CATEGORY</key>
 		<string>Testing</string>
 		<key>DESCRIPTION</key>
 		<string>QGIS is an Open Source Geographic Information System that allows you to create, edit, visualize, analyze and publish geospatial information.</string>
 		<key>ICON</key>
-		<string>%RECIPE_DIR%/qgis.png</string>
+		<string>%RECIPE_DIR%/QGIS3.png</string>
 		<key>os_requirements</key>
-		<string>10.13.x,10.12.x,10.11.x,10.10.x,10.9.x,10.8.x</string>
+		<string>10.13.x,10.12.x,10.11.x,10.10.x</string>
 	</dict>
 	<key>ParentRecipe</key>
 	<string>com.github.mlbz521.pkg.QGIS</string>

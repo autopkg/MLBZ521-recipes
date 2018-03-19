@@ -12,14 +12,12 @@ The script contained in the recipe will work for QGIS 2 version only.</string>
 	<dict>
 		<key>NAME</key>
 		<string>QGIS</string>
+		<key>VERSION</key>
+		<string>2.18.15-4</string>
 		<key>CATEGORY</key>
 		<string>Testing</string>
 		<key>PACKAGE_ID</key>
 		<string>com.github.mlbz521.QGIS.pkg</string>
-		<key>DESCRIPTION</key>
-		<string>QGIS is an Open Source Geographic Information System that allows you to create, edit, visualize, analyze and publish geospatial information.</string>
-		<key>os_requirements</key>
-		<string>10.12.x,10.11.x,10.10.x,10.9.x,10.8.x</string>
 	</dict>
 	<key>ParentRecipe</key>
 	<string>com.github.robperc.download.QGIS</string>

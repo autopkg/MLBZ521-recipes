@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Description</key>
+	<string>Downloads the latest version of QGIS and creates a package.  The created pkg installs all packages in the .dmg.
+
+The script contained in the recipe will work for QGIS 2 version only.</string>
+	<key>Identifier</key>
+	<string>com.github.mlbz521.pkg.QGIS2</string>
+	<key>Input</key>
+	<dict>
+		<key>NAME</key>
+		<string>QGIS</string>
+		<key>CATEGORY</key>
+		<string>Testing</string>
+		<key>PACKAGE_ID</key>
+		<string>com.github.mlbz521.QGIS.pkg</string>
+		<key>DESCRIPTION</key>
+		<string>QGIS is an Open Source Geographic Information System that allows you to create, edit, visualize, analyze and publish geospatial information.</string>
+		<key>os_requirements</key>
+		<string>10.12.x,10.11.x,10.10.x,10.9.x,10.8.x</string>
+	</dict>
+	<key>ParentRecipe</key>
+	<string>com.github.robperc.download.QGIS</string>
+	<key>Process</key>
+	<array>
+		<dict>
+			<key>Processor</key>
+			<string>PkgRootCreator</string>
+			<key>Arguments</key>
+			<dict>
+				<key>pkgdirs</key>
+				<dict/>
+				<key>pkgroot</key>
+				<string>%RECIPE_CACHE_DIR%/pkgroot</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>PkgRootCreator</string>
+			<key>Arguments</key>
+			<dict>
+				<key>pkgdirs</key>
+				<dict/>
+				<key>pkgroot</key>
+				<string>%RECIPE_CACHE_DIR%/Scripts</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>FlatPkgUnpacker</string>
+			<key>Arguments</key>
+			<dict>
+				<key>flat_pkg_path</key>
+				<string>%pathname%/*QGIS*.pkg</string>
+				<key>destination_path</key>
+				<string>%RECIPE_CACHE_DIR%/unpack</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>PkgPayloadUnpacker</string>
+			<key>Arguments</key>
+			<dict>
+				<key>pkg_payload_path</key>
+				<string>%RECIPE_CACHE_DIR%/unpack/qgis.pkg/Payload</string>
+				<key>destination_path</key>
+				<string>%RECIPE_CACHE_DIR%/unpack/root/</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>PlistReader</string>
+			<key>Arguments</key>
+			<dict>
+				<key>info_path</key>
+				<string>%RECIPE_CACHE_DIR%/unpack/root/Contents/Info.plist</string>
+				<key>plist_keys</key>
+				<dict>
+					<key>CFBundleShortVersionString</key>
+					<string>version</string>
+				</dict>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>FileCreator</string>
+			<key>Arguments</key>
+			<dict>
+				<key>file_content</key>
+				<string>#!/bin/bash
+
+###################################################################################################
+# Script Name:  install_QGIS.sh
+# By:  Zack Thompson / Created:  7/26/2017
+# Version:  1.4 / Updated:  3/19/2018 / By:  ZT
+#
+# Description:  This script installs all the packages that are contained in the QGIS dmg.
+#
+###################################################################################################
+
+echo "*****  Install QGIS Process:  START  *****"
+
+##################################################
+# Define Variables
+
+# Set working directory
+	pkgDir=$(/usr/bin/dirname $0)
+# Get the current user
+	currentUser=$(/usr/bin/python -c 'from SystemConfiguration import SCDynamicStoreCopyConsoleUser; import sys; username = (SCDynamicStoreCopyConsoleUser(None, None, None) or [None])[0]; username = [username,""][username in [u"loginwindow", None, u""]]; sys.stdout.write(username + "\n");')
+# Get the filename of the .dmg file
+	QGISdmg=$(/bin/ls "${pkgDir}" | /usr/bin/grep .dmg)
+
+##################################################
+# Define Functions
+
+exitCheck() {
+	if [[ $1 != 0 ]]; then
+		echo "Failed to install:  ${2}"
+		echo "Exit Code:  ${1}"
+		echo "*****  Install QGIS process:  FAILED  *****"
+
+		# Ejecting the .dmg...
+		/usr/bin/hdiutil eject /Volumes/"${QGISMount}"
+
+		exit 2
+	else
+		echo "${2} has been installed!"
+	fi
+}
+
+##################################################
+# Bits staged...
+
+# Check the installation target.
+if [[ $3 != "/" ]]; then
+	/bin/echo "ERROR:  Target disk is not the startup disk."
+	/bin/echo "*****  Install QGIS process:  FAILED  *****"
+	exit 1
+fi
+
+# Check if QGIS is currently installed...
+appPaths=$(/usr/bin/find -E /Applications -iregex ".*[/]QGIS ?([0-9]{1})?[.]app" -type d -maxdepth 1 -prune)
+
+if [[ ! -z "${appPaths}" ]]; then
+	echo "QGIS is currently installed; removing this instance before continuing..."
+
+	# If the machine has multiple QGIS Applications, loop through them...
+	while IFS="\n" read -r appPath; do
+		echo "Deleting:  ${appPath}"
+		/bin/rm -rf "${appPath}"
+	done &lt; &lt;(echo "${appPaths}")
+
+	echo "QGIS has been removed."
+fi
+
+# Mounting the .dmg found...
+	echo "Mounting ${QGISdmg}..."
+	/usr/bin/hdiutil attach "${pkgDir}/${QGISdmg}" -nobrowse -noverify -noautoopen
+	/bin/sleep 2
+
+# Get the name of the mount.
+	QGISMount=$(/bin/ls /Volumes/ | /usr/bin/grep QGIS)
+
+# Get all of the pkgs.
+	echo "Gathering packages that need to be installed for QGIS..."
+	packages=$(/bin/ls "/Volumes/${QGISMount}/" | /usr/bin/grep .pkg)
+
+# Loop through each .pkg in the directory...
+while IFS=.pkg read pkg; do
+	echo "Installing ${pkg}..."
+	/usr/sbin/installer -dumplog -verbose -pkg "/Volumes/${QGISMount}/${pkg}" -allowUntrusted -target /
+	exitCode=$?
+
+	# Function exitCheck
+	exitCheck $exitCode "${pkg}"
+done &lt; &lt;(echo "${packages}")
+
+echo "All packages have been installed!"
+
+# Ejecting the .dmg...
+	/usr/bin/hdiutil eject /Volumes/"${QGISMount}"
+
+# Disable version check (this is done because the version compared is not always the latest available for macOS).
+echo "Disabling version check on launch..."
+/usr/bin/defaults write org.qgis.QGIS2.plist qgis.checkVersion -boolean false
+
+echo "${QGISMount} has been installed!"
+echo "*****  Install QGIS Process:  COMPLETE  *****"
+
+exit 0</string>
+				<key>file_mode</key>
+				<string>0755</string>
+				<key>file_path</key>
+				<string>%RECIPE_CACHE_DIR%/Scripts/postinstall</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>Copier</string>
+			<key>Arguments</key>
+			<dict>
+				<key>destination_path</key>
+				<string>%RECIPE_CACHE_DIR%/Scripts/%NAME%.dmg</string>
+				<key>overwrite</key>
+				<true/>
+				<key>source_path</key>
+				<string>%pathname%</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>PkgCreator</string>
+			<key>Arguments</key>
+			<dict>
+				<key>pkg_request</key>
+				<dict>
+					<key>chown</key>
+					<array/>
+					<key>id</key>
+					<string>%PACKAGE_ID%</string>
+					<key>pkgname</key>
+					<string>%NAME%-%version%</string>
+					<key>pkgroot</key>
+					<string>%RECIPE_CACHE_DIR%/pkgroot</string>
+					<key>pkgtype</key>
+					<string>flat</string>
+					<key>scripts</key>
+					<string>Scripts</string>
+					<key>version</key>
+					<string>%version%</string>
+				</dict>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>PathDeleter</string>
+			<key>Arguments</key>
+			<dict>
+				<key>path_list</key>
+				<array>
+					<string>%RECIPE_CACHE_DIR%/pkgroot</string>
+					<string>%RECIPE_CACHE_DIR%/Scripts</string>
+					<string>%RECIPE_CACHE_DIR%/unpack</string>
+				</array>
+			</dict>
+		</dict>
+	</array>
+</dict>
+</plist>

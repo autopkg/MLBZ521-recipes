@@ -78,40 +78,40 @@ Default install path is set to:  /Users/Shared/anaconda2 -- adjustable via subst
 ###################################################################################################
 # Script Name:  install_Anaconda.sh
 # By:  Zack Thompson / Created:  2/7/2018
-# Version:  1.2 / Updated:  2/14/2018 / By:  ZT
+# Version:  1.3 / Updated:  4/4/2018 / By:  ZT
 #
 # Description:  This script installs all the packages that are contained in this package.
 #
 ###################################################################################################
 
-/bin/echo "*****  Install Anaconda process:  START  *****"
+echo "*****  Install Anaconda process:  START  *****"
 
 if [[ $3 != "/" ]]; then
-	/bin/echo "ERROR:  Target disk is not the startup disk."
-	/bin/echo "*****  Install Anaconda process:  FAILED  *****"
+	echo "ERROR:  Target disk is not the startup disk."
+	echo "*****  Install Anaconda process:  FAILED  *****"
 	exit 1
 fi
 
 # Set working directory
-pkgDir=$(dirname $0)
+	pkgDir=$(/usr/bin/dirname "${0}")
 
 # Get the name of the .sh file in the directory.
-installScript=$(/bin/ls $pkgDir | /usr/bin/grep .sh)
-/bin/echo "Running Anaconda CLI install script..."
+installScript=$(/bin/ls "${pkgDir}" | /usr/bin/grep .sh)
+echo "Running Anaconda CLI install script..."
 
 # Install using CLI installer
 exitStatus=$("${pkgDir}/${installScript}" -b -u -p %PKG_INSTALL_LOCATION%)
 
 if [[ $exitStatus == *"installation finished"* ]]; then
-	/bin/echo "Anaconda has been installed!"
+	echo "Anaconda has been installed!"
 else
-	/bin/echo "ERROR:  Failed to install Anaconda"
-	/bin/echo "ERROR Contents:  $(/bin/echo ${exitStatus} | /usr/bin/xargs)"
-	/bin/echo "*****  Install Anaconda process:  FAILED  *****"
+	echo "ERROR:  Failed to install Anaconda"
+	echo "ERROR Contents:  $(echo ${exitStatus} | /usr/bin/xargs)"
+	echo "*****  Install Anaconda process:  FAILED  *****"
 	exit 2
 fi
 
-/bin/echo "*****  Install Anaconda process:  COMPLETE  *****"
+echo "*****  Install Anaconda process:  COMPLETE  *****"
 
 exit 0</string>
 				<key>file_mode</key>

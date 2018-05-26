@@ -12,10 +12,9 @@ QGIS3 = macOS
 This probably isn't the best way to do it, but it's simple and works for now.
 
 Notes:  
-- This recipe is updated for QGIS 3 only.
 - Pyhton 3.6+ is a prerequisite before installing QGIS 3 -- the created .pkg will hard fail if Python 3.6+ is not installed.
-- The create .pkg will "uninstall" previous versions of QGIS.
-- The installer will also install the necessary Python modules using pip. This requires an internet connection during installation.</string>
+- The created .pkg will "uninstall" previous versions of QGIS.
+- The QGIS installer process will also install the necessary Python modules using pip. This requires an internet connection during installation.</string>
 	<key>Identifier</key>
 	<string>com.github.mlbz521.jss.QGIS</string>
 	<key>Input</key>
@@ -34,8 +33,8 @@ Notes:
 
 		<key>NAME</key>
 		<string>QGIS</string>
-        <key>QGIS_MAJOR_VERSION</key>
-        <string>macOS</string>
+		<key>QGIS_MAJOR_VERSION</key>
+		<string>macOS</string>
 		<key>CATEGORY</key>
 		<string>Testing</string>
 		<key>DESCRIPTION</key>

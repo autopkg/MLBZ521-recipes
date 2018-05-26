@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Description</key>
+	<string>Downloads the latest version of Zoom for IT Admins, builds a package, and uploads it to the JSS.
+
+Configure Zoom for your organization with the CONFIG_PLIST Key.</string>
+	<key>Identifier</key>
+	<string>com.github..mlbz521.jss.ZoomUS-ForIT</string>
+	<key>Input</key>
+	<dict>
+		<key>GROUP_TEMPLATE</key>
+		<string>GroupTemplate.xml</string>
+		<key>POLICY_TEMPLATE</key>
+		<string>PolicyTemplate.xml</string>
+		<key>POLICY_CATEGORY</key>
+		<string>%CATEGORY%</string>
+		<key>package_notes</key>
+		<string>Product of AutoPkg</string>
+
+		<key>GROUP_NAME</key>
+		<string>%NAME%-Testing</string>
+
+		<key>NAME</key>
+		<string>Zoom</string>
+		<key>CATEGORY</key>
+		<string>Testing</string>
+		<key>SELF_SERVICE_DESCRIPTION</key>
+		<string>Zoom provides cloud-hosted video conferencing, online meetings and group messaging.</string>
+		<key>SELF_SERVICE_ICON</key>
+		<string>Zoom.png</string>
+		<key>os_requirements</key>
+		<string>10.13.x,10.12.x,10.11.x,10.10.x,10.9.x,10.8.x,10.7.x</string>
+
+		<key>DOWNLOAD_URL</key>
+		<string>https://zoom.us/client/latest/ZoomInstallerIT.pkg</string>
+		<key>USER_AGENT</key>
+		<string>Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_3) AppleWebKit/536.28.10 (KHTML, like Gecko) Version/6.0.3 Safari/536.28.10</string>
+		<key>CONFIG_PLIST</key>
+		<string>&lt;?xml version=\"1.0\" encoding=\"UTF-8\"?&gt;
+&lt;!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\"&gt;
+&lt;plist version=\"1.0\"&gt;
+&lt;dict&gt;
+	&lt;key&gt;nogoogle&lt;/key&gt;
+	&lt;string&gt;1&lt;/string&gt;
+	&lt;key&gt;nofacebook&lt;/key&gt;
+	&lt;string&gt;1&lt;/string&gt;
+	&lt;key&gt;ZDisableVideo&lt;/key&gt;
+	&lt;true/&gt;
+	&lt;key&gt;ZAutoJoinVoip&lt;/key&gt;
+	&lt;true/&gt;
+	&lt;key&gt;ZDualMonitorOn&lt;/key&gt;
+	&lt;true/&gt;
+	&lt;key&gt;ZAutoSSOLogin&lt;/key&gt;
+	&lt;true/&gt;
+	&lt;key&gt;ZSSOHost&lt;/key&gt;
+	&lt;string&gt;yourVanityURL.zoom.us&lt;/string&gt;
+	&lt;key&gt;ZAutoFullScreenWhenViewShare&lt;/key&gt;
+	&lt;true/&gt;
+	&lt;key&gt;ZAutoFitWhenViewShare&lt;/key&gt;
+	&lt;true/&gt;
+	&lt;key&gt;ZUse720PByDefault&lt;/key&gt;
+	&lt;false/&gt;
+	&lt;key&gt;ZRemoteControlAllApp&lt;/key&gt;
+	&lt;true/&gt;
+	&lt;key&gt;ZHideNoVideoUser&lt;/key&gt;
+	&lt;false/&gt;
+&lt;/dict&gt;
+&lt;/plist&gt;</string>
+	</dict>
+	<key>MinimumVersion</key>
+	<string>0.2.0</string>
+	<key>ParentRecipe</key>
+	<string>com.github..mlbz521.pkg.ZoomUS-ForIT</string>
+	<key>Process</key>
+	<array>
+		<dict>
+			<key>Processor</key>
+			<string>JSSImporter</string>
+			<key>Arguments</key>
+			<dict>
+				<key>pkg_path</key>
+				<string>%RECIPE_CACHE_DIR%/%NAME%-%version%.pkg</string>
+				<key>prod_name</key>
+				<string>%NAME%</string>
+				<key>category</key>
+				<string>%CATEGORY%</string>
+				<key>policy_category</key>
+				<string>%POLICY_CATEGORY%</string>
+				<key>policy_template</key>
+				<string>%POLICY_TEMPLATE%</string>
+				<key>self_service_description</key>
+				<string>%SELF_SERVICE_DESCRIPTION%</string>
+				<key>self_service_icon</key>
+				<string>%SELF_SERVICE_ICON%</string>
+				<key>groups</key>
+				<array>
+					<dict>
+						<key>name</key>
+						<string>%GROUP_NAME%</string>
+						<key>smart</key>
+						<true/>
+						<key>template_path</key>
+						<string>%GROUP_TEMPLATE%</string>
+					</dict>
+				</array>
+			</dict>
+		</dict>
+	</array>
+</dict>
+</plist>

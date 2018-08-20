@@ -12,7 +12,7 @@ QGIS3 = macOS
 This probably isn't the best way to do it, but it's simple and works for now.
 
 Notes:  
-- Pyhton 3.6+ is a prerequisite before installing QGIS 3 -- the created .pkg will hard fail if Python 3.6+ is not installed.
+- Python 3.6+ is a prerequisite before installing QGIS 3 -- the created .pkg will hard fail if Python 3.6+ is not installed.
 - The created .pkg will "uninstall" previous versions of QGIS.
 - The QGIS installer process will also install the necessary Python modules using pip. This requires an internet connection during installation.</string>
 	<key>Identifier</key>
@@ -34,7 +34,7 @@ Notes:
 	<array>
 		<dict>
 			<key>comment</key>
-			<string>The default version number has a "-(buildVersion)" in it which causes an issue with PkgCreator Processor.  Substituing the "-"" for a "b".</string>
+			<string>The default version number has a "-(buildVersion)" in it which causes an issue with PkgCreator Processor.  Substituting the "-"" for a "b" to resolve the issue while keeping the build version.</string>
 			<key>Processor</key>
 			<string>com.github.mlbz521.SharedProcessors/VersionSubsituter</string>
 			<key>Arguments</key>
@@ -82,7 +82,7 @@ Notes:
 ###################################################################################################
 # Script Name:  install_QGIS.sh
 # By:  Zack Thompson / Created:  7/26/2017
-# Version:  1.5.1 / Updated:  6/22/2018 / By:  ZT
+# Version:  1.6 / Updated:  8/20/2018 / By:  ZT
 #
 # Description:  This script installs all the packages that are contained in the QGIS dmg.
 #
@@ -128,19 +128,13 @@ if [[ $3 != "/" ]]; then
 	exit 1
 fi
 
+# Check which version of QGIS we're installing, and if QGIS 3, check if Python3.6 is installed.
 if [[ "${QGISdmg}" == "QGIS-3"* ]]; then
 	# Check if Python3 is installed
-	if [[ -x /usr/local/bin/python3 ]]; then
-		getVersion=$(/usr/local/bin/python3 --version | /usr/bin/awk -F "." '{print $2}')
-		if [[ $(/usr/bin/bc &lt;&lt;&lt; "${getVersion} >= 6") -eq 1 ]]; then
-			echo "Python 3.6+ is installed!"
-		else
-			echo "ERROR:  Python 3.6+ is not installed!"
-			echo "*****  Install QGIS Process:  FAILED  *****"
-			exit 1
-		fi
+	if [[ ( -x /usr/local/bin/python3.6 ) || ( $(/usr/bin/bc &lt;&lt;&lt; "$(/usr/local/bin/python3 --version | /usr/bin/awk -F "." '{print $2}') == 6") -eq 1 ) ]]; then
+		echo "Python 3.6 is installed!"
 	else
-		echo "ERROR:  Python 3.6+ is not installed!"
+		echo "ERROR:  Python 3.6 is required, but is not installed!"
 		echo "*****  Install QGIS Process:  FAILED  *****"
 		exit 1
 	fi
@@ -215,7 +209,7 @@ exit 0</string>
 			<key>Arguments</key>
 			<dict>
 				<key>destination_path</key>
-				<string>%RECIPE_CACHE_DIR%/Scripts/%NAME%.dmg</string>
+				<string>%RECIPE_CACHE_DIR%/Scripts/%NAME%-%version%.dmg</string>
 				<key>overwrite</key>
 				<true/>
 				<key>source_path</key>

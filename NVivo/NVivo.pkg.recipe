@@ -3,16 +3,18 @@
 <plist version="1.0">
 <dict>
 	<key>Identifier</key>
-	<string>com.github.mlbz521.pkg.NVivo11</string>
+	<string>com.github.mlbz521.pkg.NVivo</string>
 	<key>Description</key>
-	<string>Downloads the latest version of NVivo 11 and creates a package.</string>
+	<string>Downloads the latest specified MAJOR_VERSION of NVivo and creates a package.</string>
 	<key>Input</key>
 	<dict>
 		<key>NAME</key>
 		<string>NVivo</string>
+		<key>MAJOR_VERSION</key>
+		<string>12</string>
 	</dict>
 	<key>ParentRecipe</key>
-	<string>com.github.joshua-d-miller.download.nvivo11</string>
+	<string>com.github.joshua-d-miller.download.nvivo</string>
 	<key>Process</key>
 	<array>
 		<dict>

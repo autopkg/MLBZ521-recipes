@@ -3,9 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>Identifier</key>
-	<string>com.github.mlbz521.jss.NVivo11</string>
+	<string>com.github.mlbz521.jss.NVivo</string>
 	<key>Description</key>
-	<string>Downloads the latest version of NVivo 11, creates a package, and uploads to the JSS.</string>
+	<string>Downloads the latest specified MAJOR_VERSION of NVivo, creates a package, and uploads to the JSS.</string>
 	<key>Input</key>
 	<dict>
 		<key>GROUP_TEMPLATE</key>
@@ -21,18 +21,20 @@
 
 		<key>GROUP_NAME</key>
 		<string>%NAME%-Testing</string>
+		<key>MAJOR_VERSION</key>
+		<string>12</string>
 
 		<key>NAME</key>
 		<string>NVivo</string>
 		<key>CATEGORY</key>
 		<string>Testing</string>
 		<key>DESCRIPTION</key>
-		<string>Vivo 11 for Mac is your platform for analyzing all forms of unstructured data.  Quickly interrogate data using powerful search, query and visualization tools.  Get the big picture or get into the detail.  Uncover subtle connections, rigorously justify findings, and effortlessly share your work.</string>
+		<string>NVivo for Mac is your platform for analyzing all forms of unstructured data.  Quickly interrogate data using powerful search, query and visualization tools.  Get the big picture or get into the detail.  Uncover subtle connections, rigorously justify findings, and effortlessly share your work.</string>
 		<key>ICON</key>
-		<string>%RECIPE_DIR%/NVivo.png</string>
+		<string>%RECIPE_DIR%/NVivo%MAJOR_VERSION%.png</string>
 	</dict>
 	<key>ParentRecipe</key>
-	<string>com.github.mlbz521.pkg.NVivo11</string>
+	<string>com.github.mlbz521.pkg.NVivo</string>
 	<key>Process</key>
 	<array>
 		<dict>

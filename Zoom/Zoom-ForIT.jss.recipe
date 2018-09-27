@@ -35,8 +35,6 @@ Configure Zoom for your organization with the CONFIG_PLIST Key.</string>
 
 		<key>DOWNLOAD_URL</key>
 		<string>https://zoom.us/client/latest/ZoomInstallerIT.pkg</string>
-		<key>USER_AGENT</key>
-		<string>Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_3) AppleWebKit/536.28.10 (KHTML, like Gecko) Version/6.0.3 Safari/536.28.10</string>
 		<key>CONFIG_PLIST</key>
 		<string>&lt;?xml version=\"1.0\" encoding=\"UTF-8\"?&gt;
 &lt;!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\"&gt;

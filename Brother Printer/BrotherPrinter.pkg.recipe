@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Identifier</key>
+	<string>com.github.mlbz521.pkg.BrotherPrinter</string>
+	<key>Description</key>
+	<string>Downloads the Brother Printer Driver, Software Package, Utility, or Firmware specified and creates a package.  Obviously some packages are compatible with different models, but I haven't been able to think of a way to specify this in the name without it being extremely long.  You will need to specify the model specifically for this to work, take a look at the examples below.
+
+How to specify the Model:
+ - MFC-J6935DW = mfcj6935dw
+ - HL-L9200CDWT = hll9200cdwt
+ - HL-L9310CDW = hll9310cdw
+
+Specify which OS Version:
+ - High Sierra = 10045
+ - Sierra = 10030
+ - El Capitan = 10018
+ - Yosemite = 10006
+ - Mavericks = 132
+
+Type:
+ - Full Driver &amp; Software Package = 583
+ - Printer Driver = 10062
+ - Scanner Driver = 10063
+ - IPrint&amp;Scan Push Scan Tool = 10381
+ - Internet FAX Install Tool = 78
+ - Firmware Update Tool = 318
+
+This probably isn't the best way to do it, but it works...</string>
+	<key>Input</key>
+	<dict>
+		<key>NAME</key>
+		<string>Brother Printer</string>
+		<key>MODEL</key>
+		<string>mfcj6935dw</string>
+		<key>TYPE_REQUEST</key>
+		<string>583</string>
+		<key>OS_VERSION</key>
+		<string>10045</string>
+		<key>COUNTRY</key>
+		<string>us</string>
+		<key>LANGUAGE</key>
+		<string>en</string>
+		<key>BASE_URL</key>
+		<string>http://support.brother.com</string>
+		<key>SEARCH_URL</key>
+		<string>%BASE_URL%/g/b/productlist.aspx?c=us&amp;lang=en&amp;content=dl&amp;q=%MODEL%</string>
+		<key>SEARCH_PATTERN_1</key>
+		<string>&lt;input id="DLList_URL" type="hidden" value="(?P&lt;url&gt;/g/b/downloadlist\.aspx\?c=%COUNTRY%&amp;lang=%LANGUAGE%&amp;prod=(?P&lt;prod_model&gt;[a-z0-9_]+))"&gt;</string>
+		<key>SEARCH_PATTERN_2</key>
+		<string>&lt;dt&gt;Version (?P&lt;version&gt;.*)&lt;/dt&gt;&lt;dd&gt;</string>
+		<key>SEARCH_PATTERN_3</key>
+		<string>&lt;a id="downloadfile" href="(?P&lt;url&gt;http://download.brother.com/welcome/.*.dmg)"</string>
+	</dict>
+	<key>ParentRecipe</key>
+	<string>com.github.mlbz521.download.BrotherPrinter</string>
+	<key>Process</key>
+	<array>
+		<dict>
+			<key>Processor</key>
+			<string>PkgCopier</string>
+			<key>Arguments</key>
+			<dict>
+				<key>source_pkg</key>
+				<string>%pathname%/MacPkg/*.pkg</string>
+				<key>pkg_path</key>
+				<string>%RECIPE_CACHE_DIR%/%NAME%-%version%.pkg</string>
+			</dict>
+		</dict>
+	</array>
+</dict>
+</plist>

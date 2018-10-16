@@ -51,7 +51,7 @@ This probably isn't the best way to do it, but it works...</string>
 		<key>SEARCH_PATTERN_2</key>
 		<string>&lt;dt&gt;Version (?P&lt;version&gt;.*)&lt;/dt&gt;&lt;dd&gt;</string>
 		<key>SEARCH_PATTERN_3</key>
-		<string>&lt;a id="downloadfile" href="(?P&lt;url&gt;http://download.brother.com/welcome/.*.dmg)"</string>
+		<string>&lt;a id="downloadfile" href="(?P&lt;url&gt;https://download.brother.com/welcome/.*.dmg)"</string>
 	</dict>
 	<key>Process</key>
 	<array>

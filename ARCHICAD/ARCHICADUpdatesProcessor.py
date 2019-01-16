@@ -98,7 +98,7 @@ class ARCHICADUpdatesProcessor(Processor):
                                 available_builds[json_Object.get('build')] = details['url']
 
         build = sorted(available_builds.keys())[-1]
-        url = available_builds[latest]
+        url = available_builds[build]
 
         if url:
             self.env["url"] = url

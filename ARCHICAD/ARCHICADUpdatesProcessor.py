@@ -102,7 +102,7 @@ class ARCHICADUpdatesProcessor(Processor):
 
         if url:
             self.env["url"] = url
-            self.output("Download URL: {}".format(self.env[url]))
+            self.output("Download URL: {}".format(self.env["url"]))
             self.env["version"] = build
             self.output("version: {}".format(self.env[version]))
         else:

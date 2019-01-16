@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
     <key>Description</key>
-    <string>Downloads the version of ARCHICAD based on the override-able parameters:  major_version, localization, and release_type
+    <string>Downloads the latest updated build of ARCHICAD based on the override-able parameters:  major_version, localization, and release_type
 
 major_version options include:  22, 21, 20
 location options include:  AUS, AUT, BRA, INT, CHI, CZE, FIN, FRA, GER, GRE, HUN, ITA, JPN, KOR, NED, NOR, NZE, POL, POR, RUS, SPA, SWE, TAI, TUR, UKI, UKI, USA

@@ -104,7 +104,7 @@ class ARCHICADUpdatesProcessor(Processor):
             self.env["url"] = url
             self.output("Download URL: {}".format(self.env["url"]))
             self.env["version"] = build
-            self.output("version: {}".format(self.env[version]))
+            self.output("version: {}".format(self.env["version"]))
         else:
             raise ProcessorError("Unable to find a url based on the parameters provided.")
 

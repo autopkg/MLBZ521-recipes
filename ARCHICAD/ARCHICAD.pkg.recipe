@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Description</key>
+    <string>Downloads the latest Full version of ARCHICAD and builds a package.
+
+You can provide values for eduSerialNumber and eduUserID as well to license the install.
+    
+Please note, there is likely a newer 'patch' available.</string>
+    <key>Identifier</key>
+    <string>com.github.mlbz521.pkg.ARCHICAD</string>
+    <key>Input</key>
+    <dict>
+        <key>NAME</key>
+        <string>ARCHICAD</string>
+        <key>SEARCH_URL</key>
+        <string>https://www.graphisoft.com/downloads/</string>
+        <key>SEARCH_PATTERN</key>
+        <string>(?P&lt;url&gt;https\://dl\.graphisoft\.com/AC/\d\d/USA/AC/ARCHICAD-(?P&lt;major_version&gt;\d\d)-USA-(?P&lt;version&gt;[0-9.-]+)-\d\.\d\.dmg)</string>
+        <key>EDUSERIALNUMBER</key>
+        <string></string>
+        <key>EDUUSERID</key>
+        <string></string>
+    </dict>
+	<key>ParentRecipe</key>
+	<string>com.github.mlbz521.download.ARCHICAD</string>
+    <key>Process</key>
+    <array>
+		<dict>
+			<key>Processor</key>
+			<string>PkgRootCreator</string>
+			<key>Arguments</key>
+			<dict>
+				<key>pkgdirs</key>
+				<dict/>
+				<key>pkgroot</key>
+				<string>%RECIPE_CACHE_DIR%/pkgroot</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>PkgRootCreator</string>
+			<key>Arguments</key>
+			<dict>
+				<key>pkgdirs</key>
+				<dict/>
+				<key>pkgroot</key>
+				<string>%RECIPE_CACHE_DIR%/scripts</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>Copier</string>
+			<key>Arguments</key>
+			<dict>
+				<key>source_path</key>
+				<string>%pathname%/%app_name%*</string>
+				<key>destination_path</key>
+				<string>%RECIPE_CACHE_DIR%/scripts</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>Versioner</string>
+			<key>Arguments</key>
+			<dict>
+				<key>input_plist_path</key>
+				<string>%RECIPE_CACHE_DIR%/payload/Contents/Info.plist</string>
+				<key>plist_version_key</key>
+				<string>CFBundleShortVersionString</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>FileCreator</string>
+			<key>Arguments</key>
+			<dict>
+				<key>file_content</key>
+				<string>#!/bin/bash
+
+###################################################################################################
+# Script Name:  install_ARCHICAD.sh
+# By:  Zack Thompson / Created:  1/17/2019
+# Version:  1.0.0 / Updated:  1/17/2019 / By:  ZT
+#
+# Description:  This script installs ARCHICAD in unattended mode.
+#
+###################################################################################################
+
+echo "*****  Install ARCHICAD Process:  START  *****"
+
+##################################################
+# Define Variables
+
+# License Key
+eduSerialNumber="%EDUSERIALNUMBER%"
+# User ID
+eduUserID="%EDUUSERID%"
+# Set working directory
+pkgDir=$(/usr/bin/dirname "${0}")
+# Get the filename of the .app file
+ARCHICADinstaller=$(/bin/ls "${pkgDir}" | /usr/bin/grep .app)
+
+##################################################
+# Bits staged...
+
+# Check the installation target.
+if [[ $3 != "/" ]]; then
+	echo "ERROR:  Target disk is not the startup disk."
+	echo "*****  Install ARCHICAD process:  FAILED  *****"
+	exit 1
+fi
+
+echo "Installing: " $( "${pkgDir}/${ARCHICADinstaller}/Contents/MacOS/installbuilder.sh" --version --mode unattended )
+
+installResult=$( "${pkgDir}/${ARCHICADinstaller}/Contents/MacOS/installbuilder.sh" --mode unattended --unattendedmodeui none --desktopshortcut 0 --dockshotcut 0 --eduSerialNumber "${eduSerialNumber}" --eduUserID "${eduUserID}" )
+exitCode=$?
+
+if [[ $exitCode != 0 ]]; then
+	echo "Installation FAILED!"
+	echo "Reason:  ${installResult}"
+	echo "Exit Code:  ${exitCode}"
+	echo "*****  Install ARCHICAD process:  FAILED  *****"
+	exit 2
+fi
+
+echo "ARCHICAD has been installed!"
+echo "*****  Install ARCHICAD Process:  COMPLETE  *****"
+exit 0</string>
+				<key>file_mode</key>
+				<string>0755</string>
+				<key>file_path</key>
+				<string>%RECIPE_CACHE_DIR%/scripts/postinstall</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>PkgCreator</string>
+			<key>Arguments</key>
+			<dict>
+				<key>pkg_request</key>
+				<dict>
+					<key>chown</key>
+					<array/>
+					<key>id</key>
+					<string>com.graphisoft.archicad</string>
+					<key>pkgname</key>
+					<string>%NAME% %major_version%-%version%</string>
+					<key>pkgroot</key>
+					<string>%RECIPE_CACHE_DIR%/pkgroot</string>
+					<key>pkgtype</key>
+					<string>flat</string>
+					<key>scripts</key>
+					<string>scripts</string>
+					<key>version</key>
+					<string>%version%</string>
+				</dict>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>PathDeleter</string>
+			<key>Arguments</key>
+			<dict>
+				<key>path_list</key>
+				<array>
+					<string>%RECIPE_CACHE_DIR%/payload</string>
+					<string>%RECIPE_CACHE_DIR%/pkgroot</string>
+					<string>%RECIPE_CACHE_DIR%/scripts</string>
+				</array>
+			</dict>
+		</dict>
+    </array>
+</dict>
+</plist>

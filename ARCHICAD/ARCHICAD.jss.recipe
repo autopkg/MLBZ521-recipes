@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Description</key>
+	<string>Downloads the latest version of ARCHICAD, builds a package, and uploads it to the JSS.
+
+You can provide values for eduSerialNumber and eduUserID as well to license the install.
+    
+Please note, there is likely a newer 'patch' available.</string>
+    <key>Identifier</key>
+    <string>com.github.mlbz521.jss.ARCHICAD</string>
+	<key>Input</key>
+	<dict>
+		<key>GROUP_TEMPLATE</key>
+		<string>GroupTemplate.xml</string>
+		<key>POLICY_TEMPLATE</key>
+		<string>PolicyTemplate.xml</string>
+		<key>POLICY_CATEGORY</key>
+		<string>%CATEGORY%</string>
+		<key>package_notes</key>
+		<string>Product of AutoPkg</string>
+
+		<key>GROUP_NAME</key>
+		<string>%NAME%-Testing</string>
+
+		<key>NAME</key>
+		<string>ARCHICAD</string>
+		<key>CATEGORY</key>
+		<string>Testing</string>
+		<key>SELF_SERVICE_DESCRIPTION</key>
+		<string>ARCHICAD is a tool for architects working in the architecture-engineering-construction (AEC) industry for designing buildings from the conceptual phase all through to construction phase.
+
+It is a BIM software developed by GRAPHISOFT enabling architects to work in a BIM (Building Information Modeling/Management) environment.</string>
+		<key>SELF_SERVICE_ICON</key>
+		<string>ARCHICAD 22.png</string>
+
+        <key>SEARCH_URL</key>
+        <string>https://www.graphisoft.com/downloads/</string>
+        <key>SEARCH_PATTERN</key>
+        <string>(?P&lt;url&gt;https\://dl\.graphisoft\.com/AC/\d\d/USA/AC/ARCHICAD-(?P&lt;major_version&gt;\d\d)-USA-(?P&lt;version&gt;[0-9.-]+)-\d\.\d\.dmg)</string>
+        <key>EDUSERIALNUMBER</key>
+        <string></string>
+        <key>EDUUSERID</key>
+        <string></string>
+	</dict>
+	<key>ParentRecipe</key>
+	<string>com.github.mlbz521.pkg.ARCHICAD</string>
+	<key>Process</key>
+	<array>
+		<dict>
+			<key>Processor</key>
+			<string>JSSImporter</string>
+			<key>Arguments</key>
+			<dict>
+				<key>pkg_path</key>
+				<string>%RECIPE_CACHE_DIR%/%NAME% %major_version%-%version%.pkg</string>
+				<key>prod_name</key>
+				<string>%NAME% %major_version%</string>
+				<key>category</key>
+				<string>%CATEGORY%</string>
+				<key>policy_category</key>
+				<string>%POLICY_CATEGORY%</string>
+				<key>policy_template</key>
+				<string>%POLICY_TEMPLATE%</string>
+				<key>self_service_description</key>
+				<string>%SELF_SERVICE_DESCRIPTION%</string>
+				<key>self_service_icon</key>
+				<string>%SELF_SERVICE_ICON%</string>
+				<key>groups</key>
+				<array>
+					<dict>
+						<key>name</key>
+						<string>%GROUP_NAME%</string>
+						<key>smart</key>
+						<true/>
+						<key>template_path</key>
+						<string>%GROUP_TEMPLATE%</string>
+					</dict>
+				</array>
+			</dict>
+		</dict>
+	</array>
+</dict>
+</plist>

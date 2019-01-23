@@ -62,9 +62,9 @@ class ARCHICADUpdatesProcessor(Processor):
 
         # Parse through the available downloads for versions that match the requested paramters.
         for json_Object in response.json():
-            if json_Object.get('version') == '22':
-                if json_Object.get('localization') == 'USA':
-                    if json_Object.get('type') == 'FULL':
+            if json_Object.get('version') == major_version:
+                if json_Object.get('localization') == localization:
+                    if json_Object.get('type') == relase_type:
                         for details in json_Object['downloadLinks']:
                             if details.get('platform') == 'mac':
                                 available_builds[json_Object.get('build')] = details['url']

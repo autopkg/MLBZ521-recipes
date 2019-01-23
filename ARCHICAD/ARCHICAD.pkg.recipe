@@ -17,7 +17,7 @@ Please note, there is likely a newer 'patch' available.</string>
         <key>SEARCH_URL</key>
         <string>https://www.graphisoft.com/downloads/</string>
         <key>SEARCH_PATTERN</key>
-        <string>(?P&lt;url&gt;https\://dl\.graphisoft\.com/AC/\d\d/USA/AC/ARCHICAD-(?P&lt;major_version&gt;\d\d)-USA-(?P&lt;version&gt;[0-9.-]+)-\d\.\d\.dmg)</string>
+        <string>(?P&lt;url&gt;https\://dl\.graphisoft\.com/AC/\d\d/USA/AC/ARCHICAD-(?P&lt;major_version&gt;\d\d)-USA-(?P&lt;build&gt;[0-9.-]+)-\d\.\d\.dmg)</string>
         <key>EDUSERIALNUMBER</key>
         <string></string>
         <key>EDUUSERID</key>
@@ -49,26 +49,67 @@ Please note, there is likely a newer 'patch' available.</string>
 				<string>%RECIPE_CACHE_DIR%/scripts</string>
 			</dict>
 		</dict>
+        <dict>
+            <key>Processor</key>
+            <string>com.github.mlbz521.SharedProcessors/TextFileReader</string>
+            <key>Arguments</key>
+            <dict>
+                <key>source</key>
+                <string>%pathname%</string>
+                <key>file_to_open</key>
+                <string>GRAPHICD.txt</string>
+                <key>pattern</key>
+                <string>ARCHICAD                    </string>
+            </dict>
+        </dict>
+		<dict>
+			<key>Processor</key>
+			<string>com.github.mlbz521.SharedProcessors/VersionSubsituter</string>
+			<key>Arguments</key>
+			<dict>
+				<key>version</key>
+				<string>%match%</string>
+				<key>index</key>
+				<integer>1</integer>
+				<key>old</key>
+				<string>(</string>
+				<key>new</key>
+				<string></string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>com.github.mlbz521.SharedProcessors/VersionSubsituter</string>
+			<key>Arguments</key>
+			<dict>
+				<key>version</key>
+				<string>%version%</string>
+				<key>index</key>
+				<integer>1</integer>
+				<key>old</key>
+				<string>)</string>
+				<key>new</key>
+				<string></string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>FileFinder</string>
+			<key>Arguments</key>
+			<dict>
+				<key>pattern</key>
+				<string>%pathname%/%NAME%*</string>
+			</dict>
+		</dict>
 		<dict>
 			<key>Processor</key>
 			<string>Copier</string>
 			<key>Arguments</key>
 			<dict>
 				<key>source_path</key>
-				<string>%pathname%/%app_name%*</string>
+				<string>%pathname%/%dmg_found_filename%</string>
 				<key>destination_path</key>
-				<string>%RECIPE_CACHE_DIR%/scripts</string>
-			</dict>
-		</dict>
-		<dict>
-			<key>Processor</key>
-			<string>Versioner</string>
-			<key>Arguments</key>
-			<dict>
-				<key>input_plist_path</key>
-				<string>%RECIPE_CACHE_DIR%/payload/Contents/Info.plist</string>
-				<key>plist_version_key</key>
-				<string>CFBundleShortVersionString</string>
+				<string>%RECIPE_CACHE_DIR%/scripts/%dmg_found_filename%</string>
 			</dict>
 		</dict>
 		<dict>
@@ -82,7 +123,7 @@ Please note, there is likely a newer 'patch' available.</string>
 ###################################################################################################
 # Script Name:  install_ARCHICAD.sh
 # By:  Zack Thompson / Created:  1/17/2019
-# Version:  1.0.0 / Updated:  1/17/2019 / By:  ZT
+# Version:  1.0.1 / Updated:  1/22/2019 / By:  ZT
 #
 # Description:  This script installs ARCHICAD in unattended mode.
 #
@@ -114,7 +155,7 @@ fi
 
 echo "Installing: " $( "${pkgDir}/${ARCHICADinstaller}/Contents/MacOS/installbuilder.sh" --version --mode unattended )
 
-installResult=$( "${pkgDir}/${ARCHICADinstaller}/Contents/MacOS/installbuilder.sh" --mode unattended --unattendedmodeui none --desktopshortcut 0 --dockshotcut 0 --eduSerialNumber "${eduSerialNumber}" --eduUserID "${eduUserID}" )
+installResult=$( "${pkgDir}/${ARCHICADinstaller}/Contents/MacOS/installbuilder.sh" --mode unattended --unattendedmodeui none --desktopshortcut 0 --dockshortcut 0 --eduSerialNumber "${eduSerialNumber}" --eduUserID "${eduUserID}" )
 exitCode=$?
 
 if [[ $exitCode != 0 ]]; then
@@ -165,7 +206,6 @@ exit 0</string>
 			<dict>
 				<key>path_list</key>
 				<array>
-					<string>%RECIPE_CACHE_DIR%/payload</string>
 					<string>%RECIPE_CACHE_DIR%/pkgroot</string>
 					<string>%RECIPE_CACHE_DIR%/scripts</string>
 				</array>

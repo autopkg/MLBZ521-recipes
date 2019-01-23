@@ -13,7 +13,7 @@
         <key>SEARCH_URL</key>
         <string>https://www.graphisoft.com/downloads/</string>
         <key>SEARCH_PATTERN</key>
-        <string>(?P&lt;url&gt;https\://dl\.graphisoft\.com/AC/\d\d/USA/AC/ARCHICAD-(?P&lt;major_version&gt;\d\d)-USA-(?P&lt;version&gt;[0-9.-]+)-\d\.\d\.dmg)</string>
+        <string>(?P&lt;url&gt;https\://dl\.graphisoft\.com/AC/\d\d/USA/AC/ARCHICAD-(?P&lt;major_version&gt;\d\d)-USA-(?P&lt;build&gt;[0-9.-]+)-\d\.\d\.dmg)</string>
     </dict>
     <key>Process</key>
     <array>
@@ -36,7 +36,7 @@
                 <key>url</key>
                 <string>%url%</string>
                 <key>filename</key>
-                <string>%NAME% %major_version%-%version%.dmg</string>
+                <string>%NAME% %major_version%-%build%.dmg</string>
             </dict>
         </dict>
         <dict>

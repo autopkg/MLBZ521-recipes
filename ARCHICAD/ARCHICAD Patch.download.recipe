@@ -21,8 +21,6 @@ release_type options include:  FULL, SOLO</string>
         <key>relase_type</key>
         <string>FULL</string>
     </dict>
-    <key>MinimumVersion</key>
-    <string>0.4.0</string>
     <key>Process</key>
     <array>
         <dict>

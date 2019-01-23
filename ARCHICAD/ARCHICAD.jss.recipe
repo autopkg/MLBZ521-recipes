@@ -38,7 +38,7 @@ It is a BIM software developed by GRAPHISOFT enabling architects to work in a BI
         <key>SEARCH_URL</key>
         <string>https://www.graphisoft.com/downloads/</string>
         <key>SEARCH_PATTERN</key>
-        <string>(?P&lt;url&gt;https\://dl\.graphisoft\.com/AC/\d\d/USA/AC/ARCHICAD-(?P&lt;major_version&gt;\d\d)-USA-(?P&lt;version&gt;[0-9.-]+)-\d\.\d\.dmg)</string>
+        <string>(?P&lt;url&gt;https\://dl\.graphisoft\.com/AC/\d\d/USA/AC/ARCHICAD-(?P&lt;major_version&gt;\d\d)-USA-(?P&lt;build&gt;[0-9.-]+)-\d\.\d\.dmg)</string>
         <key>EDUSERIALNUMBER</key>
         <string></string>
         <key>EDUUSERID</key>

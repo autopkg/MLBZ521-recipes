@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Description</key>
+    <string>Downloads the latest updated build of ARCHICAD based on the override-able parameters:  major_version, localization, and release_type.  And builds a package.
+
+major_version options include:  22, 21, 20
+location options include:  AUS, AUT, BRA, INT, CHI, CZE, FIN, FRA, GER, GRE, HUN, ITA, JPN, KOR, NED, NOR, NZE, POL, POR, RUS, SPA, SWE, TAI, TUR, UKI, UKI, USA
+release_type options include:  FULL, SOLO</string>
+    <key>Identifier</key>
+    <string>com.github.mlbz521.pkg.ARCHICADPatch</string>
+    <key>Input</key>
+    <dict>
+        <key>NAME</key>
+        <string>ARCHICAD Patch</string>
+        <key>major_version</key>
+        <string>22</string>
+        <key>localization</key>
+        <string>USA</string>
+        <key>relase_type</key>
+        <string>FULL</string>
+    </dict>
+	<key>ParentRecipe</key>
+	<string>com.github.mlbz521.download.ARCHICADPatch</string>
+    <key>Process</key>
+    <array>
+		<dict>
+			<key>Processor</key>
+			<string>PkgRootCreator</string>
+			<key>Arguments</key>
+			<dict>
+				<key>pkgdirs</key>
+				<dict/>
+				<key>pkgroot</key>
+				<string>%RECIPE_CACHE_DIR%/pkgroot</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>PkgRootCreator</string>
+			<key>Arguments</key>
+			<dict>
+				<key>pkgdirs</key>
+				<dict/>
+				<key>pkgroot</key>
+				<string>%RECIPE_CACHE_DIR%/scripts</string>
+			</dict>
+		</dict>
+        <dict>
+            <key>Processor</key>
+            <string>com.github.mlbz521.SharedProcessors/TextFileReader</string>
+            <key>Arguments</key>
+            <dict>
+                <key>source</key>
+                <string>%pathname%</string>
+                <key>file_to_open</key>
+                <string>GRAPHICD.txt</string>
+                <key>pattern</key>
+                <string>Update                      </string>
+            </dict>
+        </dict>
+		<dict>
+			<key>Processor</key>
+			<string>com.github.mlbz521.SharedProcessors/VersionSubsituter</string>
+			<key>Arguments</key>
+			<dict>
+				<key>version</key>
+				<string>%match%</string>
+				<key>index</key>
+				<integer>1</integer>
+				<key>old</key>
+				<string>(</string>
+				<key>new</key>
+				<string></string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>com.github.mlbz521.SharedProcessors/VersionSubsituter</string>
+			<key>Arguments</key>
+			<dict>
+				<key>version</key>
+				<string>%version%</string>
+				<key>index</key>
+				<integer>1</integer>
+				<key>old</key>
+				<string>)</string>
+				<key>new</key>
+				<string></string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>FileFinder</string>
+			<key>Arguments</key>
+			<dict>
+				<key>pattern</key>
+				<string>%pathname%/ARCHICAD*</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>Copier</string>
+			<key>Arguments</key>
+			<dict>
+				<key>source_path</key>
+				<string>%pathname%/%dmg_found_filename%</string>
+				<key>destination_path</key>
+				<string>%RECIPE_CACHE_DIR%/scripts/%dmg_found_filename%</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>FileCreator</string>
+			<key>Arguments</key>
+			<dict>
+				<key>file_content</key>
+				<string>#!/bin/bash
+
+###################################################################################################
+# Script Name:  install_ARCHICAD Patch.sh
+# By:  Zack Thompson / Created:  1/22/2019
+# Version:  1.0.0 / Updated:  1/22/2019 / By:  ZT
+#
+# Description:  This script installs ARCHICAD in unattended mode.
+#
+###################################################################################################
+
+echo "*****  Install ARCHICAD Patch Process:  START  *****"
+
+##################################################
+# Define Variables
+
+# Set working directory
+pkgDir=$(/usr/bin/dirname "${0}")
+# Get the filename of the .app file
+ARCHICADinstaller=$(/bin/ls "${pkgDir}" | /usr/bin/grep .app)
+
+##################################################
+# Bits staged...
+
+# Check the installation target.
+if [[ $3 != "/" ]]; then
+	echo "ERROR:  Target disk is not the startup disk."
+	echo "*****  Install ARCHICAD Patch process:  FAILED  *****"
+	exit 1
+fi
+
+echo "Installing: " $( "${pkgDir}/${ARCHICADinstaller}/Contents/MacOS/installbuilder.sh" --version --mode unattended )
+
+installResult=$( "${pkgDir}/${ARCHICADinstaller}/Contents/MacOS/installbuilder.sh" --mode unattended --unattendedmodeui none )
+exitCode=$?
+
+if [[ $exitCode != 0 ]]; then
+	echo "Installation FAILED!"
+	echo "Reason:  ${installResult}"
+	echo "Exit Code:  ${exitCode}"
+	echo "*****  Install ARCHICAD Patch process:  FAILED  *****"
+	exit 2
+fi
+
+echo "ARCHICAD has been installed!"
+echo "*****  Install ARCHICAD Patch Process:  COMPLETE  *****"
+exit 0</string>
+				<key>file_mode</key>
+				<string>0755</string>
+				<key>file_path</key>
+				<string>%RECIPE_CACHE_DIR%/scripts/postinstall</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>PkgCreator</string>
+			<key>Arguments</key>
+			<dict>
+				<key>pkg_request</key>
+				<dict>
+					<key>chown</key>
+					<array/>
+					<key>id</key>
+					<string>com.graphisoft.archicad</string>
+					<key>pkgname</key>
+					<string>%NAME% %major_version%-%version%</string>
+					<key>pkgroot</key>
+					<string>%RECIPE_CACHE_DIR%/pkgroot</string>
+					<key>pkgtype</key>
+					<string>flat</string>
+					<key>scripts</key>
+					<string>scripts</string>
+					<key>version</key>
+					<string>%version%</string>
+				</dict>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>PathDeleter</string>
+			<key>Arguments</key>
+			<dict>
+				<key>path_list</key>
+				<array>
+					<string>%RECIPE_CACHE_DIR%/pkgroot</string>
+					<string>%RECIPE_CACHE_DIR%/scripts</string>
+				</array>
+			</dict>
+		</dict>
+    </array>
+</dict>
+</plist>

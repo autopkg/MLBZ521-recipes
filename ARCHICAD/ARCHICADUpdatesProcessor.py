@@ -14,7 +14,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import json
 import requests
+import subprocess
+import sys
 from autopkglib import Processor, ProcessorError
 
 __all__ = ["ARCHICADUpdatesProcessor"]
@@ -57,11 +60,29 @@ class ARCHICADUpdatesProcessor(Processor):
         relase_type = self.env.get("relase_type")
         available_builds = {}
 
-        # Grab the available downloads.
-        response = requests.get('https://www.graphisoft.com/downloads/db-v3.json')
+        try:
+            # Grab the available downloads.
+            response = requests.get('https://www.graphisoft.com/downloads/db-v3.json')
+            json_data = response.json()
+        except Exception:
+            # If requests fails (running on macOS 10.12 or older), resort to using curl.
+            sys.exc_clear()
+
+            # Build the command.
+            curl_cmd = ['/usr/bin/curl', '--silent', '--show-error', '--no-buffer', '--fail',
+                        '--speed-time', '30',
+                        '--location',
+                        '--header', 'Accept: application/json'
+                        '--url', 'https://www.graphisoft.com/downloads/db-v3.json']
+            try:
+                response = subprocess.check_output(curl_cmd)
+                json_data = json.loads(response)
+            except subprocess.CalledProcessError as error:
+                print ('return code = ', error.returncode)
+                print ('result = ', error)  
 
         # Parse through the available downloads for versions that match the requested paramters.
-        for json_Object in response.json():
+        for json_Object in json_data:
             if json_Object.get('version') == major_version:
                 if json_Object.get('localization') == localization:
                     if json_Object.get('type') == relase_type:

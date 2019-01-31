@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #
 # Copyright 2019 Zack T (mlbz521)
-# Borrowed some of the dmg mount logic for included autopkg recipes.
+# Borrowed some of the dmg mount logic from included autopkg processors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -24,7 +24,9 @@ __all__ = ["TextFileReader"]
 
 class TextFileReader(DmgMounter):
 
-    """This processor finds the URL for the desired version, localization, and type of ARCHICAD.
+    """TThis process reads a text file, which can point to a path inside a .dmg 
+    which will be mounted, looks for a regex pattern and returns the rest of the 
+    line that matched the pattern.
     """
 
     input_variables = {

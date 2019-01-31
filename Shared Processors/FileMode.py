@@ -14,7 +14,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Processor that creates a file"""
 
 import os
 from autopkglib import Processor, ProcessorError
@@ -22,15 +21,19 @@ from autopkglib import Processor, ProcessorError
 __all__ = ["FileMode"]
 
 class FileMode(Processor):
-    """Create a file."""
+
+    """This processor essentinally runs `chmod` on a file.
+    Provide the numeric mode for file in octal format
+    """
+
     description = __doc__
     input_variables = {
         "file_path": {
             "required": True,
-            "description": "Path to a file to create.",
+            "description": "Path to the file.",
         },
         "file_mode": {
-            "required": False,
+            "required": True,
             "description": "String. Numeric mode for file in octal format."
         }
     }

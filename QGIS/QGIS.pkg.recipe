@@ -36,7 +36,7 @@ Notes:
 			<key>comment</key>
 			<string>The default version number has a "-(buildVersion)" in it which causes an issue with PkgCreator Processor.  Substituting the "-"" for a "b" to resolve the issue while keeping the build version.</string>
 			<key>Processor</key>
-			<string>com.github.mlbz521.SharedProcessors/VersionSubsituter</string>
+			<string>com.github.mlbz521.SharedProcessors/VersionSubstituter</string>
 			<key>Arguments</key>
 			<dict>
 				<key>version</key>

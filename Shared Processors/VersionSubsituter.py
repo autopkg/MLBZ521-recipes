@@ -3,7 +3,7 @@
 # Original:  VersionSplitter.py
 # Copyright 2015 Elliot Jordan
 #
-# VersionSubsituter.py
+# VersionSubstituter.py
 # Modified 2018 by Zack Thompson
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,10 +21,10 @@
 from autopkglib import Processor, ProcessorError
 
 
-__all__ = ["VersionSubsituter"]
+__all__ = ["VersionSubstituter"]
 
 
-class VersionSubsituter(Processor):
+class VersionSubstituter(Processor):
 
     """This processor substitutes character(s) in a string by number of occurrences.
     By default, it splits using a dash only the first item.
@@ -69,5 +69,5 @@ class VersionSubsituter(Processor):
 
 
 if __name__ == "__main__":
-    processor = VersionSubsituter()
+    processor = VersionSubstituter()
     processor.execute_shell()

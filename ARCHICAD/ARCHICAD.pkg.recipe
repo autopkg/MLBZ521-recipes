@@ -64,7 +64,7 @@ Please note, there is likely a newer 'patch' available.</string>
         </dict>
 		<dict>
 			<key>Processor</key>
-			<string>com.github.mlbz521.SharedProcessors/VersionSubsituter</string>
+			<string>com.github.mlbz521.SharedProcessors/VersionSubstituter</string>
 			<key>Arguments</key>
 			<dict>
 				<key>version</key>
@@ -79,7 +79,7 @@ Please note, there is likely a newer 'patch' available.</string>
 		</dict>
 		<dict>
 			<key>Processor</key>
-			<string>com.github.mlbz521.SharedProcessors/VersionSubsituter</string>
+			<string>com.github.mlbz521.SharedProcessors/VersionSubstituter</string>
 			<key>Arguments</key>
 			<dict>
 				<key>version</key>

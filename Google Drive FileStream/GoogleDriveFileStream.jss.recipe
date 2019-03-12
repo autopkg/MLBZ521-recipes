@@ -28,10 +28,10 @@
 		<string>With Drive File Stream, you stream your Drive files directly from the cloud to your Mac or PC, freeing up disk space and network bandwidth.  Because Drive files are stored in the cloud, any changes you or your collaborators make are automatically updated everywhere, so you’ll always have the latest version.  You can also make Drive files available for offline access.  These cached files sync to the cloud and all your devices when you're back online.
 
 With Drive File Stream, you can:
-* Quickly see all your Google Drive files in Finder/Explorer (including Team Drives).
-* Browse and organize Google Drive files without downloading all of them to your computer.
-* Choose which files or folders you'd like to make available offline.
-* Open files in common apps like Microsoft Office and Adobe Photoshop.
+  * Quickly see all your Google Drive files in Finder/Explorer (including Team Drives).
+  * Browse and organize Google Drive files without downloading all of them to your computer.
+  * Choose which files or folders you'd like to make available offline.
+  * Open files in common apps like Microsoft Office and Adobe Photoshop.
 
 Drive File Stream is only usable with G-Suite accounts.</string>
 		<key>ICON</key>

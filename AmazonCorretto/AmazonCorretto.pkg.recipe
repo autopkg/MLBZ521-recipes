@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Description</key>
+    <string>Downloads the Amazon Corretto OpenJDK and builds a package.  The JDK Major Version can be specified using the override variable "JDK_MAJOR_VERSION".
+
+Currently available from Amazon are the 8 and 11 JDKs.</string>
+    <key>Identifier</key>
+    <string>com.github.mlbz521.pkg.AmazonCorrettoOpenJDK</string>
+    <key>Input</key>
+    <dict>
+        <key>NAME</key>
+        <string>Amazon Corretto JDK</string>
+        <key>JDK_MAJOR_VERSION</key>
+        <string>8</string>
+        <key>SEARCH_URL</key>
+        <string>https://docs.aws.amazon.com/corretto/latest/corretto-%JDK_MAJOR_VERSION%-ug/downloads-list.html</string>
+        <key>SEARCH_PATTERN</key>
+        <string>(?P&lt;url&gt;https\://[a-zA-Z0-9]+\.cloudfront\.net/amazon-corretto-(?P&lt;version&gt;[0-9.]+)-macosx-x64\.tar\.gz)</string>
+    </dict>
+    <key>ParentRecipe</key>
+    <string>com.github.mlbz521.download.AmazonCorrettoOpenJDK</string>
+    <key>Process</key>
+    <array>
+        <dict>
+            <key>Processor</key>
+            <string>PkgRootCreator</string>
+            <key>Arguments</key>
+            <dict>
+                <key>pkgdirs</key>
+                <dict/>
+                <key>pkgroot</key>
+                <string>%RECIPE_CACHE_DIR%/pkgroot</string>
+                <!-- <key>pkgdirs</key>
+                <dict>
+                    <key>Library</key>
+                    <string>0755</string>
+                    <key>Library/Java</key>
+                    <string>0755</string>
+                    <key>Library/Java/JavaVirtualMachines</key>
+                    <string>0755</string>
+                </dict> -->
+            </dict>
+        </dict>
+        <dict>
+            <key>Processor</key>
+            <string>PkgRootCreator</string>
+            <key>Arguments</key>
+            <dict>
+                <key>pkgdirs</key>
+                <dict/>
+                <key>pkgroot</key>
+                <string>%RECIPE_CACHE_DIR%/scripts</string>
+            </dict>
+        </dict>
+        <dict>
+            <key>Processor</key>
+            <string>Unarchiver</string>
+            <key>Arguments</key>
+            <dict>
+                <key>archive_path</key>
+                <string>%pathname%</string>
+                <key>destination_path</key>
+                <string>%RECIPE_CACHE_DIR%/pkgroot/Library/Java/JavaVirtualMachines</string>
+                <key>purge_destination</key>
+                <true />
+            </dict>
+        </dict>
+        <dict>
+            <key>Processor</key>
+            <string>FileFinder</string>
+            <key>Arguments</key>
+            <dict>
+                <key>pattern</key>
+                <string>%RECIPE_CACHE_DIR%/pkgroot/Library/Java/JavaVirtualMachines/*jdk/Contents/Info.plist</string>
+            </dict>
+        </dict>
+        <dict>
+            <key>Processor</key>
+            <string>com.github.mlbz521.SharedProcessors/JVMVersioner</string>
+            <key>Arguments</key>
+            <dict>
+                <key>plist</key>
+                <string>%found_filename%</string>
+            </dict>
+        </dict>
+        <dict>
+            <key>Processor</key>
+            <string>FileCreator</string>
+            <key>Arguments</key>
+            <dict>
+                <key>file_content</key>
+                <string>#!/bin/bash JDK_INSTALL_PATH="/Library/Java/JavaVirtualMachines" MKDIR=`which mkdir`
+
+if [[ ! -d ${JDK_INSTALL_PATH} ]]; then
+${MKDIR} -p ${JDK_INSTALL_PATH}
+fi
+
+exit 0</string>
+                <key>file_mode</key>
+                <string>0755</string>
+                <key>file_path</key>
+                <string>%RECIPE_CACHE_DIR%/scripts/preinstall</string>
+            </dict>
+        </dict>
+        <dict>
+            <key>Processor</key>
+            <string>PkgCreator</string>
+            <key>Arguments</key>
+            <dict>
+                <key>pkg_request</key>
+                <dict>
+                    <key>chown</key>
+                    <array>
+                        <!-- <dict>
+                            <key>path</key>
+                            <string>Library</string>
+                            <key>user</key>
+                            <string>root</string>
+                            <key>group</key>
+                            <string>wheel</string>
+                        </dict>
+                        <dict>
+                            <key>path</key>
+                            <string>Library/Java</string>
+                            <key>user</key>
+                            <string>root</string>
+                            <key>group</key>
+                            <string>wheel</string>
+                        </dict> -->
+                        <dict>
+                            <key>path</key>
+                            <string>Library/Java/JavaVirtualMachines</string>
+                            <key>user</key>
+                            <string>root</string>
+                            <key>group</key>
+                            <string>wheel</string>
+                            <key>mode</key>
+                            <string>0755</string>
+                        </dict>
+                    </array>
+                    <key>id</key>
+                    <string>com.amazon.corretto.%JDK_MAJOR_VERSION%</string>
+                    <key>pkgname</key>
+                    <string>%NAME%-%version%</string>
+                    <key>pkgroot</key>
+                    <string>%RECIPE_CACHE_DIR%/pkgroot</string>
+                    <key>pkgtype</key>
+                    <string>flat</string>
+                    <key>scripts</key>
+                    <string>scripts</string>
+                    <key>version</key>
+                    <string>%version%</string>
+                </dict>
+            </dict>
+        </dict>
+        <dict>
+            <key>Processor</key>
+            <string>PathDeleter</string>
+            <key>Arguments</key>
+            <dict>
+                <key>path_list</key>
+                <array>
+                    <string>%RECIPE_CACHE_DIR%/pkgroot</string>
+                    <string>%RECIPE_CACHE_DIR%/scripts</string>
+                </array>
+            </dict>
+        </dict>
+    </array>
+</dict>
+</plist>

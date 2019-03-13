@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Description</key>
+    <string>Downloads the Amazon Corretto OpenJDK.  The JDK Major Version can be specified using the override variable "JDK_MAJOR_VERSION".
+
+Currently available from Amazon are the 8 and 11 JDKs.</string>
+    <key>Identifier</key>
+    <string>com.github.mlbz521.download.AmazonCorrettoOpenJDK</string>
+    <key>Input</key>
+    <dict>
+        <key>NAME</key>
+        <string>Amazon Corretto JDK</string>
+        <key>JDK_MAJOR_VERSION</key>
+        <string>8</string>
+        <key>SEARCH_URL</key>
+        <string>https://docs.aws.amazon.com/corretto/latest/corretto-%JDK_MAJOR_VERSION%-ug/downloads-list.html</string>
+        <key>SEARCH_PATTERN</key>
+        <string>(?P&lt;url&gt;https\://[a-zA-Z0-9]+\.cloudfront\.net/amazon-corretto-(?P&lt;version&gt;[0-9.]+)-macosx-x64\.tar\.gz)</string>
+    </dict>
+    <key>Process</key>
+    <array>
+       <dict>
+            <key>Processor</key>
+            <string>URLTextSearcher</string>
+            <key>Arguments</key>
+            <dict>
+                <key>url</key>
+                <string>%SEARCH_URL%</string>
+				<key>re_pattern</key>
+				<string>%SEARCH_PATTERN%</string>
+            </dict>
+        </dict>
+        <dict>
+            <key>Processor</key>
+            <string>URLDownloader</string>
+            <key>Arguments</key>
+            <dict>
+                <key>url</key>
+                <string>%url%</string>
+            </dict>
+        </dict>
+<!-- Switched to using the archive version as the Corretto 8.202.08.2 .pkg would not expand with pkgutil and affected child workflows. -->
+		<!-- <dict>
+			<key>Processor</key>
+			<string>CodeSignatureVerifier</string>
+			<key>Arguments</key>
+			<dict>
+				<key>input_path</key>
+				<string>%pathname%</string>
+				<key>expected_authority_names</key>
+				<array>
+					<string>Developer ID Installer: AMZN Mobile LLC (94KV3E626L)</string>
+					<string>Developer ID Certification Authority</string>
+					<string>Apple Root CA</string>
+				</array>
+			</dict>
+		</dict> -->
+        <dict>
+            <key>Processor</key>
+            <string>EndOfCheckPhase</string>
+        </dict>
+    </array>
+</dict>
+</plist>

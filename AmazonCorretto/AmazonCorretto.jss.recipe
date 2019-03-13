@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Description</key>
+    <string>Downloads the Amazon Corretto OpenJDK, builds a package, and uploads it to the JSS.
+
+Optionally, this package will pull out the JVM Version which can be used with a Smart Group pointing to an extension attribute to determine latest version.  Use the EXTENSION_ATTRIBUTE override variable to use your current EA.
+
+The JDK Major Version can be specified using the override variable "JDK_MAJOR_VERSION".  Currently available from Amazon are the 8 and 11 JDKs.</string>
+    <key>Identifier</key>
+    <string>com.github.mlbz521.jss.AmazonCorrettoOpenJDK</string>
+    <key>Input</key>
+    <dict>
+		<key>GROUP_TEMPLATE</key>
+		<string>GroupTemplate-ExtensionAttribute-AmazonCorretto.xml</string>
+		<key>POLICY_TEMPLATE</key>
+		<string>PolicyTemplate.xml</string>
+		<key>POLICY_CATEGORY</key>
+		<string>%CATEGORY%</string>
+		<key>package_notes</key>
+		<string>Product of AutoPkg</string>
+
+		<key>GROUP_NAME</key>
+		<string>%NAME%-Testing</string>
+
+        <key>JDK_MAJOR_VERSION</key>
+        <string>8</string>
+        <key>SEARCH_URL</key>
+        <string>https://docs.aws.amazon.com/corretto/latest/corretto-%JDK_MAJOR_VERSION%-ug/downloads-list.html</string>
+        <key>SEARCH_PATTERN</key>
+		<string>(?P&lt;url&gt;https\://[a-zA-Z0-9]+\.cloudfront\.net/amazon-corretto-(?P&lt;version&gt;[0-9.]+)-macosx-x64\.tar\.gz)</string>
+		<key>EXTENSION_ATTRIBUTE</key>
+		<string>JDK Version</string>
+
+        <key>NAME</key>
+        <string>Amazon Corretto JDK</string>
+		<key>CATEGORY</key>
+		<string>Development</string>
+		<key>SELF_SERVICE_DESCRIPTION</key>
+		<string>Amazon Corretto is a no-cost, multiplatform, production-ready distribution of the Open Java Development Kit (OpenJDK).  Corretto comes with long-term support that includes performance enhancements and security fixes.
+
+Corretto is certified as compatible with the Java SE standard and is used internally at Amazon for many production services.  With Corretto, you can develop and run Java applications on operating systems such as Amazon Linux 2, Windows, and macOS.</string>
+		<key>SELF_SERVICE_ICON</key>
+		<string>OpenJDKLogo.png</string>
+    </dict>
+	<key>ParentRecipe</key>
+	<string>com.github.mlbz521.pkg.AmazonCorrettoOpenJDK</string>
+    <key>Process</key>
+    <array>
+		<dict>
+			<key>Processor</key>
+			<string>JSSImporter</string>
+			<key>Arguments</key>
+			<dict>
+				<key>pkg_path</key>
+				<string>%RECIPE_CACHE_DIR%/%NAME%-%version%.pkg</string>
+				<key>prod_name</key>
+				<string>%NAME%</string>
+				<key>category</key>
+				<string>%CATEGORY%</string>
+				<key>policy_category</key>
+				<string>%POLICY_CATEGORY%</string>
+				<key>policy_template</key>
+				<string>%POLICY_TEMPLATE%</string>
+				<key>self_service_description</key>
+				<string>%SELF_SERVICE_DESCRIPTION%</string>
+				<key>self_service_icon</key>
+				<string>%SELF_SERVICE_ICON%</string>
+				<key>groups</key>
+				<array>
+					<dict>
+						<key>name</key>
+						<string>%GROUP_NAME%</string>
+						<key>smart</key>
+						<true/>
+						<key>template_path</key>
+						<string>%GROUP_TEMPLATE%</string>
+					</dict>
+				</array>
+			</dict>
+		</dict>
+    </array>
+</dict>
+</plist>

@@ -82,7 +82,8 @@ Currently available from Amazon are the 8 and 11 JDKs.</string>
             <key>Arguments</key>
             <dict>
                 <key>file_content</key>
-                <string>#!/bin/bash JDK_INSTALL_PATH="/Library/Java/JavaVirtualMachines" MKDIR=`which mkdir`
+                <string>#!/bin/bash
+JDK_INSTALL_PATH="/Library/Java/JavaVirtualMachines" MKDIR=`which mkdir`
 
 if [[ ! -d ${JDK_INSTALL_PATH} ]]; then
 ${MKDIR} -p ${JDK_INSTALL_PATH}

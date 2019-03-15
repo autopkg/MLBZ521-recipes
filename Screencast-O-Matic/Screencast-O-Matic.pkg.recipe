@@ -3,7 +3,11 @@
 <plist version="1.0">
 <dict>
     <key>Description</key>
-    <string>Downloads the Screencast-O-Matic disk image and builds a package.</string>
+    <string>Downloads the Screencast-O-Matic disk image and builds a package.
+
+The Screencast-O-Matic application (in my opinion) is poorly designed.  The user has to own .app for them to be able to launch it.
+
+So....that said...That means only one user on any system can actually use this app.  I'm trying to get in contact them to figure this out.</string>
     <key>Identifier</key>
     <string>com.github.mlbz521.pkg.Screencast-O-Matic</string>
     <key>Input</key>
@@ -30,7 +34,7 @@
             <key>Arguments</key>
             <dict>
                 <key>pkgroot</key>
-                <string>%RECIPE_CACHE_DIR%/%NAME%</string>
+                <string>%RECIPE_CACHE_DIR%/pkgroot</string>
                 <key>pkgdirs</key>
                 <dict>
                     <key>Applications</key>
@@ -40,13 +44,75 @@
         </dict>
         <dict>
             <key>Processor</key>
+            <string>PkgRootCreator</string>
+            <key>Arguments</key>
+            <dict>
+                <key>pkgdirs</key>
+                <dict/>
+                <key>pkgroot</key>
+                <string>%RECIPE_CACHE_DIR%/scripts</string>
+            </dict>
+        </dict>
+        <dict>
+            <key>Processor</key>
             <string>Copier</string>
             <key>Arguments</key>
             <dict>
                 <key>source_path</key>
-                <string>%pathname%/%app_name%</string>
+                <string>%pathname%/*.app</string>
                 <key>destination_path</key>
-                <string>%pkgroot%/Applications/%app_name%</string>
+                <string>%RECIPE_CACHE_DIR%/pkgroot/Applications/%app_name%</string>
+            </dict>
+        </dict>
+        <dict>
+            <key>Processor</key>
+            <string>FileCreator</string>
+            <key>Arguments</key>
+            <dict>
+                <key>file_content</key>
+                <string>#!/bin/bash
+
+###################################################################################################
+# Script Name:  install_Screencast-O-Matic.sh
+# By:  Zack Thompson / Created:  3/15/2019
+# Version:  1.0.0 / Updated:  3/15/2019 / By:  ZT
+#
+# Description:  This script sets the console user as owner of the %app_name%.
+#
+###################################################################################################
+
+echo "*****  PostInstall Script process:  START  *****"
+
+if [[ $3 != "/" ]]; then
+	echo "[ERROR] Target disk is not the startup disk."
+	echo "*****  PostInstall Script process:  FAILED  *****"
+	exit 1
+fi
+
+# Get current user
+currentUser=$(/usr/bin/python -c 'from SystemConfiguration import SCDynamicStoreCopyConsoleUser; import sys; username = (SCDynamicStoreCopyConsoleUser(None, None, None) or [None])[0]; username = [username,""][username in [u"loginwindow", None, u""]]; sys.stdout.write(username + "\n");')
+
+# Check if the Screencast-O-Matic is currently installed...
+if [[ -e "/Applications/%app_name%" ]]; then
+	echo "Screencast-O-Matic is currently installed; giving the current console user ownership..."
+    /usr/sbin/chown -R "${currentUser}" "/Applications/%app_name%"
+fi
+
+if [[ $( /usr/bin/stat -f "%Su" "/Applications/%app_name%" ) == "${currentUser}" ]]; then
+    echo "Screencast-O-Matic has been installed!"
+else
+    echo "Failed to assign the proper permissions!"
+    echo "Rolling back changes!"
+    rm "/Applications/%app_name%"
+    exit 2
+fi
+
+echo "*****  PostInstall Script process:  COMPLETE  *****"
+exit 0</string>
+                <key>file_mode</key>
+                <string>0755</string>
+                <key>file_path</key>
+                <string>%RECIPE_CACHE_DIR%/scripts/postinstall</string>
             </dict>
         </dict>
         <dict>
@@ -61,9 +127,17 @@
                     <key>pkgdir</key>
                     <string>%RECIPE_CACHE_DIR%</string>
                     <key>id</key>
-                    <string>%bundleid%</string>
+                    <string>com.screencastomatic.app</string>
                     <key>options</key>
                     <string>purge_ds_store</string>
+					<key>pkgroot</key>
+					<string>%RECIPE_CACHE_DIR%/pkgroot</string>
+					<key>pkgtype</key>
+					<string>flat</string>
+					<key>scripts</key>
+					<string>Scripts</string>
+					<key>version</key>
+					<string>%version%</string>
                     <key>chown</key>
                     <array>
                         <dict>
@@ -85,7 +159,8 @@
 			<dict>
 				<key>path_list</key>
 				<array>
-					<string>%RECIPE_CACHE_DIR%/%NAME%</string>
+					<string>%RECIPE_CACHE_DIR%/pkgroot</string>
+					<string>%RECIPE_CACHE_DIR%/scripts</string>
 				</array>
 			</dict>
 		</dict>

@@ -3,7 +3,13 @@
 <plist version="1.0">
 <dict>
 	<key>Description</key>
-	<string>Downloads the latest version of Solstice and imports it into your JSS.  (The pkg recipe is a hack-ish way of getting the end result, but it works. ¯\_(ツ)_/)
+	<string>Downloads Mersive's Solstice, creates a package, and imports it into your JSS.  
+	
+This is v2 of my hack-ish way of being able to deploy this application, but it works. ¯\_(ツ)_/¯
+
+v1 would do all the work to get the final .app on the client machine, which wasn't exactly desired, while this version will get the final .app on the system running autopkg.
+***Note this likely requires a user to be logged in when this is ran, as the stupid Solstice bootstrap .app, creates the final .app on the desktop of the user that ran it.
+It's dumb, I know.  I've contacted Mersive about it and they claim they're looking at improving macOS deployment in the future, but no ETA.
 
 Download recipe's original author was @joshua-d-miller (https://github.com/autopkg/joshua-d-miller-recipes)</string>
 	<key>Identifier</key>
@@ -18,8 +24,6 @@ Download recipe's original author was @joshua-d-miller (https://github.com/autop
 		<string>%CATEGORY%</string>
 		<key>GROUP_NAME</key>
 		<string>%NAME%-update-smart</string>
-		<key>version</key>
-		<string></string>
 
 		<key>NAME</key>
 		<string>Solstice</string>
@@ -33,8 +37,6 @@ Stream device screens, share videos, post individual application windows, and vi
 		<key>SELF_SERVICE_ICON</key>
 		<string>%NAME%.png</string>
 	</dict>
-	<key>MinimumVersion</key>
-	<string>1.0.0</string>
 	<key>ParentRecipe</key>
 	<string>com.github.mlbz521.pkg.Solstice</string>
 	<key>Process</key>

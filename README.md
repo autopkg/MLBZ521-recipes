@@ -5,6 +5,21 @@ Just a few recipes I have created that were not publicly available in other repo
 
 ## Recipes ##
 
+### Amazon Corretto OpenJDK ###
+
+Amazon Corretto is an OpenJDK alternative that is maintained and supported by Amazon.  These recipes allow you to specify which version you'd want; currently 8 and 11 are available from Amazon.
+
+Optionally, this package will pull out the JVM Version which can be used with a Smart Group pointing to an extension attribute to determine latest version.  I have an EA available that can be used in conjunction with this recipe.
+
+Available recipe types:
+  * download
+    * Variable overrides for:  JDK_MAJOR_VERSION
+    * Uses custom processor to download
+  * pkg
+  * jss
+    * Use the EXTENSION_ATTRIBUTE override variable to use your current EA.
+
+
 ### Anaconda ###
 
 Parent:  com.github.hansen-m.download.Anaconda
@@ -91,14 +106,28 @@ Available recipe types:
   * jss
 
 
+### Screencast-O-Matic ###
+
+The Screencast-O-Matic application (in my opinion) is poorly designed.  The user has to own .app for them to be able to launch it.  So....that said...That means only one user on any system can actually use this app.  I'm trying to get in contact them to figure this out.  This recipe will account for that (i.e. it changes the permissions on the app to the currently logged in user)...so I highly recommend this is used as a Self Service deployment -- if you require it and their is no user logged it, it will fail, or produce undesirable results.
+
+Available recipe types:
+  * download
+  * pkg
+  * jss
+
+
 ### Solstice ###
 
 Modified from the original author:  [@joshua-d-miller](https://github.com/autopkg/joshua-d-miller-recipes)
-This was removed from his recipe list, but I wanted to use it.  The way Mersive creates the distribution package for Solstice is very wacky.
+This was removed from his recipe list, but I wanted to use it.  The way Mersive creates the distribution package for Solstice is very wacky (a zip, with an .app that creates another .app).
 
-While this works, it's probably not the best way to do it.  I have plans to revise how this recipe's workflow.
+This is v2 of my hack-ish way of being able to deploy this application, but it works. ¯\\_(ツ)_/¯
 
-Lately has been causing false positives as well.
+v1 would do all the work to get the final .app on the client machine, which wasn't exactly desired, while this version will get the final .app on the system running autopkg.
+\*\*\*Note this likely requires a user to be logged in when this is ran, as the stupid Solstice bootstrap .app, creates the final .app on the desktop of the user that ran it.
+It's dumb, I know.  I've contacted Mersive about it and they claim they're looking at improving macOS deployment in the future, but no ETA.
+
+Hopefully this overhaul will help with the false positives.
 
 Available recipe types:
   * download
@@ -125,6 +154,11 @@ Available recipe types:
 ### FileMode ###
 
 This processor essentially runs `chmod` on a file.  Provide the numeric mode for file in octal format.
+
+
+### JVMVersioner ###
+
+This processor finds the Java Virtual Machine version in a JDK package.  This will allow you to use which OpenJDK distributor you would like, and get the JVM version from it.  This can this be used in a Smart Group point to an EA of the JVM's value, for instance.
 
 
 ### TextFileReader ###

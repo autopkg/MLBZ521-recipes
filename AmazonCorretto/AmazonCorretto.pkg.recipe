@@ -17,7 +17,7 @@ Currently available from Amazon are the 8 and 11 JDKs.</string>
         <key>SEARCH_URL</key>
         <string>https://docs.aws.amazon.com/corretto/latest/corretto-%JDK_MAJOR_VERSION%-ug/downloads-list.html</string>
         <key>SEARCH_PATTERN</key>
-        <string>(?P&lt;url&gt;https\://[a-zA-Z0-9]+\.cloudfront\.net/amazon-corretto-(?P&lt;version&gt;[0-9.]+)-macosx-x64\.tar\.gz)</string>
+        <string>(?P&lt;url&gt;https\://[a-zA-Z0-9]+\.cloudfront\.net/[0-9.]+/amazon-corretto-(?P&lt;version&gt;[0-9.]+)-macosx-x64\.tar\.gz)</string>
     </dict>
     <key>ParentRecipe</key>
     <string>com.github.mlbz521.download.AmazonCorrettoOpenJDK</string>

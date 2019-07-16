@@ -86,7 +86,7 @@ class XeroxPrintDriverProcessor(Processor):
                     sys.exc_clear()
 
                     # Build the command.
-                    curl_cmd = '/usr/bin/curl --silent --show-error --no-buffer --fail --speed-time 30 --url {}'.format(url)
+                    curl_cmd = '/usr/bin/curl --silent --show-error --no-buffer --fail --speed-time 30 --url "{}"'.format(url)
                     try:
                         response = subprocess.check_output(curl_cmd, shell=True)
                         return response

@@ -21,6 +21,7 @@ try:
     from urllib import request as urllib  # For Python 3
 except ImportError:
     import urllib  # For Python 2
+import subprocess
 import sys
 from autopkglib import Processor, ProcessorError
 
@@ -76,8 +77,22 @@ class XeroxPrintDriverProcessor(Processor):
                 return response.content
             except:
                 sys.exc_clear()
-                response = urllib.urlopen(url)
-                return response.read()
+
+                try:
+                    response = urllib.urlopen(url)
+                    return response.read()
+                except Exception:
+                    # If still fails (running on macOS 10.12 or older), resort to using curl
+                    sys.exc_clear()
+
+                    # Build the command.
+                    curl_cmd = '/usr/bin/curl --silent --show-error --no-buffer --fail --speed-time 30 --location --header Accept: application/json --url {}'.format(url)
+                    try:
+                        response = subprocess.check_output(curl_cmd)
+                        return response
+                    except subprocess.CalledProcessError as error:
+                        print('Return code:  {}'.format(error.returncode))
+                        print('Result:  {}'.format(error))
 
 
         # Define variables

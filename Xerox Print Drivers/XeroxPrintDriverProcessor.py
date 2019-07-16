@@ -88,7 +88,7 @@ class XeroxPrintDriverProcessor(Processor):
                     # Build the command.
                     curl_cmd = '/usr/bin/curl --silent --show-error --no-buffer --fail --speed-time 30 --location --header Accept: application/json --url {}'.format(url)
                     try:
-                        response = subprocess.check_output(curl_cmd)
+                        response = subprocess.check_output(curl_cmd, shell=True)
                         return response
                     except subprocess.CalledProcessError as error:
                         print('Return code:  {}'.format(error.returncode))

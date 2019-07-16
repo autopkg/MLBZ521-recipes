@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Identifier</key>
+	<string>com.github.mlbz521.jss.XeroxPrintDriver</string>
+	<key>Description</key>
+    <string>Downloads and packages the latest driver package based on the override-able parameters:  model, download type, and OS Version.
+
+model example:  'Workcentre 6515'
+download types:  macOS Common Print Driver Installer (default), The provided string is searched in the web page.
+OS version:  10_14 (default)</string>
+	<key>Input</key>
+	<dict>
+		<key>GROUP_TEMPLATE</key>
+		<string>GroupTemplate.xml</string>
+		<key>POLICY_TEMPLATE</key>
+		<string>PolicyTemplate.xml</string>
+		<key>POLICY_CATEGORY</key>
+		<string>%CATEGORY%</string>
+		<key>package_notes</key>
+		<string>Product of AutoPkg</string>
+
+		<key>GROUP_NAME</key>
+		<string>%NAME%-Testing</string>
+
+		<key>CATEGORY</key>
+		<string>Testing</string>
+		<key>SELF_SERVICE_DESCRIPTION</key>
+		<string>Installs Xerox Print Drivers for the model:  %model%</string>
+		<key>SELF_SERVICE_ICON</key>
+		<string>XeroxPrinter.png</string>
+
+        <key>model</key>
+        <string>Workcentre 6515</string>
+        <key>downloadType</key>
+        <string>macOS Common Print Driver Installer</string>
+        <key>osVersion</key>
+        <string>10_14</string>
+        <key>NAME</key>
+        <string>Xerox %model%</string>
+	</dict>
+	<key>ParentRecipe</key>
+	<string>com.github.mlbz521.pkg.XeroxPrintDriver</string>
+	<key>Process</key>
+	<array>
+		<dict>
+			<key>Processor</key>
+			<string>JSSImporter</string>
+			<key>Arguments</key>
+			<dict>
+				<key>pkg_path</key>
+				<string>%RECIPE_CACHE_DIR%/%NAME%-%version%.pkg</string>
+				<key>prod_name</key>
+				<string>%NAME%</string>
+				<key>category</key>
+				<string>%CATEGORY%</string>
+				<key>policy_category</key>
+				<string>%POLICY_CATEGORY%</string>
+				<key>policy_template</key>
+				<string>%POLICY_TEMPLATE%</string>
+				<key>self_service_description</key>
+				<string>%SELF_SERVICE_DESCRIPTION%</string>
+				<key>self_service_icon</key>
+				<string>%SELF_SERVICE_ICON%</string>
+				<key>groups</key>
+				<array>
+					<dict>
+						<key>name</key>
+						<string>%GROUP_NAME%</string>
+						<key>smart</key>
+						<true/>
+						<key>template_path</key>
+						<string>%GROUP_TEMPLATE%</string>
+					</dict>
+				</array>
+			</dict>
+		</dict>
+	</array>
+</dict>
+</plist>

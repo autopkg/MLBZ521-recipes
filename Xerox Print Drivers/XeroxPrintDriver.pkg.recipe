@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Identifier</key>
+	<string>com.github.mlbz521.pkg.XeroxPrintDriver</string>
+	<key>Description</key>
+    <string>Downloads and packages the latest driver package based on the override-able parameters:  model, download type, and OS Version.
+
+model example:  'Workcentre 6515'
+download types:  macOS Common Print Driver Installer (default), The provided string is searched in the web page.
+OS version:  10_14 (default)</string>
+	<key>Input</key>
+	<dict>
+        <key>model</key>
+        <string>Workcentre 6515</string>
+        <key>downloadType</key>
+        <string>macOS Common Print Driver Installer</string>
+        <key>osVersion</key>
+        <string>10_14</string>
+        <key>NAME</key>
+        <string>Xerox %model%</string>
+	</dict>
+	<key>ParentRecipe</key>
+	<string>com.github.mlbz521.download.XeroxPrintDriver</string>
+	<key>Process</key>
+	<array>
+		<dict>
+			<key>Processor</key>
+			<string>PkgCopier</string>
+			<key>Arguments</key>
+			<dict>
+				<key>source_pkg</key>
+				<string>%pathname%/*.pkg</string>
+				<key>pkg_path</key>
+				<string>%RECIPE_CACHE_DIR%/%NAME%-%version%.pkg</string>
+			</dict>
+		</dict>
+	</array>
+</dict>
+</plist>

@@ -28,7 +28,7 @@
 		<string>%RECIPE_DIR%/MirrorOp.png</string>
 	</dict>
 	<key>ParentRecipe</key>
-	<string>com.github.moofit-recipes.jss.MirrorOp</string>
+	<string>com.github.moofit-recipes.pkg.MirrorOp</string>
 	<key>Process</key>
 	<array>
 		<dict>

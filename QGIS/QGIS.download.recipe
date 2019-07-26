@@ -21,7 +21,7 @@ This probably isn't the best way to do it, but it's simple and works for now.</s
         <key>SEARCH_URL</key>
         <string>https://www.qgis.org/en/site/forusers/download.html</string>
         <key>SEARCH_PATTERN</key>
-        <string>(?P&lt;url&gt;http\://qgis\.org/downloads/macOS/QGIS-%QGIS_MAJOR_VERSION%-(?P&lt;version&gt;[0-9.-]+)\.dmg)</string>
+        <string>(?P&lt;url&gt;https\://qgis\.org/downloads/macOS/QGIS-%QGIS_MAJOR_VERSION%-(?P&lt;version&gt;[0-9.-]+)\.dmg)</string>
     </dict>
     <key>MinimumVersion</key>
     <string>0.4.0</string>

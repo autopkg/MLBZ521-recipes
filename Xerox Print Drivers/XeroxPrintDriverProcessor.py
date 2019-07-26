@@ -58,7 +58,7 @@ class XeroxPrintDriverProcessor(Processor):
     output_variables = {
         "url": {
             "description": "Returns the url to download."
-        },
+        }
     }
 
     description = __doc__
@@ -98,7 +98,7 @@ class XeroxPrintDriverProcessor(Processor):
         # Define variables
         input_model = self.env.get('model')
         model = re.sub(r'\s', '%20', input_model)
-        self.output('Searhcing for:  {}'.format(model))
+        self.output('Searching for:  {}'.format(model))
         downloadType = self.env.get('downloadType', 'macOS Common Print Driver Installer')
         osVersion = self.env.get('osVersion', '10_14')
 

@@ -36,9 +36,9 @@ class ARCHICADUpdatesProcessor(Processor):
             "required": True,
             "description": "The Localization to looks for available patches.",
         },
-        "relase_type": {
+        "release_type": {
             "required": True,
-            "description": "The release type to look for avialable patches.",
+            "description": "The release type to look for available patches.",
         }
     }
     output_variables = {
@@ -57,7 +57,7 @@ class ARCHICADUpdatesProcessor(Processor):
         # Define some variables.
         major_version = self.env.get("major_version")
         localization = self.env.get("localization")
-        relase_type = self.env.get("relase_type")
+        release_type = self.env.get("release_type")
         available_builds = {}
 
         try:
@@ -85,7 +85,7 @@ class ARCHICADUpdatesProcessor(Processor):
         for json_Object in json_data:
             if json_Object.get('version') == major_version:
                 if json_Object.get('localization') == localization:
-                    if json_Object.get('type') == relase_type:
+                    if json_Object.get('type') == release_type:
                         for details in json_Object['downloadLinks']:
                             if details.get('platform') == 'mac':
                                 available_builds[json_Object.get('build')] = details['url']

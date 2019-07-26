@@ -18,7 +18,7 @@ release_type options include:  FULL, SOLO</string>
         <string>22</string>
         <key>localization</key>
         <string>USA</string>
-        <key>relase_type</key>
+        <key>release_type</key>
         <string>FULL</string>
     </dict>
     <key>Process</key>
@@ -32,8 +32,8 @@ release_type options include:  FULL, SOLO</string>
                 <string>%major_version%</string>
                 <key>localization</key>
                 <string>%localization%</string>
-                <key>relase_type</key>
-                <string>%relase_type%</string>
+                <key>release_type</key>
+                <string>%release_type%</string>
             </dict>
         </dict>
         <dict>

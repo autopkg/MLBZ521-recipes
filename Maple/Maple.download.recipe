@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Identifier</key>
+    <string>com.github.mlbz521.download.MaplePatch</string>
+    <key>Description</key>
+    <string>Downloads the patch for the specified Maple major version.
+
+Specify major version as:  '2019', '2018', '2017', or 2016</string>
+    <key>Input</key>
+    <dict>
+        <key>MAJOR_VERSION</key>
+        <string>2019</string>
+        <key>NAME</key>
+        <string>Maple Patch %MAJOR_VERSION%</string>
+    </dict>
+    <key>Process</key>
+    <array>
+        <dict>
+            <key>Processor</key>
+            <string>MaplePatchProcessor</string>
+            <key>Arguments</key>
+            <dict>
+                <key>MAJOR_VERSION</key>
+                <string>%MAJOR_VERSION%</string>
+            </dict>
+        </dict>
+        <dict>
+            <key>Processor</key>
+            <string>URLDownloader</string>
+            <key>Arguments</key>
+            <dict>
+                <key>url</key>
+                <string>%url%</string>
+                <key>filename</key>
+                <string>Maple %version%.tar</string>
+            </dict>
+        </dict>
+        <dict>
+            <key>Processor</key>
+            <string>EndOfCheckPhase</string>
+        </dict>
+    </array>
+</dict>
+</plist>

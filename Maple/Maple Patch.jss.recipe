@@ -39,7 +39,7 @@ Specify major version as:  '2019', '2018', '2017', or 2016</string>
 		<string>/path/to/7z</string>
 	</dict>
 	<key>ParentRecipe</key>
-	<string>com.github.mlbz521.pkg.XeroxPrintDriver</string>
+	<string>com.github.mlbz521.pkg.MaplePatch</string>
 	<key>Process</key>
 	<array>
 		<dict>

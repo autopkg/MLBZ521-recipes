@@ -5,23 +5,21 @@
     <key>Description</key>
     <string>Downloads the latest version of QGIS.  Requires python.org Python 3.6 to be pre-installed - other distributions are not supported.
 
-Supports major versions 3 and 2.  Override the key "QGIS_Major_Version" to specify which you need:
-QGIS2 = OSX
-QGIS3 = macOS
-
-This probably isn't the best way to do it, but it's simple and works for now.</string>
+Supports either the latest release or Long Term (support) Release.  Override the key "RELEASE_TYPE" to specify which you need:
+Latest Release = "pr"
+Long Term (support) Release = "ltr"</string>
     <key>Identifier</key>
     <string>com.github.mlbz521.download.QGIS</string>
     <key>Input</key>
     <dict>
         <key>NAME</key>
         <string>QGIS</string>
-        <key>QGIS_MAJOR_VERSION</key>
-        <string>macOS</string>
+        <key>RELEASE_TYPE</key>
+        <string>pr</string>
         <key>SEARCH_URL</key>
         <string>https://www.qgis.org/en/site/forusers/download.html</string>
         <key>SEARCH_PATTERN</key>
-        <string>(?P&lt;url&gt;https\://qgis\.org/downloads/macOS/QGIS-%QGIS_MAJOR_VERSION%-(?P&lt;version&gt;[0-9.-]+)\.dmg)</string>
+        <string>(?P&lt;url&gt;https\://qgis\.org/downloads/macos/qgis-macos-%RELEASE_TYPE%\.dmg)</string>
     </dict>
     <key>MinimumVersion</key>
     <string>0.4.0</string>
@@ -45,10 +43,17 @@ This probably isn't the best way to do it, but it's simple and works for now.</s
             <dict>
                 <key>url</key>
                 <string>%url%</string>
-                <key>filename</key>
-                <string>%NAME%-%version%.dmg</string>
             </dict>
         </dict>
+		<dict>
+			<key>Processor</key>
+			<string>AppDmgVersioner</string>
+			<key>Arguments</key>
+			<dict>
+				<key>dmg_path</key>
+				<string>%pathname%</string>
+			</dict>
+		</dict>
         <dict>
             <key>Processor</key>
             <string>EndOfCheckPhase</string>

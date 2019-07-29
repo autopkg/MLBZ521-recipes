@@ -5,59 +5,42 @@
 	<key>Description</key>
 	<string>Downloads the latest version of QGIS and creates a package.  The created pkg installs all packages in the downloaded .dmg.
 
-Supports major versions 3 and 2.  Override the key "QGIS_Major_Version" to specify which you need:
-QGIS2 = OSX
-QGIS3 = macOS
-
-This probably isn't the best way to do it, but it's simple and works for now.
+Supports either the latest release or Long Term (support) Release.  Override the key "RELEASE_TYPE" to specify which you need:
+Latest Release = "pr"
+Long Term (support) Release = "ltr"
 
 Notes:  
 - Python 3.6+ is a prerequisite before installing QGIS 3 -- the created .pkg will hard fail if Python 3.6+ is not installed.
-- The created .pkg will "uninstall" previous versions of QGIS.
-- The QGIS installer process will also install the necessary Python modules using pip. This requires an internet connection during installation.</string>
+- The created .pkg will "uninstall" previous versions of QGIS.</string>
 	<key>Identifier</key>
 	<string>com.github.mlbz521.pkg.QGIS</string>
 	<key>Input</key>
 	<dict>
-		<key>NAME</key>
-		<string>QGIS</string>
-        <key>QGIS_MAJOR_VERSION</key>
-        <string>macOS</string>
-		<key>CATEGORY</key>
-		<string>Testing</string>
-		<key>PACKAGE_ID</key>
-		<string>com.github.mlbz521.QGIS.pkg</string>
+        <key>NAME</key>
+        <string>QGIS</string>
+        <key>RELEASE_TYPE</key>
+        <string>pr</string>
+        <key>SEARCH_URL</key>
+        <string>https://www.qgis.org/en/site/forusers/download.html</string>
+        <key>SEARCH_PATTERN</key>
+        <string>(?P&lt;url&gt;https\://qgis\.org/downloads/macos/qgis-macos-%RELEASE_TYPE%\.dmg)</string>
 	</dict>
 	<key>ParentRecipe</key>
 	<string>com.github.mlbz521.download.QGIS</string>
 	<key>Process</key>
 	<array>
 		<dict>
-			<key>comment</key>
-			<string>The default version number has a "-(buildVersion)" in it which causes an issue with PkgCreator Processor.  Substituting the "-"" for a "b" to resolve the issue while keeping the build version.</string>
-			<key>Processor</key>
-			<string>com.github.mlbz521.SharedProcessors/VersionSubstituter</string>
-			<key>Arguments</key>
-			<dict>
-				<key>version</key>
-				<string>%version%</string>
-				<key>index</key>
-				<integer>1</integer>
-				<key>old</key>
-				<string>-</string>
-				<key>new</key>
-				<string>b</string>
-			</dict>
-		</dict>
-		<dict>
 			<key>Processor</key>
 			<string>PkgRootCreator</string>
 			<key>Arguments</key>
 			<dict>
-				<key>pkgdirs</key>
-				<dict/>
 				<key>pkgroot</key>
 				<string>%RECIPE_CACHE_DIR%/pkgroot</string>
+				<key>pkgdirs</key>
+				<dict>
+					<key>Applications</key>
+					<string>0775</string>
+				</dict>
 			</dict>
 		</dict>
 		<dict>
@@ -73,6 +56,17 @@ Notes:
 		</dict>
 		<dict>
 			<key>Processor</key>
+			<string>Copier</string>
+			<key>Arguments</key>
+			<dict>
+				<key>source_path</key>
+				<string>%pathname%/%app_name%</string>
+				<key>destination_path</key>
+				<string>%RECIPE_CACHE_DIR%/pkgroot/Applications/%app_name%</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
 			<string>FileCreator</string>
 			<key>Arguments</key>
 			<dict>
@@ -80,68 +74,18 @@ Notes:
 				<string>#!/bin/bash
 
 ###################################################################################################
-# Script Name:  install_QGIS.sh
-# By:  Zack Thompson / Created:  7/26/2017
-# Version:  1.6 / Updated:  8/20/2018 / By:  ZT
+# Script Name:  uninstall_QGIS.sh
+# By:  Zack Thompson / Created:  7/29/2019
+# Version:  1.0.0 / Updated:  7/29/2019 / By:  ZT
 #
 # Description:  This script installs all the packages that are contained in the QGIS dmg.
 #
 ###################################################################################################
 
-echo "*****  Install QGIS Process:  START  *****"
-
-##################################################
-# Define Variables
-
-# Set working directory
-	pkgDir=$(/usr/bin/dirname "${0}")
-# Get the current user
-#	currentUser=$(/usr/bin/python -c 'from SystemConfiguration import SCDynamicStoreCopyConsoleUser; import sys; username = (SCDynamicStoreCopyConsoleUser(None, None, None) or [None])[0]; username = [username,""][username in [u"loginwindow", None, u""]]; sys.stdout.write(username + "\n");')
-# Get the filename of the .dmg file
-	QGISdmg=$(/bin/ls "${pkgDir}" | /usr/bin/grep .dmg)
-
-##################################################
-# Define Functions
-
-exitCheck() {
-	if [[ $1 != 0 ]]; then
-		echo "Failed to install:  ${2}"
-		echo "Exit Code:  ${1}"
-		echo "*****  Install QGIS process:  FAILED  *****"
-
-		# Ejecting the .dmg...
-		/usr/bin/hdiutil eject /Volumes/"${QGISMount}"
-
-		exit 2
-	else
-		echo "${2} has been installed!"
-	fi
-}
-
-##################################################
-# Bits staged...
-
-# Check the installation target.
-if [[ $3 != "/" ]]; then
-	echo "ERROR:  Target disk is not the startup disk."
-	echo "*****  Install QGIS process:  FAILED  *****"
-	exit 1
-fi
-
-# Check which version of QGIS we're installing, and if QGIS 3, check if Python3.6 is installed.
-if [[ "${QGISdmg}" == "QGIS-3"* ]]; then
-	# Check if Python3 is installed
-	if [[ ( -x /usr/local/bin/python3.6 ) || ( $(/usr/bin/bc &lt;&lt;&lt; "$(/usr/local/bin/python3 --version | /usr/bin/awk -F "." '{print $2}') == 6") -eq 1 ) ]]; then
-		echo "Python 3.6 is installed!"
-	else
-		echo "ERROR:  Python 3.6 is required, but is not installed!"
-		echo "*****  Install QGIS Process:  FAILED  *****"
-		exit 1
-	fi
-fi
+echo "*****  Uninstall QGIS Process:  START  *****"
 
 # Check if QGIS is currently installed...
-appPaths=$(/usr/bin/find -E /Applications -iregex ".*[/]QGIS ?([0-9]{1})?[.]app" -type d -maxdepth 1 -prune)
+appPaths=$(/usr/bin/find -E /Applications -iregex ".*[/]QGIS\s?([0-9.]*)?[.]app" -type d -maxdepth 1 -prune)
 
 if [[ ! -z "${appPaths}" ]]; then
 	echo "QGIS is currently installed; removing this instance before continuing..."
@@ -155,65 +99,13 @@ if [[ ! -z "${appPaths}" ]]; then
 	echo "QGIS has been removed."
 fi
 
-# Mounting the .dmg found...
-	echo "Mounting ${QGISdmg}..."
-	/usr/bin/hdiutil attach "${pkgDir}/${QGISdmg}" -nobrowse -noverify -noautoopen
-	/bin/sleep 2
-
-# Get the name of the mount.
-	QGISMount=$(/bin/ls /Volumes/ | /usr/bin/grep QGIS)
-
-# Get all of the pkgs.
-	echo "Gathering packages that need to be installed for QGIS..."
-	packages=$(/bin/ls "/Volumes/${QGISMount}/" | /usr/bin/grep .pkg)
-
-# Loop through each .pkg in the directory...
-while IFS=.pkg read pkg; do
-	echo "Installing ${pkg}..."
-	/usr/sbin/installer -dumplog -verbose -pkg "/Volumes/${QGISMount}/${pkg}" -allowUntrusted -target /
-	exitCode=$?
-
-	# Function exitCheck
-	exitCheck $exitCode "${pkg}"
-done &lt; &lt;(echo "${packages}")
-
-echo "All packages have been installed!"
-
-# Ejecting the .dmg...
-	/usr/bin/hdiutil eject /Volumes/"${QGISMount}"
-
-# Disable version check (this is done because the version compared is not always the latest available for macOS).
-if [[ "${QGISdmg}" == "QGIS-3"* ]]; then
-	echo "Disabling version check on launch is currently removed from this process for QGIS v3."
-	# Disabled this because the .ini file does not exist until the application is launched.
-	# echo "Disabling version check on launch..."
-	# /usr/bin/sed -Ei '' 's/checkVersion=true/checkVersion=false/g' "/${currentUser}/Library/Application Support/QGIS/QGIS3/profiles/default/qgis.org/QGIS3.ini"
-elif [[ "${QGISdmg}" == "QGIS-2"* ]]; then
-	echo "Disabling version check on launch..."
-	/usr/bin/defaults write org.qgis.QGIS2.plist qgis.checkVersion -boolean false
-fi
-
-echo "${QGISMount} has been installed!"
-echo "*****  Install QGIS Process:  COMPLETE  *****"
+echo "*****  Uninstall QGIS Process:  COMPLETE  *****"
 
 exit 0</string>
 				<key>file_mode</key>
 				<string>0755</string>
 				<key>file_path</key>
-				<string>%RECIPE_CACHE_DIR%/Scripts/postinstall</string>
-			</dict>
-		</dict>
-		<dict>
-			<key>Processor</key>
-			<string>Copier</string>
-			<key>Arguments</key>
-			<dict>
-				<key>destination_path</key>
-				<string>%RECIPE_CACHE_DIR%/Scripts/%NAME%-%version%.dmg</string>
-				<key>overwrite</key>
-				<true/>
-				<key>source_path</key>
-				<string>%pathname%</string>
+				<string>%RECIPE_CACHE_DIR%/Scripts/preinstall</string>
 			</dict>
 		</dict>
 		<dict>
@@ -223,10 +115,8 @@ exit 0</string>
 			<dict>
 				<key>pkg_request</key>
 				<dict>
-					<key>chown</key>
-					<array/>
 					<key>id</key>
-					<string>%PACKAGE_ID%</string>
+					<string>%bundleid%</string>
 					<key>pkgname</key>
 					<string>%NAME%-%version%</string>
 					<key>pkgroot</key>
@@ -237,10 +127,21 @@ exit 0</string>
 					<string>Scripts</string>
 					<key>version</key>
 					<string>%version%</string>
+                    <key>chown</key>
+					<array>
+						<dict>
+							<key>path</key>
+							<string>Applications</string>
+							<key>user</key>
+							<string>root</string>
+							<key>group</key>
+							<string>admin</string>
+						</dict>
+					</array>
 				</dict>
 			</dict>
 		</dict>
-		<dict>
+		<!-- <dict>
 			<key>Processor</key>
 			<string>PathDeleter</string>
 			<key>Arguments</key>
@@ -251,7 +152,7 @@ exit 0</string>
 					<string>%RECIPE_CACHE_DIR%/Scripts</string>
 				</array>
 			</dict>
-		</dict>
+		</dict> -->
 	</array>
 </dict>
 </plist>

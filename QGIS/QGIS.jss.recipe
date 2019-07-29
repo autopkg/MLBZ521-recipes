@@ -3,18 +3,15 @@
 <plist version="1.0">
 <dict>
 	<key>Description</key>
-	<string>Downloads the latest version of QGIS, creates a package, and uploads it to the JSS.  The created pkg installs all packages in the .dmg.
+	<string>Downloads the latest version of QGIS, creates a package, and uploads it to the JSS.
 
-Supports major versions 3 and 2.  Override the key "QGIS_Major_Version" to specify which you need:
-QGIS2 = OSX
-QGIS3 = macOS
-
-This probably isn't the best way to do it, but it's simple and works for now.
+Supports either the latest release or Long Term (support) Release.  Override the key "RELEASE_TYPE" to specify which you need:
+Latest Release = "pr"
+Long Term (support) Release = "ltr"
 
 Notes:  
 - Pyhton 3.6+ is a prerequisite before installing QGIS 3 -- the created .pkg will hard fail if Python 3.6+ is not installed.
-- The created .pkg will "uninstall" previous versions of QGIS.
-- The QGIS installer process will also install the necessary Python modules using pip. This requires an internet connection during installation.</string>
+- The created .pkg will "uninstall" previous versions of QGIS.</string>
 	<key>Identifier</key>
 	<string>com.github.mlbz521.jss.QGIS</string>
 	<key>Input</key>
@@ -31,16 +28,21 @@ Notes:
 		<key>GROUP_NAME</key>
 		<string>%NAME%-Testing</string>
 
-		<key>NAME</key>
-		<string>QGIS</string>
-		<key>QGIS_MAJOR_VERSION</key>
-		<string>macOS</string>
+        <key>NAME</key>
+        <string>QGIS</string>
 		<key>CATEGORY</key>
 		<string>Testing</string>
 		<key>DESCRIPTION</key>
 		<string>QGIS is an Open Source Geographic Information System that allows you to create, edit, visualize, analyze and publish geospatial information.</string>
 		<key>ICON</key>
-		<string>%RECIPE_DIR%/QGIS3.png</string>
+		<string>QGIS.png</string>
+
+        <key>RELEASE_TYPE</key>
+        <string>pr</string>
+        <key>SEARCH_URL</key>
+        <string>https://www.qgis.org/en/site/forusers/download.html</string>
+        <key>SEARCH_PATTERN</key>
+        <string>(?P&lt;url&gt;https\://qgis\.org/downloads/macos/qgis-macos-%RELEASE_TYPE%\.dmg)</string>
 	</dict>
 	<key>ParentRecipe</key>
 	<string>com.github.mlbz521.pkg.QGIS</string>

@@ -13,7 +13,7 @@ Modified from the original author:  @joshua-d-miller (https://github.com/autopkg
 		<key>NAME</key>
 		<string>Solstice</string>
 		<key>DOWNLOAD_URL</key>
-		<string>http://www.mersive.com/downloads/SolsticeClientMacWeb.zip</string>
+		<string>https://www.mersive.com/downloads/SolsticeClientMacWeb.zip</string>
 	</dict>
 	<key>MinimumVersion</key>
 	<string>1.0.0</string>

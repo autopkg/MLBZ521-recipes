@@ -15,6 +15,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from __future__ import absolute_import
 import os
 from autopkglib import Processor, ProcessorError
 
@@ -45,7 +46,7 @@ class FileMode(Processor):
             try:
                 os.chmod(self.env['file_path'], int(self.env['file_mode'], 8))
                 self.output("Set permissions on file at %s" % self.env['file_path'])
-            except BaseException, err:
+            except BaseException as err:
                 raise ProcessorError(
                     "Can't set mode of %s to %s: %s"
                     % (self.env['file_path'], self.env['file_mode'], err))

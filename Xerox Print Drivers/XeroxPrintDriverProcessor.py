@@ -14,6 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from __future__ import absolute_import
+from __future__ import print_function
 import re
 import json
 import requests # Use requests if available
@@ -91,8 +93,8 @@ class XeroxPrintDriverProcessor(Processor):
                         response = subprocess.check_output(curl_cmd, shell=True)
                         return response
                     except subprocess.CalledProcessError as error:
-                        print('Return code:  {}'.format(error.returncode))
-                        print('Result:  {}'.format(error))
+                        print(('Return code:  {}'.format(error.returncode)))
+                        print(('Result:  {}'.format(error)))
 
 
         # Define variables

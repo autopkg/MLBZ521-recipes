@@ -14,6 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from __future__ import absolute_import
+from __future__ import print_function
 import os
 import shutil
 import subprocess
@@ -67,8 +69,8 @@ class SolsticeProcessor(Processor):
             try:
                 process = subprocess.Popen(command)
             except subprocess.CalledProcessError as error:
-                print ('return code = ', error.returncode)
-                print ('result = ', error)  
+                print(('return code = ', error.returncode))
+                print(('result = ', error))  
 
             return process
 

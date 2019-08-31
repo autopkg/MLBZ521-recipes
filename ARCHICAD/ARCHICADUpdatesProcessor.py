@@ -14,6 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from __future__ import absolute_import
+from __future__ import print_function
 import json
 import requests
 import subprocess
@@ -78,8 +80,8 @@ class ARCHICADUpdatesProcessor(Processor):
                 response = subprocess.check_output(curl_cmd)
                 json_data = json.loads(response)
             except subprocess.CalledProcessError as error:
-                print ('return code = ', error.returncode)
-                print ('result = ', error)  
+                print(('return code = ', error.returncode))
+                print(('result = ', error))  
 
         # Parse through the available downloads for versions that match the requested paramters.
         for json_Object in json_data:

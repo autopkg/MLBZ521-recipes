@@ -14,18 +14,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from __future__ import absolute_import
-from __future__ import print_function
-import re
+from __future__ import absolute_import, print_function
+
 import json
-import requests # Use requests if available
+import re
+import subprocess
+import sys
+
+import requests  # Use requests if available
+
+from autopkglib import Processor, ProcessorError
+
 try:
     from urllib import request as urllib  # For Python 3
 except ImportError:
     import urllib  # For Python 2
-import subprocess
-import sys
-from autopkglib import Processor, ProcessorError
 
 __all__ = ["XeroxPrintDriverProcessor"]
 

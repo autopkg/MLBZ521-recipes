@@ -14,17 +14,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from __future__ import absolute_import
-from __future__ import print_function
-import requests # Use requests if available
+from __future__ import absolute_import, print_function
+
+import subprocess
+import sys
+import xml.etree.ElementTree as ET
+
+import requests  # Use requests if available
+
+from autopkglib import Processor, ProcessorError
+
 try:
     from urllib import request as urllib  # For Python 3
 except ImportError:
     import urllib  # For Python 2
-import subprocess
-import sys
-import xml.etree.ElementTree as ET
-from autopkglib import Processor, ProcessorError
 
 __all__ = ["MaplePatchProcessor"]
 

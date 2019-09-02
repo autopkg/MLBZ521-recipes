@@ -26,9 +26,9 @@ import requests  # Use requests if available
 from autopkglib import Processor, ProcessorError
 
 try:
-    from urllib import request as urllib  # For Python 3
+    from urllib.request import urlopen  # For Python 3
 except ImportError:
-    import urllib  # For Python 2
+    from urllib2 import urlopen  # For Python 2
 
 __all__ = ["XeroxPrintDriverProcessor"]
 
@@ -84,7 +84,7 @@ class XeroxPrintDriverProcessor(Processor):
                 sys.exc_clear()
 
                 try:
-                    response = urllib.urlopen(url)
+                    response = urlopen(url)
                     return response.read()
                 except BaseException:
                     # If still fails (running on macOS 10.12 or older), resort to using curl

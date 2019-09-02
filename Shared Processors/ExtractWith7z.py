@@ -19,7 +19,7 @@
 from __future__ import absolute_import
 
 import os
-import shutil
+from shutil import rmtree
 import subprocess
 
 from autopkglib import Processor, ProcessorError
@@ -89,7 +89,7 @@ class ExtractWith7z(Processor):
                 path = os.path.join(destination_path, entry)
                 try:
                     if os.path.isdir(path) and not os.path.islink(path):
-                        shutil.rmtree(path)
+                        rmtree(path)
                     else:
                         os.unlink(path)
                 except OSError as err:
@@ -118,7 +118,7 @@ class ExtractWith7z(Processor):
                     (_, stderr) = result.communicate()
                 except subprocess.CalledProcessError as error:
                     raise ProcessorError('{binary} execution failed with error code {error_code}:  \n{error}'.format(binary=os.path.basename(cmd[0]), error_code=error.returncode, error=error))
-                
+
                 if result.returncode != 0:
                     raise ProcessorError("Extracting {archive_path} with {binary} failed with:  {error}".format(archive_path=archive_path, binary=os.path.basename(cmd[0]), error=stderr))
 
@@ -126,7 +126,7 @@ class ExtractWith7z(Processor):
 
                 found_binary = '0'
                 break
-            
+
         if found_binary != '0':
             raise ProcessorError("ERROR:  Unable to locate a 7z compatible binary!")
 

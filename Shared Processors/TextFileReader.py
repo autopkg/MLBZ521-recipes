@@ -16,10 +16,12 @@
 # limitations under the License.
 
 from __future__ import absolute_import
-import re
+
 import os.path
-from autopkglib.DmgMounter import DmgMounter
+import re
+
 from autopkglib import Processor, ProcessorError
+from autopkglib.DmgMounter import DmgMounter
 
 __all__ = ["TextFileReader"]
 

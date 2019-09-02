@@ -17,14 +17,17 @@
 # limitations under the License.
 
 from __future__ import absolute_import
+
 import os
 import shutil
 import subprocess
+
+from autopkglib import Processor, ProcessorError
+
 try:
     from shutil import which as find_binary # For Python 3
 except ImportError:
     from distutils.spawn import find_executable as find_binary # For Python 2
-from autopkglib import Processor, ProcessorError
 
 __all__ = ["ExtractWith7z"]
 

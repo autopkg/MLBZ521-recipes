@@ -49,7 +49,7 @@ class JVMVersioner(Processor):
 
         try:
             plist_contents = plist_Reader(plist)
-        except Exception:
+        except BaseException:
             raise ProcessorError('Unable to locate the specified plist file.')
 
         # Get the latest version.

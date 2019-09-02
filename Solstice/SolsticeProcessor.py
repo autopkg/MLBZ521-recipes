@@ -102,7 +102,7 @@ class SolsticeProcessor(Processor):
         # Get the contents of the plist file.
         try:
             plist_contents = plist_Reader(plist)
-        except Exception:
+        except BaseException:
             raise ProcessorError('Unable to locate the specified plist file.')
 
         # Get the version and bundle id

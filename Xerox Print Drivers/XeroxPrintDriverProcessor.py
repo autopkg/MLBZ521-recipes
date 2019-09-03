@@ -86,7 +86,7 @@ class XeroxPrintDriverProcessor(Processor):
                 try:
                     response = urlopen(url)
                     return response.read()
-                except BaseException:
+                except Exception:
                     # If still fails (running on macOS 10.12 or older), resort to using curl
                     sys.exc_clear()
 

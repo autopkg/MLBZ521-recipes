@@ -84,13 +84,13 @@ class TextFileReader(DmgMounter):
                     self.env["match"] = match
                     self.output("match: {}".format(self.env["match"]))
 
-            except BaseException as err:
+            except Exception as err:
                 raise ProcessorError("Unable to find a match based on the parameters provided.")
 
             finally:
                 self.unmount(dmg_path)
 
-        except BaseException as err:
+        except Exception as err:
             raise ProcessorError("Unable to find a dmg, error: %s" % err)
 
 if __name__ == "__main__":

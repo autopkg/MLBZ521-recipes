@@ -7,7 +7,7 @@
 
 Configure Zoom for your organization with the CONFIG_PLIST Key.</string>
 	<key>Identifier</key>
-	<string>com.github..mlbz521.pkg.ZoomUS-ForIT</string>
+	<string>com.github.mlbz521.pkg.ZoomUS-ForIT</string>
 	<key>Input</key>
 	<dict>
 		<key>NAME</key>

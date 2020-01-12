@@ -14,24 +14,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from __future__ import absolute_import, print_function
-
-import subprocess
-import sys
 import xml.etree.ElementTree as ET
-
-import requests  # Use requests if available
-
-from autopkglib import Processor, ProcessorError
-
-try:
-    from urllib.request import urlopen  # For Python 3
-except ImportError:
-    from urllib2 import urlopen  # For Python 2
+from autopkglib import Processor, ProcessorError, URLGetter
 
 __all__ = ["MaplePatchProcessor"]
 
-class MaplePatchProcessor(Processor):
+class MaplePatchProcessor(URLGetter):
 
     """This processor finds the URL for the desired Xerox print driver version.
     """
@@ -54,36 +42,6 @@ class MaplePatchProcessor(Processor):
     description = __doc__
 
     def main(self):
-
-        def webContent(url):
-            """A helper function for getting the contents of a web page.
-            Args:
-                url:  The url of the web page.
-            Returns:
-                stdout:  Text content of the web page.
-            """
-            try:
-                response = requests.get(url)
-                return response.content
-            except:
-                sys.exc_clear()
-
-                try:
-                    response = urlopen(url)
-                    return response.read()
-                except Exception:
-                    # If still fails (running on macOS 10.12 or older), resort to using curl
-                    sys.exc_clear()
-
-                    # Build the command.
-                    curl_cmd = '/usr/bin/curl --silent --show-error --no-buffer --fail --speed-time 30 --url "{}"'.format(url)
-                    try:
-                        response = subprocess.check_output(curl_cmd, shell=True)
-                        return response
-                    except subprocess.CalledProcessError as error:
-                        print(('Return code:  {}'.format(error.returncode)))
-                        print(('Result:  {}'.format(error)))
-
 
         # Define variables
         major_version = self.env.get('major_version')
@@ -108,7 +66,7 @@ class MaplePatchProcessor(Processor):
         lookupURL = 'http://update.maplesoft.com/update.php?uuid={uuid}'.format(uuid=uuid)
 
         # Look up the model
-        xml = webContent(lookupURL)
+        xml = self.download(lookupURL)
         # self.output('Results:  \n{}'.format(xml))
 
         if xml:

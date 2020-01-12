@@ -18,22 +18,12 @@ from __future__ import absolute_import, print_function
 
 import json
 import re
-import subprocess
-import sys
 
-import requests  # Use requests if available
-
-from autopkglib import Processor, ProcessorError
-
-try:
-    from urllib.request import urlopen  # For Python 3
-except ImportError:
-    from urllib2 import urlopen  # For Python 2
+from autopkglib import Processor, ProcessorError, URLGetter
 
 __all__ = ["XeroxPrintDriverProcessor"]
 
-class XeroxPrintDriverProcessor(Processor):
-
+class XeroxPrintDriverProcessor(URLGetter):
     """This processor finds the URL for the desired Xerox print driver version.
     """
 
@@ -69,36 +59,7 @@ class XeroxPrintDriverProcessor(Processor):
     description = __doc__
 
     def main(self):
-
-        def webContent(url):
-            """A helper function for getting the contents of a web page.
-            Args:
-                url:  The url of the web page.
-            Returns:
-                stdout:  Text content of the web page.
-            """
-            try:
-                response = requests.get(url)
-                return response.content
-            except:
-                sys.exc_clear()
-
-                try:
-                    response = urlopen(url)
-                    return response.read()
-                except Exception:
-                    # If still fails (running on macOS 10.12 or older), resort to using curl
-                    sys.exc_clear()
-
-                    # Build the command.
-                    curl_cmd = '/usr/bin/curl --silent --show-error --no-buffer --fail --speed-time 30 --url "{}"'.format(url)
-                    try:
-                        response = subprocess.check_output(curl_cmd, shell=True)
-                        return response
-                    except subprocess.CalledProcessError as error:
-                        print(('Return code:  {}'.format(error.returncode)))
-                        print(('Result:  {}'.format(error)))
-
+        """Main process."""
 
         # Define variables
         input_model = self.env.get('model')
@@ -111,7 +72,7 @@ class XeroxPrintDriverProcessor(Processor):
         lookupURL = 'https://www.xerox.com/en-us/d-api/proxy/support-proxy.php?mode=results&search={model}&callback=handleSearchClickResponse'.format(model=model)
 
         # Look up the model
-        dirty_json = webContent(lookupURL)
+        dirty_json = self.download(lookupURL, text=True)
 
         # Clean up results so we can parse as a json object
         dirty_json = re.sub(r'^\/\*\*\/ typeof handleSearchClickResponse === \'function\' && handleSearchClickResponse\(', '', dirty_json)
@@ -128,9 +89,10 @@ class XeroxPrintDriverProcessor(Processor):
         lookupURL2 = 'https://www.support.xerox.com{crumbs}?operatingSystem=macOS{osVersion}'.format(crumbs=downloadsURL, osVersion=osVersion)
 
         # Perform second lookup to get available download types
-        pageContent = webContent(lookupURL2)
+        pageContent = self.download(lookupURL2, text=True)
 
         # Find the download type requested
+        downloadPageURL = None
         for line in pageContent.split('\n'):
             if downloadType in line:
                 downloadPageURL = line.strip()

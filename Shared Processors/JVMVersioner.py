@@ -14,10 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-try:
-    from plistlib import load as plist_Reader  # For Python 3
-except ImportError:
-    from plistlib import readPlist as plist_Reader  # For Python 2
+import plistlib
 from autopkglib import Processor, ProcessorError
 
 __all__ = ["JVMVersioner"]
@@ -47,9 +44,10 @@ class JVMVersioner(Processor):
         plist = self.env.get("plist")
 
         try:
-            plist_contents = plist_Reader(plist)
+            with open(plist, 'rb') as file:
+                plist_contents = plistlib.load(file)
         except Exception:
-            raise ProcessorError('Unable to locate the specified plist file.')
+            raise ProcessorError('Unable to load the specified plist file.')
 
         # Get the latest version.
         jvm_version=plist_contents.get('JavaVM').get('JVMVersion')

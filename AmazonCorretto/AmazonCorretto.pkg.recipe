@@ -14,10 +14,8 @@ Currently available from Amazon are the 8 and 11 JDKs.</string>
         <string>Amazon Corretto JDK</string>
         <key>JDK_MAJOR_VERSION</key>
         <string>8</string>
-        <key>SEARCH_URL</key>
-        <string>https://docs.aws.amazon.com/corretto/latest/corretto-%JDK_MAJOR_VERSION%-ug/downloads-list.html</string>
-        <key>SEARCH_PATTERN</key>
-        <string>(?P&lt;url&gt;https\://[a-zA-Z0-9]+\.cloudfront\.net/[0-9.]+/amazon-corretto-(?P&lt;version&gt;[0-9.]+)-macosx-x64\.tar\.gz)</string>
+        <key>DOWNLOAD_URL</key>
+        <string>https://corretto.aws/downloads/latest/amazon-corretto-%JDK_MAJOR_VERSION%-x64-macos-jdk.tar.gz</string>
     </dict>
     <key>ParentRecipe</key>
     <string>com.github.mlbz521.download.AmazonCorrettoOpenJDK</string>
@@ -83,10 +81,11 @@ Currently available from Amazon are the 8 and 11 JDKs.</string>
             <dict>
                 <key>file_content</key>
                 <string>#!/bin/bash
-JDK_INSTALL_PATH="/Library/Java/JavaVirtualMachines" MKDIR=`which mkdir`
+JDK_INSTALL_PATH="/Library/Java/JavaVirtualMachines"
+MKDIR=$(which mkdir)
 
-if [[ ! -d ${JDK_INSTALL_PATH} ]]; then
-${MKDIR} -p ${JDK_INSTALL_PATH}
+if [[ ! -d "${JDK_INSTALL_PATH}" ]]; then
+"${MKDIR}" -p "${JDK_INSTALL_PATH}"
 fi
 
 exit 0</string>
@@ -135,7 +134,7 @@ exit 0</string>
                     <key>id</key>
                     <string>com.amazon.corretto.%JDK_MAJOR_VERSION%</string>
                     <key>pkgname</key>
-                    <string>%NAME%-%version%</string>
+                    <string>%NAME%-%jvm_version%</string>
                     <key>pkgroot</key>
                     <string>%RECIPE_CACHE_DIR%/pkgroot</string>
                     <key>pkgtype</key>
@@ -143,7 +142,7 @@ exit 0</string>
                     <key>scripts</key>
                     <string>scripts</string>
                     <key>version</key>
-                    <string>%version%</string>
+                    <string>%jvm_version%</string>
                 </dict>
             </dict>
         </dict>

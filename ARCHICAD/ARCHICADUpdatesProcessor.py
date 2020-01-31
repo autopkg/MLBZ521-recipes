@@ -14,16 +14,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from __future__ import absolute_import, print_function
+
 import json
-import requests
-import subprocess
-import sys
-from autopkglib import Processor, ProcessorError
+
+from autopkglib import Processor, ProcessorError, URLGetter
 
 __all__ = ["ARCHICADUpdatesProcessor"]
 
-class ARCHICADUpdatesProcessor(Processor):
-
+class ARCHICADUpdatesProcessor(URLGetter):
     """This processor finds the URL for the desired version, localization, and type of ARCHICAD.
     """
 
@@ -53,6 +52,7 @@ class ARCHICADUpdatesProcessor(Processor):
     description = __doc__
 
     def main(self):
+        """Main process."""
 
         # Define some variables.
         major_version = self.env.get("major_version")
@@ -60,35 +60,18 @@ class ARCHICADUpdatesProcessor(Processor):
         release_type = self.env.get("release_type")
         available_builds = {}
 
-        try:
-            # Grab the available downloads.
-            response = requests.get('https://www.graphisoft.com/downloads/db-v3.json')
-            json_data = response.json()
-        except Exception:
-            # If requests fails (running on macOS 10.12 or older), resort to using curl.
-            sys.exc_clear()
-
-            # Build the command.
-            curl_cmd = ['/usr/bin/curl', '--silent', '--show-error', '--no-buffer', '--fail',
-                        '--speed-time', '30',
-                        '--location',
-                        '--header', 'Accept: application/json'
-                        '--url', 'https://www.graphisoft.com/downloads/db-v3.json']
-            try:
-                response = subprocess.check_output(curl_cmd)
-                json_data = json.loads(response)
-            except subprocess.CalledProcessError as error:
-                print ('return code = ', error.returncode)
-                print ('result = ', error)  
+        # Grab the available downloads.
+        response = self.download('https://www.graphisoft.com/downloads/db-v3.json')
+        json_data = json.loads(response)
 
         # Parse through the available downloads for versions that match the requested paramters.
-        for json_Object in json_data:
-            if json_Object.get('version') == major_version:
-                if json_Object.get('localization') == localization:
-                    if json_Object.get('type') == release_type:
-                        for details in json_Object['downloadLinks']:
-                            if details.get('platform') == 'mac':
-                                available_builds[json_Object.get('build')] = details['url']
+        for json_object in json_data:
+            if all((json_object.get('version') == major_version,
+                    json_object.get('localization') == localization,
+                    json_object.get('type') == release_type)):
+                for details in json_object['downloadLinks']:
+                    if details.get('platform') == 'mac':
+                        available_builds[json_object.get('build')] = details['url']
 
         # Get the latest version.
         build = sorted(available_builds.keys())[-1]
@@ -103,5 +86,5 @@ class ARCHICADUpdatesProcessor(Processor):
             raise ProcessorError("Unable to find a url based on the parameters provided.")
 
 if __name__ == "__main__":
-    processor = ARCHICADUpdatesProcessor()
-    processor.execute_shell()
+    PROCESSOR = ARCHICADUpdatesProcessor()
+    PROCESSOR.execute_shell()

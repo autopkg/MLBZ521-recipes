@@ -24,6 +24,8 @@ The JDK Major Version can be specified using the override variable "JDK_MAJOR_VE
 	<key>GROUP_NAME</key>
 	<string>%NAME%-Testing</string>
 
+    <key>JDK_MAJOR_VERSION</key>
+    <string>8</string>
 	<key>DOWNLOAD_URL</key>
 	<string>https://corretto.aws/downloads/latest/amazon-corretto-%JDK_MAJOR_VERSION%-x64-macos-jdk.tar.gz</string>
 	<key>EXTENSION_ATTRIBUTE</key>

@@ -7,7 +7,7 @@
 
 Configure Zoom for your organization with the CONFIG_PLIST Key.</string>
 	<key>Identifier</key>
-	<string>com.github..mlbz521.pkg.ZoomUS-ForIT</string>
+	<string>com.github.mlbz521.pkg.ZoomUS-ForIT</string>
 	<key>Input</key>
 	<dict>
 		<key>NAME</key>
@@ -47,7 +47,7 @@ Configure Zoom for your organization with the CONFIG_PLIST Key.</string>
 &lt;/plist&gt;</string>
 	</dict>
 	<key>MinimumVersion</key>
-	<string>1.0.1</string>
+	<string>1.1</string>
 	<key>ParentRecipe</key>
 	<string>com.github.mlbz521.download.ZoomUS-ForIT</string>
 	<key>Process</key>
@@ -84,6 +84,12 @@ Configure Zoom for your organization with the CONFIG_PLIST Key.</string>
 				<key>plist_version_key</key>
 				<string>CFBundleShortVersionString</string>
 			</dict>
+		</dict>
+		<dict>
+			<key>Comment</key>
+			<string>The version used by Zoom is in the format "4.5.0 (3261.0825)" which isn't accepted by pkgbuild when building the package. This processor splits the version to just the "4.5.0" part.</string>
+			<key>Processor</key>
+			<string>com.github.homebysix.VersionSplitter/VersionSplitter</string>
 		</dict>
 		<dict>
 			<key>Processor</key>

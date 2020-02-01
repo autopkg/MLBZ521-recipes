@@ -7,7 +7,7 @@
 
 Configure Zoom for your organization with the CONFIG_PLIST Key.</string>
 	<key>Identifier</key>
-	<string>com.github..mlbz521.jss.ZoomUS-ForIT</string>
+	<string>com.github.mlbz521.jss.ZoomUS-ForIT</string>
 	<key>Input</key>
 	<dict>
 		<key>GROUP_TEMPLATE</key>
@@ -70,7 +70,7 @@ Configure Zoom for your organization with the CONFIG_PLIST Key.</string>
 	<key>MinimumVersion</key>
 	<string>0.2.0</string>
 	<key>ParentRecipe</key>
-	<string>com.github..mlbz521.pkg.ZoomUS-ForIT</string>
+	<string>com.github.mlbz521.pkg.ZoomUS-ForIT</string>
 	<key>Process</key>
 	<array>
 		<dict>

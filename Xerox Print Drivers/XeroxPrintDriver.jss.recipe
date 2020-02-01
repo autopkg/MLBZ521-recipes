@@ -34,9 +34,9 @@ OS version:  10_14 (default)</string>
         <key>model</key>
         <string>Workcentre 6515</string>
         <key>downloadType</key>
-        <string>macOS Common Print Driver Installer</string>
+        <string>macOS Common Driver Installer</string>
         <key>osVersion</key>
-        <string>10_14</string>
+        <string>10_15</string>
         <key>NAME</key>
         <string>Xerox %model%</string>
 	</dict>

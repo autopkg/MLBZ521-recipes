@@ -22,6 +22,7 @@ from autopkglib import Processor, ProcessorError, URLGetter
 
 __all__ = ["ARCHICADUpdatesProcessor"]
 
+
 class ARCHICADUpdatesProcessor(URLGetter):
     """This processor finds the URL for the desired version, localization, and type of ARCHICAD.
     """
@@ -38,15 +39,11 @@ class ARCHICADUpdatesProcessor(URLGetter):
         "release_type": {
             "required": True,
             "description": "The release type to look for available patches.",
-        }
+        },
     }
     output_variables = {
-        "url": {
-            "description": "Returns the url to download."
-        },
-        "version": {
-            "description": "Returns the build number as the version."
-        }
+        "url": {"description": "Returns the url to download."},
+        "version": {"description": "Returns the build number as the version."},
     }
 
     description = __doc__
@@ -61,17 +58,24 @@ class ARCHICADUpdatesProcessor(URLGetter):
         available_builds = {}
 
         # Grab the available downloads.
-        response = self.download('https://www.graphisoft.com/downloads/db-v3.json')
+        response = self.download(
+            "https://www.graphisoft.com/downloads/db-v5.json",
+            headers={"Accept": "application/json"},
+        )
         json_data = json.loads(response)
 
         # Parse through the available downloads for versions that match the requested paramters.
         for json_object in json_data:
-            if all((json_object.get('version') == major_version,
-                    json_object.get('localization') == localization,
-                    json_object.get('type') == release_type)):
-                for details in json_object['downloadLinks']:
-                    if details.get('platform') == 'mac':
-                        available_builds[json_object.get('build')] = details['url']
+            if all(
+                (
+                    json_object.get("version") == major_version,
+                    json_object.get("localization") == localization,
+                    json_object.get("type") == release_type,
+                )
+            ):
+                for details in json_object["downloadLinks"]:
+                    if details.get("platform") == "mac":
+                        available_builds[json_object.get("build")] = details["url"]
 
         # Get the latest version.
         build = sorted(available_builds.keys())[-1]
@@ -83,7 +87,10 @@ class ARCHICADUpdatesProcessor(URLGetter):
             self.env["version"] = build
             self.output("version: {}".format(self.env["version"]))
         else:
-            raise ProcessorError("Unable to find a url based on the parameters provided.")
+            raise ProcessorError(
+                "Unable to find a url based on the parameters provided."
+            )
+
 
 if __name__ == "__main__":
     PROCESSOR = ARCHICADUpdatesProcessor()

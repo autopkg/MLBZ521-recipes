@@ -13,7 +13,7 @@ Modified from the original author:  @joshua-d-miller (https://github.com/autopkg
 		<key>NAME</key>
 		<string>Solstice</string>
 		<key>DOWNLOAD_URL</key>
-		<string>http://www.mersive.com/downloads/SolsticeClientMacWeb.zip</string>
+		<string>https://www.mersive.com/downloads/SolsticeClientMacWeb.zip</string>
 	</dict>
 	<key>MinimumVersion</key>
 	<string>1.0.0</string>
@@ -58,7 +58,7 @@ Modified from the original author:  @joshua-d-miller (https://github.com/autopkg
 				<key>input_path</key>
 				<string>%found_filename%</string>
 				<key>requirement</key>
-				<string>identifier "com.mersive.solstice.client" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "63B5A5WDNG"</string>
+				<string>identifier "com.mersive.solstice.clientinstaller" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "63B5A5WDNG"</string>
 			</dict>
 		</dict>
 		<dict>

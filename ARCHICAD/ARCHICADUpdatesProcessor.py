@@ -62,7 +62,7 @@ class ARCHICADUpdatesProcessor(Processor):
 
         try:
             # Grab the available downloads.
-            response = requests.get('https://www.graphisoft.com/downloads/db-v3.json')
+            response = requests.get('https://www.graphisoft.com/downloads/db-v5.json')
             json_data = response.json()
         except Exception:
             # If requests fails (running on macOS 10.12 or older), resort to using curl.

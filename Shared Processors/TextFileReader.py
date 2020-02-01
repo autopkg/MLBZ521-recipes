@@ -58,40 +58,39 @@ class TextFileReader(DmgMounter):
     def main(self):
 
         # Define variables
-        source = self.env.get('source')
+        source = os.path.normpath(self.env["source"])
         file_to_open = self.env.get('file_to_open')
         pattern = self.env.get('pattern')
 
-        # Check if we're trying to copy something inside a dmg.
-        (dmg_path, dmg, dmg_source_path) = self.parsePathForDMG(self.env['source'])
+        # Check whether this is at least a valid path
+        if not os.path.exists(source):
+            raise ProcessorError(f"Path '{source}' doesn't exist!")
 
         try:
-            # Mount dmg and copy path inside.
-            mount_point = self.mount(dmg_path)
+            mount_point = self.mount(source)
+        except Exception:
+            raise ProcessorError("Unable to mount the dmg.")
 
-            # Wrap all other actions in a try/finally so the image is always unmounted.
-            try:            
-                # Open, read, and close file
-                file = open(os.path.join(mount_point, file_to_open), 'r')
-                contents = file.read()
-                file.close()
+        # Wrap in a try/finally so if we mount an image, it will always be unmounted.
+        try:            
+            # Open, read, and close file
+            file = open(os.path.join(mount_point, file_to_open), 'r')
+            contents = file.read()
+            file.close()
+        except Exception:
+            raise ProcessorError(f"Unable to open '{file_to_open}'")
+        finally:
+            self.unmount(source)
 
-                # Look for a match
-                line = re.search(pattern + r'.*', contents)
-                match = re.split(pattern, line.group())[1]
+        try:
+            # Look for a match
+            line = re.search(pattern + r'.*', contents)
+            match = re.split(pattern, line.group())[1]
 
-                if match:
-                    self.env["match"] = match
-                    self.output("match: {}".format(self.env["match"]))
-
-            except Exception as err:
-                raise ProcessorError("Unable to find a match based on the parameters provided.")
-
-            finally:
-                self.unmount(dmg_path)
-
-        except Exception as err:
-            raise ProcessorError("Unable to find a dmg, error: %s" % err)
+            self.env["match"] = match
+            self.output("match: {}".format(self.env["match"]))
+        except Exception:
+            raise ProcessorError("Unable to find a match based on the pattern provided.")
 
 if __name__ == "__main__":
     processor = TextFileReader()

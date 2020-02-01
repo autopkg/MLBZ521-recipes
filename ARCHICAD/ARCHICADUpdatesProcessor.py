@@ -73,7 +73,7 @@ class ARCHICADUpdatesProcessor(Processor):
                         '--speed-time', '30',
                         '--location',
                         '--header', 'Accept: application/json'
-                        '--url', 'https://www.graphisoft.com/downloads/db-v3.json']
+                        '--url', 'https://www.graphisoft.com/downloads/db-v5.json']
             try:
                 response = subprocess.check_output(curl_cmd)
                 json_data = json.loads(response)

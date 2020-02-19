@@ -134,7 +134,7 @@ exit 0</string>
                     <key>id</key>
                     <string>com.amazon.corretto.%JDK_MAJOR_VERSION%</string>
                     <key>pkgname</key>
-                    <string>%NAME%-%jvm_version%</string>
+                    <string>%NAME%-%version%</string>
                     <key>pkgroot</key>
                     <string>%RECIPE_CACHE_DIR%/pkgroot</string>
                     <key>pkgtype</key>
@@ -142,7 +142,7 @@ exit 0</string>
                     <key>scripts</key>
                     <string>scripts</string>
                     <key>version</key>
-                    <string>%jvm_version%</string>
+                    <string>%version%</string>
                 </dict>
             </dict>
         </dict>

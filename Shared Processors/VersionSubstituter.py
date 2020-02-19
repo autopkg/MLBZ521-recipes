@@ -18,8 +18,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from autopkglib import Processor, ProcessorError
+from __future__ import absolute_import
 
+from autopkglib import Processor, ProcessorError
 
 __all__ = ["VersionSubstituter"]
 

@@ -15,10 +15,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import re
+from __future__ import absolute_import
+
 import os.path
-from autopkglib.DmgMounter import DmgMounter
+import re
+
 from autopkglib import Processor, ProcessorError
+from autopkglib.DmgMounter import DmgMounter
 
 __all__ = ["TextFileReader"]
 
@@ -81,13 +84,13 @@ class TextFileReader(DmgMounter):
                     self.env["match"] = match
                     self.output("match: {}".format(self.env["match"]))
 
-            except BaseException as err:
+            except Exception as err:
                 raise ProcessorError("Unable to find a match based on the parameters provided.")
 
             finally:
                 self.unmount(dmg_path)
 
-        except BaseException as err:
+        except Exception as err:
             raise ProcessorError("Unable to find a dmg, error: %s" % err)
 
 if __name__ == "__main__":

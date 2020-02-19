@@ -14,11 +14,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from __future__ import absolute_import
+
+from autopkglib import Processor, ProcessorError
+
 try:
     from plistlib import load as plist_Reader  # For Python 3
 except ImportError:
     from plistlib import readPlist as plist_Reader  # For Python 2
-from autopkglib import Processor, ProcessorError
 
 __all__ = ["JVMVersioner"]
 

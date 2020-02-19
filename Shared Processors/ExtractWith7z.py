@@ -19,15 +19,10 @@
 from __future__ import absolute_import
 
 import os
-from shutil import rmtree
+import shutil
 import subprocess
 
 from autopkglib import Processor, ProcessorError
-
-try:
-    from shutil import which as find_binary # For Python 3
-except ImportError:
-    from distutils.spawn import find_executable as find_binary # For Python 2
 
 __all__ = ["ExtractWith7z"]
 
@@ -38,9 +33,8 @@ class ExtractWith7z(Processor):
     input_variables = {
         "archive_path": {
             "required": False,
-            "description": "Path to an archive. Defaults to contents of the "
-                           "'pathname' variable, for example as is set by "
-                           "URLDownloader."
+            "description": "Path to an archive. Defaults to contents of the 'pathname'"
+                            "variable, for example as is set by URLDownloader."
         },
         "destination_path": {
             "required": False,
@@ -67,7 +61,6 @@ class ExtractWith7z(Processor):
 
     description = __doc__
 
-
     def main(self):
 
         # Define variables
@@ -89,7 +82,7 @@ class ExtractWith7z(Processor):
                 path = os.path.join(destination_path, entry)
                 try:
                     if os.path.isdir(path) and not os.path.islink(path):
-                        rmtree(path)
+                        shutil.rmtree(path)
                     else:
                         os.unlink(path)
                 except OSError as err:
@@ -108,10 +101,12 @@ class ExtractWith7z(Processor):
 
         # Loop through each binary and check if it exists
         for binary in binary_7z:
-            if find_binary(binary):
+            path = shutil.which(binary)
+
+            if path != None:
                 # Binary must exist, so build the command to run it
-                self.output("Using the {filename} binary at the following path:  {path}".format(filename=os.path.basename(binary), path=os.path.dirname(binary)))
-                cmd = ['{binary}'.format(binary=binary), 'x', '{archive_path}'.format(archive_path=archive_path), '-o{destination_path}'.format(destination_path=destination_path)]
+                self.output("Using the following binary:  {path}".format(path=path))
+                cmd = ['{binary}'.format(binary=path), 'x', '{archive_path}'.format(archive_path=archive_path), '-o{destination_path}'.format(destination_path=destination_path)]
 
                 try:
                     result = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)

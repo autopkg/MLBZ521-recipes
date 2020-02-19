@@ -65,7 +65,7 @@ class VersionSubstituter(Processor):
         old = self.env.get("old", "-")
         new = self.env.get("new")
         index = self.env.get("index", 1)
-        self.env["version"] = self.env["version"].decode('utf-8').replace(old, new, index)
+        self.env["version"] = self.env["version"].replace(old, new, index)
         self.output("Substitute version: {}".format(self.env["version"]))
 
 

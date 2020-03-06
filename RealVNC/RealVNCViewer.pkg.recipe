@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Identifier</key>
+	<string>com.github.mlbz521.pkg.RealVNCViewer</string>
+	<key>Input</key>
+	<dict>
+		<key>NAME</key>
+		<string>RealVNCViewer</string>
+	</dict>
+	<key>ParentRecipe</key>
+	<string>com.github.foigus.download.RealVNCViewer</string>
+	<key>Process</key>
+	<array>
+		<dict>
+			<key>Processor</key>
+			<string>PkgRootCreator</string>
+			<key>Arguments</key>
+			<dict>
+				<key>pkgroot</key>
+				<string>%RECIPE_CACHE_DIR%/pkgroot</string>
+				<key>pkgdirs</key>
+				<dict>
+					<key>Applications</key>
+					<string>0775</string>
+				</dict>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>Copier</string>
+			<key>Arguments</key>
+			<dict>
+				<key>source_path</key>
+				<string>%pathname%/VNC Viewer.app</string>
+				<key>destination_path</key>
+				<string>%pkgroot%/Applications/VNC Viewer.app</string>
+			</dict>
+		</dict>
+        <dict>
+            <key>Processor</key>
+            <string>com.github.mlbz521.SharedProcessors/CFBundleInfo</string>
+			<key>Comment</key>
+			<string>This may be hacky, but I'm doing it to be able to retain the "version" (ShortVersionString) that will be reported in Jamf Pro.  The ShortVersionString format is '6.20.113 (r42303)' which isn't accepted by pkgbuild when building the package.  So return a version string that will be accepted along with the original.</string>
+            <key>Arguments</key>
+            <dict>
+                <key>input_plist_path</key>
+				<string>%pkgroot%/Applications/VNC Viewer.app/Contents/Info.plist</string>
+            </dict>
+        </dict>
+		<dict>
+			<key>Processor</key>
+			<string>PkgCreator</string>
+			<key>Arguments</key>
+			<dict>
+				<key>pkg_request</key>
+				<dict>
+					<key>pkgname</key>
+					<string>%NAME%-%cfbundle_version%</string>
+					<key>version</key>
+					<string>%cfbundle_version%</string>
+					<key>id</key>
+					<string>%cfbundlebundle_identifier%</string>
+					<key>options</key>
+					<string>purge_ds_store</string>
+					<key>chown</key>
+					<array>
+						<dict>
+							<key>path</key>
+							<string>Applications</string>
+							<key>user</key>
+							<string>root</string>
+							<key>group</key>
+							<string>admin</string>
+						</dict>
+					</array>
+				</dict>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>PathDeleter</string>
+			<key>Arguments</key>
+			<dict>
+				<key>path_list</key>
+				<array>
+					<string>%RECIPE_CACHE_DIR%/pkgroot</string>
+				</array>
+			</dict>
+		</dict>
+	</array>
+</dict>
+</plist>

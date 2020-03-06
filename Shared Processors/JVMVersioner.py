@@ -13,8 +13,11 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+try:
+    from plistlib import load as plist_Reader  # For Python 3
+except ImportError:
+    from plistlib import readPlist as plist_Reader  # For Python 2
 
-import plistlib
 from autopkglib import Processor, ProcessorError
 
 __all__ = ["JVMVersioner"]
@@ -45,7 +48,7 @@ class JVMVersioner(Processor):
 
         try:
             with open(plist, 'rb') as file:
-                plist_contents = plistlib.load(file)
+                plist_contents = plist_Reader(file)
         except Exception:
             raise ProcessorError('Unable to load the specified plist file.')
 

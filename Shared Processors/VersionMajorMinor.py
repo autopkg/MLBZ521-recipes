@@ -49,9 +49,9 @@ class VersionMajorMinor(Processor):
 
     def main(self):
 
-        major_Minor_Version = re.search(r"\d[.]\d", self.env["version"])
-        self.env["major_minor_Version"] = major_Minor_Version.group()
-        self.output("Major.Minor Version: {}".format(self.env["major_minor_Version"]))
+        major_minor_version = re.search(r"\d[.]\d", self.env["version"])
+        self.env["major_minor_version"] = major_minor_version.group()
+        self.output("Major.Minor Version: {}".format(self.env["major_minor_version"]))
 
 if __name__ == "__main__":
     processor = VersionMajorMinor()

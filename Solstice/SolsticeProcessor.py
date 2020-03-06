@@ -103,7 +103,8 @@ class SolsticeProcessor(Processor):
 
         # Get the contents of the plist file.
         try:
-            plist_contents = plist_Reader(plist)
+            with open(plist, 'rb') as file:
+                plist_contents = plist_Reader(file)
         except Exception:
             raise ProcessorError('Unable to locate the specified plist file.')
 

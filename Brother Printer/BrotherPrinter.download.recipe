@@ -13,6 +13,7 @@ How to specify the Model:
  - HL-L9310CDW = hll9310cdw
 
 Specify which OS Version:
+ - Catalina = 10060
  - Mojave = 10052
  - High Sierra = 10045
  - Sierra = 10030
@@ -38,7 +39,7 @@ This probably isn't the best way to do it, but it works...</string>
 		<key>TYPE_REQUEST</key>
 		<string>583</string>
 		<key>OS_VERSION</key>
-		<string>10052</string>
+		<string>10060</string>
 		<key>COUNTRY</key>
 		<string>us</string>
 		<key>LANGUAGE</key>

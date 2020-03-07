@@ -13,6 +13,7 @@ How to specify the Model:
  - HL-L9310CDW = hll9310cdw
 
 Specify which OS Version:
+ - Catalina = 10060
  - Mojave = 10052
  - High Sierra = 10045
  - Sierra = 10030
@@ -33,26 +34,6 @@ This probably isn't the best way to do it, but it works...</string>
 	<dict>
 		<key>NAME</key>
 		<string>Brother Printer</string>
-		<key>MODEL</key>
-		<string>mfcj6935dw</string>
-		<key>TYPE_REQUEST</key>
-		<string>583</string>
-		<key>OS_VERSION</key>
-		<string>10052</string>
-		<key>COUNTRY</key>
-		<string>us</string>
-		<key>LANGUAGE</key>
-		<string>en</string>
-		<key>BASE_URL</key>
-		<string>https://support.brother.com</string>
-		<key>SEARCH_URL</key>
-		<string>%BASE_URL%/g/b/productlist.aspx?c=us&amp;lang=en&amp;content=dl&amp;q=%MODEL%</string>
-		<key>SEARCH_PATTERN_1</key>
-		<string>&lt;input id="DLList_URL" type="hidden" value="(?P&lt;url&gt;/g/b/downloadlist\.aspx\?c=%COUNTRY%&amp;lang=%LANGUAGE%&amp;prod=(?P&lt;prod_model&gt;[a-z0-9_]+))"&gt;</string>
-		<key>SEARCH_PATTERN_2</key>
-		<string>&lt;dt&gt;Version (?P&lt;version&gt;.*)&lt;/dt&gt;&lt;dd&gt;</string>
-		<key>SEARCH_PATTERN_3</key>
-		<string>&lt;a id="downloadfile" href="(?P&lt;url&gt;https://download.brother.com/welcome/.*.dmg)"</string>
 	</dict>
 	<key>ParentRecipe</key>
 	<string>com.github.mlbz521.download.BrotherPrinter</string>

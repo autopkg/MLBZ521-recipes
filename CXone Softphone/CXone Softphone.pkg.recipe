@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Description</key>
+	<string>Downloads and packages the latest verison of CXone Softphone from a local file share.</string>
+    <key>Identifier</key>
+    <string>com.github.mlbz521.pkg.CXone Softphone</string>
+    <key>Input</key>
+    <dict>
+        <key>NAME</key>
+        <string>CXone Softphone</string>
+    </dict>
+	<key>ParentRecipe</key>
+	<string>com.github.mlbz521.download.CXone Softphone</string>
+    <key>Process</key>
+    <array>
+		<dict>
+			<key>Processor</key>
+			<string>AppPkgCreator</string>
+			<key>Arguments</key>
+			<dict>
+                <key>app_path</key>
+                <string>%found_filename%/*.app</string>
+                <key>bundleid</key>
+                <string>com.NICE-inContact.CXone-Softphone</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>PathDeleter</string>
+			<key>Arguments</key>
+			<dict>
+				<key>path_list</key>
+				<array>
+					<string>%RECIPE_CACHE_DIR%/unpack</string>
+				</array>
+			</dict>
+		</dict>
+    </array>
+</dict>
+</plist>

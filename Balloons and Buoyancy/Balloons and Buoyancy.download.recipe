@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Description</key>
+    <string>Downloads the latest version of Balloons and Buoyancy.</string>
+    <key>Identifier</key>
+    <string>com.github.mlbz521.download.BalloonsAndBuoyancy</string>
+    <key>Input</key>
+    <dict>
+        <key>NAME</key>
+        <string>Balloons and Buoyancy</string>
+        <key>SEARCH_URL</key>
+        <string>https://phet.colorado.edu/en/simulation/legacy/balloons-and-buoyancy</string>
+        <key>SEARCH_PATTERN</key>
+        <string>&lt;div class="sim-version" itemprop="version softwareVersion"&gt;Version (?P&lt;version&gt;[0-9\.]+)&lt;/div&gt;</string>
+        <key>DOWNLOAD_URL</key>
+        <string>https://phet.colorado.edu/sims/ideal-gas/balloons-and-buoyancy_en.jar</string>
+    </dict>
+    <key>Process</key>
+    <array>
+        <dict>
+            <key>Processor</key>
+            <string>URLTextSearcher</string>
+            <key>Arguments</key>
+            <dict>
+                <key>url</key>
+                <string>%SEARCH_URL%</string>
+                <key>re_pattern</key>
+                <string>%SEARCH_PATTERN%</string>
+            </dict>
+        </dict>
+        <dict>
+            <key>Processor</key>
+            <string>URLDownloader</string>
+            <key>Arguments</key>
+            <dict>
+                <key>url</key>
+                <string>%DOWNLOAD_URL%</string>
+            </dict>
+        </dict>
+        <dict>
+            <key>Processor</key>
+            <string>EndOfCheckPhase</string>
+        </dict>
+    </array>
+</dict>
+</plist>

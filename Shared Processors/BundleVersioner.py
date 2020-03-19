@@ -66,8 +66,7 @@ class BundleVersioner(Processor):
         file_path = os.path.join(self.env["RECIPE_CACHE_DIR"], "unpack")
         version = None
 
-        # cmd_toc = [ '/usr/bin/xar', '-tf', self.env["abspkgpath"] ]
-        cmd_toc = [ '/Users/zthomps3/Downloads/xar', '-tf', self.env["abspkgpath"] ]
+        cmd_toc = [ '/usr/bin/xar', '-tf', self.env["abspkgpath"] ]
         proc = subprocess.Popen(cmd_toc, bufsize=-1, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         (toc, err) = proc.communicate()
 
@@ -87,8 +86,7 @@ class BundleVersioner(Processor):
 
             for toc_entry in [item for item in toc
                               if item.startswith('Distribution')]:
-                # cmd_extract = ['/usr/bin/xar', '-xf', self.env["abspkgpath"], toc_entry, '-C', file_path]
-                cmd_extract = ['/Users/zthomps3/Downloads/xar', '-xf', self.env["abspkgpath"], toc_entry, '-C', file_path]
+                cmd_extract = ['/usr/bin/xar', '-xf', self.env["abspkgpath"], toc_entry, '-C', file_path]
                 _ = subprocess.call(cmd_extract)
 
         else:

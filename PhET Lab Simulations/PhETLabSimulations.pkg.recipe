@@ -27,7 +27,7 @@ Currently supported:
 			<key>Arguments</key>
 			<dict>
 				<key>pkgroot</key>
-				<string>%RECIPE_CACHE_DIR%/pkgroot/Applications/%LAB_SIM%.app</string>
+				<string>%RECIPE_CACHE_DIR%/pkgroot/Applications/Lab Simulations/%LAB_SIM%.app</string>
 				<key>pkgdirs</key>
 				<dict>
 					<key>Contents</key>
@@ -47,7 +47,7 @@ Currently supported:
 				<key>source_path</key>
 				<string>%pathname%</string>
 				<key>destination_path</key>
-				<string>%RECIPE_CACHE_DIR%/pkgroot/Applications/%LAB_SIM%.app/Contents/MacOS/%LAB_SIM%.jar</string>
+				<string>%RECIPE_CACHE_DIR%/pkgroot/Applications/Lab Simulations/%LAB_SIM%.app/Contents/MacOS/%LAB_SIM%.jar</string>
 			</dict>
 		</dict>
         <dict>
@@ -67,7 +67,7 @@ Currently supported:
 				<key>source_path</key>
 				<string>%path_to_found_file%</string>
 				<key>destination_path</key>
-				<string>%RECIPE_CACHE_DIR%/pkgroot/Applications/%LAB_SIM%.app/Contents/Resources/%png_icns_file_name%.icns</string>
+				<string>%RECIPE_CACHE_DIR%/pkgroot/Applications/Lab Simulations/%LAB_SIM%.app/Contents/Resources/%png_icns_file_name%.icns</string>
 			</dict>
 		</dict>
         <dict>
@@ -107,7 +107,7 @@ Currently supported:
                 <key>file_mode</key>
                 <string>0755</string>
                 <key>file_path</key>
-                <string>%RECIPE_CACHE_DIR%/pkgroot/Applications/%LAB_SIM%.app/Contents/Info.plist</string>
+                <string>%RECIPE_CACHE_DIR%/pkgroot/Applications/Lab Simulations/%LAB_SIM%.app/Contents/Info.plist</string>
             </dict>
         </dict>
         <dict>
@@ -128,7 +128,7 @@ java -Xdock:name="%LAB_SIM%" -Xdock:icon="${parentDir}/Resources/%png_icns_file_
                 <key>file_mode</key>
                 <string>0755</string>
                 <key>file_path</key>
-                <string>%RECIPE_CACHE_DIR%/pkgroot/Applications/%LAB_SIM%.app/Contents/MacOS/launcher</string>
+                <string>%RECIPE_CACHE_DIR%/pkgroot/Applications/Lab Simulations/%LAB_SIM%.app/Contents/MacOS/launcher</string>
             </dict>
         </dict>
 		<dict>

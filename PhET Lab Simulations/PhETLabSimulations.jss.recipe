@@ -28,10 +28,6 @@ Currently supported:
         <string>%LAB_SIM%</string>
 		<key>CATEGORY</key>
 		<string>Teaching and Research</string>
-		<key>SELF_SERVICE_DESCRIPTION</key>
-		<string>%lab_description%</string>
-		<key>SELF_SERVICE_ICON</key>
-		<string>/Resources/%png_icns_file_name%.png</string>
     </dict>
 	<key>ParentRecipe</key>
 	<string>com.github.mlbz521.pkg.PhETLabSimulations</string>
@@ -43,7 +39,7 @@ Currently supported:
             <key>Arguments</key>
             <dict>
                 <key>find_file</key>
-                <string>%SELF_SERVICE_ICON%</string>
+				<string>/Resources/%png_icns_file_name%.png</string>
             </dict>
         </dict>
 		<dict>
@@ -62,7 +58,7 @@ Currently supported:
 				<key>policy_template</key>
 				<string>%POLICY_TEMPLATE%</string>
 				<key>self_service_description</key>
-				<string>%SELF_SERVICE_DESCRIPTION%</string>
+				<string>%lab_description%</string>
 				<key>self_service_icon</key>
 				<string>%path_to_found_file%</string>
 				<key>groups</key>

@@ -22,9 +22,9 @@ import os
 from collections import OrderedDict
 from autopkglib import Processor, ProcessorError
 
-__all__ = ["FindFileInSearchPathProcessor"]
+__all__ = ["FindFileInSearchPath"]
 
-class FindFileInSearchPathProcessor(Processor):
+class FindFileInSearchPath(Processor):
 
     """Search search_paths for the first existing instance of path.
     Searches, in order, through the following directories
@@ -128,5 +128,5 @@ class FindFileInSearchPathProcessor(Processor):
 
 
 if __name__ == "__main__":
-    processor = FindFileInSearchPathProcessor()
+    processor = FindFileInSearchPath()
     processor.execute_shell()

@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Description</key>
+	<string>Downloads and packages the latest verison of the Jamf Pro Tools from a local file share for use by Site Admins.
+
+Only the Composer, Jamf Remote, and Recon applications are packaged.  These are the only apps that our Site Admins use, which is what this recipe is written for.
+
+The name of the folder name in /Applications and the package will be named based on the NAME substituion variable.</string>
+    <key>Identifier</key>
+    <string>com.github.mlbz521.pkg.JamfProTools</string>
+    <key>Input</key>
+    <dict>
+        <key>NAME</key>
+        <string>Jamf Pro Tools</string>
+    </dict>
+	<key>ParentRecipe</key>
+	<string>com.github.mlbz521.download.JamfProTools</string>
+    <key>Process</key>
+    <array>
+        <dict>
+            <key>Processor</key>
+            <string>PkgRootCreator</string>
+            <key>Arguments</key>
+            <dict>
+                <key>pkgdirs</key>
+                <dict/>
+                <key>pkgroot</key>
+                <string>%RECIPE_CACHE_DIR%/scripts</string>
+            </dict>
+        </dict>
+		<dict>
+			<key>Processor</key>
+			<string>PkgRootCreator</string>
+			<key>Arguments</key>
+			<dict>
+				<key>pkgroot</key>
+				<string>%RECIPE_CACHE_DIR%/pkgroot</string>
+				<key>pkgdirs</key>
+				<dict>
+					<key>Applications</key>
+					<string>0775</string>
+				</dict>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>Copier</string>
+			<key>Arguments</key>
+			<dict>
+				<key>source_path</key>
+				<string>%found_filename%/Jamf Pro/Composer.app</string>
+				<key>destination_path</key>
+				<string>%pkgroot%/Applications/%NAME%/Composer.app</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>Copier</string>
+			<key>Arguments</key>
+			<dict>
+				<key>source_path</key>
+				<string>%found_filename%/Jamf Pro/Jamf Remote.app</string>
+				<key>destination_path</key>
+				<string>%pkgroot%/Applications/%NAME%/Jamf Remote.app</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>Copier</string>
+			<key>Arguments</key>
+			<dict>
+				<key>source_path</key>
+				<string>%found_filename%/Jamf Pro/Recon.app</string>
+				<key>destination_path</key>
+				<string>%pkgroot%/Applications/%NAME%/Recon.app</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>Copier</string>
+			<key>Arguments</key>
+			<dict>
+				<key>source_path</key>
+				<string>%found_filename%/.VolumeIcon.icns</string>
+				<key>destination_path</key>
+				<string>%RECIPE_CACHE_DIR%/scripts/%NAME%.icns</string>
+			</dict>
+		</dict>
+        <dict>
+            <key>Processor</key>
+            <string>FileCreator</string>
+            <key>Arguments</key>
+            <dict>
+                <key>file_content</key>
+                <string>#!/bin/bash
+
+###################################################################################################
+# Script Name:  uninstall_JamfProTools.sh
+# By:  Zack Thompson / Created:  3/17/2020
+# Version:  1.0.0 / Updated:  3/17/2020 / By:  ZT
+#
+# Description:  This script uninstalls old versions of Jamf Pro Tools.
+#
+###################################################################################################
+
+echo "*****  Uninstall Jamf Pro Tools Process:  START  *****"
+
+
+# Remove existing tools folder
+if [[ -d "/Applications/%NAME%" ]]; then
+	echo "Removing existing Jamf Pro Tools directory..."
+	rm -Rf "/Applications/%NAME%"
+fi
+
+echo "*****  Uninstall Jamf Pro Tools Process:  COMPLETE  *****"
+
+exit 0</string>
+                <key>file_mode</key>
+                <string>0755</string>
+                <key>file_path</key>
+                <string>%RECIPE_CACHE_DIR%/scripts/preinstall</string>
+            </dict>
+        </dict>
+        <dict>
+            <key>Processor</key>
+            <string>FileCreator</string>
+            <key>Arguments</key>
+            <dict>
+                <key>file_content</key>
+                <string>#!/bin/bash
+
+###################################################################################################
+# Script Name:  set_JamfProToolsFolderIcon.sh
+# By:  Zack Thompson / Created:  3/17/2020
+# Version:  1.0.0 / Updated:  3/17/2020 / By:  ZT
+#
+# Description:  This script sets an icon on the Jamf Pro Tools folder.
+#
+###################################################################################################
+
+echo "*****  Set Folder Icon Process:  START  *****"
+
+##################################################
+# Define Variables
+
+# Set working directory
+pkgDir=$( /usr/bin/dirname "${0}" )
+
+##################################################
+# Bits staged...
+
+# Borrowed from:  https://apple.stackexchange.com/questions/6901/how-can-i-change-a-file-or-folder-icon-using-the-terminal/363461#363461
+
+# Create temporary resource file which points to tmpicons.icns:
+echo "read 'icns' (-16455) \"${pkgDir}/%NAME%.icns\";" >> tmpicns.rsrc
+
+# Append a resource to the folder you want to icon-ize.
+Rez -append tmpicns.rsrc -o $'/Applications/%NAME%/Icon\r'
+
+# Use the resource to set the icon.
+SetFile -a C "/Applications/%NAME%/"
+
+# Hide the Icon\r file from Finder.
+SetFile -a V $'/Applications/%NAME%/Icon\r'
+
+# clean up.
+rm tmpicns.rsrc
+
+echo "*****  Set Folder Icon Process:  COMPLETE  *****"
+
+exit 0</string>
+                <key>file_mode</key>
+                <string>0755</string>
+                <key>file_path</key>
+                <string>%RECIPE_CACHE_DIR%/scripts/postinstall</string>
+            </dict>
+        </dict>
+		<dict>
+			<key>Processor</key>
+			<string>PkgCreator</string>
+			<key>Arguments</key>
+			<dict>
+				<key>pkg_request</key>
+				<dict>
+					<key>pkgname</key>
+					<string>%NAME%-%version%</string>
+					<key>version</key>
+					<string>%version%</string>
+					<key>id</key>
+					<string>com.jamfsoftware.jamfprotools</string>
+					<key>scripts</key>
+					<string>Scripts</string>
+					<key>options</key>
+					<string>purge_ds_store</string>
+					<key>chown</key>
+					<array>
+						<dict>
+							<key>path</key>
+							<string>Applications</string>
+							<key>user</key>
+							<string>root</string>
+							<key>group</key>
+							<string>admin</string>
+						</dict>
+					</array>
+				</dict>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>PathDeleter</string>
+			<key>Arguments</key>
+			<dict>
+				<key>path_list</key>
+				<array>
+					<string>%RECIPE_CACHE_DIR%/pkgroot</string>
+					<string>%RECIPE_CACHE_DIR%/Scripts</string>
+				</array>
+			</dict>
+		</dict>
+    </array>
+</dict>
+</plist>

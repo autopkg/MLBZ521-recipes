@@ -5,17 +5,19 @@
     <key>Description</key>
 	<string>Downloads and packages the latest verison of Bomgar Console from a local file share.
 
+You will need to provide your identifier for the CodeSignatureVerifier processor as it is unique to your orgnization.
+
 The name of the bundled application and the package will be named based on the NAME substituion variable.
 (I personally do not desire the giantly long name of the default .app bundle.)</string>
     <key>Identifier</key>
-    <string>com.github.mlbz521.pkg.Bomgar Console</string>
+    <string>com.github.mlbz521.pkg.BomgarConsole</string>
     <key>Input</key>
     <dict>
         <key>NAME</key>
         <string>Bomgar Console</string>
     </dict>
 	<key>ParentRecipe</key>
-	<string>com.github.mlbz521.download.Bomgar Console</string>
+	<string>com.github.mlbz521.download.BomgarConsole</string>
     <key>Process</key>
     <array>
 		<dict>

@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Description</key>
+	<string>Downloads a CrowdStrike Falcon Sensor pkg via CrowdStrike's API and then creates a installation package.
+	
+You must provide a Client ID and Secret along with the Policy ID to determine which senor version to download.
+
+Expects your Customer ID (license ID) so that the pkg recipe can license the Sensor on install.
+	</string>
+	<key>Identifier</key>
+	<string>com.github.mlbz521.pkg.CrowdStrikeFalcon</string>
+	<key>Input</key>
+	<dict>
+		<key>NAME</key>
+		<string>CrowdStrike Falcon</string>
+		<key>LICENSE_ID</key>
+		<string>1234567890ABCDEF1234567890ABCDEF-12</string>
+	</dict>
+	<key>ParentRecipe</key>
+	<string>com.github.mlbz521.download.CrowdStrikeFalcon</string>
+	<key>Process</key>
+	<array>
+        <dict>
+            <key>Processor</key>
+            <string>PkgRootCreator</string>
+            <key>Arguments</key>
+            <dict>
+                <key>pkgdirs</key>
+                <dict/>
+                <key>pkgroot</key>
+                <string>%RECIPE_CACHE_DIR%/pkgroot</string>
+            </dict>
+        </dict>
+        <dict>
+            <key>Processor</key>
+            <string>PkgRootCreator</string>
+            <key>Arguments</key>
+            <dict>
+                <key>pkgdirs</key>
+                <dict/>
+                <key>pkgroot</key>
+                <string>%RECIPE_CACHE_DIR%/scripts</string>
+            </dict>
+        </dict> 
+		<dict>
+			<key>Processor</key>
+			<string>Copier</string>
+			<key>Arguments</key>
+			<dict>
+				<key>source_path</key>
+				<string>%pathname%</string>
+				<key>destination_path</key>
+				<string>%RECIPE_CACHE_DIR%/scripts/</string>
+			</dict>
+		</dict>
+        <dict>
+            <key>Processor</key>
+            <string>FileCreator</string>
+            <key>Arguments</key>
+            <dict>
+                <key>file_content</key>
+                <string>#!/bin/bash
+
+###################################################################################################
+# Script Name:  install_CrowdStrike.sh
+# By:  Zack Thompson / Created:  1/8/2019
+# Version:  1.0.0 / Updated:  1/8/2019 / By:  ZT
+#
+# Description:  This script installs and licenes CrowdStrike.
+#
+###################################################################################################
+
+echo "*****  Install CrowdStrike Process:  START  *****"
+
+##################################################
+# Define Variables
+
+# Unique customer ID checksum (CID)
+licenseID="%LICENSE_ID%"
+# Set working directory
+pkgDir=$(/usr/bin/dirname "${0}")
+# Get the filename of the .pkg file
+CrowdStrikePKG=$( /bin/ls "${pkgDir}" | /usr/bin/grep .pkg )
+
+##################################################
+# Bits staged...
+
+# Install CrowdStrike
+echo "Installing ${CrowdStrikePKG}..."
+/usr/sbin/installer -dumplog -verbose -pkg "${pkgDir}/${CrowdStrikePKG}" -target /
+exitCode=$?
+/bin/sleep 2
+
+if [[ $exitCode == 0 ]]; then
+	# Apply License
+	echo "Applying License..."
+	exitStatus=$( /Library/CS/falconctl license $licenseID 2&gt;&amp;1 )
+	exitCode=$?
+
+	if [[ $exitCode == 0 ]]; then
+		echo "License applied successfully!"
+	elif [[ $exitStatus == "Error: This machine is already licensed" ]]; then
+		echo "This machine is already licensed!"
+	else
+		echo "ERROR:  License failed to apply!"
+		echo "Exit Code:  ${exitCode}"
+		echo "Exit Status:  ${exitStatus}"
+		echo "*****  Install CrowdStrike process:  FAILED  *****"
+		exit 2
+	fi
+else
+	echo "ERROR:  Install failed!"
+	echo "Exit Code:  ${exitCode}"
+	echo "*****  Install CrowdStrike process:  FAILED  *****"
+	exit 1
+fi
+
+echo "${CrowdStrikePKG} has been installed!"
+echo "*****  Install CrowdStrike Process:  COMPLETE  *****"
+
+exit 0</string>
+                <key>file_mode</key>
+                <string>0755</string>
+                <key>file_path</key>
+                <string>%RECIPE_CACHE_DIR%/scripts/postinstall</string>
+            </dict>
+        </dict>
+		<dict>
+			<key>Processor</key>
+			<string>PkgCreator</string>
+			<key>Arguments</key>
+			<dict>
+				<key>pkg_request</key>
+				<dict>
+					<key>id</key>
+					<string>com.crowdstrike.falcon</string>
+					<key>pkgname</key>
+					<string>%NAME%-%version%</string>
+					<key>pkgroot</key>
+					<string>%RECIPE_CACHE_DIR%/pkgroot</string>
+					<key>pkgtype</key>
+					<string>flat</string>
+					<key>scripts</key>
+					<string>Scripts</string>
+					<key>version</key>
+					<string>%version%</string>
+				</dict>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>PathDeleter</string>
+			<key>Arguments</key>
+			<dict>
+				<key>path_list</key>
+				<array>
+					<string>%RECIPE_CACHE_DIR%/pkgroot</string>
+					<string>%RECIPE_CACHE_DIR%/Scripts</string>
+				</array>
+			</dict>
+		</dict>
+	</array>
+</dict>
+</plist>

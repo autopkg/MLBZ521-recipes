@@ -5,7 +5,7 @@
 	<key>Description</key>
 	<string>Downloads and packages the latest verison of CrowdStrike Falcon from a local file share.</string>
 	<key>Identifier</key>
-	<string>com.github.mlbz521.pkg.CrowdStrikeFalcon</string>
+	<string>com.github.mlbz521.pkg.CrowdStrikeFalconOffline</string>
 	<key>Input</key>
 	<dict>
 		<key>NAME</key>
@@ -14,7 +14,7 @@
 		<string>1234567890ABCDEF1234567890ABCDEF-12</string>
 	</dict>
 	<key>ParentRecipe</key>
-	<string>com.github.mlbz521.download.CrowdStrikeFalcon</string>
+	<string>com.github.mlbz521.download.CrowdStrikeFalconOffline</string>
 	<key>Process</key>
 	<array>
         <dict>

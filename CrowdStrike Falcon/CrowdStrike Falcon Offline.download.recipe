@@ -5,7 +5,7 @@
 	<key>Description</key>
 	<string>Downloads the latest verison of CrowdStrike Falcon from a local file share.</string>
 	<key>Identifier</key>
-	<string>com.github.mlbz521.download.CrowdStrikeFalcon</string>
+	<string>com.github.mlbz521.download.CrowdStrikeFalconOffline</string>
 	<key>Input</key>
 	<dict>
 		<key>NAME</key>

@@ -5,14 +5,14 @@
     <key>Description</key>
 	<string>Downloads and packages the latest verison of CXone Softphone from a local file share.</string>
     <key>Identifier</key>
-    <string>com.github.mlbz521.pkg.CXone Softphone</string>
+    <string>com.github.mlbz521.pkg.CXoneSoftphone</string>
     <key>Input</key>
     <dict>
         <key>NAME</key>
         <string>CXone Softphone</string>
     </dict>
 	<key>ParentRecipe</key>
-	<string>com.github.mlbz521.download.CXone Softphone</string>
+	<string>com.github.mlbz521.download.CXoneSoftphone</string>
     <key>Process</key>
     <array>
 		<dict>

@@ -25,7 +25,7 @@ Because Repondus does silly things by expecting the licencing information in the
         <key>NAME</key>
 		<string>Respondus LockDown Browser Lab Edition</string>
         <key>CATEGORY</key>
-        <string>Communication</string>
+        <string>Browsers</string>
         <key>SELF_SERVICE_DESCRIPTION</key>
         <string>Respondus LockDown Browser is a custom browser that locks down the testing environment within Canvas.  After the LockDown Browser is launched, you will not be able to print, copy, go to another website, or access other applications.
 

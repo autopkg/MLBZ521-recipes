@@ -5,7 +5,7 @@
 	<key>Description</key>
 	<string>Downloads the latest verison of Cisco Jabber from a local file share.</string>
 	<key>Identifier</key>
-	<string>com.github.mlbz521.download.Cisco Jabber</string>
+	<string>com.github.mlbz521.download.CiscoJabber</string>
 	<key>Input</key>
 	<dict>
 		<key>NAME</key>
@@ -19,7 +19,7 @@
 		<key>NAME_EXCEPTION</key>
 		<string>testing</string>
 		<key>FILE_SHARE</key>
-		<string>/Volumes/Transfer$/Jamf Pro</string>
+		<string>/path/to/offline/repository</string>
         <key>VERSION_STRING_SEPARATOR</key>
         <string>-</string>
 		<key>MAX_FOLDER_DEPTH</key>

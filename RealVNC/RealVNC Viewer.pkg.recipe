@@ -7,7 +7,7 @@
 	<key>Input</key>
 	<dict>
 		<key>NAME</key>
-		<string>RealVNCViewer</string>
+		<string>RealVNC Viewer</string>
 	</dict>
 	<key>ParentRecipe</key>
 	<string>com.github.foigus.download.RealVNCViewer</string>

@@ -13,11 +13,11 @@
 		<key>SEARCH_STRING</key>
 		<string>JMP</string>
 		<key>MAJOR_VERSION</key>
-		<string>15</string>
+		<string></string>
 		<key>NAME_LIMITATION</key>
 		<string></string>
 		<key>NAME_EXCEPTION</key>
-		<string>Pro</string>
+		<string></string>
 		<key>FILE_SHARE</key>
 		<string>/path/to/offline/repository</string>
         <key>VERSION_STRING_SEPARATOR</key>

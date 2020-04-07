@@ -17,7 +17,7 @@ So....that said...That means only one user on any system can actually use this a
 		<key>POLICY_TEMPLATE</key>
 		<string>PolicyTemplate.xml</string>
 		<key>POLICY_CATEGORY</key>
-		<string>%CATEGORY%</string>
+		<string>Testing</string>
 		<key>package_notes</key>
 		<string>Product of AutoPkg</string>
 
@@ -27,7 +27,7 @@ So....that said...That means only one user on any system can actually use this a
         <key>NAME</key>
         <string>Screencast-O-Matic</string>
 		<key>CATEGORY</key>
-		<string>Testing</string>
+		<string>Utilities</string>
 		<key>SELF_SERVICE_DESCRIPTION</key>
 		<string>Screencast-O-Matic is a screen capture tool.  This tool records a designated area of your screen as well as audio and webcam input.  You can use this tool to record narrated presentations or demonstrations and produce the recordings as videos for your courses.
 

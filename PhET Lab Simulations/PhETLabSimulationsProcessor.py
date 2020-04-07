@@ -64,7 +64,7 @@ class PhETLabSimulationsProcessor(Processor):
             download_url = 'https://phet.colorado.edu/sims/ideal-gas/balloons-and-buoyancy_en.jar'
             bundle_id_string = "balloons-and-buoyancy"
             png_icns_file_name = "BalloonsAndBuoyancy"
-            lab_description = "Experiment with a helium balloon, a hot air balloon, or a rigid sphere filled with different gases.  Discover what makes some balloons float and others sink.\nSample Learning Goals\n* Determine what causes the the balloon, rigid sphere, and helium balloon to rise up or fall down in the box.\n* Predict how changing a variable among P, V, T, and number influences the motion of the balloons."
+            lab_description = "Experiment with a helium balloon, a hot air balloon, or a rigid sphere filled with different gases.  Discover what makes some balloons float and others sink.\n\nSample Learning Goals:\n* Determine what causes the the balloon, rigid sphere, and helium balloon to rise up or fall down in the box.\n* Predict how changing a variable among P, V, T, and number influences the motion of the balloons."
 
         # elif lab_sim == "":
         #     version_url = ''

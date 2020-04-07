@@ -5,7 +5,7 @@
 	<key>Description</key>
 	<string>Downloads the latest verison of CXone Softphone from a local file share.</string>
 	<key>Identifier</key>
-	<string>com.github.mlbz521.download.CXone Softphone</string>
+	<string>com.github.mlbz521.download.CXoneSoftphone</string>
 	<key>Input</key>
 	<dict>
 		<key>NAME</key>

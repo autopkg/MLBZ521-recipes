@@ -5,14 +5,14 @@
 	<key>Description</key>
 	<string>Downloads and packages the latest verison of Cisco Jabber from a local file share.</string>
 	<key>Identifier</key>
-	<string>com.github.mlbz521.pkg.Cisco Jabber</string>
+	<string>com.github.mlbz521.pkg.CiscoJabber</string>
 	<key>Input</key>
 	<dict>
 		<key>NAME</key>
 		<string>Cisco Jabber</string>
 	</dict>
 	<key>ParentRecipe</key>
-	<string>com.github.mlbz521.download.Cisco Jabber</string>
+	<string>com.github.mlbz521.download.CiscoJabber</string>
 	<key>Process</key>
 	<array>
 		<dict>

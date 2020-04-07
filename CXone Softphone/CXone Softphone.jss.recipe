@@ -5,32 +5,32 @@
 	<key>Description</key>
 	<string>Downloads and packages the latest verison of CXone Softphone from a local file share and then uploads it to a JPS.</string>
 	<key>Identifier</key>
-	<string>com.github.mlbz521.jss.CXone Softphone</string>
+	<string>com.github.mlbz521.jss.CXoneSoftphone</string>
 	<key>Input</key>
 	<dict>
-	<key>GROUP_TEMPLATE</key>
-	<string>SmartGroupTemplate.xml</string>
-	<key>POLICY_TEMPLATE</key>
-	<string>PolicyTemplate.xml</string>
-	<key>POLICY_CATEGORY</key>
-	<string>Testing</string>
-	<key>package_notes</key>
-	<string>Product of AutoPkg</string>
-	<key>GROUP_NAME</key>
-	<string>%NAME%-Testing</string>
-	<key>NAME</key>
-	<string>CXone Softphone</string>
-	<key>CATEGORY</key>
-	<string>Communication</string>
-	<key>SELF_SERVICE_DESCRIPTION</key>
-	<string>CXone Softphone that enables you to place and receive Voice over IP (VoIP) softphone calls on your computer with a headset rather than with a traditional physical telephone.
+		<key>GROUP_TEMPLATE</key>
+		<string>SmartGroupTemplate.xml</string>
+		<key>POLICY_TEMPLATE</key>
+		<string>PolicyTemplate.xml</string>
+		<key>POLICY_CATEGORY</key>
+		<string>Testing</string>
+		<key>package_notes</key>
+		<string>Product of AutoPkg</string>
+		<key>GROUP_NAME</key>
+		<string>%NAME%-Testing</string>
+		<key>NAME</key>
+		<string>CXone Softphone</string>
+		<key>CATEGORY</key>
+		<string>Communication</string>
+		<key>SELF_SERVICE_DESCRIPTION</key>
+		<string>CXone Softphone that enables you to place and receive Voice over IP (VoIP) softphone calls on your computer with a headset rather than with a traditional physical telephone.
 
-This requires that a username, password, and license key be provisioned to you before use.</string>
-	<key>SELF_SERVICE_ICON</key>
-	<string>CXone Softphone.png</string>
+	This requires that a username, password, and license key be provisioned to you before use.</string>
+		<key>SELF_SERVICE_ICON</key>
+		<string>CXone Softphone.png</string>
 	</dict>
 	<key>ParentRecipe</key>
-	<string>com.github.mlbz521.pkg.CXone Softphone</string>
+	<string>com.github.mlbz521.pkg.CXoneSoftphone</string>
 	<key>Process</key>
 	<array>
 		<dict>

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-# Copyright 2019 Zack T (mlbz521)
+# Copyright 2019 Zack Thompson (mlbz521)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -21,8 +21,8 @@ __all__ = ["MaplePatchProcessor"]
 
 class MaplePatchProcessor(URLGetter):
 
-    """This processor finds the URL for the desired Xerox print driver version.
-    """
+    """This processor finds the URL for the latest patch of the supplied major
+     version of Maple."""
 
     input_variables = {
         "major_version": {

@@ -15,7 +15,7 @@ Specify major version as:  '2019', '2018', '2017', or 2016</string>
 		<key>POLICY_TEMPLATE</key>
 		<string>PolicyTemplate.xml</string>
 		<key>POLICY_CATEGORY</key>
-		<string>%CATEGORY%</string>
+		<string>Testing</string>
 		<key>package_notes</key>
 		<string>Product of AutoPkg</string>
 		<key>package_priority</key>
@@ -25,7 +25,7 @@ Specify major version as:  '2019', '2018', '2017', or 2016</string>
 		<string>%NAME%-Testing</string>
 
 		<key>CATEGORY</key>
-		<string>Testing</string>
+		<string>Mathematics</string>
 
         <key>MAJOR_VERSION</key>
         <string>2019</string>

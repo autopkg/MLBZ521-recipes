@@ -15,7 +15,7 @@
 		<key>GROUP_NAME</key>
 		<string>%NAME%-Testing</string>
 		<key>NAME</key>
-		<string>RealVNCViewer</string>
+		<string>RealVNC Viewer</string>
 		<key>CATEGORY</key>
 		<string>Utilities</string>
 		<key>DESCRIPTION</key>
@@ -23,7 +23,7 @@
 
 VNC, virtual network computing, is a desktop sharing system that allows you to remotely control another computer.  VNC works by transmitting all of your keyboard and mouse movements from one device to another.</string>
 		<key>ICON</key>
-		<string>RealVNCViewer.png</string>
+		<string>RealVNC Viewer.png</string>
 		<key>os_requirements</key>
 		<string>10.15.x,10.14.x,10.13.x,10.12.x,10.11.x,10.10.x</string>
 	</dict>

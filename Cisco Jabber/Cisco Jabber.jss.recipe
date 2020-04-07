@@ -5,7 +5,7 @@
 	<key>Description</key>
 	<string>Downloads and packages the latest verison of Cisco Jabber from a local file share and then uploads it to a JPS.</string>
 	<key>Identifier</key>
-	<string>com.github.mlbz521.jss.Cisco Jabber</string>
+	<string>com.github.mlbz521.jss.CiscoJabber</string>
 	<key>Input</key>
 	<dict>
 		<key>GROUP_TEMPLATE</key>
@@ -28,7 +28,7 @@
 		<string>Cisco Jabber.png</string>
 	</dict>
 	<key>ParentRecipe</key>
-	<string>com.github.mlbz521.pkg.Cisco Jabber</string>
+	<string>com.github.mlbz521.pkg.CiscoJabber</string>
 	<key>Process</key>
 	<array>
 		<dict>

@@ -5,7 +5,7 @@
 	<key>Identifier</key>
 	<string>com.github.mlbz521.jss.XeroxPrintDriver</string>
 	<key>Description</key>
-    <string>Downloads and packages the latest driver package based on the override-able parameters:  model, download type, and OS Version.
+    <string>Downloads, packages, and uploads the latest driver package into a JPS based on the override-able parameters:  model, download type, and OS Version.
 
 model example:  'Workcentre 6515'
 download types:  macOS Common Print Driver Installer (default), The provided string is searched in the web page.
@@ -20,25 +20,23 @@ OS version:  10_14 (default)</string>
 		<string>%CATEGORY%</string>
 		<key>package_notes</key>
 		<string>Product of AutoPkg</string>
-
 		<key>GROUP_NAME</key>
 		<string>%NAME%-Testing</string>
-
+        <key>NAME</key>
+        <string>Xerox Print Drivers</string>
 		<key>CATEGORY</key>
 		<string>Testing</string>
 		<key>SELF_SERVICE_DESCRIPTION</key>
-		<string>Installs Xerox Print Drivers for the model:  %model%</string>
+		<string>Install Xerox provided Printer Drivers.  This package includes various models in the following product lines:
+  * AltaLink
+  * Color [Qube]
+  * Phaser
+  * PrimeLink
+  * VersaLink
+  * WorkCentre
+  * and more!</string>
 		<key>SELF_SERVICE_ICON</key>
 		<string>XeroxPrinter.png</string>
-
-        <key>model</key>
-        <string>Workcentre 6515</string>
-        <key>downloadType</key>
-        <string>macOS Common Driver Installer</string>
-        <key>osVersion</key>
-        <string>10_15</string>
-        <key>NAME</key>
-        <string>Xerox %model%</string>
 	</dict>
 	<key>ParentRecipe</key>
 	<string>com.github.mlbz521.pkg.XeroxPrintDriver</string>

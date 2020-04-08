@@ -3,11 +3,18 @@
 <plist version="1.0">
 <dict>
     <key>Description</key>
-    <string>Downloads the latest driver package based on the override-able parameters:  model, download type, and OS Version.
+    <string>Downloads the latest Xerox package based on the override-able parameters:  model, download type, and OS Version.
 
 model example:  'Workcentre 6515'
-download types:  macOS Common Print Driver Installer (default), The provided string is searched in the web page.
-OS version:  10_14 (default)</string>
+download types:  The download type desired; the provided string is searched in the web page.  Some examples are:
+    - "macOS Common Driver Installer" (default)
+    - "ICA Scan USB Driver"
+    - "IMAC CA Scan USB Driver"
+    - "TWAIN Scan Driver"
+OS version:  10_15 (default)
+
+Tested both "macOS Common Driver Installer" and "ICA Scan USB Driver" to download and package successfully.
+    </string>
     <key>Identifier</key>
     <string>com.github.mlbz521.download.XeroxPrintDriver</string>
     <key>Input</key>
@@ -19,7 +26,7 @@ OS version:  10_14 (default)</string>
         <key>osVersion</key>
         <string>10_15</string>
         <key>NAME</key>
-        <string>Xerox %model%</string>
+        <string>Xerox Print Drivers</string>
     </dict>
     <key>Process</key>
     <array>
@@ -77,15 +84,33 @@ OS version:  10_14 (default)</string>
 		</dict>
 		<dict>
 			<key>Processor</key>
+			<string>FileFinder</string>
+			<key>Arguments</key>
+			<dict>
+				<key>pattern</key>
+				<string>%RECIPE_CACHE_DIR%/unpack/*.pkg</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
 			<string>PkgPayloadUnpacker</string>
 			<key>Arguments</key>
 			<dict>
 				<key>destination_path</key>
 				<string>%RECIPE_CACHE_DIR%/unpackpayload</string>
 				<key>pkg_payload_path</key>
-				<string>%RECIPE_CACHE_DIR%/unpack/xerox_driver.pkg/Payload</string>
+				<string>%found_filename%/Payload</string>
 				<key>purge_destination</key>
 				<string>true</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>FileFinder</string>
+			<key>Arguments</key>
+			<dict>
+				<key>pattern</key>
+				<string>%RECIPE_CACHE_DIR%/unpackpayload/*/*/*/*.app</string>
 			</dict>
 		</dict>
 		<dict>
@@ -94,7 +119,7 @@ OS version:  10_14 (default)</string>
 			<key>Arguments</key>
 			<dict>
 				<key>input_plist_path</key>
-				<string>%RECIPE_CACHE_DIR%/unpackpayload/Library/Printers/Xerox/PDEs/XeroxFeatures.plugin/Contents/Info.plist</string>
+				<string>%found_filename%/Contents/Info.plist</string>
 				<key>plist_version_key</key>
 				<string>CFBundleShortVersionString</string>
 			</dict>

@@ -5,21 +5,22 @@
 	<key>Identifier</key>
 	<string>com.github.mlbz521.pkg.XeroxPrintDriver</string>
 	<key>Description</key>
-    <string>Downloads and packages the latest driver package based on the override-able parameters:  model, download type, and OS Version.
+    <string>Downloads and packages the latest Xerox package based on the override-able parameters:  model, download type, and OS Version.
 
 model example:  'Workcentre 6515'
-download types:  macOS Common Print Driver Installer (default), The provided string is searched in the web page.
-OS version:  10_14 (default)</string>
+download types:  The download type desired; the provided string is searched in the web page.  Some examples are:
+    - "macOS Common Driver Installer" (default)
+    - "ICA Scan USB Driver"
+    - "IMAC CA Scan USB Driver"
+    - "TWAIN Scan Driver"
+OS version:  10_15 (default)
+
+Tested both "macOS Common Driver Installer" and "ICA Scan USB Driver" to download and package successfully.
+    </string>
 	<key>Input</key>
 	<dict>
-        <key>model</key>
-        <string>Workcentre 6515</string>
-        <key>downloadType</key>
-        <string>macOS Common Driver Installer</string>
-        <key>osVersion</key>
-        <string>10_15</string>
         <key>NAME</key>
-        <string>Xerox %model%</string>
+        <string>Xerox Print Drivers</string>
 	</dict>
 	<key>ParentRecipe</key>
 	<string>com.github.mlbz521.download.XeroxPrintDriver</string>

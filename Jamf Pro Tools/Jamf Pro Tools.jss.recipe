@@ -9,7 +9,7 @@ Only the Composer, Jamf Remote, and Recon applications are packaged in the paren
 
 The name of the folder name in /Applications and the package will be named based on the NAME substituion variable.</string>
 	<key>Identifier</key>
-	<string>com.github.mlbz521.jss.Jamf Pro Tools</string>
+	<string>com.github.mlbz521.jss.JamfProTools</string>
 	<key>Input</key>
 	<dict>
 		<key>GROUP_TEMPLATE</key>

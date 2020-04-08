@@ -9,13 +9,11 @@
 	<key>Input</key>
 	<dict>
 		<key>GROUP_TEMPLATE</key>
-		<string>GroupTemplate.xml</string>
+		<string>SmartGroupTemplate.xml</string>
 		<key>POLICY_TEMPLATE</key>
 		<string>PolicyTemplate.xml</string>
 		<key>POLICY_CATEGORY</key>
-		<string>%CATEGORY%</string>
-		<key>package_notes</key>
-		<string>Product of AutoPkg</string>
+		<string>Testing</string>
 
 		<key>GROUP_NAME</key>
 		<string>%NAME%-Testing</string>
@@ -23,7 +21,7 @@
 		<key>NAME</key>
 		<string>Google Backup and Sync</string>
 		<key>CATEGORY</key>
-		<string>Testing</string>
+		<string>Uilities</string>
 		<key>DESCRIPTION</key>
 		<string>Backup and Sync creates a folder on your computer named Google Drive.  This folder syncs with your My Drive on the web and all your Drive enabled devices.  This is a 2-way sync, so changes you make online are reflected on all your devices, and vice-versa.  With Backup and Sync, you can also:
 * Sync other folders on your computer, such as Documents or Desktop

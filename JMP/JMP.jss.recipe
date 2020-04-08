@@ -25,9 +25,7 @@
 		<key>CATEGORY</key>
 		<string>Analytics</string>
 		<key>SELF_SERVICE_DESCRIPTION</key>
-		<string>Data analysis software.  JMP is the data analysis tool of choice for hundreds of thousands of 
-	scientists, engineers and other data explorers worldwide. Users leverage powerful statistical 
-	and analytic capabilities in JMP to discover the unexpected.</string>
+		<string>Data analysis software that is tool of choice for hundreds of thousands of scientists, engineers and other data explorers worldwide. Users leverage powerful statistical and analytic capabilities in JMP to discover the unexpected.</string>
 		<key>SELF_SERVICE_ICON</key>
 		<string>JMP.png</string>
 	</dict>

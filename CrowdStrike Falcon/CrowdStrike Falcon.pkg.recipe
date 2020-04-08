@@ -4,7 +4,7 @@
 <dict>
 	<key>Description</key>
 	<string>Downloads a CrowdStrike Falcon Sensor pkg via CrowdStrike's API and then creates a installation package.
-	
+
 You must provide a Client ID and Secret along with the Policy ID to determine which senor version to download.
 
 Expects your Customer ID (license ID) so that the pkg recipe can license the Sensor on install.

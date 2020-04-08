@@ -36,9 +36,9 @@ class XeroxPrintDriverProcessor(URLGetter):
         "downloadType": {
             "required": False,
             "description": "The type package type desired, some examples are: "
-                            " - macOS Common Print Driver Installer (default)"
+                            " - macOS Common Driver Installer (default)"
+                            " - ICA Scan USB Driver"
                             " - IMAC CA Scan USB Driver"
-                            " - ICA Scan Driver"
                             " - TWAIN Scan Driver"
                             "(The provided string is searched in the web page.  "
                             "In the future, additional logic can likely be provide "
@@ -47,7 +47,7 @@ class XeroxPrintDriverProcessor(URLGetter):
         "osVersion": {
             "required": False,
             "description": "The OS version to search against, match the "
-                            "format of '10_14', which is the default.",
+                            "format of '10_15', which is the default.",
         }
     }
     output_variables = {
@@ -63,56 +63,79 @@ class XeroxPrintDriverProcessor(URLGetter):
 
         # Define variables
         input_model = self.env.get('model')
-        model = re.sub(r'\s', '%20', input_model)
-        self.output('Searching for:  {}'.format(model))
-        downloadType = self.env.get('downloadType', 'macOS Common Print Driver Installer')
-        osVersion = self.env.get('osVersion', '10_14')
+        self.output('Searching for:  {}'.format(input_model))
+        downloadType = self.env.get('downloadType', 'macOS Common Driver Installer')
+        osVersion = self.env.get('osVersion', '10_15')
 
-        # Build the URL
-        lookupURL = 'https://www.xerox.com/en-us/d-api/proxy/support-proxy.php?mode=results&search={model}&callback=handleSearchClickResponse'.format(model=model)
+        # Build the headers
+        headers = {
+            "Authorization": "Bearer xx223a56be-26b1-4b0f-a1ea-39a56e8343e8",
+            "Content-Type": "application/x-www-form-urlencoded; charset=\"UTF-8\""
+        }
 
-        # Look up the model
-        dirty_json = self.download(lookupURL, text=True)
+        # Build the required curl switches
+        curl_opts = [
+            "--url", "https://platform.cloud.coveo.com/rest/search/v2?organizationId=xeroxcorporationproductiono2r4c199",
+            "--request", "POST",
+            "--data", '&referrer=https://www.support.xerox.com/&aq=@producttagname=="{}"&cq=@source=="Xerox Support"&tab=DriversDownloads&pipeline=XeroxPublic&context={{"locale":"en-us","lang":"en","fulllang":"en-us","product":"","supportlang":"English","supportshortlang":"en"}}&fieldsToInclude=[]'.format(input_model)
+        ]
 
-        # Clean up results so we can parse as a json object
-        dirty_json = re.sub(r'^\/\*\*\/ typeof handleSearchClickResponse === \'function\' && handleSearchClickResponse\(', '', dirty_json)
-        clean_json = re.sub(r'\);$', '', dirty_json)
-        json_data = json.loads(clean_json)
-        # self.output('Search results:  {}'.format(json_data))
+        try:
+            # Initialize the curl_cmd, add the curl options, and execute the curl
+            curl_cmd = self.prepare_curl_cmd()
+            self.add_curl_headers(curl_cmd, headers)
+            curl_cmd.extend(curl_opts)
+            response_token = self.download_with_curl(curl_cmd)
 
-        for link in json_data['results'][0]['links']:
-            if link['title'] == 'Drivers & Downloads':
-                downloadsURL = link['url']
-                self.output('Found Downloads Link:  {}'.format(downloadsURL))
+        except:
+            raise ProcessorError("Failed to match the provided model:  {}".format(input_model))
 
-        # Build url
-        lookupURL2 = 'https://www.support.xerox.com{crumbs}?operatingSystem=macOS{osVersion}'.format(crumbs=downloadsURL, osVersion=osVersion)
 
-        # Perform second lookup to get available download types
-        pageContent = self.download(lookupURL2, text=True)
+        try:
+            # Load the JSON Response
+            json_data = json.loads(response_token)
 
-        # Find the download type requested
-        downloadPageURL = None
-        for line in pageContent.split('\n'):
-            if downloadType in line:
-                downloadPageURL = line.strip()
-                # self.output('Download Type URL:  {}'.format(downloadPageURL))
+            for result in json_data['results']:
+                if re.match(r".*Drivers & Downloads", result.get('title')):
+                    downloads_uri = result.get('clickUri')
+                    # self.output("downloads_uri:  {}".format(downloads_uri))
 
-        if downloadPageURL:
+        except:
+            raise ProcessorError("Failed to find a model url in the results!")
+
+        try:
+            # Build url
+            lookupURL = '{downloads_uri}?operatingSystem=macOS{osVersion}'.format(downloads_uri=downloads_uri, osVersion=osVersion)
+
+            # Perform second lookup to get available download types
+            pageContent = self.download(lookupURL, text=True)
+
+            # Find the download type requested
+            downloadPageURL = None
+            for line in pageContent.split('\n'):
+                if downloadType in line:
+                    downloadPageURL = line.strip()
+                    self.output('Download Type URL:  {}'.format(downloadPageURL))
+
+        except:
+            raise ProcessorError("Failed to find the downloadType in the results!")
+
+        try:
             # Get the contentId from the found line
             contentID = re.findall(r'contentId=(\d*)', downloadPageURL)
+            # self.output("contentID:  {}".format(contentID))
 
             # Build download url
-            crumbs = re.sub(r'downloads', 'file-redirect', downloadsURL)
-            url = 'https://www.support.xerox.com{crumbs}?operatingSystem=macOS{osVersion}&fileLanguage=en&contentId={downloadID}'.format(crumbs=crumbs, osVersion=osVersion, downloadID=contentID[0])
-            # self.output('Download URL:  {}'.format(downloadURL))
+            downloadsURL = re.sub(r'downloads', 'file-redirect', downloads_uri)
+            # self.output('Download URL:  {}'.format(downloadsURL))
+            url = '{downloadsURL}?operatingSystem=macOS{osVersion}&fileLanguage=en&contentId={downloadID}'.format(downloadsURL=downloadsURL, osVersion=osVersion, downloadID=contentID[0])
 
             # Return results
             self.env["url"] = url
             self.output("Download URL: {}".format(self.env["url"]))
 
-        else:
-            raise ProcessorError("Unable to find a url based on the parameters provided.")
+        except:
+            raise ProcessorError("Unable to build a download url based on the parameters provided.")
 
 if __name__ == "__main__":
     processor = XeroxPrintDriverProcessor()

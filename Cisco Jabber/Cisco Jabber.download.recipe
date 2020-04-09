@@ -54,7 +54,29 @@
 			<key>Arguments</key>
 			<dict>
 				<key>pattern</key>
-				<string>%cached_path%/*.pkg</string>
+				<string>%cached_path%/*.zip</string>
+			</dict>
+		</dict>
+        <dict>
+            <key>Processor</key>
+            <string>Unarchiver</string>
+            <key>Arguments</key>
+            <dict>
+                <key>archive_path</key>
+                <string>%found_filename%</string>
+                <key>destination_path</key>
+                <string>%RECIPE_CACHE_DIR%/unpack</string>
+                <key>purge_destination</key>
+                <true />
+            </dict>
+        </dict>
+		<dict>
+			<key>Processor</key>
+			<string>FileFinder</string>
+			<key>Arguments</key>
+			<dict>
+				<key>pattern</key>
+				<string>%RECIPE_CACHE_DIR%/unpack/*.pkg</string>
 			</dict>
 		</dict>
 	 	<dict>

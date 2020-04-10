@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Description</key>
+	<string>Downloads and packages the latest or a specified verison of SPSS Statistics from a local file share.
+
+This pkg is has a preinstall script to uninstall previous versions.
+
+Two override variables are avilable to support the installation of SPSS:
+	* INSTALL_JDK_CLI
+		* A JDK is required to install SPSS silently; if one is not installed, you can provide a command 
+			line command to acquire one through any method that is support in your environemnt
+	* INSTALL_PROPERTIES
+		* As the name suggests, this the "installer.properties" that allows you to customize the install
+			of SPSS.  The available parameters are included; customize for your environment.
+	</string>
+    <key>Identifier</key>
+    <string>com.github.mlbz521.pkg.SPSSStatistics</string>
+    <key>Input</key>
+    <dict>
+        <key>NAME</key>
+        <string>SPSS Statistics</string>
+		<key>INSTALL_JDK_CLI</key>
+		<string>/usr/local/bin/jamf policy -event "Amazon_Corretto_JDK" -forceNoRecon</string>
+		<key>INSTALL_PROPERTIES</key>
+		<string>INSTALLER_UI=silent
+USER_INSTALL_DIR=/Applications/SPSS Statistics 26/
+LICENSE_ACCEPTED=true
+#AUTHCODE=
+InstallPython=1
+#LSHOST=
+COMMUTE_MAX_LIFE=7
+#PROXYHOST=
+#PROXYPORT=
+#PROXYUSER=
+#PROXYPASS=</string>
+    </dict>
+	<key>ParentRecipe</key>
+	<string>com.github.mlbz521.download.SPSSStatistics</string>
+    <key>Process</key>
+    <array>
+		<dict>
+			<key>Processor</key>
+			<string>PkgRootCreator</string>
+			<key>Arguments</key>
+			<dict>
+				<key>pkgroot</key>
+				<string>%RECIPE_CACHE_DIR%/pkgroot</string>
+				<key>pkgdirs</key>
+				<dict/>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>PkgRootCreator</string>
+			<key>Arguments</key>
+			<dict>
+				<key>pkgroot</key>
+				<string>%RECIPE_CACHE_DIR%/scripts</string>
+				<key>pkgdirs</key>
+				<dict/>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>FileFinder</string>
+			<key>Arguments</key>
+			<dict>
+				<key>pattern</key>
+				<string>%found_filename%/*.bin</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>FileFinder</string>
+			<key>Arguments</key>
+			<dict>
+				<key>pattern</key>
+				<string>%cached_path%/*.dmg</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>Copier</string>
+			<key>Arguments</key>
+			<dict>
+				<key>source_path</key>
+				<string>%found_filename%/%dmg_found_filename%</string>
+				<key>destination_path</key>
+				<string>%RECIPE_CACHE_DIR%/scripts/%dmg_found_filename%</string>
+                <key>overwrite</key>
+                <true/>
+			</dict>
+		</dict>
+        <dict>
+            <key>Processor</key>
+            <string>FileCreator</string>
+            <key>Arguments</key>
+            <dict>
+				<key>file_content</key>
+				<string>#! /bin/bash
+
+###################################################################################################
+# Script Name:  uninstall_SPSS.sh
+# By:  Zack Thompson / Created:  11/1/2017
+# Version:  1.2.1 / Updated:  4/2/2018 / By:  ZT
+#
+# Description:  Remove previous version(s) of SPSS from /Applications
+#
+###################################################################################################
+
+echo "*****  Uninstall SPSS process:  START  *****"
+
+echo "Searching for existing SPSS instances..."
+appPaths=$( /usr/bin/find -E /Applications -iregex ".*[/](SPSS) ?(Statistics) ?([0-9]{2})?[.]app" -type d -prune )
+
+# Verify that a SPSS version was found.
+if [[ -z "${appPaths}" ]]; then
+	echo "Did not find an instance SPSS!"
+else
+	# If the machine has multiple SPSS Applications, loop through them...
+	while IFS="\n" read -r appPath; do
+
+		# Get the App Bundle name
+		appName=$( echo "${appPath}" | /usr/bin/awk -F "/" '{print $NF}' )
+
+		# Get only the install path
+		installPath=$( echo "${appPath}" | /usr/bin/awk -F "/${appName}" '{print $1}' )
+
+		# Delete the old version
+		echo "Uninstalling:  ${appPath}"
+		/bin/rm -rf "${installPath}"
+
+	done &lt; &lt;(echo "${appPaths}")
+fi
+
+echo "*****  Uninstall SPSS process:  COMPLETE  *****"
+
+exit 0</string>
+                <key>file_mode</key>
+                <string>0755</string>
+                <key>file_path</key>
+                <string>%RECIPE_CACHE_DIR%/scripts/preinstall</string>
+            </dict>
+        </dict>
+        <dict>
+            <key>Processor</key>
+            <string>FileCreator</string>
+            <key>Arguments</key>
+            <dict>
+				<key>file_content</key>
+				<string>%INSTALL_PROPERTIES%</string>
+                <key>file_mode</key>
+                <string>0755</string>
+                <key>file_path</key>
+                <string>%RECIPE_CACHE_DIR%/scripts/installer.properties</string>
+            </dict>
+        </dict>
+        <dict>
+            <key>Processor</key>
+            <string>FileCreator</string>
+            <key>Arguments</key>
+            <dict>
+				<key>file_content</key>
+				<string>#! /bin/bash
+
+###################################################################################################
+# Script Name:  install_SPSS.sh
+# By:  Zack Thompson / Created:  11/1/2017
+# Version:  1.5.1 / Updated:  1/27/2020 / By:  ZT
+#
+# Description:  This script silently installs SPSS.
+#
+###################################################################################################
+
+echo "*****  Install SPSS process:  START  *****"
+
+##################################################
+# Define Variables
+
+# Set working directory
+pkgDir=$( /usr/bin/dirname "${0}" )
+# Get the filename of the .dmg file
+installBin=$( /bin/ls "${pkgDir}" | /usr/bin/grep .bin )
+
+# Version that's being installed
+version="%version%"
+majorVersion=$( echo $version | /usr/bin/awk -F "." '{print $1}' )
+
+##################################################
+# Bits staged...
+
+echo "Checking for a JDK..."
+if [[ -z $( /usr/bin/find "/Library/Java/JavaVirtualMachines" -iname "*.jdk" -type d ) ]]; then
+	# Install prerequisite:  Java JDK
+	echo "Installing prerequisite Java JDK..."
+	%INSTALL_JDK_CLI%
+else
+	echo "JDK exists...continuing..."
+fi
+
+# Make sure the Installer.bin file is executable
+/bin/chmod +x "${installBin}"
+
+# Silent install using information in the installer.properties file
+echo "Installing SPSS..."
+exitStatus=$( "${installBin}" -f "${pkgDir}/installer.properties" )
+exitCode=$?
+
+if [[ $exitCode != 0 ]]; then
+	echo "ERROR:  Install failed!"
+	echo "Exit Code:  ${exitCode}"
+	echo "ERROR Content:  ${exitStatus}"
+	echo "*****  Install SPSS process:  FAILED  *****"
+	exit 1
+fi
+
+# Setting permissions to resolve issues seen in:  https://www-01.ibm.com/support/docview.wss?uid=swg21966637
+echo "Setting permissions on SPSS ${majorVersion} files..."
+/usr/sbin/chown -R root:admin "/Applications/SPSS Statistics ${majorVersion}"
+
+echo "*****  Install SPSS process:  COMPLETE  *****"
+exit 0</string>
+                <key>file_mode</key>
+                <string>0755</string>
+                <key>file_path</key>
+                <string>%RECIPE_CACHE_DIR%/scripts/postinstall</string>
+            </dict>
+        </dict>
+		<dict>
+			<key>Processor</key>
+			<string>PkgCreator</string>
+			<key>Arguments</key>
+			<dict>
+				<key>pkg_request</key>
+				<dict>
+					<key>pkgname</key>
+					<string>%NAME%-%version%</string>
+					<key>pkgroot</key>
+					<string>%RECIPE_CACHE_DIR%/pkgroot</string>
+					<key>version</key>
+					<string>%version%</string>
+					<key>id</key>
+					<string>com.ibm.spssstatistics</string>
+					<key>options</key>
+					<string>purge_ds_store</string>
+					<key>scripts</key>
+					<string>Scripts</string>
+				</dict>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>PathDeleter</string>
+			<key>Arguments</key>
+			<dict>
+				<key>path_list</key>
+				<array>
+					<string>%RECIPE_CACHE_DIR%/pkgroot</string>
+					<string>%RECIPE_CACHE_DIR%/scripts</string>
+				</array>
+			</dict>
+		</dict>
+    </array>
+</dict>
+</plist>

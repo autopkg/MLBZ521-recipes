@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Description</key>
+	<string>Downloads and packages the latest or a specified verison of a SPSS Statistics Patch from a local file share.
+
+Two override variables are avilable to support the installation of SPSS:
+	* INSTALL_JDK_CLI
+		* A JDK is required to install SPSS silently; if one is not installed, you can provide a command 
+			line command to acquire one through any method that is support in your environemnt
+	* INSTALL_PROPERTIES
+		* As the name suggests, this the "installer.properties" that allows you to customize the install
+			of SPSS.  The available parameters are included; customize for your environment.
+
+Do note that the postinstall script that "handles the upgrade" search the /Applications folder for the version of 
+SPSS being upgraded and will inject the path into the install.properties file so it does not need to be specifed
+in the override variable below, which is described above.
+	</string>
+    <key>Identifier</key>
+    <string>com.github.mlbz521.pkg.SPSSStatisticsPatch</string>
+    <key>Input</key>
+    <dict>
+        <key>NAME</key>
+        <string>SPSS Statistics</string>
+		<key>INSTALL_JDK_CLI</key>
+		<string>/usr/local/bin/jamf policy -event "Amazon_Corretto_JDK" -forceNoRecon</string>
+		<key>INSTALL_PROPERTIES</key>
+		<string>INSTALLER_UI=silent
+#USER_INSTALL_DIR=/Applications/SPSS Statistics 26/
+LICENSE_ACCEPTED=true
+#AUTHCODE=
+InstallPython=1
+#LSHOST=
+COMMUTE_MAX_LIFE=7
+#PROXYHOST=
+#PROXYPORT=
+#PROXYUSER=
+#PROXYPASS=</string>
+    </dict>
+	<key>ParentRecipe</key>
+	<string>com.github.mlbz521.download.SPSSStatistics</string>
+    <key>Process</key>
+    <array>
+		<dict>
+			<key>Processor</key>
+			<string>PkgRootCreator</string>
+			<key>Arguments</key>
+			<dict>
+				<key>pkgroot</key>
+				<string>%RECIPE_CACHE_DIR%/pkgroot</string>
+				<key>pkgdirs</key>
+				<dict/>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>PkgRootCreator</string>
+			<key>Arguments</key>
+			<dict>
+				<key>pkgroot</key>
+				<string>%RECIPE_CACHE_DIR%/scripts</string>
+				<key>pkgdirs</key>
+				<dict/>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>FileFinder</string>
+			<key>Arguments</key>
+			<dict>
+				<key>pattern</key>
+				<string>%found_filename%/*.bin</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>FileFinder</string>
+			<key>Arguments</key>
+			<dict>
+				<key>pattern</key>
+				<string>%cached_path%/*.dmg</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>Copier</string>
+			<key>Arguments</key>
+			<dict>
+				<key>source_path</key>
+				<string>%found_filename%/%dmg_found_filename%</string>
+				<key>destination_path</key>
+				<string>%RECIPE_CACHE_DIR%/scripts/%dmg_found_filename%</string>
+                <key>overwrite</key>
+                <true/>
+			</dict>
+		</dict>
+        <dict>
+            <key>Processor</key>
+            <string>FileCreator</string>
+            <key>Arguments</key>
+            <dict>
+				<key>file_content</key>
+				<string>%INSTALL_PROPERTIES%</string>
+                <key>file_mode</key>
+                <string>0755</string>
+                <key>file_path</key>
+                <string>%RECIPE_CACHE_DIR%/scripts/installer.properties</string>
+            </dict>
+        </dict>
+        <dict>
+            <key>Processor</key>
+            <string>FileCreator</string>
+            <key>Arguments</key>
+            <dict>
+				<key>file_content</key>
+				<string>#!/bin/bash
+
+###################################################################################################
+# Script Name:  update_SPSS.sh
+# By:  Zack Thompson / Created:  11/22//2017
+# Version:  1.7.0 / Updated:  1/12/2019 / By:  ZT
+#
+# Description:  This script grabs the current location of the SPSSStatistics.app and injects it into the installer.properties file and then will upgrade an SPSS Installation.
+#
+###################################################################################################
+
+echo "*****  Upgrade SPSS process:  START  *****"
+
+##################################################
+# Define Variables
+
+# Set working directory
+pkgDir=$( /usr/bin/dirname "${0}" )
+# Get the filename of the .dmg file
+installBin=$( /bin/ls "${pkgDir}" | /usr/bin/grep .bin )
+# Version that's being updated
+version="%version%"
+majorVersion=$( echo $version | /usr/bin/awk -F "." '{print $1}' )
+# Get the location of SPSSStatistics.app
+appPath=$( /usr/bin/find -E /Applications -iregex ".*[${majorVersion}].*[/](SPSS) ?(Statistics) ?(${majorVersion})?[.]app" -type d -prune )
+# Get the App Bundle name
+appName=$( echo "${appPath}" | /usr/bin/awk -F "/" '{print $NF}' )
+# Get only the install path
+installPath=$( echo "${appPath}" | /usr/bin/awk -F "/${appName}" '{print $1}' )
+# Get the current SPSS version
+currentVersion=$( /usr/bin/defaults read "${appPath}/Contents/Info.plist" CFBundleShortVersionString )
+
+##################################################
+# Bits staged...
+
+if [[ -z "${appPath}" ]]; then
+	echo "A previous version SPSS was not found in the expected location!"
+	echo "*****  Upgrade SPSS process:  FAILED  *****"
+	exit 1
+fi
+
+echo "Checking for a JDK..."
+if [[ -z $( /usr/bin/find "/Library/Java/JavaVirtualMachines" -iname "*.jdk" -type d ) ]]; then
+	# Install prerequisite:  Java JDK
+	echo "Installing prerequisite Java JDK..."
+	%INSTALL_JDK_CLI%
+else
+	echo "JDK exists...continuing..."
+fi
+
+echo "Upgrading SPSS Version:  ${currentVersion} at path:  ${appPath}"
+
+# Inject the location to the installer.properties file
+LANG=C /usr/bin/sed -Ei '' 's,(#)?USER_INSTALL_DIR=.*,'"USER_INSTALL_DIR=${installPath}"',' "${pkgDir}/installer.properties"
+
+# Make sure the Patch.bin file is executable
+/bin/chmod +x "${installBin}"
+
+# Silent upgrade using information in the installer.properties file
+echo "Upgrading SPSS..."
+exitStatus=$( "${installBin}" -f "${pkgDir}/installer.properties" )
+exitCode=$?
+
+# Check for the expected exit code.
+if [[ "${exitCode}" != "208" ]]; then
+	echo "ERROR:  Upgrade failed!"
+	echo "Exit Code:  ${exitCode}"
+	echo "Exit Status:  ${exitStatus}"
+	echo "*****  Upgrade SPSS process:  FAILED  *****"
+	exit 2
+elif [[ $( /usr/bin/defaults read "${appPath}/Contents/Info.plist" CFBundleShortVersionString ) != "${version}" ]]; then
+	echo "Injecting the proper version string into SPSS's Info.plist"
+	# Inject the proper version into the Info.plist file -- this may not be required for every version; specifically for v24.0.0.2, it was needed
+	/usr/bin/sed -Ei '' 's/'"${majorVersion}.0.0.[0-9]"'/'"${version}"'/g' "${appPath}/Contents/Info.plist"
+fi
+
+# Setting permissions to resolve issues seen in:  https://www-01.ibm.com/support/docview.wss?uid=swg21966637
+echo "Setting permissions on SPSS ${majorVersion} files..."
+/usr/sbin/chown -R root:admin "${installPath}"
+
+echo "Upgrade complete!"
+echo "*****  Upgrade SPSS process:  COMPLETE  *****"
+exit 0</string>
+                <key>file_mode</key>
+                <string>0755</string>
+                <key>file_path</key>
+                <string>%RECIPE_CACHE_DIR%/scripts/postinstall</string>
+            </dict>
+        </dict>
+		<dict>
+			<key>Processor</key>
+			<string>PkgCreator</string>
+			<key>Arguments</key>
+			<dict>
+				<key>pkg_request</key>
+				<dict>
+					<key>pkgname</key>
+					<string>%NAME%-%version%</string>
+					<key>pkgroot</key>
+					<string>%RECIPE_CACHE_DIR%/pkgroot</string>
+					<key>version</key>
+					<string>%version%</string>
+					<key>id</key>
+					<string>com.ibm.spssstatistics</string>
+					<key>options</key>
+					<string>purge_ds_store</string>
+					<key>scripts</key>
+					<string>Scripts</string>
+				</dict>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>PathDeleter</string>
+			<key>Arguments</key>
+			<dict>
+				<key>path_list</key>
+				<array>
+					<string>%RECIPE_CACHE_DIR%/pkgroot</string>
+					<string>%RECIPE_CACHE_DIR%/scripts</string>
+				</array>
+			</dict>
+		</dict>
+    </array>
+</dict>
+</plist>

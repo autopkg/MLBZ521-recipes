@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Description</key>
+	<string>Downloads and packages the latest or a specified verison of Matlab from a local file share and then uploads it to a JPS.
+
+This pkg is has a preinstall script to uninstall previous versions.
+
+I license most software separately in environment and do not use the built licensePath key.  If you want to use this, you'll want to fork this recipe more than likely.
+
+One override variable is avilable to support the installation of Matlab:
+	* INSTALL_INPUT
+		* As the name suggests, this the "installer.input" that allows you to customize the install
+			of Matlab.  The available parameters are included; customize for your environment.
+
+If you want to customize the products that are installed, a copy of an original, albeit old, installer_input.txt is available in the recipe directory.
+
+I've seen people are unable to locate it as it's not included in newer versions even though the documentation points to it.
+	</string>
+	<key>Identifier</key>
+	<string>com.github.mlbz521.jss.Matlab</string>
+	<key>Input</key>
+	<dict>
+		<key>GROUP_TEMPLATE</key>
+		<string>SmartGroupTemplate.xml</string>
+		<key>POLICY_TEMPLATE</key>
+		<string>PolicyTemplate.xml</string>
+		<key>POLICY_CATEGORY</key>
+		<string>Testing</string>
+		<key>package_notes</key>
+		<string>Product of AutoPkg</string>
+		<key>GROUP_NAME</key>
+		<string>%NAME%-Testing</string>
+		<key>NAME</key>
+		<string>Matlab</string>
+		<key>CATEGORY</key>
+		<string>Mathematics</string>
+		<key>SELF_SERVICE_DESCRIPTION</key>
+		<string>The MATLAB platform is optimized for solving engineering and scientific problems.  The matrix-based MATLAB language is the world’s most natural way to express computational mathematics.  Built-in graphics make it easy to visualize and gain insights from data. A vast library of prebuilt toolboxes lets you get started right away with algorithms essential to your domain.  The desktop environment invites experimentation, exploration, and discovery.  These MATLAB tools and capabilities are all rigorously tested and designed to work together.</string>
+		<key>SELF_SERVICE_ICON</key>
+		<string>Matlab.png</string>
+	</dict>
+	<key>ParentRecipe</key>
+	<string>com.github.mlbz521.pkg.Matlab</string>
+	<key>Process</key>
+	<array>
+		<dict>
+			<key>Processor</key>
+			<string>JSSImporter</string>
+			<key>Arguments</key>
+			<dict>
+				<key>pkg_path</key>
+				<string>%RECIPE_CACHE_DIR%/%NAME%-%version%.pkg</string>
+				<key>prod_name</key>
+				<string>%NAME%</string>
+				<key>category</key>
+				<string>%CATEGORY%</string>
+				<key>policy_category</key>
+				<string>%POLICY_CATEGORY%</string>
+				<key>policy_template</key>
+				<string>%POLICY_TEMPLATE%</string>
+				<key>self_service_description</key>
+				<string>%SELF_SERVICE_DESCRIPTION%</string>
+				<key>self_service_icon</key>
+				<string>%SELF_SERVICE_ICON%</string>
+				<key>groups</key>
+				<array>
+					<dict>
+						<key>name</key>
+						<string>%GROUP_NAME%</string>
+						<key>smart</key>
+						<true/>
+						<key>template_path</key>
+						<string>%GROUP_TEMPLATE%</string>
+					</dict>
+				</array>
+			</dict>
+		</dict>
+	</array>
+</dict>
+</plist>

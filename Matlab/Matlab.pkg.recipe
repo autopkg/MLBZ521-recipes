@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Description</key>
+	<string>Downloads and packages the latest verison of Matlab from a local file share.
+
+This pkg is has a preinstall script to uninstall previous versions.
+
+I license most software separately in environment and do not use the built licensePath key.  If you want to use this, you'll want to fork this recipe more than likely.
+
+One override variable is avilable to support the installation of Matlab:
+	* INSTALL_INPUT
+		* As the name suggests, this the "installer.input" that allows you to customize the install
+			of Matlab.  The available parameters are included; customize for your environment.
+
+If you want to customize the products that are installed, a copy of an original, albeit old, installer_input.txt is available in the recipe directory.
+
+I've seen people are unable to locate it as it's not included in newer versions even though the documentation points to it.
+	</string>
+    <key>Identifier</key>
+    <string>com.github.mlbz521.pkg.Matlab</string>
+    <key>Input</key>
+    <dict>
+        <key>NAME</key>
+        <string>Matlab</string>
+		<key>INSTALLER_INPUT</key>
+		<string>destinationFolder=/Applications
+fileInstallationKey=
+agreeToLicense=yes
+outputFile=/var/log/matlab_installation.log
+mode=silent
+# automatedModeTimeout=
+# activationPropertiesFile=
+# The 'licensePath' is handled in another step in my environment
+# licensePath=
+# lmgrFiles=</string>
+    </dict>
+	<key>ParentRecipe</key>
+	<string>com.github.mlbz521.download.Matlab</string>
+    <key>Process</key>
+    <array>
+		<dict>
+			<key>Processor</key>
+			<string>PkgRootCreator</string>
+			<key>Arguments</key>
+			<dict>
+				<key>pkgroot</key>
+				<string>%RECIPE_CACHE_DIR%/pkgroot</string>
+				<key>pkgdirs</key>
+				<dict/>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>PkgRootCreator</string>
+			<key>Arguments</key>
+			<dict>
+				<key>pkgroot</key>
+				<string>%RECIPE_CACHE_DIR%/scripts</string>
+				<key>pkgdirs</key>
+				<dict/>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>FileFinder</string>
+			<key>Arguments</key>
+			<dict>
+				<key>pattern</key>
+				<string>%found_filename%/*.app</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>FileFinder</string>
+			<key>Arguments</key>
+			<dict>
+				<key>pattern</key>
+				<string>%cached_path%/*.dmg</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>Copier</string>
+			<key>Arguments</key>
+			<dict>
+				<key>source_path</key>
+				<string>%found_filename%/%dmg_found_filename%</string>
+				<key>destination_path</key>
+				<string>%RECIPE_CACHE_DIR%/scripts/%dmg_found_filename%</string>
+                <key>overwrite</key>
+                <true/>
+			</dict>
+		</dict>
+        <dict>
+            <key>Processor</key>
+            <string>FileCreator</string>
+            <key>Arguments</key>
+            <dict>
+				<key>file_content</key>
+				<string>#! /bin/bash
+
+###################################################################################################
+# Script Name:  uninstall_Matlab.sh
+# By:  Zack Thompson / Created:  3/26/2020
+# Version:  1.0.0 / Updated:  3/26/2020 / By:  ZT
+#
+# Description:  Remove previous version(s) of Matlab from /Applications
+#
+###################################################################################################
+
+echo "*****  Uninstall Matlab process:  START  *****"
+
+echo "Searching for existing Matlab instances..."
+appPaths=$( /usr/bin/find -E /Applications -iregex ".*[/]MATLAB_R[0-9]{4}[ab][.]app" -type d -prune -maxdepth 1 )
+
+# Verify that a Matlab version was found.
+if [[ -z "${appPaths}" ]]; then
+	echo "Did not find an instance Matlab!"
+
+else
+	# If the machine has multiple Matlab Applications, loop through them...
+	while IFS="\n" read -r appPath; do
+
+		# Get the App Bundle name
+		appName=$( echo "${appPath}" | /usr/bin/awk -F "/" '{print $NF}' )
+
+		# Delete the old version
+		echo "Uninstalling:  ${appName}"
+		/bin/rm -rf "${appPath}"
+
+	done &lt; &lt;(echo "${appPaths}")
+fi
+
+echo "*****  Uninstall Matlab process:  COMPLETE  *****"
+
+exit 0</string>
+                <key>file_mode</key>
+                <string>0755</string>
+                <key>file_path</key>
+                <string>%RECIPE_CACHE_DIR%/scripts/preinstall</string>
+            </dict>
+        </dict>
+        <dict>
+            <key>Processor</key>
+            <string>FileCreator</string>
+            <key>Arguments</key>
+            <dict>
+				<key>file_content</key>
+				<string>%INSTALLER_INPUT%</string>
+                <key>file_mode</key>
+                <string>0755</string>
+                <key>file_path</key>
+                <string>%RECIPE_CACHE_DIR%/scripts/installer_input.txt</string>
+            </dict>
+        </dict>
+        <dict>
+            <key>Processor</key>
+            <string>FileCreator</string>
+            <key>Arguments</key>
+            <dict>
+				<key>file_content</key>
+				<string>#!/bin/bash
+
+###################################################################################################
+# Script Name:  install_MatLab.sh
+# By:  Zack Thompson / Created:  3/6/2017
+# Version:  1.6 / Updated:  3/29/2018 / By:  ZT
+#
+# Description:  This script installs MatLab.
+#
+###################################################################################################
+
+echo "*****  Install Matlab process:  START  *****"
+
+##################################################
+# Define Variables
+
+# Set working directory
+pkgDir=$( /usr/bin/dirname "${0}" )
+# Version that's being updated (this will be set by the build_Matlab.sh script)
+version="%version%"
+
+##################################################
+# Bits staged...
+
+# Install MatLab with option file.
+echo "Installing Matlab..."
+
+if [[ $version == "2017a" ]]; then
+	# Inject dummy location to the installer.input file -- hacky, but works
+	LANG=C /usr/bin/sed -Ei '' 's,(#)?licensePath=.*,'"licensePath=${pkgDir}/installer_input.txt"',' "${pkgDir}/installer_input.txt"
+	# -mode silent did not work in the option file for me.
+	exitStatus=$("${pkgDir}/install" -mode silent -inputFile "${pkgDir}/installer_input.txt")
+elif [[ $version == "2017b" ]]; then
+	# I'm assuming all future version will be packaged in this manner...(/hoping)..?
+	exitStatus=$("${pkgDir}/InstallForMacOSX.app/Contents/MacOS/InstallForMacOSX" -inputFile "${pkgDir}/installer_input.txt")
+else
+	# 2018a did not work like 2017b unfortunately, where I didn't have to specify the licensePath...
+	# Inject dummy location to the installer.input file -- hacky, but works
+	LANG=C /usr/bin/sed -Ei '' 's,(#)?licensePath=.*,'"licensePath=${pkgDir}/installer_input.txt"',' "${pkgDir}/installer_input.txt"
+
+	exitStatus=$("${pkgDir}/InstallForMacOSX.app/Contents/MacOS/InstallForMacOSX" -inputFile "${pkgDir}/installer_input.txt")
+fi
+exitCode=$?
+
+if [[ $exitCode != 0 ]]; then
+	echo "Exit Code:  ${exitCode}"
+fi
+
+if [[ $exitStatus == *"End - Unsuccessful"* ]]; then
+	echo "ERROR:  Install failed!"
+	echo "ERROR Content:  ${exitStatus}"
+	echo "*****  Install Matlab process:  FAILED  *****"
+	exit 1
+fi
+
+echo "Install complete!"
+echo "*****  Install Matlab process:  COMPLETE  *****"
+
+exit 0</string>
+                <key>file_mode</key>
+                <string>0755</string>
+                <key>file_path</key>
+                <string>%RECIPE_CACHE_DIR%/scripts/postinstall</string>
+            </dict>
+        </dict>
+		<dict>
+			<key>Processor</key>
+			<string>PkgCreator</string>
+			<key>Arguments</key>
+			<dict>
+				<key>pkg_request</key>
+				<dict>
+					<key>pkgname</key>
+					<string>%NAME%-%version%</string>
+					<key>pkgroot</key>
+					<string>%RECIPE_CACHE_DIR%/pkgroot</string>
+					<key>version</key>
+					<string>%version%</string>
+					<key>id</key>
+					<string>com.mathworks.installer</string>
+					<key>options</key>
+					<string>purge_ds_store</string>
+					<key>scripts</key>
+					<string>Scripts</string>
+				</dict>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>PathDeleter</string>
+			<key>Arguments</key>
+			<dict>
+				<key>path_list</key>
+				<array>
+					<string>%RECIPE_CACHE_DIR%/pkgroot</string>
+					<string>%RECIPE_CACHE_DIR%/scripts</string>
+				</array>
+			</dict>
+		</dict>
+    </array>
+</dict>
+</plist>

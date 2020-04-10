@@ -79,13 +79,30 @@
 				<string>%RECIPE_CACHE_DIR%/unpack/*.pkg</string>
 			</dict>
 		</dict>
-	 	<dict>
+		<dict>
 			<key>Processor</key>
-			<string>CiscoJabberVersioner</string>
+			<string>com.github.mlbz521.SharedProcessors/XarExtractSingleFile</string>
 			<key>Arguments</key>
 			<dict>
-				<key>pkg_path</key>
+				<key>archive_path</key>
 				<string>%found_filename%</string>
+				<key>file_to_extract</key>
+				<string>Distribution</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>com.github.mlbz521.SharedProcessors/XPathParser</string>
+			<key>Arguments</key>
+			<dict>
+				<key>xml_file</key>
+				<string>%extracted_file%/PackageInfo</string>
+				<key>xpath</key>
+				<string>./pkg-ref[@id="com.cisco.Jabber"]/bundle-version/bundle</string>
+				<key>attribute_one</key>
+				<string>CFBundleShortVersionString</string>
+				<key>return_variable_attribute_one</key>
+				<string>version</string>
 			</dict>
 		</dict>
 		<dict>

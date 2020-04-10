@@ -28,13 +28,34 @@ Because Repondus does silly things by expecting the licencing information in the
                 <string>%RECIPE_CACHE_DIR%/%NAME%/*.pkg</string>
             </dict>
         </dict>
-	 	<dict>
+		<dict>
 			<key>Processor</key>
-			<string>com.github.mlbz521.SharedProcessors/BundleVersioner</string>
+			<string>com.github.mlbz521.SharedProcessors/XarExtractSingleFile</string>
 			<key>Arguments</key>
 			<dict>
-				<key>pkg_path</key>
+				<key>archive_path</key>
 				<string>%found_filename%</string>
+				<key>file_to_extract</key>
+				<string>Distribution</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>com.github.mlbz521.SharedProcessors/XPathParser</string>
+			<key>Arguments</key>
+			<dict>
+				<key>xml_file</key>
+				<string>%extracted_file%</string>
+				<key>xpath</key>
+				<string>.//bundle-version/bundle</string>
+				<key>attribute_one</key>
+				<string>CFBundleShortVersionString</string>
+				<key>return_variable_attribute_one</key>
+				<string>version</string>
+				<key>attribute_two</key>
+				<string>id</string>
+				<key>return_variable_attribute_two</key>
+				<string>bundleid</string>
 			</dict>
 		</dict>
         <dict>
@@ -47,7 +68,7 @@ Because Repondus does silly things by expecting the licencing information in the
                 <key>pkgroot</key>
                 <string>%RECIPE_CACHE_DIR%/Scripts</string>
             </dict>
-        </dict> 
+        </dict>
 		<dict>
 			<key>Processor</key>
 			<string>Copier</string>
@@ -139,7 +160,7 @@ exit 0</string>
 				<key>path_list</key>
 				<array>
 					<string>%RECIPE_CACHE_DIR%/Scripts</string>
-					<string>%RECIPE_CACHE_DIR%/unpack</string>
+					<string>%RECIPE_CACHE_DIR%/extractedfile</string>
 					<string>%RECIPE_CACHE_DIR%/%NAME%</string>
 				</array>
 			</dict>

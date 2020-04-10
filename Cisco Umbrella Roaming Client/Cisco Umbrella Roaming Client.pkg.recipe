@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Description</key>
+	<string>Downloads the latest release of Cisco Umbrella Roaming Client and creates a pkg.</string>
+	<key>Identifier</key>
+	<string>com.github.mlbz521.pkg.CiscoUmbrellaRoamingClient</string>
+	<key>Input</key>
+	<dict>
+		<key>NAME</key>
+		<string>Cisco Umbrella Roaming Client</string>
+	</dict>
+	<key>ParentRecipe</key>
+	<string>com.github.mlbz521.download.CiscoUmbrellaRoamingClient</string>
+	<key>Process</key>
+	<array>
+		<dict>
+			<key>Processor</key>
+			<string>FileFinder</string>
+			<key>Arguments</key>
+			<dict>
+				<key>pattern</key>
+				<string>%RECIPE_CACHE_DIR%/*.pkg</string>				
+			</dict>
+		</dict>
+	 	<dict>
+			<key>Processor</key>
+			<string>com.github.mlbz521.SharedProcessors/StringRightSplitter</string>
+			<key>Arguments</key>
+			<dict>
+                <key>string_to_split</key>
+                <string>%found_filename%</string>
+                <key>split_on</key>
+                <string>_</string>
+                <key>occurrence</key>
+                <integer>1</integer>
+                <key>index</key>
+                <integer>1</integer>
+                <key>return_variable</key>
+                <string>working_string</string>
+			</dict>
+		</dict>
+	 	<dict>
+			<key>Processor</key>
+			<string>com.github.mlbz521.SharedProcessors/StringRightSplitter</string>
+			<key>Arguments</key>
+			<dict>
+                <key>string_to_split</key>
+                <string>%working_string%</string>
+                <key>split_on</key>
+                <string>.</string>
+                <key>occurrence</key>
+                <integer>1</integer>
+                <key>index</key>
+                <integer>0</integer>
+                <key>return_variable</key>
+                <string>version</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>FileMover</string>
+			<key>Arguments</key>
+			<dict>
+				<key>source</key>
+				<string>%found_filename%</string>
+				<key>target</key>
+				<string>%RECIPE_CACHE_DIR%/%NAME%-%version%.pkg</string>
+			</dict>
+		</dict>
+	</array>
+</dict>
+</plist>

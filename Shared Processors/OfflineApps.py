@@ -25,7 +25,7 @@
 from __future__ import absolute_import
 import os
 import shutil
-from distutils.version import LooseVersion
+from pkg_resources import parse_version as Compare_Version
 from autopkglib import Processor, ProcessorError
 
 __all__ = ["OfflineApps"]
@@ -35,8 +35,6 @@ class OfflineApps(Processor):
     then be used for child pkg recipes.  This is for applications that are 
     behind a login or not available via normal internet "acquisitional" 
     methods.
-
-    Currently only supports glob filename patterns.
     '''
 
     input_variables = {
@@ -82,7 +80,7 @@ class OfflineApps(Processor):
     output_variables = {
         'version': {
             'description': ('The highest version found according to '
-                            'LooseVersion logic.'),
+                            'pkg_resources.parse_version logic.'),
         },
         'cached_path': {
             'description': ('Path to the existing contents in the AutoPkg '
@@ -108,7 +106,7 @@ class OfflineApps(Processor):
 
     def get_latest_version(self, found_items, major_version_like, version_separator):
         '''Determines the highest version number of the provided strings.'''
-        latest_version = "0"
+        latest_version = ""
         # print('found_items:  {}'.format(found_items))
 
         # Loop through the found items
@@ -116,13 +114,14 @@ class OfflineApps(Processor):
             # print('item:  {}'.format(item))
             item_version = item.split(version_separator)[-1]
             # print('item_version:  {}'.format(item_version))
+            # print('latest_version:  {}'.format(latest_version))
 
             # If a major_version is supplied to reference, make sure the version string starts with supplied major version
             if major_version_like and not item_version.startswith(major_version_like):
                 print("Does not match major_version")
                 continue
 
-            if LooseVersion(item_version) > LooseVersion(latest_version):
+            if Compare_Version(item_version) > Compare_Version(latest_version):
                 # print("Matches major_version")
                 latest_version = item_version
                 latest_version_folder = item

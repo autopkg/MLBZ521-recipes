@@ -8,8 +8,14 @@
     <string>Downloads, packages, and uploads the latest driver package into a JPS based on the override-able parameters:  model, download type, and OS Version.
 
 model example:  'Workcentre 6515'
-download types:  macOS Common Print Driver Installer (default), The provided string is searched in the web page.
-OS version:  10_14 (default)</string>
+download types:  The download type desired; the provided string is searched in the web page.  Some examples are:
+    - "macOS Common Driver Installer" (default)
+    - "ICA Scan USB Driver"
+    - "IMAC CA Scan USB Driver"
+    - "TWAIN Scan Driver"
+OS version:  10_15 (default)
+
+Tested both "macOS Common Driver Installer" and "ICA Scan USB Driver" to download and package successfully.</string>
 	<key>Input</key>
 	<dict>
 		<key>GROUP_TEMPLATE</key>

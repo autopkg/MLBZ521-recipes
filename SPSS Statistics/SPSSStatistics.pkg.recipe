@@ -10,7 +10,7 @@ This pkg is has a preinstall script to uninstall previous versions.
 Two override variables are avilable to support the installation of SPSS:
 	* INSTALL_JDK_CLI
 		* A JDK is required to install SPSS silently; if one is not installed, you can provide a command 
-			line command to acquire one through any method that is support in your environemnt
+			line command to acquire one through any method that is support in your environment
 	* INSTALL_PROPERTIES
 		* As the name suggests, this the "installer.properties" that allows you to customize the install
 			of SPSS.  The available parameters are included; customize for your environment.

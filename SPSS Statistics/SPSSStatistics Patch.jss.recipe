@@ -13,8 +13,8 @@ Two override variables are avilable to support the installation of SPSS:
 		* As the name suggests, this the "installer.properties" that allows you to customize the install
 			of SPSS.  The available parameters are included; customize for your environment.
 
-Do note that the postinstall script that "handles the upgrade" search the /Applications folder for the version of 
-SPSS being upgraded and will inject the path into the install.properties file so it does not need to be specifed
+Do note that the postinstall script that "handles the upgrade" searches the /Applications folder for the version of 
+SPSS being upgraded and will inject the path into the install.properties file so it does not need to be specified
 in the override variable below, which is described above.
 	</string>
 	<key>Identifier</key>

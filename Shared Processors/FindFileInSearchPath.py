@@ -57,12 +57,12 @@ class FindFileInSearchPath(Processor):
     input_variables = {
         "find_file": {
             "required": True,
-            "description": "Which Maples Major Version to look for available patches."
+            "description": "The name of the file to find in the search_paths."
         }
     }
     output_variables = {
         "path_to_found_file": {
-            "description": "Returns the url where to search for the version number."
+            "description": "Full path to the file."
         }
     }
 

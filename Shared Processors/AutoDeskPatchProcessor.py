@@ -15,7 +15,6 @@
 # limitations under the License.
 
 import json
-import re
 
 from autopkglib import Processor, ProcessorError, URLGetter
 
@@ -24,7 +23,7 @@ __all__ = ["AutoDeskPatchProcessor"]
 class AutoDeskPatchProcessor(URLGetter):
 
     """This processor finds the URL for the latest patch of the supplied major
-     version of AutoDesk."""
+    version of AutoDesk."""
 
     input_variables = {
         "product": {

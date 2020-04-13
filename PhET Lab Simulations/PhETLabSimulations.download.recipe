@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
     <key>Description</key>
-    <string>Downloads the latest version of a specificied PhET Lab Simulations.
+    <string>Downloads the latest version of a specified PhET Lab Simulation.
 
 Currently supported:
     - Balloons and Buoyancy

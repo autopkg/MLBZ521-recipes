@@ -25,7 +25,7 @@
 		<key>SELF_SERVICE_DESCRIPTION</key>
 		<string>MirrorOp is a software application that mirrors the screen of your PC, Mac, or mobile device on the large screen in your classroom, pod, or other collaborative environment.</string>
 		<key>SELF_SERVICE_ICON</key>
-		<string>%RECIPE_DIR%/MirrorOp.png</string>
+		<string>MirrorOp.png</string>
 	</dict>
 	<key>ParentRecipe</key>
 	<string>com.github.moofit-recipes.pkg.MirrorOp</string>

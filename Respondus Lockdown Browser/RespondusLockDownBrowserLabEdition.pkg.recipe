@@ -66,6 +66,17 @@ Because Repondus does silly things by expecting the licencing information in the
                 <key>pkgdirs</key>
                 <dict/>
                 <key>pkgroot</key>
+                <string>%RECIPE_CACHE_DIR%/pkgroot</string>
+            </dict>
+        </dict>
+        <dict>
+            <key>Processor</key>
+            <string>PkgRootCreator</string>
+            <key>Arguments</key>
+            <dict>
+                <key>pkgdirs</key>
+                <dict/>
+                <key>pkgroot</key>
                 <string>%RECIPE_CACHE_DIR%/Scripts</string>
             </dict>
         </dict>
@@ -143,6 +154,8 @@ exit 0</string>
 					<string>%bundleid%</string>
 					<key>pkgname</key>
 					<string>%NAME%-%version%</string>
+                    <key>pkgroot</key>
+                    <string>%RECIPE_CACHE_DIR%/pkgroot</string>
 					<key>pkgtype</key>
 					<string>flat</string>
 					<key>scripts</key>

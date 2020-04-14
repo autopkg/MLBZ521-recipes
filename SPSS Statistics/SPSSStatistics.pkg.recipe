@@ -181,7 +181,7 @@ echo "*****  Install SPSS process:  START  *****"
 
 # Set working directory
 pkgDir=$( /usr/bin/dirname "${0}" )
-# Get the filename of the .dmg file
+# Get the filename of the .bin file
 installBin=$( /bin/ls "${pkgDir}" | /usr/bin/grep .bin )
 
 # Version that's being installed

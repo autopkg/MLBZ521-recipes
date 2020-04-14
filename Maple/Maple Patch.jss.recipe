@@ -32,7 +32,11 @@ Specify major version as:  '2019', '2018', '2017', or 2016</string>
         <key>NAME</key>
         <string>Maple %MAJOR_VERSION% Patch</string>
 		<key>SELF_SERVICE_DESCRIPTION</key>
-		<string>Maple is math software that combines the world's most powerful math engine with an interface that makes it extremely easy to analyze, explore, visualize, and solve mathematical problems.</string>
+		<string>
+		<key>SELF_SERVICE_DESCRIPTION</key>
+		<string>This will update your current version of Maple to the latest version.
+
+Maple is math software that combines the world's most powerful math engine with an interface that makes it extremely easy to analyze, explore, visualize, and solve mathematical problems.</string>
 		<key>SELF_SERVICE_ICON</key>
 		<string>Maple.png</string>
 		<!-- A 7z-compatible binary is required.  If one in not in your system PATH 

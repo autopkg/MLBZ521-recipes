@@ -22,7 +22,7 @@ in the override variable below, which is described above.
     <key>Input</key>
     <dict>
         <key>NAME</key>
-        <string>SPSS Statistics</string>
+        <string>SPSS Statistics Patch</string>
 		<key>INSTALL_JDK_CLI</key>
 		<string>/usr/local/bin/jamf policy -event "Amazon_Corretto_JDK" -forceNoRecon</string>
 		<key>INSTALL_PROPERTIES</key>
@@ -132,7 +132,7 @@ echo "*****  Upgrade SPSS process:  START  *****"
 
 # Set working directory
 pkgDir=$( /usr/bin/dirname "${0}" )
-# Get the filename of the .dmg file
+# Get the filename of the .bin file
 installBin=$( /bin/ls "${pkgDir}" | /usr/bin/grep .bin )
 # Version that's being updated
 version="%version%"
@@ -174,11 +174,11 @@ LANG=C /usr/bin/sed -Ei '' 's,(#)?USER_INSTALL_DIR=.*,'"USER_INSTALL_DIR=${insta
 
 # Silent upgrade using information in the installer.properties file
 echo "Upgrading SPSS..."
-exitStatus=$( "${installBin}" -f "${pkgDir}/installer.properties" )
+exitStatus=$( "${pkgDir}/${installBin}" -f "${pkgDir}/installer.properties" )
 exitCode=$?
 
-# Check for the expected exit code.
-if [[ "${exitCode}" != "208" ]]; then
+# For exit code 208:  https://www.ibm.com/support/pages/exit-code-208-install-spss-22-mac
+if [[ $exitCode != 0 &amp;&amp; $exitCode != 208 ]]; then
 	echo "ERROR:  Upgrade failed!"
 	echo "Exit Code:  ${exitCode}"
 	echo "Exit Status:  ${exitStatus}"

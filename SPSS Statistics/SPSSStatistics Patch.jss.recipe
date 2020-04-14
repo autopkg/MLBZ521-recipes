@@ -32,11 +32,13 @@ in the override variable below, which is described above.
 		<key>GROUP_NAME</key>
 		<string>%NAME%-Testing</string>
 		<key>NAME</key>
-		<string>SPSS Statistics</string>
+		<string>SPSS Statistics Patch</string>
 		<key>CATEGORY</key>
 		<string>Analytics</string>
 		<key>SELF_SERVICE_DESCRIPTION</key>
-		<string>IBM SPSS Statistics is an statistical analysis family of products that helps to address the entire analytical process, from planning and data collection to analysis, reporting and deployment.</string>
+		<string>This will update your current version of SPSS Statistics to the latest version.
+
+IBM SPSS Statistics is an statistical analysis family of products that helps to address the entire analytical process, from planning and data collection to analysis, reporting and deployment.</string>
 		<key>SELF_SERVICE_ICON</key>
 		<string>SPSSStatistics.png</string>
 		<key>package_priority</key>

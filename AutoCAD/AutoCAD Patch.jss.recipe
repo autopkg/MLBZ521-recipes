@@ -25,7 +25,9 @@ major_version examples:  2020, 2019, 2018, etc</string>
 		<key>CATEGORY</key>
 		<string>Creativity</string>
 		<key>SELF_SERVICE_DESCRIPTION</key>
-		<string>AutoCAD is computer-aided design (CAD) software that architects, engineers, and construction professionals rely on to create precise 2D and 3D drawings.
+		<string>This will update your current version of AutoCAD to the latest version.
+
+AutoCAD is computer-aided design (CAD) software that architects, engineers, and construction professionals rely on to create precise 2D and 3D drawings.
 
   * Draft, annotate, and design 2D geometry and 3D models with solids, surfaces, and mesh objects
   * Automate tasks such as comparing drawings, addings blocks, creating schedules, and more</string>

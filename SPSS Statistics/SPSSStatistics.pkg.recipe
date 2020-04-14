@@ -93,6 +93,17 @@ COMMUTE_MAX_LIFE=7
                 <true/>
 			</dict>
 		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>com.github.mlbz521.SharedProcessors/FileMode</string>
+			<key>Arguments</key>
+			<dict>
+				<key>file_mode</key>
+				<string>0755</string>
+				<key>file_path</key>
+				<string>%RECIPE_CACHE_DIR%/scripts/%dmg_found_filename%</string>
+			</dict>
+		</dict>
         <dict>
             <key>Processor</key>
             <string>FileCreator</string>
@@ -201,14 +212,15 @@ else
 fi
 
 # Make sure the Installer.bin file is executable
-/bin/chmod +x "${installBin}"
+/bin/chmod +x "${pkgDir}/${installBin}"
 
 # Silent install using information in the installer.properties file
 echo "Installing SPSS..."
-exitStatus=$( "${installBin}" -f "${pkgDir}/installer.properties" )
+exitStatus=$( "${pkgDir}/${installBin}" -f "${pkgDir}/installer.properties" )
 exitCode=$?
 
-if [[ $exitCode != 0 ]]; then
+# For exit code 208:  https://www.ibm.com/support/pages/exit-code-208-install-spss-22-mac
+if [[ $exitCode != 0 &amp;&amp; $exitCode != 208 ]]; then
 	echo "ERROR:  Install failed!"
 	echo "Exit Code:  ${exitCode}"
 	echo "ERROR Content:  ${exitStatus}"

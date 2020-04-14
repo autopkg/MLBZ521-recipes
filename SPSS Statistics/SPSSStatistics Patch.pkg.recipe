@@ -95,6 +95,17 @@ COMMUTE_MAX_LIFE=7
                 <true/>
 			</dict>
 		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>com.github.mlbz521.SharedProcessors/FileMode</string>
+			<key>Arguments</key>
+			<dict>
+				<key>file_mode</key>
+				<string>0755</string>
+				<key>file_path</key>
+				<string>%RECIPE_CACHE_DIR%/scripts/%dmg_found_filename%</string>
+			</dict>
+		</dict>
         <dict>
             <key>Processor</key>
             <string>FileCreator</string>
@@ -170,7 +181,7 @@ echo "Upgrading SPSS Version:  ${currentVersion} at path:  ${appPath}"
 LANG=C /usr/bin/sed -Ei '' 's,(#)?USER_INSTALL_DIR=.*,'"USER_INSTALL_DIR=${installPath}"',' "${pkgDir}/installer.properties"
 
 # Make sure the Patch.bin file is executable
-/bin/chmod +x "${installBin}"
+/bin/chmod +x "${pkgDir}/${installBin}"
 
 # Silent upgrade using information in the installer.properties file
 echo "Upgrading SPSS..."

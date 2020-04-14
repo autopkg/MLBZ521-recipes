@@ -190,7 +190,7 @@ echo "Installing Matlab..."
 
 if [[ $version == "2017a" ]]; then
 	# Inject dummy location to the installer.input file -- hacky, but works
-	LANG=C /usr/bin/sed -Ei '' 's,(#)?licensePath=.*,'"licensePath=${pkgDir}/installer_input.txt"',' "${pkgDir}/installer_input.txt"
+	LANG=C /usr/bin/sed -Ei '' 's,(#)? ?licensePath=.*,'"licensePath=${pkgDir}/installer_input.txt"',' "${pkgDir}/installer_input.txt"
 	# -mode silent did not work in the option file for me.
 	exitStatus=$("${pkgDir}/install" -mode silent -inputFile "${pkgDir}/installer_input.txt")
 elif [[ $version == "2017b" ]]; then
@@ -199,7 +199,7 @@ elif [[ $version == "2017b" ]]; then
 else
 	# 2018a did not work like 2017b unfortunately, where I didn't have to specify the licensePath...
 	# Inject dummy location to the installer.input file -- hacky, but works
-	LANG=C /usr/bin/sed -Ei '' 's,(#)?licensePath=.*,'"licensePath=${pkgDir}/installer_input.txt"',' "${pkgDir}/installer_input.txt"
+	LANG=C /usr/bin/sed -Ei '' 's,(#)? ?licensePath=.*,'"licensePath=${pkgDir}/installer_input.txt"',' "${pkgDir}/installer_input.txt"
 
 	exitStatus=$("${pkgDir}/InstallForMacOSX.app/Contents/MacOS/InstallForMacOSX" -inputFile "${pkgDir}/installer_input.txt")
 fi

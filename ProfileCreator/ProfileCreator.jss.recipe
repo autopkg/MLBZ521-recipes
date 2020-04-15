@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>Identifier</key>
-	<string>com.github.mlbz521.jss.pkg.ProfileCreator</string>
+	<string>com.github.mlbz521.jss.ProfileCreator</string>
 	<key>Input</key>
 	<dict>
 		<key>GROUP_TEMPLATE</key>

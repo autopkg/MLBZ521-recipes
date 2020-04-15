@@ -96,7 +96,7 @@
 			<key>Arguments</key>
 			<dict>
 				<key>xml_file</key>
-				<string>%extracted_file%/PackageInfo</string>
+				<string>%extracted_file%</string>
 				<key>xpath</key>
 				<string>./pkg-ref[@id="com.cisco.Jabber"]/bundle-version/bundle</string>
 				<key>attribute_one</key>

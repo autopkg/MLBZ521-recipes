@@ -5,7 +5,7 @@
     <key>Description</key>
 	<string>Downloads and packages the latest verison of the Jamf Pro Tools from a local file share for use by Site Admins.
 
-Only the Composer, Jamf Remote, and Recon applications are packaged.  These are the only apps that our Site Admins use, which is what this recipe is written for.
+Only the Composer, Jamf Remote, and Recon applications are checked for code sign verified and packaged.  These are the only apps that our Site Admins use, which is what this recipe is written for.
 
 The name of the folder name in /Applications and the package will be named based on the NAME substituion variable.</string>
     <key>Identifier</key>
@@ -90,6 +90,26 @@ The name of the folder name in /Applications and the package will be named based
 		</dict>
         <dict>
             <key>Processor</key>
+            <string>com.github.mlbz521.SharedProcessors/FindFileInSearchPath</string>
+            <key>Arguments</key>
+            <dict>
+                <key>find_file</key>
+                <string>fileicon</string>
+            </dict>
+        </dict>
+		<dict>
+			<key>Processor</key>
+			<string>Copier</string>
+			<key>Arguments</key>
+			<dict>
+				<key>source_path</key>
+				<string>%path_to_found_file%</string>
+				<key>destination_path</key>
+				<string>%RECIPE_CACHE_DIR%/scripts/fileicon</string>
+			</dict>
+		</dict>
+        <dict>
+            <key>Processor</key>
             <string>FileCreator</string>
             <key>Arguments</key>
             <dict>
@@ -133,10 +153,13 @@ exit 0</string>
 
 ###################################################################################################
 # Script Name:  set_JamfProToolsFolderIcon.sh
-# By:  Zack Thompson / Created:  3/17/2020
-# Version:  1.0.0 / Updated:  3/17/2020 / By:  ZT
+# By:  Zack Thompson / Created:  4/17/2020
+# Version:  1.0.0 / Updated:  4/17/2020 / By:  ZT
 #
 # Description:  This script sets an icon on the Jamf Pro Tools folder.
+#
+#   Utilizing the tool fileicon by Michael Klement
+#       https://github.com/mklement0/fileicon
 #
 ###################################################################################################
 
@@ -147,26 +170,19 @@ echo "*****  Set Folder Icon Process:  START  *****"
 
 # Set working directory
 pkgDir=$( /usr/bin/dirname "${0}" )
+# Find fileicon
+fileiconTool=$( /bin/ls "${pkgDir}" | /usr/bin/grep fileicon )
+# Get the .icns file
+iconFile=$( /bin/ls "${pkgDir}" | /usr/bin/grep "%NAME%.icns" )
 
 ##################################################
 # Bits staged...
 
-# Borrowed from:  https://apple.stackexchange.com/questions/6901/how-can-i-change-a-file-or-folder-icon-using-the-terminal/363461#363461
+# Make sure the fileicon tool is executable
+/bin/chmod +x "${pkgDir}/${fileiconTool}"
 
-# Create temporary resource file which points to tmpicons.icns:
-echo "read 'icns' (-16455) \"${pkgDir}/%NAME%.icns\";" >> tmpicns.rsrc
-
-# Append a resource to the folder you want to icon-ize.
-Rez -append tmpicns.rsrc -o $'/Applications/%NAME%/Icon\r'
-
-# Use the resource to set the icon.
-SetFile -a C "/Applications/%NAME%/"
-
-# Hide the Icon\r file from Finder.
-SetFile -a V $'/Applications/%NAME%/Icon\r'
-
-# clean up.
-rm tmpicns.rsrc
+# Set the icon
+"${pkgDir}/${fileiconTool}" set "/Applications/%NAME%/" "${iconFile}"
 
 echo "*****  Set Folder Icon Process:  COMPLETE  *****"
 

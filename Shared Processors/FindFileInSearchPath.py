@@ -71,6 +71,7 @@ class FindFileInSearchPath(Processor):
     def main(self):
 
         find_file = self.env.get('find_file')
+        sub_directory = False
 
         # Ensure input is expanded.
         path = os.path.expanduser(find_file)

@@ -3,7 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>Description</key>
-	<string>Downloads the latest verison of the Jamf Pro Tools from a local file share.</string>
+	<string>Downloads the latest verison of the Jamf Pro Tools from a local file share.
+	
+Only the Composer, Jamf Remote, and Recon applications are checked for code sign verified.  These are the only apps that our Site Admins use, which is what this recipe is written for.</string>
 	<key>Identifier</key>
 	<string>com.github.mlbz521.download.JamfProTools</string>
 	<key>Input</key>

@@ -5,8 +5,6 @@
 	<key>Description</key>
 	<string>Downloads and packages the latest or a specified verison of Matlab from a local file share and then uploads it to a JPS.
 
-This pkg is has a preinstall script to uninstall previous versions.
-
 I license most software separately in environment and do not use the built licensePath key.  If you want to use this, you'll want to fork this recipe more than likely.
 
 One override variable is avilable to support the installation of Matlab:
@@ -53,7 +51,7 @@ I've seen people are unable to locate it as it's not included in newer versions 
 				<key>pkg_path</key>
 				<string>%RECIPE_CACHE_DIR%/%NAME%-%version%.pkg</string>
 				<key>prod_name</key>
-				<string>%NAME%</string>
+				<string>%NAME% %version%</string>
 				<key>category</key>
 				<string>%CATEGORY%</string>
 				<key>policy_category</key>

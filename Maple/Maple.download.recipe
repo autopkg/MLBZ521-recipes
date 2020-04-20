@@ -48,6 +48,23 @@
                 <string>%MAX_FOLDER_DEPTH%</string>
             </dict>
         </dict>
+        <dict>
+            <key>Processor</key>
+            <string>com.github.mlbz521.SharedProcessors/StringRightSplitter</string>
+            <key>Arguments</key>
+            <dict>
+                <key>string_to_split</key>
+                <string>%version%</string>
+                <key>split_on</key>
+                <string>.</string>
+                <key>occurrence</key>
+                <integer>3</integer>
+                <key>index</key>
+                <integer>0</integer>
+                <key>return_variable</key>
+                <string>major_version</string>
+            </dict>
+        </dict>
 		<dict>
 			<key>Processor</key>
 			<string>FileFinder</string>

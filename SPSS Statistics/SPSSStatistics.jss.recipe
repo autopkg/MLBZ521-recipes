@@ -5,8 +5,6 @@
 	<key>Description</key>
 	<string>Downloads and packages the latest or a specified verison of SPSS Statistics from a local file share and then uploads it to a JPS.
 
-This pkg is has a preinstall script to uninstall previous versions.
-
 Two override variables are avilable to support the installation of SPSS:
 	* INSTALL_JDK_CLI
 		* A JDK is required to install SPSS silently; if one is not installed, you can provide a command 
@@ -50,7 +48,7 @@ Two override variables are avilable to support the installation of SPSS:
 				<key>pkg_path</key>
 				<string>%RECIPE_CACHE_DIR%/%NAME%-%version%.pkg</string>
 				<key>prod_name</key>
-				<string>%NAME%</string>
+				<string>%NAME% %major_version%</string>
 				<key>category</key>
 				<string>%CATEGORY%</string>
 				<key>policy_category</key>

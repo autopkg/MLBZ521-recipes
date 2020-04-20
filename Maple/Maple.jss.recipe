@@ -3,9 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>Description</key>
-	<string>Downloads and packages the latest verison of Maple from a local file share and then uploads it to a JPS.
-
-This pkg is has a preinstall script to uninstall previous versions.</string>
+	<string>Downloads and packages the latest verison of Maple from a local file share and then uploads it to a JPS.</string>
 	<key>Identifier</key>
 	<string>com.github.mlbz521.jss.Maple</string>
 	<key>Input</key>
@@ -41,7 +39,7 @@ This pkg is has a preinstall script to uninstall previous versions.</string>
 				<key>pkg_path</key>
 				<string>%RECIPE_CACHE_DIR%/%NAME%-%version%.pkg</string>
 				<key>prod_name</key>
-				<string>%NAME%</string>
+				<string>%NAME% %major_version%</string>
 				<key>category</key>
 				<string>%CATEGORY%</string>
 				<key>policy_category</key>

@@ -80,11 +80,15 @@ class OfflineApps(Processor):
     output_variables = {
         'version': {
             'description': ('The highest version found according to '
-                            'pkg_resources.parse_version logic.'),
+                            'pkg_resources.parse_version logic.')
+        },
+        'found_major_version': {
+            'description': ('The highest version found according to '
+                            'pkg_resources.parse_version logic.')
         },
         'cached_path': {
             'description': ('Path to the existing contents in the AutoPkg '
-                            'Cache.'),
+                            'Cache.')
         }
     }
 
@@ -118,7 +122,7 @@ class OfflineApps(Processor):
 
             # If a major_version is supplied to reference, make sure the version string starts with supplied major version
             if major_version_like and not item_version.startswith(major_version_like):
-                print("Does not match major_version")
+                self.output("Does not match major_version")
                 continue
 
             if Compare_Version(item_version) > Compare_Version(latest_version):
@@ -186,6 +190,8 @@ class OfflineApps(Processor):
 
             else:
                 self.output('Latest version:  {}'.format(self.env['version']))
+                self.env['found_major_version'] = (self.env['version']).split(".", 1)[0]
+                self.output('Found major version:  {}'.format(self.env['found_major_version']))
                 self.output('Location:  {}'.format(version_location))
                 version_folder = (version_location).split("/")[-1]
 

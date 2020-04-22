@@ -15,7 +15,7 @@ Two override variables are avilable to support the installation of SPSS:
 
 Do note that the postinstall script that "handles the upgrade" search the /Applications folder for the version of 
 SPSS being upgraded and will inject the path into the install.properties file so it does not need to be specifed
-in the override variable below, which is described above.
+in the INSTALL_PROPERTIES override variable below, which is described above.
 	</string>
     <key>Identifier</key>
     <string>com.github.mlbz521.pkg.SPSSStatisticsPatch</string>

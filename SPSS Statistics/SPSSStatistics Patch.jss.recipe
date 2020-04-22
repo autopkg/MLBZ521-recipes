@@ -5,6 +5,8 @@
 	<key>Description</key>
 	<string>Downloads and packages the latest or a specified verison of a SPSS Statistics Patch from a local file share and then uploads it to a JPS.
 
+The created Policy's name will be "SPSS Statistics %MAJOR_VERSION% Patch"
+
 Two override variables are avilable to support the installation of SPSS:
 	* INSTALL_JDK_CLI
 		* A JDK is required to install SPSS silently; if one is not installed, you can provide a command 
@@ -15,7 +17,7 @@ Two override variables are avilable to support the installation of SPSS:
 
 Do note that the postinstall script that "handles the upgrade" searches the /Applications folder for the version of 
 SPSS being upgraded and will inject the path into the install.properties file so it does not need to be specified
-in the override variable below, which is described above.
+in the INSTALL_PROPERTIES override variable below, which is described above.
 	</string>
 	<key>Identifier</key>
 	<string>com.github.mlbz521.jss.SPSSStatisticsPatch</string>
@@ -56,7 +58,7 @@ IBM SPSS Statistics is an statistical analysis family of products that helps to 
 				<key>pkg_path</key>
 				<string>%RECIPE_CACHE_DIR%/%NAME%-%version%.pkg</string>
 				<key>prod_name</key>
-				<string>%NAME% %major_version%</string>
+				<string>SPSS Statistics %found_major_version% Patch</string>
 				<key>category</key>
 				<string>%CATEGORY%</string>
 				<key>policy_category</key>

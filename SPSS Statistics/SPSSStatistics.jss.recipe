@@ -5,7 +5,7 @@
 	<key>Description</key>
 	<string>Downloads and packages the latest or a specified verison of SPSS Statistics from a local file share and then uploads it to a JPS.
 
-The created Policy Name will be "SPSS Statistics %MAJOR_VERSION%"
+The created Policy's name will be "SPSS Statistics %MAJOR_VERSION%"
 
 Two override variables are avilable to support the installation of SPSS:
 	* INSTALL_JDK_CLI

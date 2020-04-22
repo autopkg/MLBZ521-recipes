@@ -230,7 +230,7 @@ exit 0</string>
 					<key>id</key>
 					<string>com.autodesk.autocad.patch%version%</string>
 					<key>pkgname</key>
-					<string>%NAME% %MAJOR_VERSION%-%version%</string>
+					<string>AutoCAD %MAJOR_VERSION% Patch-%version%</string>
                     <key>pkgroot</key>
                     <string>%RECIPE_CACHE_DIR%/pkgroot</string>
 					<key>pkgtype</key>

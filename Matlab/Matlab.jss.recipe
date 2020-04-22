@@ -5,6 +5,8 @@
 	<key>Description</key>
 	<string>Downloads and packages the latest or a specified verison of Matlab from a local file share and then uploads it to a JPS.
 
+The created Policy's name will be in the format of "%NAME% %version%"
+
 I license most software separately in environment and do not use the built licensePath key.  If you want to use this, you'll want to fork this recipe more than likely.
 
 One override variable is avilable to support the installation of Matlab:

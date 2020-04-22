@@ -9,7 +9,7 @@ I license most software separately in environment and do not use the built licen
 
 One override variable is avilable to support the installation of Matlab:
 	* INSTALL_INPUT
-		* As the name suggests, this the "installer.input" that allows you to customize the install
+		* As the name suggests, this is the "installer.input" that allows you to customize the install
 			of Matlab.  The available parameters are included; customize for your environment.
 
 If you want to customize the products that are installed, a copy of an original, albeit old, installer_input.txt is available in the recipe directory.

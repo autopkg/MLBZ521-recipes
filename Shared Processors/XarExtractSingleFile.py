@@ -96,7 +96,6 @@ class XarExtractSingleFile(Processor):
 
         # Get a list of files in the archive
         cmd_list_files = '/usr/bin/xar -tf "{}"'.format(archive_path)
-        # cmd_list_files = '/Users/zthomps3/Downloads/xar -tf "{}"'.format(archive_path)
         results_list_files = self.runUtility(cmd_list_files)
 
         if not results_list_files['success']:
@@ -115,7 +114,6 @@ class XarExtractSingleFile(Processor):
         # Walk trough the list of files entries
         for filename in [ item for item in list_of_files if fnmatch(item, file_to_extract) ]:
             cmd_extract = '/usr/bin/xar -xf "{archive_path}" "{filename}" -C "{extract_file_path}"'.format(archive_path=archive_path, filename=filename, extract_file_path=extract_file_path)
-            # cmd_extract = '/Users/zthomps3/Downloads/xar -xf "{archive_path}" "{filename}" -C "{extract_file_path}"'.format(archive_path=archive_path, filename=filename, extract_file_path=extract_file_path)
             results_list_files = self.runUtility(cmd_extract)
 
             if not results_list_files['success']:

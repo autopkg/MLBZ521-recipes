@@ -3,7 +3,7 @@ mlbz521-recipes
 
 Recipes I have created that were not publicly available in other repositories or are unique enough to warrant a second recipe.
 
-A have a decent number of recipes that use an "offline repository" method.  Basically, these software tiles are not available to be downloaded publicly, normally requiring a login to access the download.  So I have written a custom processor that will allow you to simply drop the vendor provided "package", whatever format it may be, into a specifically named folder structure, whether local to the system running autopkg or a remote host that is mounted before run, and the recipe will be able to determine which version of the application to "download" even if multiple are available.  For more details, review the Shared Processors readme linked below.
+I have a decent number of recipes that use an "offline repository" method.  Basically, these software tiles are not available to be downloaded publicly, normally requiring a login to access the download.  So I have written a custom processor that will allow you to simply drop the vendor provided "package", whatever format it may be, into a specifically named folder structure, whether local to the system running autopkg or a remote host that is mounted before run, and the recipe will be able to determine which version of the application to "download" even if multiple are available.  For more details, review the Shared Processors readme linked below.
 
 
 ## Shared Processors ##
@@ -203,17 +203,6 @@ Available recipe types:
   * jss
 
 
-### Mathematica ###
-
-Download recipe expects the installer is available in an "offline repository".
-
-Available recipe types:
-  * download
-    * will "download" from a offline repository
-  * pkg
-  * jss
-
-
 ### Matlab ###
 
 Download recipe expects the installer is available in an "offline repository".
@@ -318,7 +307,7 @@ Parent Recipe:  com.github.aysiu.download.LockDownBrowserLab
 
 The download recipe requires you to set your Institution ID and Lab Hash.
 
-Because Repondus does silly things by expecting the licencing information in the file name, the pkg recipe performs "package inception" so that the package name visible in Jamf Pro uses a standard naming convention.
+Because Respondus does silly things by expecting the licencing information in the file name, the pkg recipe performs "package inception" so that the package name visible in Jamf Pro uses a standard naming convention.
 
 Available recipe types:
   * pkg

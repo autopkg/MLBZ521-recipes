@@ -1,7 +1,15 @@
 mlbz521-recipes
 ======
 
-Just a few recipes I have created that were not publicly available in other repositories or are unique enough to warrant a second recipe.
+Recipes I have created that were not publicly available in other repositories or are unique enough to warrant a second recipe.
+
+A have a decent number of recipes that use an "offline repository" method.  Basically, these software tiles are not available to be downloaded publicly, normally requiring a login to access the download.  So I have written a custom processor that will allow you to simply drop the vendor provided "package", whatever format it may be, into a specifically named folder structure, whether local to the system running autopkg or a remote host that is mounted before run, and the recipe will be able to determine which version of the application to "download" even if multiple are available.  For more details, review the Shared Processors readme linked below.
+
+
+## Shared Processors ##
+
+A separate readme is available for my [shared processors](https://github.com/autopkg/MLBZ521-recipes/blob/master/Shared%20Processors/ReadMe.md)
+
 
 ## Recipes ##
 
@@ -38,8 +46,9 @@ Recipes for both the full version download as well as the latest patch.
 
 Available recipe types:
   * download
-    * `ARCHICAD.download` will download the latest full installer.
-    * `ARCHICAD Patch.download` will download the latest patch.
+    * ~~`ARCHICAD.download` will download the latest full installer~~
+      * The base installer has been moved behind a login
+    * `ARCHICAD Patch.download` will download the latest patch
       * Variable overrides for:  major_version, localization, and release_type
       * Uses custom processor to download
   * pkg
@@ -49,13 +58,91 @@ Available recipe types:
   * jss
 
 
-### Brother Printer ###
+### AutoCAD for Mac ###
+
+Recipes for both base and patch installers are available.  Download recipe for the base full version expects the installer is available in an "offline repository".  Patch download recipe will download the the latest patch from AutoDesk for the supplied major version.
+
+Available recipe types:
+  * download
+    * `AutoCAD.download` will "download" from a offline repository
+    * `AutoCAD Patch.download` will download the latest patch.
+      * Variable overrides for:  major_version
+      * Uses custom processor to obtain download url
+  * pkg
+  * jss
+
+
+### Bomgar ###
+
+Recipes for both the Representative Console and Jump Client are available.  Download recipes expect the installers are available in an "offline repository".
+
+Available recipe types:
+  * download
+    * recipes will "download" from a offline repository
+    * `BomgarConsole.download`
+      * Variable overrides for:  CODE_SIGN_IDENTIFIER
+  * pkg
+  * jss
+
+
+### Brother Print Drivers ###
 
 Downloads a Brother Printer Driver, Software Package, Utility, or Firmware specified.  Obviously some packages are compatible with different models, but I haven't been able to think of a way to specify this in the name without it being extremely long.  You will need to specify the model specifically for this to work.  This probably isn't the best way to do it, but it works...
 
 Available recipe types:
   * download
     * Variable overrides for:  MODEL, TYPE_REQUEST, and OS_VERSION
+  * pkg
+  * jss
+
+
+### Cisco Jabber ###
+
+Download recipe expects the installer is available in an "offline repository".
+
+Available recipe types:
+  * download
+    * will "download" from a offline repository
+  * pkg
+  * jss
+
+
+### Cisco Umbrella Roaming Client ###
+
+Downloads the latest release of Cisco Umbrella Roaming Client.
+
+Available recipe types:
+  * download
+  * pkg
+  * jss
+
+
+### CrowdStrike Falcon ###
+
+Two recipes "types" are available to choice from for CrowdStrike Falcon.
+  * The original "offline" recipe requires the installer is available in an "offline repository"
+  * A recipe that downloads the agent via CrowdStrike's API
+
+Shortly after creating the offline recipe format that I'm using for other recipes, CrowdStrike completed a feature request we had to make the download available via their API.  I'm leaving the offline recipe format available incase you don't have access to the API or prefer to not use it.
+
+Available recipe types:
+  * download
+    * `CrowdStrikeFalconOffline.download`
+      * will "download" from a offline repository
+    * `CrowdStrikeFalcon.download`
+      * Variable overrides for:  CLIENT_ID, CLIENT_SECRET, POLICY_ID
+  * pkg
+    * Variable override for:  LICENSE_ID
+  * jss
+
+
+### CXone Softphone ###
+
+Download recipe expects the installer is available in an "offline repository".
+
+Available recipe types:
+  * download
+    * will "download" from a offline repository
   * pkg
   * jss
 
@@ -80,12 +167,118 @@ Available recipe types:
   * jss
 
 
+### Jamf Pro Tools ###
+
+Download recipe expects the installer is available in an "offline repository".  This is designed for our "Site Admins" and doesn't include the `Jamf Admin.app` nor `Jamf Imaging.app`.
+
+Available recipe types:
+  * download
+    * will "download" from a offline repository
+  * pkg
+  * jss
+
+
+### JMP/JMP Pro ###
+
+Download recipe expects the installer is available in an "offline repository".  The download and pkg recipes can be used for either JMP or JMP Pro and a unique jss recipe is available for each.
+
+Available recipe types:
+  * download
+    * will "download" from a offline repository
+  * pkg
+  * jss
+
+
+### Maple ###
+
+Recipes for both base and patch installers are available.  Download recipe for the base full version expects the installer is available in an "offline repository".  Patch download recipe will download the the latest patch from Maple for the supplied major version.
+
+Available recipe types:
+  * download
+    * `Maple.download` will "download" from a offline repository
+    * `Maple Patch.download` will download the latest patch.
+      * Variable overrides for:  major_version
+      * Uses custom processor to obtain download url
+  * pkg
+  * jss
+
+
+### Mathematica ###
+
+Download recipe expects the installer is available in an "offline repository".
+
+Available recipe types:
+  * download
+    * will "download" from a offline repository
+  * pkg
+  * jss
+
+
+### Matlab ###
+
+Download recipe expects the installer is available in an "offline repository".
+
+I license most software separately in environment and do not use the built licensePath key.  If you want to use the built-in licensePath Key, you'll want to fork this recipe more than likely.
+
+If you want to customize the products that are installed, a copy of an original, albeit old, installer_input.txt is available in the recipe directory.  I've seen people are unable to locate it as it's not included in newer versions even though the documentation points to it.
+
+Available recipe types:
+  * download
+    * will "download" from a offline repository
+  * pkg
+    * includes a preinstall script to uninstall previous versions
+    * Variable overrides for:  INSTALL_INPUT
+  		* As the name suggests, this the "installer.input" that allows you to customize the install of Matlab.  The available parameters are included in the recipe; customize for your environment.
+  * jss
+
+
+### Mendeley ###
+
+Parent Recipe:  com.github.hansen-m.pkg.Mendeley
+
+Available recipe types:
+  * jss
+
+
+### MirrorOp ###
+
+Parent Recipe:  com.github.moofit-recipes.pkg.MirrorOp
+
+Available recipe types:
+  * jss
+
+
 ### Nvivo ###
 
 Parent Recipe:  com.github.joshua-d-miller.download.nvivo
   * Variable overrides for:  MAJOR_VERSION
 
 Available recipe types:
+  * pkg
+  * jss
+
+
+### Pharos Popup Client ###
+
+Parent Recipe:  com.github.asemak.pkg.popup
+
+Available recipe types:
+  * jss
+
+
+### PhET Lab Simulations ###
+
+Downloads the latest version of a specified PhET Lab Simulation and creates a pseudo macOS application wrapper around the .jar Java executable.  Which allows it to be fully inventoried into Jamf Pro like a standard app.  I did my best to create an 'App' that looks half was decent with icons and what not...  Not a graphics person, so that could be improved.
+
+Currently supported:
+  * Balloons and Buoyancy
+
+Additional simulation can be added, only what has been requested in my organization, have I added so far.
+
+Available recipe types:
+  * download
+    * Variable overrides for:  LAB_SIM
+    * Uses custom processor to obtain download url and set other environment information used by child recipes
   * pkg
   * jss
 
@@ -103,6 +296,40 @@ Available recipe types:
     * Python 3.6+ is a prerequisite before installing QGIS 3 -- the created .pkg will hard fail if Python 3.6+ is not installed.
     * The created .pkg will "uninstall" previous versions of QGIS.
     * The QGIS installer process will also install the necessary Python modules using pip. This requires an internet connection during installation.
+  * jss
+
+
+### RealVNC ###
+
+Parent Recipe:  com.github.foigus.download.RealVNCViewer
+
+The vendor's CFBundleShortVersionString format is '6.20.113 (r42303)' which isn't accepted by pkgbuild when building the package.  
+
+So I wrote a hacky solution to supply an accept version string to pkgbuild and still retain the "vendor version" that can be used for naming and use within Jamf Pro (Smart Groups, etc).
+
+Available recipe types:
+  * pkg
+  * jss
+
+
+### Respondus Lockdown Browser ###
+
+Parent Recipe:  com.github.aysiu.download.LockDownBrowserLab
+
+The download recipe requires you to set your Institution ID and Lab Hash.
+
+Because Repondus does silly things by expecting the licencing information in the file name, the pkg recipe performs "package inception" so that the package name visible in Jamf Pro uses a standard naming convention.
+
+Available recipe types:
+  * pkg
+  * jss
+
+
+### Safe Exam Browser ###
+
+Parent Recipe:  com.github.aanklewicz.pkg.SEB
+
+Available recipe types:
   * jss
 
 
@@ -135,6 +362,44 @@ Available recipe types:
   * jss
 
 
+### SPSS Statistics ###
+
+Recipes for both base and patch installers are available.  Download recipe expects the installer is available in an "offline repository".  The download recipe can be used for either the base or patch installers and unique pkg and jss recipes are needed for additional steps.
+
+In my environment my base package installs to a custom environment (instead of five folders deep), just in case someone has installed SPSS in a different location somehow, in the Patch.pkg recipe, the postinstall script that "handles the upgrade" searches the `/Applications` folder for the version of SPSS being upgraded and will inject the path into the install.properties file so it does not need to be specified in the INSTALL_PROPERTIES override variable below, which is described below.
+
+Available recipe types:
+  * download
+    * "download" from a offline repository
+  * pkg
+    * base installer recipe includes a preinstall script to uninstall previous versions
+    * Variable overrides for:
+      * INSTALL_PROPERTIES
+  		  * As the name suggests, this the "installer.properties" that allows you to customize the install of SPSS.  The available parameters are included; customize for your environment.
+      * INSTALL_JDK_CLI
+        * A JDK is required to install SPSS silently; if one is not installed, you can provide a command line command to acquire one through any method that is support in your environment
+  * jss
+
+
+### Xerox Print Drivers ###
+
+Downloads the latest Xerox package based on the override-able parameters:  model, download type, and OS Version.  Examples are:
+  * "macOS Common Driver Installer" (default)
+  * "ICA Scan USB Driver"
+  * "IMAC CA Scan USB Driver"
+  * "TWAIN Scan Driver"
+
+Tested both "macOS Common Driver Installer" and "ICA Scan USB Driver" to download and package successfully.
+
+The "macOS Common Driver Installer" seems to support a large number of printers through my poking.  So the recipes end up labeling the produced package as such and not for a "unique" printer model (this is a change after the last update).
+
+Available recipe types:
+  * download
+    * Variable overrides for:  model, downloadType, and osVersion
+  * pkg
+  * jss
+
+
 ### Zoom ###
 
 Recipes for both Zoom for IT Admins package and the Zoom Outlook Plugin for macOS.
@@ -147,34 +412,3 @@ Available recipe types:
       * Configure Zoom for your organization with the CONFIG_PLIST Key
   * jss
 
-
-
-## Shared Processors ##
-
-### FileMode ###
-
-This processor essentially runs `chmod` on a file.  Provide the numeric mode for file in octal format.
-
-
-### JVMVersioner ###
-
-This processor finds the Java Virtual Machine version in a JDK package.  This will allow you to use which OpenJDK distributor you would like, and get the JVM version from it.  This can this be used in a Smart Group point to an EA of the JVM's value, for instance.
-
-
-### TextFileReader ###
-
-This process reads a text file, which can point to a path inside a .dmg which will be mounted, looks for a regex pattern and returns the rest of the line that matched the pattern.
-
-
-### VersionMajorMinor ###
-
-This processor splits a version string into only the 'Major.Minor' numerals.
-  * Expected format is Semantic Versioning
-  * Default behavior example: "3.6.5" --> "3.6"
-
-
-### VersionSubstituter ###
-
-This processor substitutes character(s) in a string by number of occurrences.
-  * By default, it splits using a dash only the first item
-  * Default behavior example: "3.0.8-2" --> "3.0.8b2"

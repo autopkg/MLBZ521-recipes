@@ -3,12 +3,12 @@ mlbz521-recipes
 
 Recipes I have created that were not publicly available in other repositories or are unique enough to warrant a second recipe.
 
-I have a decent number of recipes that use an "offline repository" method.  Basically, these software tiles are not available to be downloaded publicly, normally requiring a login to access the download.  So I have written a custom processor that will allow you to simply drop the vendor provided "package", whatever format it may be, into a specifically named folder structure, whether local to the system running autopkg or a remote host that is mounted before run, and the recipe will be able to determine which version of the application to "download" even if multiple are available.  For more details, review the Shared Processors readme linked below.
+I have a decent number of recipes that use an "offline repository" method.  Basically, these software tiles are not available to be downloaded publicly, normally requiring a login to access the download.  So I have written a custom processor that will allow you to simply drop the vendor provided "package", whatever format it may be, into a specifically named folder structure, whether local to the system running autopkg or a remote host that is mounted before run, and the recipe will be able to determine which version of the application to "download" even if multiple are available.  For more details, review the Shared Processors README linked below.
 
 
 ## Shared Processors ##
 
-A separate readme is available for my [shared processors](https://github.com/autopkg/MLBZ521-recipes/blob/master/Shared%20Processors/ReadMe.md)
+A separate README is available for my [shared processors](https://github.com/autopkg/MLBZ521-recipes/blob/master/Shared%20Processors/ReadMe.md).
 
 
 ## Recipes ##
@@ -239,11 +239,11 @@ Available recipe types:
 
 ### Nvivo ###
 
-Parent Recipe:  com.github.joshua-d-miller.download.nvivo
-  * Variable overrides for:  MAJOR_VERSION
+Parent Recipe:  com.github.jazzace.pkg.NVivo
 
 Available recipe types:
-  * pkg
+  * ~~pkg~~
+    * My pkg recipe will be deprecated as I'm using jazzace's pkg recipe now
   * jss
 
 

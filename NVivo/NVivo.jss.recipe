@@ -5,36 +5,30 @@
 	<key>Identifier</key>
 	<string>com.github.mlbz521.jss.NVivo</string>
 	<key>Description</key>
-	<string>Downloads the latest specified MAJOR_VERSION of NVivo, creates a package, and uploads to the JSS.</string>
+	<string>Downloads the latest version of NVivo, creates a package, and uploads to the JSS.</string>
 	<key>Input</key>
 	<dict>
 		<key>GROUP_TEMPLATE</key>
-		<string>GroupTemplate.xml</string>
+		<string>SmartGroupTemplate.xml</string>
 		<key>POLICY_TEMPLATE</key>
 		<string>PolicyTemplate.xml</string>
 		<key>POLICY_CATEGORY</key>
-		<string>%CATEGORY%</string>
-		<key>version</key>
-		<string></string>
+		<string>Testing</string>
 		<key>package_notes</key>
 		<string>Product of AutoPkg</string>
-
 		<key>GROUP_NAME</key>
 		<string>%NAME%-Testing</string>
-		<key>MAJOR_VERSION</key>
-		<string>12</string>
-
 		<key>NAME</key>
 		<string>NVivo</string>
 		<key>CATEGORY</key>
-		<string>Testing</string>
-		<key>DESCRIPTION</key>
+		<string>Analytics</string>
+		<key>SELF_SERVICE_DESCRIPTION</key>
 		<string>NVivo for Mac is your platform for analyzing all forms of unstructured data.  Quickly interrogate data using powerful search, query and visualization tools.  Get the big picture or get into the detail.  Uncover subtle connections, rigorously justify findings, and effortlessly share your work.</string>
-		<key>ICON</key>
-		<string>%RECIPE_DIR%/NVivo%MAJOR_VERSION%.png</string>
+		<key>SELF_SERVICE_ICON</key>
+		<string>NVivo.png</string>
 	</dict>
 	<key>ParentRecipe</key>
-	<string>com.github.mlbz521.pkg.NVivo</string>
+	<string>com.github.jazzace.pkg.NVivo</string>
 	<key>Process</key>
 	<array>
 		<dict>
@@ -53,9 +47,9 @@
 				<key>policy_template</key>
 				<string>%POLICY_TEMPLATE%</string>
 				<key>self_service_icon</key>
-				<string>%ICON%</string>
+				<string>%SELF_SERVICE_ICON%</string>
 				<key>self_service_description</key>
-				<string>%DESCRIPTION%</string>
+				<string>%SELF_SERVICE_DESCRIPTION%</string>
 				<key>groups</key>
 				<array>
 					<dict>

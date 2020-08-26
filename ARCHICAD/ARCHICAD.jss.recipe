@@ -3,10 +3,10 @@
 <plist version="1.0">
 <dict>
 	<key>Description</key>
-	<string>Downloads the latest version of ARCHICAD, builds a package, and uploads it to the JSS.
+	<string>Downloads the latest version of ARCHICAD from a local file share, builds a package, and uploads it to the JSS.
 
 You can provide values for eduSerialNumber and eduUserID as well to license the install.
-    
+
 Please note, there is likely a newer 'patch' available.</string>
     <key>Identifier</key>
     <string>com.github.mlbz521.jss.ARCHICAD</string>
@@ -33,12 +33,22 @@ Please note, there is likely a newer 'patch' available.</string>
 
 It is a BIM software developed by GRAPHISOFT enabling architects to work in a BIM (Building Information Modeling/Management) environment.</string>
 		<key>SELF_SERVICE_ICON</key>
-		<string>ARCHICAD 22.png</string>
+		<string>ARCHICAD 24.png</string>
 
-        <key>SEARCH_URL</key>
-        <string>https://www.graphisoft.com/downloads/</string>
-        <key>SEARCH_PATTERN</key>
-        <string>(?P&lt;url&gt;https\://dl\.graphisoft\.com/AC/\d\d/USA/AC/ARCHICAD-(?P&lt;major_version&gt;\d\d)-USA-(?P&lt;build&gt;[0-9.-]+)-\d\.\d\.dmg)</string>
+		<key>SEARCH_STRING</key>
+		<string>ARCHICAD</string>
+		<key>MAJOR_VERSION</key>
+		<string></string>
+		<key>NAME_LIMITATION</key>
+		<string></string>
+		<key>NAME_EXCEPTION</key>
+		<string></string>
+		<key>FILE_SHARE</key>
+		<string>/path/to/offline/repository</string>
+        <key>VERSION_STRING_SEPARATOR</key>
+        <string>-</string>
+		<key>MAX_FOLDER_DEPTH</key>
+		<string>1</string>
         <key>EDUSERIALNUMBER</key>
         <string></string>
         <key>EDUUSERID</key>
@@ -54,9 +64,9 @@ It is a BIM software developed by GRAPHISOFT enabling architects to work in a BI
 			<key>Arguments</key>
 			<dict>
 				<key>pkg_path</key>
-				<string>%RECIPE_CACHE_DIR%/%NAME% %major_version%-%version%.pkg</string>
+				<string>%RECIPE_CACHE_DIR%/%NAME% %found_major_version%-%version%.pkg</string>
 				<key>prod_name</key>
-				<string>%NAME% %major_version%</string>
+				<string>%NAME% %found_major_version%</string>
 				<key>category</key>
 				<string>%CATEGORY%</string>
 				<key>policy_category</key>

@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
     <key>Description</key>
-    <string>Downloads the latest Full version of ARCHICAD and builds a package.
+    <string>Downloads the latest Full version of ARCHICAD from a local file share and builds a package.
 
 You can provide values for eduSerialNumber and eduUserID as well to license the install.
     
@@ -14,10 +14,20 @@ Please note, there is likely a newer 'patch' available.</string>
     <dict>
         <key>NAME</key>
         <string>ARCHICAD</string>
-        <key>SEARCH_URL</key>
-        <string>https://www.graphisoft.com/downloads/</string>
-        <key>SEARCH_PATTERN</key>
-        <string>(?P&lt;url&gt;https\://dl\.graphisoft\.com/AC/\d\d/USA/AC/ARCHICAD-(?P&lt;major_version&gt;\d\d)-USA-(?P&lt;build&gt;[0-9.-]+)-\d\.\d\.dmg)</string>
+		<key>SEARCH_STRING</key>
+		<string>ARCHICAD</string>
+		<key>MAJOR_VERSION</key>
+		<string></string>
+		<key>NAME_LIMITATION</key>
+		<string></string>
+		<key>NAME_EXCEPTION</key>
+		<string></string>
+		<key>FILE_SHARE</key>
+		<string>/path/to/offline/repository</string>
+        <key>VERSION_STRING_SEPARATOR</key>
+        <string>-</string>
+		<key>MAX_FOLDER_DEPTH</key>
+		<string>1</string>
         <key>EDUSERIALNUMBER</key>
         <string></string>
         <key>EDUUSERID</key>
@@ -55,7 +65,7 @@ Please note, there is likely a newer 'patch' available.</string>
             <key>Arguments</key>
             <dict>
                 <key>source</key>
-                <string>%pathname%</string>
+                <string>%found_filename%</string>
                 <key>file_to_open</key>
                 <string>GRAPHICD.txt</string>
                 <key>pattern</key>
@@ -98,7 +108,16 @@ Please note, there is likely a newer 'patch' available.</string>
 			<key>Arguments</key>
 			<dict>
 				<key>pattern</key>
-				<string>%pathname%/%NAME%*</string>
+				<string>%found_filename%/%NAME%*</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>FileFinder</string>
+			<key>Arguments</key>
+			<dict>
+				<key>pattern</key>
+				<string>%cached_path%/*.dmg</string>
 			</dict>
 		</dict>
 		<dict>
@@ -107,7 +126,7 @@ Please note, there is likely a newer 'patch' available.</string>
 			<key>Arguments</key>
 			<dict>
 				<key>source_path</key>
-				<string>%pathname%/%dmg_found_filename%</string>
+				<string>%found_filename%/%dmg_found_filename%</string>
 				<key>destination_path</key>
 				<string>%RECIPE_CACHE_DIR%/scripts/%dmg_found_filename%</string>
 			</dict>
@@ -155,7 +174,7 @@ fi
 
 echo "Installing: " $( "${pkgDir}/${ARCHICADinstaller}/Contents/MacOS/installbuilder.sh" --version --mode unattended )
 
-installResult=$( "${pkgDir}/${ARCHICADinstaller}/Contents/MacOS/installbuilder.sh" --mode unattended --unattendedmodeui none --desktopshortcut 0 --dockshortcut 0 --eduSerialNumber "${eduSerialNumber}" --eduUserID "${eduUserID}" )
+installResult=$( "${pkgDir}/${ARCHICADinstaller}/Contents/MacOS/installbuilder.sh" --mode unattended --unattendedmodeui none --dockshortcut 0 --eduSerialNumber "${eduSerialNumber}" --eduUserID "${eduUserID}" )
 exitCode=$?
 
 if [[ $exitCode != 0 ]]; then
@@ -187,7 +206,7 @@ exit 0</string>
 					<key>id</key>
 					<string>com.graphisoft.archicad</string>
 					<key>pkgname</key>
-					<string>%NAME% %major_version%-%version%</string>
+					<string>%NAME% %found_major_version%-%version%</string>
 					<key>pkgroot</key>
 					<string>%RECIPE_CACHE_DIR%/pkgroot</string>
 					<key>pkgtype</key>

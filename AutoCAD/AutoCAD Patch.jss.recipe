@@ -20,6 +20,8 @@ major_version examples:  2020, 2019, 2018, etc</string>
 		<string>Testing</string>
 		<key>package_notes</key>
 		<string>Product of AutoPkg</string>
+		<key>package_priority</key>
+		<string>12</string>
 		<key>GROUP_NAME</key>
 		<string>%NAME%-Testing</string>
 		<key>NAME</key>

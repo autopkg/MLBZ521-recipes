@@ -181,7 +181,7 @@ exit 0</string>
 					<key>id</key>
 					<string>com.graphisoft.archicad</string>
 					<key>pkgname</key>
-					<string>%NAME% %major_version%-%version%</string>
+					<string>ARCHICAD %major_version% Patch-%version%</string>
 					<key>pkgroot</key>
 					<string>%RECIPE_CACHE_DIR%/pkgroot</string>
 					<key>pkgtype</key>

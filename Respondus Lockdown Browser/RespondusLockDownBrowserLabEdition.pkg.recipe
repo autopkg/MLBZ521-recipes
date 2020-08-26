@@ -16,7 +16,7 @@ Because Repondus does silly things by expecting the licencing information in the
 		<string>Respondus LockDown Browser Lab Edition</string>
 	</dict>
 	<key>ParentRecipe</key>
-	<string>com.github.aysiu.download.LockDownBrowserLab</string>
+	<string>com.github.nstrauss.download.RespondusLockDownBrowserLab</string>
     <key>Process</key>
     <array>
         <dict>

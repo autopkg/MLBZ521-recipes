@@ -126,6 +126,7 @@ The output variables are:
     * description:  Path to the existing contents in the AutoPkg Cache, whether newly or previously downloaded
 
 Used in:
+  * com.github.mlbz521.download.ARCHICAD
   * com.github.mlbz521.download.AutoCAD
   * com.github.mlbz521.download.BomgarConsole
   * com.github.mlbz521.download.BomgarJumpClient

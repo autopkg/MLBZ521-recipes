@@ -46,15 +46,14 @@ Recipes for both the full version download as well as the latest patch.
 
 Available recipe types:
   * download
-    * ~~`ARCHICAD.download` will download the latest full installer~~
-      * The base installer has been moved behind a login
+    * `ARCHICAD.download` will "download" from a offline repository
     * `ARCHICAD Patch.download` will download the latest patch
       * Variable overrides for:  major_version, localization, and release_type
       * Uses custom processor to download
   * pkg
     * `ARCHICAD.pkg`
       * Variable overrides for:  EDUSERIALNUMBER and EDUUSERID
-      * Uses multiple custom processor to package
+    * Multiple custom processors used to create packages
   * jss
 
 

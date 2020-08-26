@@ -11,7 +11,7 @@ Default install path is set to:  /Users/Shared/anaconda2 -- adjustable via subst
 	<key>Input</key>
 	<dict>
 		<key>PYTHON_MAJOR_VERSION</key>
-		<string>2</string>
+		<string>3</string>
 		<key>NAME</key>
 		<string>Anaconda%PYTHON_MAJOR_VERSION%</string>
 		<key>PKG_ID_PREFIX</key>

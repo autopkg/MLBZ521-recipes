@@ -39,11 +39,13 @@ class ARCHICADUpdatesProcessor(URLGetter):
         "release_type": {
             "required": True,
             "description": "The release type to look for available patches.",
-        },
+        }
     }
     output_variables = {
         "url": {"description": "Returns the url to download."},
-        "version": {"description": "Returns the build number as the version."},
+        "build": {"build":  "Returns the build number."},
+        "version": {"description": "Returns the version computed from major_version "
+                    "and build number. Same as CFBundleVersion."}
     }
 
     description = __doc__
@@ -59,7 +61,7 @@ class ARCHICADUpdatesProcessor(URLGetter):
 
         # Grab the available downloads.
         response = self.download(
-            "https://www.graphisoft.com/downloads/db-v5.json",
+            "https://graphisoft.com/ww/service/downloads/archicad-updates",
             headers={"Accept": "application/json"},
         )
         json_data = json.loads(response)
@@ -71,20 +73,30 @@ class ARCHICADUpdatesProcessor(URLGetter):
                     json_object.get("version") == major_version,
                     json_object.get("localization") == localization,
                     json_object.get("type") == release_type,
+                    json_object.get("build")
                 )
             ):
-                for details in json_object["downloadLinks"]:
-                    if details.get("platform") == "mac":
-                        available_builds[json_object.get("build")] = details["url"]
+                mac_link = json_object.get("downloadLinks", dict()).get("mac", dict()).get("url")
+                if mac_link:
+                    available_builds[json_object.get("build")] = mac_link
 
         # Get the latest version.
-        build = sorted(available_builds.keys())[-1]
-        url = available_builds[build]
+        if available_builds:
+            build = sorted(available_builds.keys())[-1]
+            version = "{}.0.0.{}".format(major_version, build)
+            url = available_builds[build]
+            build = str(build)
+        else:
+            build = "0"
+            version = "0"
+            url = None
 
         if url:
             self.env["url"] = url
             self.output("Download URL: {}".format(self.env["url"]))
-            self.env["version"] = build
+            self.env["build"] = build
+            self.output("build: {}".format(self.env["build"]))
+            self.env["version"] = version
             self.output("version: {}".format(self.env["version"]))
         else:
             raise ProcessorError(

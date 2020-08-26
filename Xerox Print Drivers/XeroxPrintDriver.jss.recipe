@@ -9,13 +9,13 @@
 
 model example:  'Workcentre 6515'
 download types:  The download type desired; the provided string is searched in the web page.  Some examples are:
-    - "macOS Common Driver Installer" (default)
+    - "macOS Print and Scan Driver Installer" (default)
     - "ICA Scan USB Driver"
     - "IMAC CA Scan USB Driver"
     - "TWAIN Scan Driver"
 OS version:  10_15 (default)
 
-Tested both "macOS Common Driver Installer" and "ICA Scan USB Driver" to download and package successfully.</string>
+Tested both "macOS Print and Scan Driver Installer" and "ICA Scan USB Driver" to download and package successfully.</string>
 	<key>Input</key>
 	<dict>
 		<key>GROUP_TEMPLATE</key>

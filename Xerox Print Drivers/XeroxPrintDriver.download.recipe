@@ -7,13 +7,13 @@
 
 model example:  'Workcentre 6515'
 download types:  The download type desired; the provided string is searched in the web page.  Some examples are:
-    - "macOS Common Driver Installer" (default)
+    - "macOS Print and Scan Driver Installer" (default)
     - "ICA Scan USB Driver"
     - "IMAC CA Scan USB Driver"
     - "TWAIN Scan Driver"
 OS version:  10_15 (default)
 
-Tested both "macOS Common Driver Installer" and "ICA Scan USB Driver" to download and package successfully.
+Tested both "macOS Print and Scan Driver Installer" and "ICA Scan USB Driver" to download and package successfully.
     </string>
     <key>Identifier</key>
     <string>com.github.mlbz521.download.XeroxPrintDriver</string>
@@ -22,7 +22,7 @@ Tested both "macOS Common Driver Installer" and "ICA Scan USB Driver" to downloa
         <key>model</key>
         <string>Workcentre 6515</string>
         <key>downloadType</key>
-        <string>macOS Common Driver Installer</string>
+        <string>macOS Print and Scan Driver Installer</string>
         <key>osVersion</key>
         <string>10_15</string>
         <key>NAME</key>

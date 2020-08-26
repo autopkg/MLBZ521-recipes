@@ -36,7 +36,7 @@ class XeroxPrintDriverProcessor(URLGetter):
         "downloadType": {
             "required": False,
             "description": "The type package type desired, some examples are: "
-                            " - macOS Common Driver Installer (default)"
+                            " - macOS Print and Scan Driver Installer (default)"
                             " - ICA Scan USB Driver"
                             " - IMAC CA Scan USB Driver"
                             " - TWAIN Scan Driver"
@@ -64,7 +64,7 @@ class XeroxPrintDriverProcessor(URLGetter):
         # Define variables
         input_model = self.env.get('model')
         self.output('Searching for:  {}'.format(input_model))
-        downloadType = self.env.get('downloadType', 'macOS Common Driver Installer')
+        downloadType = self.env.get('downloadType', 'macOS Print and Scan Driver Installer')
         osVersion = self.env.get('osVersion', '10_15')
 
         # Build the headers

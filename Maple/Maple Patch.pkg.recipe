@@ -7,11 +7,9 @@
     <key>Description</key>
     <string>Downloads the patch for the specified Maple major version.
 
-Specify major version as:  '2019', '2018', '2017', or 2016</string>
+Specify major version as:  '2020', '2019', '2018', '2017', or 2016</string>
     <key>Input</key>
     <dict>
-        <key>MAJOR_VERSION</key>
-        <string>2019</string>
         <key>NAME</key>
         <string>Maple %MAJOR_VERSION% Patch</string>
 		<!-- A 7z-compatible binary is required.  If one in not in your system PATH 

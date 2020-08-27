@@ -51,7 +51,15 @@ class MaplePatchProcessor(URLGetter):
         else:
             self.output('Searching for patches for major version:  {}'.format(major_version))
 
-        if major_version == "2019":
+        # To get the UUID:
+        # Install Maple > open the file:
+        # /Library/Frameworks/Maple.framework/Versions/<VERSION>/update/update.ini
+        # The UUID is listed in the url variable
+        # Do note that each release/upgrade for each major version will have a different UUID, but shouldn't be a big deal
+
+        if major_version == "2020":
+            uuid = '80c01c3a-4a87-4421-95f3-6511001dc329' # This is technically 2020.1
+        elif major_version == "2019":
             uuid = 'a8326412-07ae-4dbb-a727-6bd0ca623bbf'
         elif major_version == "2018":
             uuid = '11fd3561-032e-4750-846a-993353f154c2'

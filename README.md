@@ -202,6 +202,17 @@ Available recipe types:
   * jss
 
 
+### Mathematica ###
+
+Download recipe expects the installer is available in an "offline repository".
+
+Available recipe types:
+  * download
+    * will "download" from a offline repository
+  * pkg
+  * jss
+
+
 ### Matlab ###
 
 Download recipe expects the installer is available in an "offline repository".

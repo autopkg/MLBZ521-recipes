@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Description</key>
+	<string>Downloads and packages the latest or a specified verison of SPSS Statistics from a local file share.
+
+Tested on versions of SPSS 26 and older.
+
+Two override variables are avilable to support the installation of SPSS:
+	* INSTALL_JDK_CLI
+		* A JDK is required to install SPSS silently; if one is not installed, you can provide a command 
+			line command to acquire one through any method that is support in your environment
+	* INSTALL_PROPERTIES
+		* As the name suggests, this the "installer.properties" that allows you to customize the install
+			of SPSS.  The available parameters are included; customize for your environment.
+	</string>
+    <key>Identifier</key>
+    <string>com.github.mlbz521.pkg.SPSSStatisticsLegacy</string>
+    <key>Input</key>
+    <dict>
+        <key>NAME</key>
+        <string>SPSS Statistics</string>
+		<key>INSTALL_JDK_CLI</key>
+		<string>/usr/local/bin/jamf policy -event "Amazon_Corretto_JDK" -forceNoRecon</string>
+		<key>INSTALL_PROPERTIES</key>
+		<string>INSTALLER_UI=silent
+USER_INSTALL_DIR=/Applications/SPSS Statistics #MAJOR_VERSION#/
+LICENSE_ACCEPTED=true
+#AUTHCODE=
+InstallPython=1
+#LSHOST=
+COMMUTE_MAX_LIFE=7
+#PROXYHOST=
+#PROXYPORT=
+#PROXYUSER=
+#PROXYPASS=</string>
+    </dict>
+	<key>ParentRecipe</key>
+	<string>com.github.mlbz521.download.SPSSStatisticsLegacy</string>
+    <key>Process</key>
+    <array>
+		<dict>
+			<key>Processor</key>
+			<string>PkgRootCreator</string>
+			<key>Arguments</key>
+			<dict>
+				<key>pkgroot</key>
+				<string>%RECIPE_CACHE_DIR%/pkgroot</string>
+				<key>pkgdirs</key>
+				<dict/>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>PkgRootCreator</string>
+			<key>Arguments</key>
+			<dict>
+				<key>pkgroot</key>
+				<string>%RECIPE_CACHE_DIR%/scripts</string>
+				<key>pkgdirs</key>
+				<dict/>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>FileFinder</string>
+			<key>Arguments</key>
+			<dict>
+				<key>pattern</key>
+				<string>%found_filename%/*.bin</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>FileFinder</string>
+			<key>Arguments</key>
+			<dict>
+				<key>pattern</key>
+				<string>%cached_path%/*.dmg</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>Copier</string>
+			<key>Arguments</key>
+			<dict>
+				<key>source_path</key>
+				<string>%found_filename%/%dmg_found_filename%</string>
+				<key>destination_path</key>
+				<string>%RECIPE_CACHE_DIR%/scripts/%dmg_found_filename%</string>
+                <key>overwrite</key>
+                <true/>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>com.github.mlbz521.SharedProcessors/FileMode</string>
+			<key>Arguments</key>
+			<dict>
+				<key>file_mode</key>
+				<string>0755</string>
+				<key>file_path</key>
+				<string>%RECIPE_CACHE_DIR%/scripts/%dmg_found_filename%</string>
+			</dict>
+		</dict>
+        <dict>
+            <key>Processor</key>
+            <string>com.github.mlbz521.SharedProcessors/InputVariableTextSubstituter</string>
+            <key>Arguments</key>
+            <dict>
+                <key>original_string</key>
+                <string>%INSTALL_PROPERTIES%</string>
+                <key>string_to_replace</key>
+                <string>#MAJOR_VERSION#</string>
+                <key>variable_to_use</key>
+                <string>found_major_version</string>
+                <key>return_variable</key>
+                <string>INSTALL_PROPERTIES</string>
+            </dict>
+        </dict>
+        <dict>
+            <key>Processor</key>
+            <string>FileCreator</string>
+            <key>Arguments</key>
+            <dict>
+				<key>file_content</key>
+				<string>%INSTALL_PROPERTIES%</string>
+                <key>file_mode</key>
+                <string>0755</string>
+                <key>file_path</key>
+                <string>%RECIPE_CACHE_DIR%/scripts/installer.properties</string>
+            </dict>
+        </dict>
+        <dict>
+            <key>Processor</key>
+            <string>FileCreator</string>
+            <key>Arguments</key>
+            <dict>
+				<key>file_content</key>
+				<string>#! /bin/bash
+
+###################################################################################################
+# Script Name:  install_SPSS.sh
+# By:  Zack Thompson / Created:  11/1/2017
+# Version:  1.5.1 / Updated:  1/27/2020 / By:  ZT
+#
+# Description:  This script silently installs SPSS.
+#
+###################################################################################################
+
+echo "*****  Install SPSS process:  START  *****"
+
+##################################################
+# Define Variables
+
+# Set working directory
+pkgDir=$( /usr/bin/dirname "${0}" )
+# Get the filename of the .bin file
+installBin=$( /bin/ls "${pkgDir}" | /usr/bin/grep .bin )
+
+# Version that's being installed
+version="%version%"
+majorVersion="%found_major_version%"
+
+##################################################
+# Bits staged...
+
+echo "Checking for a JDK..."
+if [[ -z $( /usr/bin/find "/Library/Java/JavaVirtualMachines" -iname "*.jdk" -type d ) ]]; then
+	# Install prerequisite:  Java JDK
+	echo "Installing prerequisite Java JDK..."
+	%INSTALL_JDK_CLI%
+else
+	echo "JDK exists...continuing..."
+fi
+
+# Make sure the Installer.bin file is executable
+/bin/chmod +x "${pkgDir}/${installBin}"
+
+# Silent install using information in the installer.properties file
+echo "Installing SPSS..."
+exitStatus=$( "${pkgDir}/${installBin}" -f "${pkgDir}/installer.properties" )
+exitCode=$?
+
+# For exit code 208:  https://www.ibm.com/support/pages/exit-code-208-install-spss-22-mac
+if [[ $exitCode != 0 &amp;&amp; $exitCode != 208 ]]; then
+	echo "ERROR:  Install failed!"
+	echo "Exit Code:  ${exitCode}"
+	echo "ERROR Content:  ${exitStatus}"
+	echo "*****  Install SPSS process:  FAILED  *****"
+	exit 1
+fi
+
+# Setting permissions to resolve issues seen in:  https://www-01.ibm.com/support/docview.wss?uid=swg21966637
+echo "Setting permissions on SPSS ${majorVersion} files..."
+/usr/sbin/chown -R root:admin "/Applications/SPSS Statistics ${majorVersion}"
+
+echo "*****  Install SPSS process:  COMPLETE  *****"
+exit 0</string>
+                <key>file_mode</key>
+                <string>0755</string>
+                <key>file_path</key>
+                <string>%RECIPE_CACHE_DIR%/scripts/postinstall</string>
+            </dict>
+        </dict>
+		<dict>
+			<key>Processor</key>
+			<string>PkgCreator</string>
+			<key>Arguments</key>
+			<dict>
+				<key>pkg_request</key>
+				<dict>
+					<key>pkgname</key>
+					<string>%NAME%-%version%</string>
+					<key>pkgroot</key>
+					<string>%RECIPE_CACHE_DIR%/pkgroot</string>
+					<key>version</key>
+					<string>%version%</string>
+					<key>id</key>
+					<string>com.ibm.spssstatistics</string>
+					<key>options</key>
+					<string>purge_ds_store</string>
+					<key>scripts</key>
+					<string>Scripts</string>
+				</dict>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>PathDeleter</string>
+			<key>Arguments</key>
+			<dict>
+				<key>path_list</key>
+				<array>
+					<string>%RECIPE_CACHE_DIR%/pkgroot</string>
+					<string>%RECIPE_CACHE_DIR%/scripts</string>
+				</array>
+			</dict>
+		</dict>
+    </array>
+</dict>
+</plist>

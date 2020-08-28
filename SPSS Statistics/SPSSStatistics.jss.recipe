@@ -5,16 +5,9 @@
 	<key>Description</key>
 	<string>Downloads and packages the latest or a specified verison of SPSS Statistics from a local file share and then uploads it to a JPS.
 
-The created Policy's name will be in the format of "%NAME% %MAJOR_VERSION%"
+Supports the new format found with SPSS v27.
 
-Two override variables are avilable to support the installation of SPSS:
-	* INSTALL_JDK_CLI
-		* A JDK is required to install SPSS silently; if one is not installed, you can provide a command 
-			line command to acquire one through any method that is support in your environemnt
-	* INSTALL_PROPERTIES
-		* As the name suggests, this the "installer.properties" that allows you to customize the install
-			of SPSS.  The available parameters are included; customize for your environment.
-	</string>
+The created Policy's name will be in the format of "%NAME% %MAJOR_VERSION%".</string>
 	<key>Identifier</key>
 	<string>com.github.mlbz521.jss.SPSSStatistics</string>
 	<key>Input</key>

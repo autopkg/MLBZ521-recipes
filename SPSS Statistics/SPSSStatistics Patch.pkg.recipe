@@ -39,7 +39,7 @@ COMMUTE_MAX_LIFE=7
 #PROXYPASS=</string>
     </dict>
 	<key>ParentRecipe</key>
-	<string>com.github.mlbz521.download.SPSSStatistics</string>
+	<string>com.github.mlbz521.download.SPSSStatisticsLegacy</string>
     <key>Process</key>
     <array>
 		<dict>

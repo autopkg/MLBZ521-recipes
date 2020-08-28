@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Description</key>
+	<string>Downloads and packages the latest verison of Mathematica from a local file share.</string>
+    <key>Identifier</key>
+    <string>com.github.mlbz521.pkg.Mathematica</string>
+    <key>Input</key>
+    <dict>
+        <key>NAME</key>
+        <string>Mathematica</string>
+    </dict>
+	<key>ParentRecipe</key>
+	<string>com.github.mlbz521.download.Mathematica</string>
+    <key>Process</key>
+    <array>
+		<dict>
+			<key>Processor</key>
+			<string>PkgRootCreator</string>
+			<key>Arguments</key>
+			<dict>
+				<key>pkgroot</key>
+				<string>%RECIPE_CACHE_DIR%/pkgroot</string>
+				<key>pkgdirs</key>
+				<dict/>
+			</dict>
+		</dict>
+        <dict>
+            <key>Processor</key>
+            <string>FileCreator</string>
+            <key>Arguments</key>
+            <dict>
+				<key>file_content</key>
+				<string>#!/bin/bash
+
+###################################################################################################
+# Script Name:  install_Mathematica.sh
+# By:  Zack Thompson / Created:  1/10/2018
+# Version:  1.4.0 / Updated:  9/20/2019 / By:  ZT
+#
+# Description:  This script silently installs Mathematica.
+#
+###################################################################################################
+
+echo "*****  Install Mathematica process:  START  *****"
+
+##################################################
+# Define Variables
+
+# Set working directory
+pkgDir=$( /usr/bin/dirname "${0}" )
+
+##################################################
+# Define Functions
+
+exitCheck() {
+	if [[ $1 != 0 ]]; then
+		echo "Failed to install:  ${2}"
+		echo "Exit Code:  ${1}"
+		echo "*****  Install Mathematica process:  FAILED  *****"
+		exit 1
+	else
+		echo "${2} has been installed!"
+	fi
+}
+
+##################################################
+# Bits staged...
+
+# Check if Mathematic is already installed.
+if [[ -e "/Applications/Mathematica.app" ]]; then
+	echo "Mathematica is currently installed, removing..."
+	/bin/rm -rf "/Applications/Mathematica.app"
+fi
+
+echo "Installing Mathematica.app..."
+
+# Install Mathematica
+/bin/mv "${pkgDir}/Mathematica.app" /Applications
+exitCode1=$?
+
+# Function exitCheck
+exitCheck $exitCode1 "Mathematica.app"
+
+# Get all of the pkgs.
+packages=$( /bin/ls "${pkgDir}/" | /usr/bin/grep .pkg )
+
+# Loop through each .pkg in the directory...
+while IFS=.pkg read pkg; do
+	echo "Installing ${pkg}..."
+	/usr/sbin/installer -dumplog -verbose -pkg "${pkgDir}/${pkg}" -allowUntrusted -target /
+	exitCode2=$?
+
+	# Function exitCheck
+	exitCheck $exitCode2 "${pkg}"
+
+done &lt; &lt;( echo "${packages}" )
+
+echo "*****  Install Mathematica process:  COMPLETE  *****"
+
+exit 0</string>
+                <key>file_mode</key>
+                <string>0755</string>
+                <key>file_path</key>
+                <string>%RECIPE_CACHE_DIR%/scripts/postinstall</string>
+            </dict>
+        </dict>
+		<dict>
+			<key>Processor</key>
+			<string>PkgCreator</string>
+			<key>Arguments</key>
+			<dict>
+				<key>pkg_request</key>
+				<dict>
+					<key>pkgname</key>
+					<string>%NAME%-%version%</string>
+					<key>pkgroot</key>
+					<string>%RECIPE_CACHE_DIR%/pkgroot</string>
+					<key>version</key>
+					<string>%version%</string>
+					<key>id</key>
+					<string>com.wolfram.Mathematica</string>
+					<key>options</key>
+					<string>purge_ds_store</string>
+					<key>scripts</key>
+					<string>Scripts</string>
+				</dict>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>PathDeleter</string>
+			<key>Arguments</key>
+			<dict>
+				<key>path_list</key>
+				<array>
+					<string>%RECIPE_CACHE_DIR%/pkgroot</string>
+					<string>%RECIPE_CACHE_DIR%/scripts</string>
+				</array>
+			</dict>
+		</dict>
+    </array>
+</dict>
+</plist>

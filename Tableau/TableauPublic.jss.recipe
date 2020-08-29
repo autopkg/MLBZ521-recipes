@@ -32,6 +32,8 @@
 			<string>JSSImporter</string>
 			<key>Arguments</key>
 			<dict>
+				<key>pkg_path</key>
+				<string>%RECIPE_CACHE_DIR%/%NAME%-%version%.pkg</string>
 				<key>prod_name</key>
 				<string>%NAME%</string>
 				<key>category</key>

@@ -5,7 +5,7 @@
     <key>Description</key>
     <string>Downloads the latest patch of AutoCAD based supplied "major_version."
 
-major_version examples:  2020, 2019, 2018, etc</string>
+major_version examples:  2021, 2020, 2019, 2018, etc</string>
     <key>Identifier</key>
     <string>com.github.mlbz521.download.AutoCADPatch</string>
     <key>Input</key>
@@ -15,7 +15,7 @@ major_version examples:  2020, 2019, 2018, etc</string>
         <key>PRODUCT</key>
         <string>ACDMAC</string>
         <key>MAJOR_VERSION</key>
-        <string>2020</string>
+        <string>2021</string>
     </dict>
     <key>Process</key>
     <array>

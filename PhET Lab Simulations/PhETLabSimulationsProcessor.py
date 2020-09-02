@@ -76,7 +76,7 @@ class PhETLabSimulationsProcessor(Processor):
         else:
             raise ProcessorError('This lab simulation is not yet supported:  {lab_sim}.\
 \
-Feel free to submit a pull request to add submit.'.format(lab_sim=lab_sim))
+Feel free to submit a pull request to add a new simulation.'.format(lab_sim=lab_sim))
 
 
         # Return values

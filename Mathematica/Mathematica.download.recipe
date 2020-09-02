@@ -19,7 +19,7 @@
 		<key>NAME_EXCEPTION</key>
 		<string>Patch</string>
 		<key>FILE_SHARE</key>
-		<string>/Volumes/Jamf Pro</string>
+		<string>/path/to/offline/repository</string>
         <key>VERSION_STRING_SEPARATOR</key>
         <string>-</string>
 		<key>MAX_FOLDER_DEPTH</key>

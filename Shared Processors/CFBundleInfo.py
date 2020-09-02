@@ -47,7 +47,7 @@ class CFBundleInfo(DmgMounter):
         "cfbundle_shortversionstring": {
             "description": "Value of CFBundleShortVersionString."
         },
-        "cfbundlebundle_identifier": {
+        "cfbundle_identifier": {
             "description": "Value of CFBundleIdentifier."
         },
         "version": {

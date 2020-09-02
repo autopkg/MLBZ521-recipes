@@ -33,7 +33,7 @@ class InputVariableTextSubstituter(Processor):
     I wrote it to be able to substitute values into an input variable for 
     when you want to use, for example the version in an input variable, 
     but the version variable has not been set yet, not until the (child) 
-    recipe runs.  However, it can be use to substitute strings in any 
+    recipe runs.  However, it can be used to substitute strings in any 
     other strings.
     """
 

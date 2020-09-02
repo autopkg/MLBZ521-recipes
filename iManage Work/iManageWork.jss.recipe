@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Description</key>
+	<string>Downloads and packages the latest verison of iManage Work from a local file share and then uploads it to a JPS.</string>
+	<key>Identifier</key>
+	<string>com.github.mlbz521.jss.iManageWork</string>
+	<key>Input</key>
+	<dict>
+		<key>CATEGORY</key>
+		<string>Productivity</string>
+		<key>FILE_SHARE</key>
+		<string>/path/to/offline/repository</string>
+		<key>GROUP_NAME</key>
+		<string>%NAME%-Testing</string>
+		<key>GROUP_TEMPLATE</key>
+		<string>SmartGroupTemplate.xml</string>
+		<key>NAME</key>
+		<string>iManage Work</string>
+		<key>POLICY_CATEGORY</key>
+		<string>Testing</string>
+		<key>POLICY_TEMPLATE</key>
+		<string>PolicyTemplate.xml</string>
+		<key>package_notes</key>
+		<string>Product of AutoPkg</string>
+		<key>SELF_SERVICE_DESCRIPTION</key>
+		<string>iManage Work is the industry’s leading document and email management application, empowering professionals to manage information more productively and securely.  iManage Work 10 adds powerful new capabilities to deliver a more intuitive, consumer-like user experience.
+
+iManage Work 10 enables professionals and organizations to respond to business demands in a more agile and productive way.
+
+**_KEY BENEFITS_**
+  * **Work productively:**  Manage documents and emails more efficiently and intuitively
+  * **Work from anywhere:**  Mobile-first design lets users work remotely on any device
+  * **Find anything:**  Smart search cuts through clutter to deliver personalized results
+  * **Work smarter:**  Streamline everyday tasks like emailing documents and saving work to custom folders
+  * **Work seamlessly:**  Integrations with Office 365 enable users to do more from inside the familiar Office and Outlook interfaces
+  * **Work Safer:**  Industry-leading security and governance ensures that iManage Work is the safest place to store information
+</string>
+		<key>SELF_SERVICE_ICON</key>
+		<string>iManage Work.png</string>
+	</dict>
+	<key>ParentRecipe</key>
+	<string>com.github.mlbz521.pkg.iManageWork</string>
+	<key>Process</key>
+	<array>
+		<dict>
+			<key>Processor</key>
+			<string>JSSImporter</string>
+			<key>Arguments</key>
+			<dict>
+				<key>pkg_path</key>
+				<string>%RECIPE_CACHE_DIR%/%NAME%-%version%.pkg</string>
+				<key>prod_name</key>
+				<string>%NAME%</string>
+				<key>category</key>
+				<string>%CATEGORY%</string>
+				<key>policy_category</key>
+				<string>%POLICY_CATEGORY%</string>
+				<key>policy_template</key>
+				<string>%POLICY_TEMPLATE%</string>
+				<key>self_service_description</key>
+				<string>%SELF_SERVICE_DESCRIPTION%</string>
+				<key>self_service_icon</key>
+				<string>%SELF_SERVICE_ICON%</string>
+				<key>groups</key>
+				<array>
+					<dict>
+						<key>name</key>
+						<string>%GROUP_NAME%</string>
+						<key>smart</key>
+						<true/>
+						<key>template_path</key>
+						<string>%GROUP_TEMPLATE%</string>
+					</dict>
+				</array>
+			</dict>
+		</dict>
+	</array>
+</dict>
+</plist>

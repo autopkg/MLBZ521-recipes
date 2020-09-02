@@ -44,7 +44,7 @@ class XarExtractSingleFile(Processor):
         "extract_file_path": {
             "required": False,
             "description": ("Path to extract the file to."
-            "Deafault:  extractedfile")
+            "Default:  extractedfile")
         },
         "file_to_extract": {
             "required": True,

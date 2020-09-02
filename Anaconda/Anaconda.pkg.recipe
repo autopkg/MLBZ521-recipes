@@ -17,7 +17,7 @@ Default install path is set to:  /Users/Shared/anaconda2 -- adjustable via subst
 		<key>PKG_ID_PREFIX</key>
 		<string>com.github.mlbz521</string>
 		<key>PKG_INSTALL_LOCATION</key>
-		<string>/Users/Shared/anaconda2</string>
+		<string>/Users/Shared/anaconda3</string>
 	</dict>
 	<key>ParentRecipe</key>
 	<string>com.github.hansen-m.download.Anaconda</string>

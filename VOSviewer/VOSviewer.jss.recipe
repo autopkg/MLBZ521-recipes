@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Description</key>
+    <string>Downloads the latest version of VOSviewer, creates a package, and uploads to the JSS.
+
+Java is *REQUIRED* to open VOSviewer.  Amazon's Corretto JDK is not compatiable in my testing.</string>
+    <key>Identifier</key>
+    <string>com.github.mlbz521.jss.VOSviewer</string>
+    <key>Input</key>
+    <dict>
+		<key>GROUP_TEMPLATE</key>
+		<string>SmartGroupTemplate.xml</string>
+		<key>POLICY_TEMPLATE</key>
+		<string>PolicyTemplate.xml</string>
+		<key>POLICY_CATEGORY</key>
+		<string>Testing</string>
+		<key>GROUP_NAME</key>
+		<string>%NAME%-Testing</string>
+		<key>NAME</key>
+		<string>VOSviewer</string>
+		<key>CATEGORY</key>
+		<string>Productivity</string>
+		<key>SELF_SERVICE_DESCRIPTION</key>
+		<string>VOSviewer is a software tool for constructing and visualizing bibliometric networks.  These networks may for instance include journals, researchers, or individual publications, and they can be constructed based on citation, bibliographic coupling, co-citation, or co-authorship relations.  VOSviewer also offers text mining functionality that can be used to construct and visualize co-occurrence networks of important terms extracted from a body of scientific literature.</string>
+		<key>SELF_SERVICE_ICON</key>
+		<string>VOSviewer.png</string>
+    </dict>
+	<key>ParentRecipe</key>
+    <string>com.github.mlbz521.pkg.VOSviewer</string>
+	<key>Process</key>
+	<array>
+		<dict>
+			<key>Processor</key>
+			<string>JSSImporter</string>
+			<key>Arguments</key>
+			<dict>
+				<key>pkg_path</key>
+				<string>%RECIPE_CACHE_DIR%/%NAME%-%version%.pkg</string>
+				<key>prod_name</key>
+				<string>%NAME%</string>
+				<key>category</key>
+				<string>%CATEGORY%</string>
+				<key>policy_category</key>
+				<string>%POLICY_CATEGORY%</string>
+				<key>policy_template</key>
+				<string>%POLICY_TEMPLATE%</string>
+				<key>self_service_icon</key>
+				<string>%SELF_SERVICE_ICON%</string>
+				<key>self_service_description</key>
+				<string>%SELF_SERVICE_DESCRIPTION%</string>
+				<key>groups</key>
+				<array>
+					<dict>
+						<key>name</key>
+						<string>%GROUP_NAME%</string>
+						<key>smart</key>
+						<true/>
+						<key>template_path</key>
+						<string>%GROUP_TEMPLATE%</string>
+					</dict>
+				</array>
+			</dict>
+		</dict>
+	</array>
+</dict>
+</plist>

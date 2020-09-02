@@ -174,7 +174,7 @@ fi
 
 echo "Installing: " $( "${pkgDir}/${ARCHICADinstaller}/Contents/MacOS/installbuilder.sh" --version --mode unattended )
 
-installResult=$( "${pkgDir}/${ARCHICADinstaller}/Contents/MacOS/installbuilder.sh" --mode unattended --unattendedmodeui none --dockshortcut 0 --eduSerialNumber "${eduSerialNumber}" --eduUserID "${eduUserID}" )
+installResult=$( "${pkgDir}/${ARCHICADinstaller}/Contents/MacOS/installbuilder.sh" --mode unattended --unattendedmodeui none --dockshortcut 0 --disable-components LicenseManagerToolInstaller --eduSerialNumber "${eduSerialNumber}" --eduUserID "${eduUserID}" )
 exitCode=$?
 
 if [[ $exitCode != 0 ]]; then

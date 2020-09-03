@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Description</key>
+	<string>Downloads the latest verison of AutoCAD from a local file share.
+
+Supports the installer format found with AutoCAD 2020 and older.</string>
+	<key>Identifier</key>
+	<string>com.github.mlbz521.download.AutoCADLegacy</string>
+	<key>Input</key>
+	<dict>
+		<key>NAME</key>
+		<string>AutoCAD</string>
+		<key>SEARCH_STRING</key>
+		<string>AutoCAD</string>
+		<key>MAJOR_VERSION</key>
+		<string></string>
+		<key>NAME_LIMITATION</key>
+		<string></string>
+		<key>NAME_EXCEPTION</key>
+		<string></string>
+		<key>FILE_SHARE</key>
+		<string>/path/to/offline/repository</string>
+        <key>VERSION_STRING_SEPARATOR</key>
+        <string>-</string>
+		<key>MAX_FOLDER_DEPTH</key>
+		<string>1</string>
+	</dict>
+	<key>Process</key>
+	<array>
+        <dict>
+            <key>Processor</key>
+            <string>com.github.mlbz521.SharedProcessors/OfflineApps</string>
+            <key>Arguments</key>
+            <dict>
+                <key>search_path</key>
+                <string>%FILE_SHARE%</string>
+                <key>search_string</key>
+                <string>%SEARCH_STRING%</string>
+                <key>major_version</key>
+                <string>%MAJOR_VERSION%</string>
+                <key>exception_string</key>
+                <string>%NAME_EXCEPTION%</string>
+                <key>limitation_string</key>
+                <string>%NAME_LIMITATION%</string>
+                <key>version_separator</key>
+                <string>%VERSION_STRING_SEPARATOR%</string>
+                <key>max_depth</key>
+                <string>%MAX_FOLDER_DEPTH%</string>
+            </dict>
+        </dict>
+		<dict>
+			<key>Processor</key>
+			<string>FileFinder</string>
+			<key>Arguments</key>
+			<dict>
+				<key>pattern</key>
+				<string>%cached_path%/*.dmg</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>Copier</string>
+			<key>Arguments</key>
+			<dict>
+				<key>source_path</key>
+				<string>%found_filename%/*.pkg</string>
+				<key>destination_path</key>
+				<string>%RECIPE_CACHE_DIR%/%NAME%.pkg</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>CodeSignatureVerifier</string>
+			<key>Arguments</key>
+			<dict>
+				<key>input_path</key>
+				<string>%RECIPE_CACHE_DIR%/%NAME%.pkg</string>
+				<key>exepected_authority_names</key>
+				<array>
+					<string>Developer ID Installer: Autodesk (XXKJ396S2Y)</string>
+					<string>Developer ID Certification Authority</string>
+					<string>Apple Root CA</string>
+				</array>
+			</dict>
+		</dict>
+        <dict>
+            <key>Processor</key>
+            <string>EndOfCheckPhase</string>
+        </dict>
+    </array>
+</dict>
+</plist>

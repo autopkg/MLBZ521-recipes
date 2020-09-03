@@ -5,6 +5,8 @@
 	<key>Description</key>
 	<string>Downloads and packages the latest verison of AutoCAD from a local file share and then uploads it to a JPS.
 
+Supports the new format found with AutoCAD 2021.
+
 The created Policy's name will be in the format of "%NAME% %MAJOR_VERSION%"</string>
 	<key>Identifier</key>
 	<string>com.github.mlbz521.jss.AutoCAD</string>

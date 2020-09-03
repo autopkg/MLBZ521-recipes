@@ -3,7 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>Description</key>
-	<string>Downloads the latest verison of AutoCAD from a local file share.</string>
+	<string>Downloads the latest verison of AutoCAD from a local file share.
+
+Supports the new format found with AutoCAD 2021.</string>
 	<key>Identifier</key>
 	<string>com.github.mlbz521.download.AutoCAD</string>
 	<key>Input</key>
@@ -59,13 +61,24 @@
 		</dict>
 		<dict>
 			<key>Processor</key>
+			<string>AppDmgVersioner</string>
+			<key>Arguments</key>
+			<dict>
+				<key>dmg_path</key>
+				<string>%found_filename%</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
 			<string>Copier</string>
 			<key>Arguments</key>
 			<dict>
 				<key>source_path</key>
-				<string>%found_filename%/*.pkg</string>
+				<string>%found_filename%/%app_name%</string>
 				<key>destination_path</key>
-				<string>%RECIPE_CACHE_DIR%/%NAME%.pkg</string>
+				<string>%RECIPE_CACHE_DIR%/%app_name%</string>
+				<key>overwrite</key>
+				<string>true</string>
 			</dict>
 		</dict>
 		<dict>
@@ -74,13 +87,9 @@
 			<key>Arguments</key>
 			<dict>
 				<key>input_path</key>
-				<string>%RECIPE_CACHE_DIR%/%NAME%.pkg</string>
-				<key>exepected_authority_names</key>
-				<array>
-					<string>Developer ID Installer: Autodesk (XXKJ396S2Y)</string>
-					<string>Developer ID Certification Authority</string>
-					<string>Apple Root CA</string>
-				</array>
+				<string>%RECIPE_CACHE_DIR%/%app_name%</string>
+				<key>requirement</key>
+				<string>identifier "com.autodesk.AutoCAD2021.installer" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = XXKJ396S2Y</string>
 			</dict>
 		</dict>
         <dict>

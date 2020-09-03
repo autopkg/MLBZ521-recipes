@@ -21,7 +21,7 @@ Java is *REQUIRED* to open VOSviewer.  Amazon's Corretto JDK is not compatiable 
 		<key>NAME</key>
 		<string>VOSviewer</string>
 		<key>CATEGORY</key>
-		<string>Productivity</string>
+		<string>Scientific</string>
 		<key>SELF_SERVICE_DESCRIPTION</key>
 		<string>VOSviewer is a software tool for constructing and visualizing bibliometric networks.  These networks may for instance include journals, researchers, or individual publications, and they can be constructed based on citation, bibliographic coupling, co-citation, or co-authorship relations.  VOSviewer also offers text mining functionality that can be used to construct and visualize co-occurrence networks of important terms extracted from a body of scientific literature.</string>
 		<key>SELF_SERVICE_ICON</key>

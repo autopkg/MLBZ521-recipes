@@ -25,7 +25,7 @@ Be aware the installation .app is NOT SIGNED.</string>
 		<key>NAME</key>
 		<string>Cytoscape</string>
 		<key>CATEGORY</key>
-		<string>SCientific</string>
+		<string>Scientific</string>
 		<key>SELF_SERVICE_DESCRIPTION</key>
 		<string>Cytoscape is an open source software platform for visualizing molecular interaction networks and biological pathways and integrating these networks with annotations, gene expression profiles and other state data.  Although Cytoscape was originally designed for biological research, now it is a general platform for complex network analysis and visualization.</string>
 		<key>SELF_SERVICE_ICON</key>

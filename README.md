@@ -1,7 +1,7 @@
 mlbz521-recipes
 ======
 
-Recipes I have created that were not publicly available in other repositories or are unique enough to warrant a second recipe.
+Recipes I have created that were not publicly available in other repositories or are unique enough to warrant a second recipe (very rare or unintentionally created around the same time or before being merged into the autopkg org).
 
 I have a decent number of recipes that use an "offline repository" method.  Basically, these software tiles are not available to be downloaded publicly, normally requiring a login to access the download.  So I have written a custom processor that will allow you to simply drop the vendor provided "package", whatever format it may be, into a specifically named folder structure, whether local to the system running autopkg or a remote host that is mounted before run, and the recipe will be able to determine which version of the application to "download" even if multiple are available.  For more details, review the Shared Processors README linked below.
 
@@ -36,7 +36,7 @@ Available recipe types:
   * pkg
     * Variable overrides for version
     * Create a deployable `.pkg` from the `.sh` script installer
-    * Default install path is set to:  /Users/Shared/anaconda2 -- adjustable via substitution variable in an override (for use in lab environments)
+    * Default install path is set to:  /Users/Shared/anaconda3 -- adjustable via substitution variable in an override (for use in lab environments)
   * jss
 
 
@@ -60,6 +60,8 @@ Available recipe types:
 ### AutoCAD for Mac ###
 
 Recipes for both base and patch installers are available.  Download recipe for the base full version expects the installer is available in an "offline repository".  Patch download recipe will download the the latest patch from AutoDesk for the supplied major version.
+
+There is a **LEGACY** version of the recipes for the 2020 older installer type.
 
 Available recipe types:
   * download
@@ -146,6 +148,20 @@ Available recipe types:
   * jss
 
 
+### Cytoscape ###
+
+Downloads the latest release of Cytoscape.
+
+Java 11 is _REQUIRED_ to install Cytoscape.  If Java 11 is not pre-installed, the Cytoscape installer process _should_ download and install Java itself.
+
+Be aware the installation .app is NOT SIGNED.
+
+Available recipe types:
+  * download
+  * pkg
+  * jss
+
+
 ### Google Backup and Sync ###
 
 Parent Recipe:  com.github.nstrauss.pkg.BackupandSync
@@ -162,6 +178,17 @@ This recipe differs from the recipe available in wardsparadox-recipes as it uses
 
 Available recipe types:
   * download
+  * pkg
+  * jss
+
+
+### iManage Work ###
+
+Download recipe expects the installer is available in an "offline repository".
+
+Available recipe types:
+  * download
+    * will "download" from a offline repository
   * pkg
   * jss
 
@@ -195,7 +222,7 @@ Recipes for both base and patch installers are available.  Download recipe for t
 Available recipe types:
   * download
     * `Maple.download` will "download" from a offline repository
-    * `Maple Patch.download` will download the latest patch.
+    * `Maple Patch.download` will download the latest patch for the supplied major version
       * Variable overrides for:  major_version
       * Uses custom processor to obtain download url
   * pkg
@@ -225,7 +252,6 @@ Available recipe types:
   * download
     * will "download" from a offline repository
   * pkg
-    * includes a preinstall script to uninstall previous versions
     * Variable overrides for:  INSTALL_INPUT
   		* As the name suggests, this the "installer.input" that allows you to customize the install of Matlab.  The available parameters are included in the recipe; customize for your environment.
   * jss
@@ -247,6 +273,15 @@ Available recipe types:
   * jss
 
 
+### MySQL Community Server ###
+
+Parent Recipe:  com.github.gerardkok.download.MySQLCommunityServer
+
+Available recipe types:
+  * pkg
+  * jss
+
+
 ### Nvivo ###
 
 Parent Recipe:  com.github.jazzace.pkg.NVivo
@@ -260,6 +295,14 @@ Available recipe types:
 ### Pharos Popup Client ###
 
 Parent Recipe:  com.github.asemak.pkg.popup
+
+Available recipe types:
+  * jss
+
+
+### Praat ###
+
+Parent Recipe:  com.github.autopkg.pkg.Praat
 
 Available recipe types:
   * jss
@@ -313,7 +356,7 @@ Available recipe types:
 
 ### Respondus Lockdown Browser ###
 
-Parent Recipe:  com.github.aysiu.download.LockDownBrowserLab
+Parent Recipe:  com.github.nstrauss.download.RespondusLockDownBrowserLab
 
 The download recipe requires you to set your Institution ID and Lab Hash.
 
@@ -365,14 +408,15 @@ Available recipe types:
 
 Recipes for both base and patch installers are available.  Download recipe expects the installer is available in an "offline repository".  The download recipe can be used for either the base or patch installers and unique pkg and jss recipes are needed for additional steps.
 
-In my environment my base package installs to a custom environment (instead of five folders deep), just in case someone has installed SPSS in a different location somehow, in the Patch.pkg recipe, the postinstall script that "handles the upgrade" searches the `/Applications` folder for the version of SPSS being upgraded and will inject the path into the install.properties file so it does not need to be specified in the INSTALL_PROPERTIES override variable below, which is described below.
+There is a **LEGACY** version of the recipes for the v26 and older installer type.
+
+(This _only_ applies to the **LEGACY** recipes) In my environment my base package installs to a custom environment (instead of five folders deep), just in case someone has installed SPSS in a different location somehow, in the Patch.pkg recipe, the postinstall script that "handles the upgrade" searches the `/Applications` folder for the version of SPSS being upgraded and will inject the path into the install.properties file so it does not need to be specified in the INSTALL_PROPERTIES override variable below, which is described below.
 
 Available recipe types:
   * download
     * "download" from a offline repository
-  * pkg
-    * base installer recipe includes a preinstall script to uninstall previous versions
-    * Variable overrides for:
+  * pkg 
+    * (**LEGACY**) Variable overrides for:
       * INSTALL_PROPERTIES
   		  * As the name suggests, this the "installer.properties" that allows you to customize the install of SPSS.  The available parameters are included; customize for your environment.
       * INSTALL_JDK_CLI
@@ -380,17 +424,56 @@ Available recipe types:
   * jss
 
 
+### Steam ###
+
+Parent Recipe:  com.github.moofit-recipes.pkg.Steam
+
+Available recipe types:
+  * jss
+
+
+### Tableau Public ###
+
+Parent Recipe:  com.github.foigus.download.tableau-public
+
+Available recipe types:
+  * pkg
+  * jss
+
+
+### Twine2 ###
+
+Parent Recipe:  com.github.denmoff.pkg.Twine2
+
+Available recipe types:
+  * jss
+
+
+### VOSviewer ###
+
+Downloads the latest release of VOSviewer.
+
+Java is *REQUIRED* to open VOSviewer.  Amazon's Corretto JDK is not compatiable in my testing.
+
+Be aware the .app is NOT SIGNED.
+
+Available recipe types:
+  * download
+  * pkg
+  * jss
+
+
 ### Xerox Print Drivers ###
 
 Downloads the latest Xerox package based on the override-able parameters:  model, download type, and OS Version.  Examples are:
-  * "macOS Common Driver Installer" (default)
+  * "macOS Print and Scan Driver Installer" (default)
   * "ICA Scan USB Driver"
   * "IMAC CA Scan USB Driver"
   * "TWAIN Scan Driver"
 
-Tested both "macOS Common Driver Installer" and "ICA Scan USB Driver" to download and package successfully.
+Tested both "macOS Print and Scan Driver Installer" and "ICA Scan USB Driver" to download and package successfully.
 
-The "macOS Common Driver Installer" seems to support a large number of printers through my poking.  So the recipes end up labeling the produced package as such and not for a "unique" printer model (this is a change after the last update).
+The "macOS Print and Scan Driver Installer" seems to support a large number of printers through my poking.  So the recipes end up labeling the produced package as such and not for a "unique" printer model (this is a change after the last update).
 
 Available recipe types:
   * download

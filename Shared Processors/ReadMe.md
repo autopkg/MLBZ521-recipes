@@ -22,6 +22,7 @@ Supply a path to a plist file, which can point to a path inside a .dmg which wil
 
 Used in:
   * com.github.mlbz521.pkg.RealVNCViewer
+  * com.github.mlbz521.pkg.VOSviewer
 
 
 ## ExtractWith7z ##
@@ -38,7 +39,7 @@ This processor essentially runs `chmod` on a file.  Provide the numeric mode for
 
 Used in:
   * com.github.mlbz521.pkg.Anaconda
-  * com.github.mlbz521.pkg.SPSSStatistics
+  * com.github.mlbz521.pkg.SPSSStatisticsLegacy
   * com.github.mlbz521.pkg.SPSSStatisticsPatch
 
 
@@ -71,7 +72,7 @@ This processor substitutes character(s) in a string with either another string o
 I wrote it to be able to substitute values into an input variable for when you want to use, for example the version in an input variable, but the version variable has not been set yet, not until the (child) recipe runs.  However, it can be used to substitute strings in any other strings.
 
 Used in:
-  * com.github.mlbz521.pkg.SPSSStatistics
+  * com.github.mlbz521.pkg.SPSSStatisticsLegacy
   * com.github.mlbz521.pkg.SPSSStatisticsPatch
 
 
@@ -133,9 +134,11 @@ Used in:
   * com.github.mlbz521.download.CiscoJabber
   * com.github.mlbz521.download.CrowdStrikeFalconOffline
   * com.github.mlbz521.download.CXoneSoftphone
+  * com.github.mlbz521.download.iManageWork
   * com.github.mlbz521.download.JamfProTools
   * com.github.mlbz521.download.JMP
   * com.github.mlbz521.download.Maple
+  * com.github.mlbz521.download.Mathematica
   * com.github.mlbz521.download.Matlab
   * com.github.mlbz521.download.SPSSStatistics
 
@@ -147,9 +150,10 @@ This processor splits a string starting from the right. Uses the "rsplit()" func
 The processor will verify that the occurrence and index input variables are integers and if not, set them as integers.  This was done since most people use key/string pairs and not key/integers.
 
 Used in:
+  * com.github.mlbz521.download.Maple
+  * com.github.mlbz521.download.SPSSStatistics
   * com.github.mlbz521.pkg.BomgarJumpClient
   * com.github.mlbz521.pkg.CiscoUmbrellaRoamingClient
-  * com.github.mlbz521.download.Maple
 
 
 ## TextFileReader ##
@@ -187,9 +191,10 @@ Used in:
 Extracts a single file from an archive using xar.
 
 Used in:
-  * com.github.mlbz521.download.JMP
-  * com.github.mlbz521.pkg.RespondusLockDownBrowserLabEdition
   * com.github.mlbz521.download.CiscoJabber
+  * com.github.mlbz521.download.JMP
+  * com.github.mlbz521.pkg.iManageWork
+  * com.github.mlbz521.pkg.RespondusLockDownBrowserLabEdition
 
 
 ## XPathParser ##
@@ -197,7 +202,8 @@ Used in:
 Parses a XML file to pull the desired info using XPath.
 
 Used in:
-  * com.github.mlbz521.download.JMP
-  * com.github.mlbz521.pkg.RespondusLockDownBrowserLabEdition
   * com.github.mlbz521.download.CiscoJabber
+  * com.github.mlbz521.download.JMP
+  * com.github.mlbz521.pkg.iManageWork
+  * com.github.mlbz521.pkg.RespondusLockDownBrowserLabEdition
 

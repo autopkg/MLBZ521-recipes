@@ -80,12 +80,12 @@ class CFBundleInfo(DmgMounter):
                 self.env["version"] = plist.get("CFBundleShortVersionString", "UNKNOWN_VERSION")
                 self.env["cfbundle_shortversionstring"] = plist.get("CFBundleShortVersionString", "UNKNOWN_VERSION")
                 self.env["cfbundle_version"] = plist.get("CFBundleVersion", "UNKNOWN_VERSION")
-                self.env["cfbundlebundle_identifier"] = plist.get("CFBundleIdentifier", "UNKNOWN_BUNDLEID")
+                self.env["cfbundle_identifier"] = plist.get("CFBundleIdentifier", "UNKNOWN_BUNDLEID")
                 self.output(
                     f"Found version {self.env['cfbundle_shortversionstring']} in file {input_plist_path}"
                     f"Found CFBundleShortVersionString {self.env['cfbundle_shortversionstring']} in file {input_plist_path}"
                     f"Found CFBundleVersion {self.env['cfbundle_version']} in file {input_plist_path}"
-                    f"Found CFBundleIdentifier {self.env['cfbundlebundle_identifier']} in file {input_plist_path}"
+                    f"Found CFBundleIdentifier {self.env['cfbundle_identifier']} in file {input_plist_path}"
                 )
             except Exception as err:
                 raise ProcessorError(err)

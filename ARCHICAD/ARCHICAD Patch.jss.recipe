@@ -20,6 +20,8 @@ RELEASE_TYPE options include:  AC (for full version), SOLO, and START</string>
 		<string>%CATEGORY%</string>
 		<key>package_notes</key>
 		<string>Product of AutoPkg</string>
+		<key>package_priority</key>
+		<string>12</string>
 
 		<key>GROUP_NAME</key>
 		<string>%NAME%-Testing</string>

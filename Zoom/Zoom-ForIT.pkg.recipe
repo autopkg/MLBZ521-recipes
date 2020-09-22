@@ -80,7 +80,7 @@ Configure Zoom for your organization with the CONFIG_PLIST Key.</string>
 			<key>Arguments</key>
 			<dict>
 				<key>input_plist_path</key>
-				<string>%RECIPE_CACHE_DIR%/payload/Contents/Info.plist</string>
+				<string>%RECIPE_CACHE_DIR%/payload/zoom.us.app/Contents/Info.plist</string>
 				<key>plist_version_key</key>
 				<string>CFBundleShortVersionString</string>
 			</dict>

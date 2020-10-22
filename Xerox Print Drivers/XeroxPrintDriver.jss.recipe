@@ -2,9 +2,9 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>Identifier</key>
-	<string>com.github.mlbz521.jss.XeroxPrintDriver</string>
-	<key>Description</key>
+    <key>Identifier</key>
+    <string>com.github.mlbz521.jss.XeroxPrintDriver</string>
+    <key>Description</key>
     <string>Downloads, packages, and uploads the latest driver package into a JPS based on the override-able parameters:  model, download type, and OS Version.
 
 model example:  'Workcentre 6515'
@@ -16,24 +16,24 @@ download types:  The download type desired; the provided string is searched in t
 OS version:  10_15 (default)
 
 Tested both "macOS Print and Scan Driver Installer" and "ICA Scan USB Driver" to download and package successfully.</string>
-	<key>Input</key>
-	<dict>
-		<key>GROUP_TEMPLATE</key>
-		<string>GroupTemplate.xml</string>
-		<key>POLICY_TEMPLATE</key>
-		<string>PolicyTemplate.xml</string>
-		<key>POLICY_CATEGORY</key>
-		<string>%CATEGORY%</string>
-		<key>package_notes</key>
-		<string>Product of AutoPkg</string>
-		<key>GROUP_NAME</key>
-		<string>%NAME%-Testing</string>
+    <key>Input</key>
+    <dict>
+        <key>GROUP_TEMPLATE</key>
+        <string>GroupTemplate.xml</string>
+        <key>POLICY_TEMPLATE</key>
+        <string>PolicyTemplate.xml</string>
+        <key>POLICY_CATEGORY</key>
+        <string>%CATEGORY%</string>
+        <key>package_notes</key>
+        <string>Product of AutoPkg</string>
+        <key>GROUP_NAME</key>
+        <string>%NAME%-Testing</string>
         <key>NAME</key>
         <string>Xerox Print Drivers</string>
-		<key>CATEGORY</key>
-		<string>Testing</string>
-		<key>SELF_SERVICE_DESCRIPTION</key>
-		<string>Install Xerox provided Printer Drivers.  This package includes various models in the following product lines:
+        <key>CATEGORY</key>
+        <string>Testing</string>
+        <key>SELF_SERVICE_DESCRIPTION</key>
+        <string>Install Xerox provided Printer Drivers.  This package includes various models in the following product lines:
   * AltaLink
   * Color [Qube]
   * Phaser
@@ -41,45 +41,45 @@ Tested both "macOS Print and Scan Driver Installer" and "ICA Scan USB Driver" to
   * VersaLink
   * WorkCentre
   * and more!</string>
-		<key>SELF_SERVICE_ICON</key>
-		<string>XeroxPrinter.png</string>
-	</dict>
-	<key>ParentRecipe</key>
-	<string>com.github.mlbz521.pkg.XeroxPrintDriver</string>
-	<key>Process</key>
-	<array>
-		<dict>
-			<key>Processor</key>
-			<string>JSSImporter</string>
-			<key>Arguments</key>
-			<dict>
-				<key>pkg_path</key>
-				<string>%RECIPE_CACHE_DIR%/%NAME%-%version%.pkg</string>
-				<key>prod_name</key>
-				<string>%NAME%</string>
-				<key>category</key>
-				<string>%CATEGORY%</string>
-				<key>policy_category</key>
-				<string>%POLICY_CATEGORY%</string>
-				<key>policy_template</key>
-				<string>%POLICY_TEMPLATE%</string>
-				<key>self_service_description</key>
-				<string>%SELF_SERVICE_DESCRIPTION%</string>
-				<key>self_service_icon</key>
-				<string>%SELF_SERVICE_ICON%</string>
-				<key>groups</key>
-				<array>
-					<dict>
-						<key>name</key>
-						<string>%GROUP_NAME%</string>
-						<key>smart</key>
-						<true/>
-						<key>template_path</key>
-						<string>%GROUP_TEMPLATE%</string>
-					</dict>
-				</array>
-			</dict>
-		</dict>
-	</array>
+        <key>SELF_SERVICE_ICON</key>
+        <string>XeroxPrinter.png</string>
+    </dict>
+    <key>ParentRecipe</key>
+    <string>com.github.mlbz521.pkg.XeroxPrintDriver</string>
+    <key>Process</key>
+    <array>
+        <dict>
+            <key>Processor</key>
+            <string>JSSImporter</string>
+            <key>Arguments</key>
+            <dict>
+                <key>pkg_path</key>
+                <string>%RECIPE_CACHE_DIR%/%NAME%-%version%.pkg</string>
+                <key>prod_name</key>
+                <string>%NAME%</string>
+                <key>category</key>
+                <string>%CATEGORY%</string>
+                <key>policy_category</key>
+                <string>%POLICY_CATEGORY%</string>
+                <key>policy_template</key>
+                <string>%POLICY_TEMPLATE%</string>
+                <key>self_service_description</key>
+                <string>%SELF_SERVICE_DESCRIPTION%</string>
+                <key>self_service_icon</key>
+                <string>%SELF_SERVICE_ICON%</string>
+                <key>groups</key>
+                <array>
+                    <dict>
+                        <key>name</key>
+                        <string>%GROUP_NAME%</string>
+                        <key>smart</key>
+                        <true/>
+                        <key>template_path</key>
+                        <string>%GROUP_TEMPLATE%</string>
+                    </dict>
+                </array>
+            </dict>
+        </dict>
+    </array>
 </dict>
 </plist>

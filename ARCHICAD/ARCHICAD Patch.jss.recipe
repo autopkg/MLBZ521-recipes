@@ -5,7 +5,7 @@
     <key>Description</key>
     <string>Downloads the latest updated build of ARCHICAD based on the override-able parameters:  major_version, localization, and release_type.  The builds a package and uploads it to the JSS.
 
-MAJOR_VERSION options include:  20, 21, 22, 23, and 24 (once an update is released for v24, it should be supported)
+MAJOR_VERSION options include:  20, 21, 22, 23, and 24
 LOCALIZATION options include:  INT (international english, part of many other licenses), AUS, AUT, BRA, CHE, CHI, CZE, FIN, FRA, GER, GRE, HUN, ITA, JPN, KOR, NED, NOR, NZE, POL, POR, RUS, SPA, SWE, TAI, TUR, UKI, UKR, and USA
 RELEASE_TYPE options include:  AC (for full version), SOLO, and START</string>
     <key>Identifier</key>
@@ -35,14 +35,7 @@ RELEASE_TYPE options include:  AC (for full version), SOLO, and START</string>
 
 It is a BIM software developed by GRAPHISOFT enabling architects to work in a BIM (Building Information Modeling/Management) environment.</string>
 		<key>SELF_SERVICE_ICON</key>
-		<string>ARCHICAD 22.png</string>
-
-        <key>MAJOR_VERSION</key>
-        <string>23</string>
-        <key>LOCALIZATION</key>
-        <string>USA</string>
-		<key>RELEASE_TYPE</key>
-		<string>AC</string>
+		<string>ARCHICAD 24.png</string>
     </dict>
 	<key>ParentRecipe</key>
 	<string>com.github.mlbz521.pkg.ARCHICADPatch</string>

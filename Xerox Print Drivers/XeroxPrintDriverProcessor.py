@@ -16,6 +16,7 @@
 
 from __future__ import absolute_import, print_function
 
+from html.parser import HTMLParser
 import json
 import re
 
@@ -40,9 +41,10 @@ class XeroxPrintDriverProcessor(URLGetter):
                             " - ICA Scan USB Driver"
                             " - IMAC CA Scan USB Driver"
                             " - TWAIN Scan Driver"
-                            "(The provided string is searched in the web page.  "
-                            "In the future, additional logic can likely be provide "
-                            "to expand functionality if desired.)"
+                            "(The provided string is used to search for the desired download.  "
+                            "Regex is used to find matching items, so the supplied option can "
+                            "be a generic string, without specific version information to "
+                            "download any available download for the specified model.)"
         },
         "osVersion": {
             "required": False,
@@ -61,11 +63,38 @@ class XeroxPrintDriverProcessor(URLGetter):
     def main(self):
         """Main process."""
 
+        class MyHTMLParser(HTMLParser):
+
+            def __init__(self):
+                HTMLParser.__init__(self)
+                self.url_path = ""
+
+            def handle_starttag(self, tag, attributes):
+
+                # Only looking for 'a' elements
+                if tag != "a":
+                    return
+
+                # If an 'a' element, loop through the attributes
+                for name, value in attributes:
+
+                    # Is this the value we're looking for?
+                    if name == "aria-label" and re.search("Download: {}.*".format(downloadType), value):
+
+                        # Loop back through and get the 'href' path
+                        for name, value in attributes:
+
+                            if name == 'href':
+                                self.url_path = value
+                                return
+
+
         # Define variables
         input_model = self.env.get('model')
         self.output('Searching for:  {}'.format(input_model))
         downloadType = self.env.get('downloadType', 'macOS Print and Scan Driver Installer')
         osVersion = self.env.get('osVersion', '10_15')
+        parser = MyHTMLParser()
 
         # Build the headers
         headers = {
@@ -105,34 +134,27 @@ class XeroxPrintDriverProcessor(URLGetter):
 
         try:
             # Build url
-            lookupURL = '{downloads_uri}?operatingSystem=macOS{osVersion}'.format(downloads_uri=downloads_uri, osVersion=osVersion)
+            lookupURL = '{downloads_uri}?platform=macOS{osVersion}'.format(downloads_uri=downloads_uri, osVersion=osVersion)
+            # self.output("lookupURL:  {}".format(lookupURL))
 
             # Perform second lookup to get available download types
             pageContent = self.download(lookupURL, text=True)
 
-            # Find the download type requested
-            downloadPageURL = None
-            for line in pageContent.split('\n'):
-                if downloadType in line:
-                    downloadPageURL = line.strip()
-                    self.output('Download Type URL:  {}'.format(downloadPageURL))
+            # Parse the HTML for the desired data
+            parser.feed(pageContent)
 
-        except:
-            raise ProcessorError("Failed to find the downloadType in the results!")
+            download_path = parser.url_path
+            # print("download_path:  {}".format(download_path))
 
-        try:
-            # Get the contentId from the found line
-            contentID = re.findall(r'contentId=(\d*)', downloadPageURL)
-            # self.output("contentID:  {}".format(contentID))
+            if download_path:
+                url = "https://www.support.xerox.com{}".format(download_path)
 
-            # Build download url
-            downloadsURL = re.sub(r'downloads', 'file-redirect', downloads_uri)
-            # self.output('Download URL:  {}'.format(downloadsURL))
-            url = '{downloadsURL}?operatingSystem=macOS{osVersion}&fileLanguage=en&contentId={downloadID}'.format(downloadsURL=downloadsURL, osVersion=osVersion, downloadID=contentID[0])
+                # Return results
+                self.env["url"] = url
+                self.output("Download URL: {}".format(self.env["url"]))
 
-            # Return results
-            self.env["url"] = url
-            self.output("Download URL: {}".format(self.env["url"]))
+            else:
+                raise ProcessorError("Unable to build a download url based on the parameters provided.")
 
         except:
             raise ProcessorError("Unable to build a download url based on the parameters provided.")

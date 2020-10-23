@@ -3,7 +3,7 @@ mlbz521-recipes
 
 Recipes I have created that were not publicly available in other repositories or are unique enough to warrant a second recipe (very rare or unintentionally created around the same time or before being merged into the autopkg org).
 
-I have a decent number of recipes that use an "offline repository" method.  Basically, these software tiles are not available to be downloaded publicly, normally requiring a login to access the download.  So I have written a custom processor that will allow you to simply drop the vendor provided "package", whatever format it may be, into a specifically named folder structure, whether local to the system running autopkg or a remote host that is mounted before run, and the recipe will be able to determine which version of the application to "download" even if multiple are available.  For more details, review the Shared Processors README linked below.
+I have a decent number of recipes that use an "offline repository" method.  Basically, these software titles are not available to be downloaded publicly, normally requiring a login to access the download.  So I have written a custom processor that will allow you to simply drop the vendor provided "package", in the format they provide, into a specifically named folder structure, whether local to the system running autopkg or a remote host that is mounted before run, and the recipe will be able to determine which version of the application to "download" even if multiple are available.  For more details, review the Shared Processors README linked below.
 
 
 ## Shared Processors ##
@@ -282,6 +282,17 @@ Available recipe types:
   * jss
 
 
+### NoMAD Login AD ###
+
+Parent Recipe:  com.github.peetinc.download.NoMADLoginAD
+
+The pkg recipe differs from the recipe available in nstrauss-recipes in that it downloads NoLoAD from source and performs no customizations.
+
+Available recipe types:
+  * pkg
+  * jss
+
+
 ### Nvivo ###
 
 Parent Recipe:  com.github.jazzace.pkg.NVivo
@@ -473,7 +484,7 @@ Downloads the latest Xerox package based on the override-able parameters:  model
 
 Tested both "macOS Print and Scan Driver Installer" and "ICA Scan USB Driver" to download and package successfully.
 
-The "macOS Print and Scan Driver Installer" seems to support a large number of printers through my poking.  So the recipes end up labeling the produced package as such and not for a "unique" printer model (this is a change after the last update).
+The "macOS Print and Scan Driver Installer" seems to support a large number of printers through my poking.  So the recipes end up labeling the produced package as such and not for a "unique" printer model (this is a change after the last update).  If you end up choosing a different download type, I would recommend changing the NAME input variable to differentiate from other download types, if you use multiple.
 
 Available recipe types:
   * download

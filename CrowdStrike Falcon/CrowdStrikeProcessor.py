@@ -59,9 +59,10 @@ class CrowdStrikeProcessor(URLGetter):
         client_id = self.env.get('client_id')
         client_secret = self.env.get('client_secret')
         policy_id = self.env.get('policy_id')
-        token_url = "https://api.us-2.crowdstrike.com/oauth2/token"
-        policy_url = "https://api.us-2.crowdstrike.com/policy/combined/sensor-update/v1?filter=platform_name%3A'Mac'"
-        installer_url = "https://api.us-2.crowdstrike.com/sensors/combined/installers/v1?filter=platform%3A%22mac%22"
+        base_api_url = self.env.get('base_api_url')
+        token_url = base_api_url + "/oauth2/token"
+        policy_url = base_api_url + "/policy/combined/sensor-update/v1?filter=platform_name%3A'Mac'"
+        installer_url = base_api_url + "/sensors/combined/installers/v1?filter=platform%3A%22mac%22"
 
         # Verify the input variables were provided
         if not client_id or client_id == "%CLIENT_ID%":
@@ -70,6 +71,8 @@ class CrowdStrikeProcessor(URLGetter):
             raise ProcessorError("The input variable 'client_secret' was not set!")
         if not policy_id or policy_id == "%POLICY_ID%":
             raise ProcessorError("The input variable 'policy_id' was not set!")
+        if not base_api_url or base_api_url == "%BASE_API_URL%":
+            raise ProcessorError("The input variable 'base_api_url' was not set!")
 
         # Build the headers
         headers = {
@@ -148,7 +151,7 @@ class CrowdStrikeProcessor(URLGetter):
             raise ProcessorError("Failed to acquire list of installers!")
 
         try:
-            download_url = "https://api.us-2.crowdstrike.com/sensors/entities/download-installer/v1?id={}".format(sha256)
+            download_url = base_api_url + "/sensors/entities/download-installer/v1?id={}".format(sha256)
             self.output("download_url:  {}".format(download_url))
 
             # Return results

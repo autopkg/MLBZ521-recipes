@@ -19,6 +19,8 @@ You must provide a Client ID and Secret along with the Policy ID to determine wh
 		<string>093Uhd093HqGAH309h309fa3j0H3AsdFJ0AIH3iQ</string>
 		<key>POLICY_ID</key>
 		<string>20983aunw039ufapsuf03u0a0sudfna0</string>
+		<key>BASE_API_URL</key>
+		<string>https://api.crowdstrike.com</string>
 	</dict>
 	<key>Process</key>
 	<array>
@@ -33,6 +35,8 @@ You must provide a Client ID and Secret along with the Policy ID to determine wh
                 <string>%CLIENT_SECRET%</string>
                 <key>policy_id</key>
                 <string>%POLICY_ID%</string>
+				<key>base_api_url</key>
+				<string>%BASE_API_URL%</string>
             </dict>
         </dict>
         <dict>

@@ -148,7 +148,7 @@ class CrowdStrikeProcessor(URLGetter):
             raise ProcessorError("Failed to acquire list of installers!")
 
         try:
-            download_url = "https://api.crowdstrike.com/sensors/entities/download-installer/v1?id={}".format(sha256)
+            download_url = "https://api.us-2.crowdstrike.com/sensors/entities/download-installer/v1?id={}".format(sha256)
             self.output("download_url:  {}".format(download_url))
 
             # Return results

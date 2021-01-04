@@ -59,9 +59,9 @@ class CrowdStrikeProcessor(URLGetter):
         client_id = self.env.get('client_id')
         client_secret = self.env.get('client_secret')
         policy_id = self.env.get('policy_id')
-        token_url = "https://api.crowdstrike.com/oauth2/token"
-        policy_url = "https://api.crowdstrike.com/policy/combined/sensor-update/v1?filter=platform_name%3A'Mac'"
-        installer_url = "https://api.crowdstrike.com/sensors/combined/installers/v1?filter=platform%3A%22mac%22"
+        token_url = "https://api.us-2.crowdstrike.com/oauth2/token"
+        policy_url = "https://api.us-2.crowdstrike.com/policy/combined/sensor-update/v1?filter=platform_name%3A'Mac'"
+        installer_url = "https://api.us-2.crowdstrike.com/sensors/combined/installers/v1?filter=platform%3A%22mac%22"
 
         # Verify the input variables were provided
         if not client_id or client_id == "%CLIENT_ID%":

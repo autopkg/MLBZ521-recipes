@@ -92,14 +92,14 @@ class SolsticeProcessor(Processor):
         username = (SCDynamicStoreCopyConsoleUser(None, None, None) or [None])[0]
         username = [username,""][username in [u"loginwindow", None, u""]]
 
-        if os.path.exists("/Users/{}/Desktop/Solstice Client.app".format(username)):
+        if os.path.exists("/Users/{}/Desktop/Mersive Solstice.app".format(username)):
             # Move the file from the home directory, back into the Autopkg Cache directory.
-            shutil.move("/Users/{}/Desktop/Solstice Client.app".format(username), "{}/Solstice Client.app".format(moveTo))
+            shutil.move("/Users/{}/Desktop/Mersive Solstice.app".format(username), "{}/Mersive Solstice.app".format(moveTo))
         else:
-            raise ProcessorError("The Solstice Client.app wasn't at the expected location.")
+            raise ProcessorError("The Mersive Solstice.app wasn't at the expected location.")
 
         # Define the plist file.
-        plist = "{}/Solstice Client.app/Contents/Info.plist".format(moveTo)
+        plist = "{}/Mersive Solstice.app/Contents/Info.plist".format(moveTo)
 
         # Get the contents of the plist file.
         try:

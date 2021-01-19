@@ -75,7 +75,7 @@
 			<dict>
 				<key>input_path</key>
 				<string>%RECIPE_CACHE_DIR%/iManage Work.pkg</string>
-				<key>exepected_authority_names</key>
+				<key>expected_authority_names</key>
 				<array>
 					<string>Developer ID Installer: iManage LLC (HGLC38RWEJ)</string>
 					<string>Developer ID Certification Authority</string>

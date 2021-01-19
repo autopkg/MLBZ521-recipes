@@ -77,7 +77,7 @@ Supports the installer format found with AutoCAD 2020 and older.</string>
 			<dict>
 				<key>input_path</key>
 				<string>%RECIPE_CACHE_DIR%/%NAME%.pkg</string>
-				<key>exepected_authority_names</key>
+				<key>expected_authority_names</key>
 				<array>
 					<string>Developer ID Installer: Autodesk (XXKJ396S2Y)</string>
 					<string>Developer ID Certification Authority</string>

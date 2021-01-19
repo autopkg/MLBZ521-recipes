@@ -114,7 +114,7 @@ Supports the new format found with SPSS v27.</string>
 			<dict>
 				<key>input_path</key>
 				<string>%RECIPE_CACHE_DIR%/%filename%</string>
-				<key>exepected_authority_names</key>
+				<key>expected_authority_names</key>
 				<array>
 					<string>Developer ID Installer: International  Business Machines Corp (PETKK2G752)</string>
 					<string>Developer ID Certification Authority</string>

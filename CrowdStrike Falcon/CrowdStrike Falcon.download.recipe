@@ -60,7 +60,7 @@ You must provide a Client ID and Secret along with the Policy ID to determine wh
 			<dict>
 				<key>input_path</key>
 				<string>%pathname%</string>
-				<key>exepected_authority_names</key>
+				<key>expected_authority_names</key>
 				<array>
 					<string>Developer ID Installer: CrowdStrike Inc. (X9E956P446)</string>
 					<string>Developer ID Certification Authority</string>

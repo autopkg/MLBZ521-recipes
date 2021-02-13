@@ -147,10 +147,10 @@ class XeroxPrintDriverProcessor(URLGetter):
             # print("download_path:  {}".format(download_path))
 
             if download_path:
-                url = "https://www.support.xerox.com{}".format(download_path)
+                # url = "https://www.support.xerox.com{}".format(download_path)
 
                 # Return results
-                self.env["url"] = url
+                self.env["url"] = download_path
                 self.output("Download URL: {}".format(self.env["url"]))
 
             else:

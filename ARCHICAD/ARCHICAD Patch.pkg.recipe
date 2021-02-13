@@ -86,6 +86,21 @@ RELEASE_TYPE options include:  AC (for full version), SOLO, and START</string>
 		</dict>
 		<dict>
 			<key>Processor</key>
+			<string>com.github.mlbz521.SharedProcessors/VersionSubstituter</string>
+			<key>Arguments</key>
+			<dict>
+				<key>version</key>
+				<string>%version%</string>
+				<key>index</key>
+				<integer>1</integer>
+				<key>old</key>
+				<string>-</string>
+				<key>new</key>
+				<string> </string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
 			<string>FileFinder</string>
 			<key>Arguments</key>
 			<dict>

@@ -13,7 +13,12 @@ download types:  The download type desired; the provided string is searched in t
     - "ICA Scan USB Driver"
     - "IMAC CA Scan USB Driver"
     - "TWAIN Scan Driver"
-OS version:  10_15 (default)
+OS version:  
+    - x11 (default)
+    - 10_15
+    - 10_14
+    - 10_13
+    - (older OS Versions should be supported, however the format changes; contact me for details if this is needed)
 
 Tested both "macOS Print and Scan Driver Installer" and "ICA Scan USB Driver" to download and package successfully.</string>
     <key>Input</key>

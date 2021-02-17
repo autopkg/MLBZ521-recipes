@@ -48,8 +48,8 @@ class XeroxPrintDriverProcessor(URLGetter):
         },
         "osVersion": {
             "required": False,
-            "description": "The OS version to search against, match the "
-                            "format of '10_15', which is the default.",
+            "description": "The OS version to search against."
+                            "Default:  'x11' (i.e. Big Sur).",
         }
     }
     output_variables = {
@@ -93,7 +93,7 @@ class XeroxPrintDriverProcessor(URLGetter):
         input_model = self.env.get('model')
         self.output('Searching for:  {}'.format(input_model))
         downloadType = self.env.get('downloadType', 'macOS Print and Scan Driver Installer')
-        osVersion = self.env.get('osVersion', '10_15')
+        osVersion = self.env.get('osVersion', 'x11')
         parser = MyHTMLParser()
 
         # Build the headers

@@ -91,7 +91,7 @@ class SolsticeProcessor(Processor):
         build = runUtility(bootstrapper)
 
         # Give it eight seconds to build the app, and then kill the process -- we don't want the app launching.
-        while not os.path.exists("/Users/{}/Desktop/Mersive Solstice.app/Contents/Info.plist".format(username):
+        while not os.path.exists("/Users/{}/Desktop/Mersive Solstice.app/Contents/Info.plist".format(username)):
 
             # This method was proposed by @dcoobs (github.com/dcoobs)
             time.sleep(1)

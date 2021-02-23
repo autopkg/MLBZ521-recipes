@@ -27,24 +27,24 @@ __all__ = ["TextFileReader"]
 
 class TextFileReader(DmgMounter):
 
-    """TThis process reads a text file, which can point to a path inside a .dmg 
-    which will be mounted, looks for a regex pattern and returns the rest of the 
-    line that matched the pattern.
+    """This process reads a text file and looks for a regex pattern and 
+    returns the rest of the line that matched the pattern.  Source path 
+    can be a .dmg which will be mounted.
     """
 
     input_variables = {
         "source": {
             "required": True,
             "description": "Source of the text file.  "
-            "Can point to a path inside a .dmg which will be mounted.",
+            "Can point to a path inside a .dmg which will be mounted."
         },
         "file_to_open": {
             "required": True,
-            "description": "The text file that needs to be opened for reading.",
+            "description": "The text file that needs to be opened for reading."
         },
         "pattern": {
             "required": True,
-            "description": "The regex pattern to look for and return.",
+            "description": "The regex pattern to look for and return."
         }
     }
     output_variables = {
@@ -66,31 +66,54 @@ class TextFileReader(DmgMounter):
         if not os.path.exists(source):
             raise ProcessorError(f"Path '{source}' doesn't exist!")
 
-        try:
-            mount_point = self.mount(source)
-        except Exception:
-            raise ProcessorError("Unable to mount the dmg.")
+        # Check to see if the source is a dmg
+        (dmg_path, dmg, dmg_source_path) = self.parsePathForDMG(source)
+
+        self.output(
+            f"Parsed dmg results: dmg_path: {dmg_path}, dmg: {dmg}, "
+            f"dmg_source_path: {dmg_source_path}",
+            verbose_level=2,)
+
+        if dmg:
+
+            try:
+                mount_point = self.mount(dmg_path)
+                source_path = os.path.join(mount_point, file_to_open)
+
+            except Exception:
+                raise ProcessorError("Unable to mount the dmg.")
+
+        else:
+
+            source_path = os.path.join(source, file_to_open)
 
         # Wrap in a try/finally so if we mount an image, it will always be unmounted.
-        try:            
+        try:
+
             # Open, read, and close file
-            file = open(os.path.join(mount_point, file_to_open), 'r')
+            file = open(source_path, 'r')
             contents = file.read()
             file.close()
+
         except Exception:
             raise ProcessorError(f"Unable to open '{file_to_open}'")
+
         finally:
-            self.unmount(source)
+            if dmg:
+                self.unmount(source)
 
         try:
+
             # Look for a match
             line = re.search(pattern + r'.*', contents)
             match = re.split(pattern, line.group())[1]
 
             self.env["match"] = match
             self.output("match: {}".format(self.env["match"]))
+
         except Exception:
             raise ProcessorError("Unable to find a match based on the pattern provided.")
+
 
 if __name__ == "__main__":
     processor = TextFileReader()

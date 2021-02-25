@@ -64,10 +64,8 @@ Please note, there is likely a newer 'patch' available.</string>
             <string>com.github.mlbz521.SharedProcessors/TextFileReader</string>
             <key>Arguments</key>
             <dict>
-                <key>source</key>
-                <string>%found_filename%</string>
-                <key>file_to_open</key>
-                <string>GRAPHICD.txt</string>
+                <key>source_path</key>
+                <string>%found_filename%/GRAPHICD.txt</string>
                 <key>pattern</key>
                 <string>ARCHICAD                    </string>
             </dict>

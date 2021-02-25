@@ -91,10 +91,8 @@ The following override variables are available:
             <string>com.github.mlbz521.SharedProcessors/TextFileReader</string>
             <key>Arguments</key>
             <dict>
-                <key>source</key>
-                <string>%RECIPE_CACHE_DIR%/pkgroot/%SHARED_PATH%/sdk/cmdline-tools/latest</string>
-                <key>file_to_open</key>
-                <string>source.properties</string>
+                <key>source_path</key>
+                <string>%RECIPE_CACHE_DIR%/pkgroot/%SHARED_PATH%/sdk/cmdline-tools/latest/source.properties</string>
                 <key>pattern</key>
                 <string>Pkg.Revision=</string>
             </dict>

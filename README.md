@@ -40,6 +40,39 @@ Available recipe types:
   * jss
 
 
+### Android Studio SDK CLI Tools ###
+
+This can be used with or separately from Android Studio, but the recipe will assume usage with Android Studio.  It will perform the following actions:
+  * Set environment variables via a LaunchAgent that the GUI Android Studio application can utilize
+  * Allow an (almost seamless) first run experience
+    * the first run Android Studio Setup Wizard will run, but the environment variables will be used to pre-configure all settings (the JDK and Android versions would need to be pre-configured in the jdk.table.xml to completely skip the first run wizard)
+    * The required minimum SDK components must be installed before first launch to support this
+  * Configure Android Studio updates
+
+Available recipe types:
+  * download
+  * pkg
+    * Variable overrides available:
+      * SHARED_PATH
+        * This is the path to where you want to "install" the sdk (`/path/to/sdk/location/`)
+          * e.g. Default install path is set to:  `/Users/Shared/Android`
+            * Great for use in multi-user (lab) environments
+      * LAUNCH_AGENT_LABEL
+        * The name of the LaunchAgent's Label (and filename) that will set the required environment variables for Android Studio
+          * e.g. `com.github.mlbz521.AndroidStudioEnvironmentVariables`
+      * UPDATE_SETTINGS
+        * The desired update settings for Android Studio; the default values for this variable in the recipe will set the `Stable` release channel and disable the automatic update checks
+  * jss
+
+
+### Apache Ant ###
+
+Parent Recipe:  com.github.n8felton.pkg.Ant
+
+Available recipe types:
+  * jss
+
+
 ### ARCHICAD ###
 
 Recipes for both the full version download as well as the latest patch.
@@ -253,7 +286,7 @@ Available recipe types:
     * will "download" from a offline repository
   * pkg
     * Variable overrides for:  INSTALL_INPUT
-  		* As the name suggests, this the "installer.input" that allows you to customize the install of Matlab.  The available parameters are included in the recipe; customize for your environment.
+      * As the name suggests, this the "installer.input" that allows you to customize the install of Matlab.  The available parameters are included in the recipe; customize for your environment.
   * jss
 
 
@@ -396,6 +429,16 @@ Available recipe types:
   * jss
 
 
+### Set.A.Light 3D ###
+
+Downloads the latest release of Set.A.Light 3D from Elixxier.  I have not attempted to license this in an programmatic way yet, so the result will need to be licensed manually.
+
+Available recipe types:
+  * download
+  * pkg
+  * jss
+
+
 ### Solstice ###
 
 Modified from the original author:  [@joshua-d-miller](https://github.com/autopkg/joshua-d-miller-recipes)
@@ -429,7 +472,7 @@ Available recipe types:
   * pkg 
     * (**LEGACY**) Variable overrides for:
       * INSTALL_PROPERTIES
-  		  * As the name suggests, this the "installer.properties" that allows you to customize the install of SPSS.  The available parameters are included; customize for your environment.
+        * As the name suggests, this the "installer.properties" that allows you to customize the install of SPSS.  The available parameters are included; customize for your environment.
       * INSTALL_JDK_CLI
         * A JDK is required to install SPSS silently; if one is not installed, you can provide a command line command to acquire one through any method that is support in your environment
   * jss
@@ -493,15 +536,24 @@ Available recipe types:
   * jss
 
 
-### Zoom ###
+### Zoom for IT ###
 
-Recipes for both Zoom for IT Admins package and the Zoom Outlook Plugin for macOS.
+Downloads the latest version of Zoom for IT Admins package.  This version of the Zoom installer is for customizing the package at install (e.g. SSO, etc.).
 
 Available recipe types:
   * download
-    * `Zoom-ForIT.download` - Downloads the latest version of Zoom for IT Admins package.  For customizing the package (i.e. SSO, etc)
   * pkg
-    * `Zoom-ForIT.pkg` - Variable overrides for: CONFIG_PLIST
-      * Configure Zoom for your organization with the CONFIG_PLIST Key
+    * Variable overrides for: 
+      * CONFIG_PLIST
+        * Configure Zoom for your organization with the CONFIG_PLIST Key
   * jss
 
+
+### Zoom Outlook Plugin ###
+
+Recipes for the Zoom Outlook Plugin for macOS.
+
+Available recipe types:
+  * download
+  * pkg
+  * jss

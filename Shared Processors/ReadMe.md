@@ -158,11 +158,12 @@ Used in:
 
 ## TextFileReader ##
 
-This processor reads a text file, which can point to a path inside a .dmg which will be mounted, looks for a regex pattern and returns the rest of the line that matched the pattern.
+This processor reads a text file and looks for a regex pattern and returns the rest of the line that matched the pattern.  Source path can be a .dmg which will be mounted.
 
 Used in:
   * com.github.mlbz521.pkg.ARCHICADPatch
   * com.github.mlbz521.pkg.ARCHICAD
+  * com.github.mlbz521.pkg.AndroidStudioSDKCLITools
 
 
 ## VersionMajorMinor ##
@@ -193,6 +194,7 @@ Extracts a single file from an archive using xar.
 Used in:
   * com.github.mlbz521.download.CiscoJabber
   * com.github.mlbz521.download.JMP
+  * com.github.mlbz521.download.SetALight3D
   * com.github.mlbz521.pkg.iManageWork
   * com.github.mlbz521.pkg.RespondusLockDownBrowserLabEdition
 
@@ -204,6 +206,7 @@ Parses a XML file to pull the desired info using XPath.
 Used in:
   * com.github.mlbz521.download.CiscoJabber
   * com.github.mlbz521.download.JMP
+  * com.github.mlbz521.download.SetALight3D
   * com.github.mlbz521.pkg.iManageWork
   * com.github.mlbz521.pkg.RespondusLockDownBrowserLabEdition
 

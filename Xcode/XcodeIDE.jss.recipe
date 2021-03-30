@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Identifier</key>
+    <string>com.github.mlbz521.jss.XcodeIDE</string>
+    <key>Description</key>
+    <string>Download the Xcode IDE from the Apple dev portal, creates a .pkg, and uploads it to the JPS.  Uses Facebook's "xcode.downloader" recipe.
+
+The Policy will be named %NAME% %Major Version%, e.g. "Xcode 12"
+
+Important Override Variables:
+    * You must override APPLE_ID and ( PASSWORD_FILE or PASSWORD )
+    * BETA must either be empty for stable releases or set to "Beta" in order to match Xcode betas
+
+See https://github.com/facebook/Recipes-for-AutoPkg/tree/master/Xcode for more information.</string>
+    <key>Input</key>
+    <dict>
+         <key>GROUP_TEMPLATE</key>
+        <string>SmartGroupTemplate.xml</string>
+        <key>POLICY_TEMPLATE</key>
+        <string>PolicyTemplate.xml</string>
+        <key>POLICY_CATEGORY</key>
+        <string>Testing</string>
+        <key>GROUP_NAME</key>
+        <string>%NAME%-Testing</string>
+        <key>NAME</key>
+        <string>Xcode</string>
+        <key>CATEGORY</key>
+        <string>Development</string>
+        <key>SELF_SERVICE_DESCRIPTION</key>
+        <string>Xcode includes everything developers need to create great applications for Mac, iPhone, iPad, Apple TV, and Apple Watch.  Xcode provides developers a unified workflow for user interface design, coding, testing, and debugging.  The Xcode IDE combined with the Swift programming language make developing apps easy and fun.
+
+Xcode includes the Xcode IDE, Swift and C/C++/Objective-C compilers, Instruments analysis tool, simulators, the latest SDKs, and hundreds of powerful features:
+  * Innovative tools help you create great apps
+  * SwiftUI and Interface Builder make it easy to design your interface
+  * Professional editor and debugger keep your code front and center
+  * Instruments for performance analysis
+
+To test or run applications on an iPhone, iPad, Apple TV, or Apple Watch all you need is a free Apple ID.</string>
+        <key>SELF_SERVICE_ICON</key>
+        <string>Xcode12.png</string>
+    </dict>
+    <key>ParentRecipe</key>
+    <string>com.github.moofit-recipes.pkg.Xcode</string>
+    <key>Process</key>
+    <array>
+        <dict>
+            <key>Processor</key>
+            <string>JSSImporter</string>
+            <key>Arguments</key>
+            <dict>
+                <key>version</key>
+                <string>%version%</string>
+                <key>pkg_path</key>
+                <string>%pkg_path%</string>
+                <key>prod_name</key>
+                <string>%NAME% %major_version%</string>
+                <key>category</key>
+                <string>%CATEGORY%</string>
+                <key>policy_category</key>
+                <string>%POLICY_CATEGORY%</string>
+                <key>policy_template</key>
+                <string>%POLICY_TEMPLATE%</string>
+                <key>self_service_icon</key>
+                <string>%SELF_SERVICE_ICON%</string>
+                <key>self_service_description</key>
+                <string>%SELF_SERVICE_DESCRIPTION%</string>
+                <key>groups</key>
+                <array>
+                    <dict>
+                        <key>name</key>
+                        <string>%GROUP_NAME%</string>
+                        <key>smart</key>
+                        <true/>
+                        <key>template_path</key>
+                        <string>%GROUP_TEMPLATE%</string>
+                    </dict>
+                </array>
+            </dict>
+        </dict>
+    </array>
+</dict>
+</plist>

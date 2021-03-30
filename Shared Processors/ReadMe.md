@@ -152,6 +152,7 @@ The processor will verify that the occurrence and index input variables are inte
 Used in:
   * com.github.mlbz521.download.Maple
   * com.github.mlbz521.download.SPSSStatistics
+  * com.github.mlbz521.jss.XcodeCLITools
   * com.github.mlbz521.pkg.BomgarJumpClient
   * com.github.mlbz521.pkg.CiscoUmbrellaRoamingClient
 
@@ -197,6 +198,7 @@ Used in:
   * com.github.mlbz521.download.SetALight3D
   * com.github.mlbz521.pkg.iManageWork
   * com.github.mlbz521.pkg.RespondusLockDownBrowserLabEdition
+  * com.github.mlbz521.pkg.XcodeCLITools
 
 
 ## XPathParser ##
@@ -209,4 +211,4 @@ Used in:
   * com.github.mlbz521.download.SetALight3D
   * com.github.mlbz521.pkg.iManageWork
   * com.github.mlbz521.pkg.RespondusLockDownBrowserLabEdition
-
+  * com.github.mlbz521.pkg.XcodeCLITools

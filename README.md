@@ -42,26 +42,29 @@ Available recipe types:
 
 ### Android Studio SDK CLI Tools ###
 
-This can be used with or separately from Android Studio, but the recipe will assume usage with Android Studio.  It will perform the following actions:
-  * Set environment variables via a LaunchAgent that the GUI Android Studio application can utilize
-  * Allow an (almost seamless) first run experience
-    * the first run Android Studio Setup Wizard will run, but the environment variables will be used to pre-configure all settings (the JDK and Android versions would need to be pre-configured in the jdk.table.xml to completely skip the first run wizard)
-    * The required minimum SDK components must be installed before first launch to support this
-  * Configure Android Studio updates
+This can be used with or separately from Android Studio, but the recipe will assume usage with Android Studio.
 
+To provide additional configuration options, my [Manage-AndroidSDKCMDLineTools.sh script](https://github.com/MLBZ521/MacAdmin/blob/master/Software/Manage-AndroidSDKCMDLineTools.sh) is available.
+  * Great for use in multi-user, lab, and non-admin environments
+  * It can perform the following actions:
+    * Initial setup/configuration
+      * Set environment variables via a LaunchAgent that the GUI Android Studio application can utilize
+      * Allow an (almost seamless) first run experience
+        * The first run Android Studio Setup Wizard will run, but the environment variables will be used to pre-configure all settings (the JDK and Android versions would need to be pre-configured in the jdk.table.xml to completely skip the first run wizard)
+        * The required minimum SDK components must be installed before first launch to support this
+      * Accept CLI Tool licenses
+    * Configure Android Studio (GUI) updates settings
+    * Install SDK Components
+    * Perform updates to installed components
+  
 Available recipe types:
   * download
   * pkg
-    * Variable overrides available:
+    * Override variable available:
       * SHARED_PATH
         * This is the path to where you want to "install" the sdk (`/path/to/sdk/location/`)
           * e.g. Default install path is set to:  `/Users/Shared/Android`
-            * Great for use in multi-user (lab) environments
-      * LAUNCH_AGENT_LABEL
-        * The name of the LaunchAgent's Label (and filename) that will set the required environment variables for Android Studio
-          * e.g. `com.github.mlbz521.AndroidStudioEnvironmentVariables`
-      * UPDATE_SETTINGS
-        * The desired update settings for Android Studio; the default values for this variable in the recipe will set the `Stable` release channel and disable the automatic update checks
+            * Great for use in multi-user, lab, and non-admin environments
   * jss
 
 
@@ -513,6 +516,59 @@ Be aware the .app is NOT SIGNED.
 
 Available recipe types:
   * download
+  * pkg
+  * jss
+
+
+### Xcode IDE ###
+
+Download the Xcode IDE from the Apple dev portal, creates a .pkg, and uploads it to the JPS.
+
+The Policy will be named "%NAME% %Major Version%", e.g. "Xcode 12"
+
+Important Override Variables:
+  * You must override APPLE_ID and ( PASSWORD_FILE or PASSWORD )
+  * BETA must either be empty for stable releases or set to "Beta" in order to match Xcode betas
+
+See [Facebook's README](https://github.com/facebook/Recipes-for-AutoPkg/tree/master/Xcode) for more information.
+
+To provide additional configuration options, my [Setup-Xcode.sh script](https://github.com/MLBZ521/MacAdmin/blob/master/Software/Setup-Xcode.sh) is available.
+  * Great for use in multi-user, lab, and non-admin environments
+  * It can perform the following initial setup/configuration options:
+    * Specify whether or not to rename the Xcode.app bundle
+    * Specify setting developer permissions
+      * Optional configurations available
+    * Specify wether or not to allow any member of the _developer group to install Apple-provided software
+    * Specifies the version of Xcode to use
+    * Enables _developer group members to be able to use the debugger or performance analysis tools without authenticating
+    * Accept licenses
+    * Perform first launch actions
+
+Parent Recipes:
+  * com.facebook.autopkg.xcode.downloader
+  * com.facebook.autopkg.xcode.extract
+  * com.github.moofit-recipes.pkg.Xcode
+
+Available recipe types:
+  * jss
+
+
+### Xcode Command Line Tools ###
+
+Downloads the Xcode Command Line Tools from the Apple dev portal, creates a .pkg, and uploads it to the JPS.  Uses Facebook's "xcode.downloader" recipe.
+
+The Policy will be named "%NAME% %Major Version%", e.g. "Xcode Command Line Tools 12"
+
+Important Override Variables:
+  * You must override APPLE_ID and ( PASSWORD_FILE or PASSWORD )
+  * BETA must either be empty for stable releases or set to "Beta" in order to match Xcode betas
+
+See [Facebook's README](https://github.com/facebook/Recipes-for-AutoPkg/tree/master/Xcode) for more information.
+
+Parent Recipes:
+  * com.facebook.autopkg.xcode.downloader
+
+Available recipe types:
   * pkg
   * jss
 

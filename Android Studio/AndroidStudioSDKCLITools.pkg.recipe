@@ -5,15 +5,10 @@
 	<key>Description</key>
 	<string>Downloads the latest Android Studio Command Line Tools (sdkmanager) from Google and creates a .pkg.
 
-The following override variables are available:
+The following override variable is available:
 	* SHARED_PATH
 		* This is the path to where you want to "install" the sdk (`/path/to/sdk/location/`)
 			* e.g. `/Users/Shared/Android`
-	* LAUNCH_AGENT_LABEL
-		* The name of the LaunchAgent's Label (and filename) that will set the required environment variables for Android Studio
-		    * `com.github.mlbz521.AndroidStudioEnvironmentVariables`
-	* UPDATE_SETTINGS
-		* The desired update settings for Android Studio; the default values for this variable in the recipe will set the `Stable` release channel and disable the automatic update checks
 </string>
 	<key>Identifier</key>
 	<string>com.github.mlbz521.pkg.AndroidStudioSDKCLITools</string>
@@ -23,16 +18,6 @@ The following override variables are available:
 		<string>Android Studio SDK CLI Tools</string>
 		<key>SHARED_PATH</key>
 		<string>/Users/Shared/Android</string>
-		<key>LAUNCH_AGENT_LABEL</key>
-		<string>com.github.mlbz521.AndroidStudioEnvironmentVariables</string>
-		<key>UPDATE_SETTINGS</key>
-		<string>&lt;application&gt;
-    &lt;component name="UpdatesConfigurable"&gt;
-      &lt;option name="CHECK_NEEDED" value="false" /&gt;
-      &lt;option name="UPDATE_CHANNEL_TYPE" value="release" /&gt;
-    &lt;/component&gt;
-&lt;/application&gt;
-</string>
 	</dict>
     <key>ParentRecipe</key>
     <string>com.github.mlbz521.download.AndroidStudioSDKCLITools</string>
@@ -47,17 +32,6 @@ The following override variables are available:
                 <dict/>
                 <key>pkgroot</key>
                 <string>%RECIPE_CACHE_DIR%/pkgroot</string>
-            </dict>
-        </dict>
-        <dict>
-            <key>Processor</key>
-            <string>PkgRootCreator</string>
-            <key>Arguments</key>
-            <dict>
-                <key>pkgdirs</key>
-                <dict/>
-                <key>pkgroot</key>
-                <string>%RECIPE_CACHE_DIR%/scripts</string>
             </dict>
         </dict>
         <dict>
@@ -99,202 +73,24 @@ The following override variables are available:
         </dict>
 		<dict>
 			<key>Processor</key>
-			<string>FileCreator</string>
-			<key>Arguments</key>
-			<dict>
-				<key>file_content</key>
-				<string>#!/bin/bash
-
-###################################################################################################
-# Script Name:  Install-AndroidSDKCMDLine-Tools.sh
-# By:  Zack Thompson / Created:  2/19/2021
-# Version:  1.0.0 / Updated:  2/19/2021 / By:  ZT
-#
-# Description:  This script configures the Android Studio Environment to use a custom SDK location
-#   which enables easier remote management of the SDK.
-#
-###################################################################################################
-
-echo "*****  Install AndroidSDKCMDLine-Tools process:  START  *****"
-
-##################################################
-# Define Variables
-
-shared_location="%SHARED_PATH%"
-launch_agent_label="%LAUNCH_AGENT_LABEL%"
-launch_agent_location="/Library/LaunchAgents/${launch_agent_label}.plist"
-
-# Get OS Version Details
-os_version=$( /usr/bin/sw_vers -productVersion )
-os_major_version=$( echo "${os_version}" | /usr/bin/awk -F '.' '{print $1}' )
-os_minor_patch_version=$( echo "${os_version}" | /usr/bin/awk -F '.' '{print $2"."$3}' )
-
-# Get the Console User
-console_user=$( /usr/sbin/scutil &lt;&lt;&lt; "show State:/Users/ConsoleUser" | /usr/bin/awk '/Name :/ &amp;&amp; ! /loginwindow/ { print $3 }' )
-
-# Get the Console Users' UniqueID
-console_uid=$( /usr/bin/id -u "${console_user}" )
-
-##################################################
-# Bits staged...
-
-if [[ ! -d "${shared_location}" ]]; then
-
-    /bin/mkdir -p -m 775 "${shared_location}"
-    /usr/sbin/chown root:staff "${shared_location}"
-
-fi
-
-# Configure the idea.properties file
-if [[ ! -x "${shared_location}/idea.properties" ]]; then
-
-    echo "Creating:  ${shared_location}/idea.properties"
-
-    /bin/cat &gt; "${shared_location}/idea.properties" &lt;&lt; EOF
-# Custom Android Studio properties
-idea.config.path=$shared_location/config
-idea.system.path=$shared_location/system
-idea.plugins.path=$shared_location/config/plugins
-idea.log.path=$shared_location/system/log
-EOF
-
-    /usr/sbin/chown root:wheel "${shared_location}/idea.properties"
-    /bin/chmod 775 "${shared_location}/idea.properties"
-
-fi
-
-if [[ ! -d "${shared_location}/config/options" ]]; then
-
-    /bin/mkdir -p -m 775 "${shared_location}/config/options"
-    /usr/sbin/chown root:staff "${shared_location}/config/options"
-    /bin/chmod 775 "${shared_location}/config"
-
-fi
-
-# Create the androidStudioFirstRun.xml file to prevent the import and setup wizard
-if [[ ! -x "${shared_location}/config/options/androidStudioFirstRun.xml" ]]; then
-
-    echo "Creating:  ${shared_location}/config/options/androidStudioFirstRun.xml"
-
-    /bin/cat &gt; "${shared_location}/config/options/androidStudioFirstRun.xml" &lt;&lt; EOF
-&lt;application&gt;
-  &lt;component name="AndroidFirstRunPersistentData"&gt;
-    &lt;version&gt;1&lt;/version&gt;
-  &lt;/component&gt;
-&lt;/application&gt;
-EOF
-
-    /usr/sbin/chown root:wheel "${shared_location}/config/options/androidStudioFirstRun.xml"
-    /bin/chmod 777 "${shared_location}/config/options/androidStudioFirstRun.xml"
-
-fi
-
-# Create the updates.xml file to configure the updates settings
-if [[ ! -x "${shared_location}/config/options/updates.xml" ]]; then
-
-    echo "Creating:  ${shared_location}/config/options/updates.xml"
-
-    /bin/cat &gt; "${shared_location}/config/options/updates.xml" &lt;&lt; EOF
-%UPDATE_SETTINGS%
-EOF
-
-    /usr/sbin/chown root:wheel "${shared_location}/config/options/updates.xml"
-    /bin/chmod 777 "${shared_location}/config/options/updates.xml"
-
-fi
-
-# Create a LaunchAgent to set the Environment Variables for GUI Apps
-echo "Creating:  ${launch_agent_location}"
-
-/bin/cat &gt; "${launch_agent_location}" &lt;&lt; EOF
-&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd"&gt;
-&lt;plist version="1.0"&gt;
-    &lt;dict&gt;
-        &lt;key&gt;Label&lt;/key&gt;
-        &lt;string&gt;$launch_agent_label&lt;/string&gt;
-        &lt;key&gt;ProgramArguments&lt;/key&gt;
-        &lt;array&gt;
-            &lt;string&gt;sh&lt;/string&gt;
-            &lt;string&gt;-c&lt;/string&gt;
-            &lt;string&gt;launchctl setenv ANDROID_SDK_ROOT $shared_location/sdk; 
-            launchctl setenv STUDIO_PROPERTIES $shared_location/idea.properties; 
-            launchctl setenv STUDIO_JDK /Applications/Android\ Studio.app/Contents/jre/jdk/Contents/Home; 
-            launchctl setenv ANDROID_PREFS_ROOT $shared_location/.android; 
-            launchctl setenv GRADLE_USER_HOME $shared_location/.gradle&lt;/string&gt;
-        &lt;/array&gt;
-        &lt;key&gt;RunAtLoad&lt;/key&gt;
-        &lt;true/&gt;
-    &lt;/dict&gt;
-&lt;/plist&gt;
-EOF
-
-/usr/sbin/chown root:wheel "${launch_agent_location}"
-/bin/chmod 644 "${launch_agent_location}"
-
-if [[ -z "${console_uid}" || "${console_user}" = "loginwindow" ]]; then
-
-    echo "Notice:  A console user is not currently logged in, will not attempt to bootstrap the LaunchAgent"
-
-else
-
-    if [[ -e "${launch_agent_location}" ]]; then
-
-        # Check if the LaunchDaemon is running before loading it again.
-        # Determine proper launchctl syntax based on OS Version.
-        # macOS 11+ or macOS 10.11+
-        if [[ $( /usr/bin/bc &lt;&lt;&lt; "${os_major_version} &gt;= 11" ) -eq 1 || ( $( /usr/bin/bc &lt;&lt;&lt; "${os_major_version} == 10") -eq 1 &amp;&amp; $( /usr/bin/bc &lt;&lt;&lt; "${os_minor_patch_version} &gt;= 11" ) -eq 1 ) ]]; then
-
-            exit_code=$( /bin/launchctl print gui/"${console_uid}"/"${launch_agent_label}" &gt; /dev/null 2&gt;&amp;1; echo $? )
-
-            if [[ $exit_code == 0 ]]; then
-                echo "Stopping agent:  ${launch_agent_location}"
-                /bin/launchctl bootout gui/"${console_uid}"/"${launch_agent_label}"
-
-            fi
-
-            echo "Starting agent:  ${launch_agent_location}"
-            /bin/launchctl bootstrap gui/"${console_uid}" "${launch_agent_location}"
-            /bin/launchctl enable gui/"${console_uid}"/"${launch_agent_label}"
-
-        # macOS 10.x - macOS 10.10
-        elif [[ $( /usr/bin/bc &lt;&lt;&lt; "${os_major_version} == 10") -eq 1 &amp;&amp; $( /usr/bin/bc &lt;&lt;&lt; "${os_minor_patch_version} &lt;= 10" ) -eq 1 ]]; then
-
-            exit_code=$( /bin/launchctl asuser "${console_uid}"/bin/launchctl list "${launch_agent_label}" &gt; /dev/null 2&gt;&amp;1; echo $? )
-
-            if [[ $exit_code == 0 ]]; then
-                echo "Stopping agent:  ${launch_agent_location}"
-                /bin/launchctl asuser "${console_uid}"/bin/launchctl unload "${launch_agent_location}"
-
-            fi
-
-            echo "Starting agent:  ${launch_agent_location}"
-            /bin/launchctl asuser "${console_uid}"/bin/launchctl load "${launch_agent_location}"
-            /bin/launchctl asuser "${console_uid}"/bin/launchctl start "${launch_agent_location}"
-
-        fi
-
-    fi
-
-fi
-
-echo "*****  Install AndroidSDKCMDLine-Tools process:  COMPLETE  *****"
-exit 0</string>
-				<key>file_mode</key>
-				<string>0755</string>
-				<key>file_path</key>
-				<string>%RECIPE_CACHE_DIR%/scripts/postinstall</string>
-			</dict>
-		</dict>
-		<dict>
-			<key>Processor</key>
 			<string>PkgCreator</string>
 			<key>Arguments</key>
 			<dict>
 				<key>pkg_request</key>
 				<dict>
-					<key>chown</key>
-					<array/>
+                    <key>chown</key>
+                    <array>
+                        <dict>
+                            <key>path</key>
+                            <string>%SHARED_PATH%</string>
+                            <key>user</key>
+                            <string>root</string>
+                            <key>group</key>
+                            <string>staff</string>
+                            <key>mode</key>
+                            <string>0775</string>
+                        </dict>
+                    </array>
 					<key>id</key>
 					<string>com.google.android.sdk.cmdline-tools</string>
 					<key>pkgname</key>
@@ -303,8 +99,6 @@ exit 0</string>
 					<string>%RECIPE_CACHE_DIR%/pkgroot</string>
 					<key>pkgtype</key>
 					<string>flat</string>
-					<key>scripts</key>
-					<string>scripts</string>
 					<key>version</key>
 					<string>%match%</string>
 				</dict>
@@ -319,7 +113,6 @@ exit 0</string>
 				<array>
 					<string>%RECIPE_CACHE_DIR%/pkgroot</string>
 					<string>%RECIPE_CACHE_DIR%/unpack</string>
-					<string>%RECIPE_CACHE_DIR%/scripts</string>
 				</array>
 			</dict>
 		</dict>

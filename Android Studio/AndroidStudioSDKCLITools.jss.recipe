@@ -5,15 +5,10 @@
 	<key>Description</key>
 	<string>Downloads the latest Android Studio Command Line Tools (sdkmanager) from Google, creates a .pkg, , and uploads it to the JPS.
 
-The following override variables are available:
+The following override variable is available:
 	* SHARED_PATH
 		* This is the path to where you want to "install" the sdk (`/path/to/sdk/location/`)
 			* e.g. `/Users/Shared/Android`
-	* LAUNCH_AGENT_LABEL
-		* The name of the LaunchAgent's Label (and filename) that will set the required environment variables for Android Studio
-		    * `com.github.mlbz521.AndroidStudioEnvironmentVariables`
-	* UPDATE_SETTINGS
-		* The desired update settings for Android Studio; the default values for this variable in the recipe will set the `Stable` release channel and disable the automatic update checks
 </string>
 	<key>Identifier</key>
 	<string>com.github.mlbz521.jss.AndroidStudioSDKCLITools</string>

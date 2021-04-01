@@ -62,7 +62,7 @@ See https://github.com/facebook/Recipes-for-AutoPkg/tree/master/Xcode for more i
                 <key>version</key>
                 <string>%version%</string>
                 <key>pkg_path</key>
-                <string>%NAME%-%version%.pkg</string>
+                <string>%RECIPE_CACHE_DIR%/%NAME%-%version%.pkg</string>
                 <key>prod_name</key>
                 <string>%NAME% %major_version%</string>
                 <key>category</key>

@@ -28,6 +28,8 @@ The created Policy's name will be in the format of "%NAME% %version%".</string>
 		<string>The MATLAB platform is optimized for solving engineering and scientific problems.  The matrix-based MATLAB language is the world’s most natural way to express computational mathematics.  Built-in graphics make it easy to visualize and gain insights from data. A vast library of prebuilt toolboxes lets you get started right away with algorithms essential to your domain.  The desktop environment invites experimentation, exploration, and discovery.  These MATLAB tools and capabilities are all rigorously tested and designed to work together.</string>
 		<key>SELF_SERVICE_ICON</key>
 		<string>Matlab.png</string>
+		<key>package_priority</key>
+		<string>12</string>
 	</dict>
 	<key>ParentRecipe</key>
 	<string>com.github.mlbz521.pkg.MatlabUpdate</string>

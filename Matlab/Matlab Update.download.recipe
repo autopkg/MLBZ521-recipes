@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Description</key>
+	<string>Downloads the latest specified patch verison of Matlab from a local file share.</string>
+	<key>Identifier</key>
+	<string>com.github.mlbz521.download.MatlabUpdate</string>
+	<key>Input</key>
+	<dict>
+		<key>NAME</key>
+		<string>Matlab Patch</string>
+		<key>SEARCH_STRING</key>
+		<string>Matlab</string>
+		<key>MAJOR_VERSION</key>
+		<string></string>
+		<key>NAME_LIMITATION</key>
+		<string>Patch</string>
+		<key>NAME_EXCEPTION</key>
+		<string></string>
+		<key>FILE_SHARE</key>
+		<string>/path/to/offline/repository</string>
+        <key>VERSION_STRING_SEPARATOR</key>
+        <string>-</string>
+		<key>MAX_FOLDER_DEPTH</key>
+		<string>1</string>
+	</dict>
+	<key>Process</key>
+	<array>
+        <dict>
+            <key>Processor</key>
+            <string>com.github.mlbz521.SharedProcessors/OfflineApps</string>
+            <key>Arguments</key>
+            <dict>
+                <key>search_path</key>
+                <string>%FILE_SHARE%</string>
+                <key>search_string</key>
+                <string>%SEARCH_STRING%</string>
+                <key>major_version</key>
+                <string>%MAJOR_VERSION%</string>
+                <key>exception_string</key>
+                <string>%NAME_EXCEPTION%</string>
+                <key>limitation_string</key>
+                <string>%NAME_LIMITATION%</string>
+                <key>version_separator</key>
+                <string>%VERSION_STRING_SEPARATOR%</string>
+                <key>max_depth</key>
+                <string>%MAX_FOLDER_DEPTH%</string>
+            </dict>
+        </dict>
+		<dict>
+			<key>Processor</key>
+			<string>FileFinder</string>
+			<key>Arguments</key>
+			<dict>
+				<key>pattern</key>
+				<string>%cached_path%/*.zip</string>
+			</dict>
+		</dict>
+        <dict>
+            <key>Processor</key>
+            <string>EndOfCheckPhase</string>
+        </dict>
+    </array>
+</dict>
+</plist>

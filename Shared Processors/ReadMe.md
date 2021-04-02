@@ -1,7 +1,7 @@
 Shared Processors
 ======
 
-This readme will give a short description for each processor and which recipes the processor is used in, for examples of use and my sanity if I update one and don't remember where all I've used it.
+This readme will give a short description for each processor and which recipes the processor is used in.  This is for usage examples and my own sanity if I update one and don't remember where all I've used it.
 
 
 ## AutoDeskPatchProcessor ##
@@ -31,6 +31,7 @@ This processor extracts files with a specified 7zip binary.
 
 Used in:
   * com.github.mlbz521.download.MaplePatch
+  * com.github.mlbz521.pkg.MatlabUpdate
 
 
 ## FileMode ##
@@ -140,6 +141,7 @@ Used in:
   * com.github.mlbz521.download.Maple
   * com.github.mlbz521.download.Mathematica
   * com.github.mlbz521.download.Matlab
+  * com.github.mlbz521.download.MatlabUpdate
   * com.github.mlbz521.download.SPSSStatistics
 
 

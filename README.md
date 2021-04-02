@@ -278,9 +278,9 @@ Available recipe types:
 
 ### Matlab ###
 
-Download recipe expects the installer is available in an "offline repository".
+Recipes for both base and patch installers are available.  Download recipe expects the installer is available in an "offline repository".  Patch download recipe will download the the latest patch from Maple for the supplied major version.
 
-I license most software separately in environment and do not use the built licensePath key.  If you want to use the built-in licensePath Key, you'll want to fork this recipe more than likely.
+I license most software separately in my environment and do not use the built licensePath key.  If you want to use the built-in licensePath Key, you'll want to fork this recipe more than likely.
 
 If you want to customize the products that are installed, a copy of an original, albeit old, installer_input.txt is available in the recipe directory.  I've seen people are unable to locate it as it's not included in newer versions even though the documentation points to it.
 
@@ -288,8 +288,9 @@ Available recipe types:
   * download
     * will "download" from a offline repository
   * pkg
-    * Variable overrides for:  INSTALL_INPUT
-      * As the name suggests, this the "installer.input" that allows you to customize the install of Matlab.  The available parameters are included in the recipe; customize for your environment.
+    * `Matlab.pkg`
+      * Variable overrides for:  INSTALL_INPUT
+        * As the name suggests, this the "installer.input" that allows you to customize the install of Matlab.  The available parameters are included in the recipe; customize for your environment.
   * jss
 
 
@@ -538,7 +539,7 @@ To provide additional configuration options, my [Setup-Xcode.sh script](https://
     * Specify whether or not to rename the Xcode.app bundle
     * Specify setting developer permissions
       * Optional configurations available
-    * Specify wether or not to allow any member of the _developer group to install Apple-provided software
+    * Specify whether or not to allow any member of the _developer group to install Apple-provided software
     * Specifies the version of Xcode to use
     * Enables _developer group members to be able to use the debugger or performance analysis tools without authenticating
     * Accept licenses

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Description</key>
+	<string>Downloads the latest release of MiKTeX.</string>
+	<key>Identifier</key>
+	<string>com.github.mlbz521.download.MiKTeX</string>
+	<key>Input</key>
+	<dict>
+		<key>NAME</key>
+		<string>MiKTeX</string>
+		<key>BASE_URL</key>
+		<string>https://miktex.org</string>
+		<key>SEARCH_URL</key>
+		<string>%BASE_URL%/download</string>
+		<key>SEARCH_PATTERN</key>
+		<string>(?P&lt;download_url&gt;/download/ctan/systems/win32/miktex/setup/darwin-x86_64/(?P&lt;filename&gt;miktex\-[0-9\.]+\-darwin\-x86_64.dmg))</string>
+	</dict>
+	<key>Process</key>
+	<array>
+		<dict>
+			<key>Processor</key>
+			<string>URLTextSearcher</string>
+			<key>Arguments</key>
+			<dict>
+				<key>url</key>
+				<string>%SEARCH_URL%</string>
+				<key>re_pattern</key>
+				<string>%SEARCH_PATTERN%</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>URLDownloader</string>
+			<key>Arguments</key>
+			<dict>
+				<key>url</key>
+				<string>%BASE_URL%%download_url%</string>
+				<key>filename</key>
+				<string>%filename%</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>AppDmgVersioner</string>
+			<key>Arguments</key>
+			<dict>
+				<key>dmg_path</key>
+				<string>%pathname%</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>CodeSignatureVerifier</string>
+			<key>Arguments</key>
+			<dict>
+				<key>input_path</key>
+				<string>%pathname%/*.app</string>
+				<key>requirement</key>
+				<string>identifier "org.miktex.console" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = JC7T3YRH5Q</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>EndOfCheckPhase</string>
+		</dict>
+	</array>
+</dict>
+</plist>

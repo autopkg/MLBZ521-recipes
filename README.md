@@ -280,6 +280,8 @@ Available recipe types:
 
 Recipes for both base and patch installers are available.  Download recipe expects the installer is available in an "offline repository".  Patch download recipe will download the the latest patch from Maple for the supplied major version.
 
+I attempted to reverse the build-in update mechanism, however, was not successful in determining how the process works.  So offline recipes will have to be used for now.
+
 I license most software separately in my environment and do not use the built licensePath key.  If you want to use the built-in licensePath Key, you'll want to fork this recipe more than likely.
 
 If you want to customize the products that are installed, a copy of an original, albeit old, installer_input.txt is available in the recipe directory.  I've seen people are unable to locate it as it's not included in newer versions even though the documentation points to it.
@@ -299,6 +301,16 @@ Available recipe types:
 Parent Recipe:  com.github.hansen-m.pkg.Mendeley
 
 Available recipe types:
+  * jss
+
+
+### MiKTeX ###
+
+Downloads the latest release of MiKTeX.
+
+Available recipe types:
+  * download
+  * pkg
   * jss
 
 

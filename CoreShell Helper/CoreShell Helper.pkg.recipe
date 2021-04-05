@@ -1,0 +1,363 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Description</key>
+    <string>Downloads the latest version of CoreShell's Core Helper.</string>
+    <key>Identifier</key>
+    <string>com.github.mlbz521.pkg.CoreShellHelper</string>
+    <key>Input</key>
+    <dict>
+        <key>NAME</key>
+        <string>CoreShell Helper</string>
+    </dict>
+    <key>ParentRecipe</key>
+    <string>com.github.mlbz521.download.CoreShellHelper</string>
+    <key>Process</key>
+    <array>
+        <dict>
+            <key>Processor</key>
+            <string>PkgRootCreator</string>
+            <key>Arguments</key>
+            <dict>
+                <key>pkgroot</key>
+                <string>%RECIPE_CACHE_DIR%/pkgroot</string>
+                <key>pkgdirs</key>
+                <dict>
+                    <key>Library</key>
+                    <string>0755</string>
+                    <key>Library/PrivilegedHelperTools</key>
+                    <string>0755</string>
+                </dict>
+            </dict>
+        </dict>
+        <dict>
+            <key>Processor</key>
+            <string>PkgRootCreator</string>
+            <key>Arguments</key>
+            <dict>
+                <key>pkgroot</key>
+                <string>%RECIPE_CACHE_DIR%/scripts</string>
+                <key>pkgdirs</key>
+                <dict/>
+            </dict>
+        </dict>
+        <dict>
+            <key>Processor</key>
+            <string>Copier</string>
+            <key>Arguments</key>
+            <dict>
+                <key>source_path</key>
+                <string>%RECIPE_CACHE_DIR%/expand/Core Helper Installer.app/Contents/MacOS/io.coressh.Helper.app</string>
+                <key>destination_path</key>
+                <string>%RECIPE_CACHE_DIR%/pkgroot/Library/PrivilegedHelperTools/io.coressh.Helper.app</string>
+            </dict>
+        </dict>
+        <dict>
+            <key>Processor</key>
+            <string>FileCreator</string>
+            <key>Arguments</key>
+            <dict>
+                <key>file_content</key>
+                <string>#!/bin/bash
+
+###################################################################################################
+# Script Name:  Uninstall-CoreShellHelper.sh
+# By:  Zack Thompson / Created:  4/5/2021
+# Version:  1.0.0 / Updated:  4/5/2021 / By:  ZT
+#
+# Description:  This script uninstalls CoreShell Helper.
+#
+###################################################################################################
+
+echo "*****  Uninstall Core Shell Helper process:  START  *****"
+
+##################################################
+# Define Variables
+
+# Get OS Version Details
+os_version=$( /usr/bin/sw_vers -productVersion )
+os_major_version=$( echo "${os_version}" | /usr/bin/awk -F '.' '{print $1}' )
+os_minor_patch_version=$( echo "${os_version}" | /usr/bin/awk -F '.' '{print $2"."$3}' )
+
+# Get the Console User
+console_user=$( /usr/sbin/scutil &lt;&lt;&lt; "show State:/Users/ConsoleUser" | /usr/bin/awk '/Name :/ &amp;&amp; ! /loginwindow/ { print $3 }' )
+
+# Get the Console Users' UniqueID
+console_uid=$( /usr/bin/id -u "${console_user}" )
+
+# Core Shell Details
+launch_agent_label="E78WKS7W4U.io.coressh.helper"
+launch_agent_location="/Library/LaunchAgents/${launch_agent_label}.plist"
+coressh_helper="/Library/PrivilegedHelperTools/io.coressh.Helper.app"
+
+##################################################
+# Bits staged...
+
+# Verify install is being performed on the boot volume
+if [[ "${3}" = "/" ]]; then
+
+    if [[ -z "${console_uid}" || "${console_user}" == "loginwindow" ]]; then
+
+        echo "Notice:  A console user is not currently logged in, will not attempt to unload the LaunchAgent"
+
+    else
+
+        if [[ -e "${launch_agent_location}" ]]; then
+
+            # Check if the LaunchAgent is running before loading it again.
+            # Determine proper launchctl syntax based on OS Version.
+            # macOS 11+ or macOS 10.11+
+            if [[ $( /usr/bin/bc &lt;&lt;&lt; "${os_major_version} &gt;= 11" ) -eq 1 || ( "${os_major_version}" == 10 &amp;&amp; $( /usr/bin/bc &lt;&lt;&lt; "${os_minor_patch_version} &gt;= 11" ) -eq 1 ) ]]; then
+
+                launchctl_exit_code=$( /bin/launchctl print gui/"${console_uid}"/"${launch_agent_label}" &gt; /dev/null 2&gt;&amp;1; echo $? )
+
+                if [[ $launchctl_exit_code == 0 ]]; then
+                    echo "Stopping agent:  ${launch_agent_location}"
+                    /bin/launchctl bootout gui/"${console_uid}"/"${launch_agent_label}"
+
+                fi
+
+            # macOS 10.x - macOS 10.10
+            elif [[ "${os_major_version}" == 10 &amp;&amp; $( /usr/bin/bc &lt;&lt;&lt; "${os_minor_patch_version} &lt;= 10" ) -eq 1 ]]; then
+
+                launchctl_exit_code=$( /bin/launchctl asuser "${console_uid}" /bin/launchctl list "${launch_agent_label}" &gt; /dev/null 2&gt;&amp;1; echo $? )
+
+                if [[ $launchctl_exit_code == 0 ]]; then
+                    echo "Stopping agent:  ${launch_agent_location}"
+                    /bin/launchctl asuser "${console_uid}" /bin/launchctl unload "${launch_agent_location}"
+
+                fi
+
+            fi
+
+        fi
+
+    fi
+
+fi
+
+# Remove files
+if [[ -e "${launch_agent_location}" ]]; then
+
+    echo "Removing LaunchAgent..."
+    /bin/rm -rf "${launch_agent_location}"
+
+fi
+
+if [[ -e "${coressh_helper}" ]]; then
+
+    echo "Removing CoreShell Helper..."
+    /bin/rm -rf "${coressh_helper}"
+
+fi
+
+echo "*****  Uninstall Core Shell Helper process:  COMPLETE  *****"
+exit 0</string>
+                <key>file_mode</key>
+                <string>0755</string>
+                <key>file_path</key>
+                <string>%RECIPE_CACHE_DIR%/scripts/preinstall</string>
+            </dict>
+        </dict>
+        <dict>
+            <key>Processor</key>
+            <string>FileCreator</string>
+            <key>Arguments</key>
+            <dict>
+                <key>file_content</key>
+                <string>#!/bin/bash
+
+###################################################################################################
+# Script Name:  Install-CoreShellHelper.sh
+# By:  Zack Thompson / Created:  4/5/2021
+# Version:  1.0.0 / Updated:  4/5/2021 / By:  ZT
+#
+# Description:  This script installs CoreShell Helper.
+#
+###################################################################################################
+
+echo "*****  Install Core Shell Helper process:  START  *****"
+
+##################################################
+# Define Variables
+
+# Core Shell Details
+launch_agent_label="E78WKS7W4U.io.coressh.helper"
+launch_agent_location="/Library/LaunchAgents/${launch_agent_label}.plist"
+coressh_helper_container_dir="/Library/PrivilegedHelperTools"
+coressh_helper="${coressh_helper_container_dir}/io.coressh.Helper.app"
+
+# Get OS Version Details
+os_version=$( /usr/bin/sw_vers -productVersion )
+os_major_version=$( echo "${os_version}" | /usr/bin/awk -F '.' '{print $1}' )
+os_minor_patch_version=$( echo "${os_version}" | /usr/bin/awk -F '.' '{print $2"."$3}' )
+
+# Get the Console User
+console_user=$( /usr/sbin/scutil &lt;&lt;&lt; "show State:/Users/ConsoleUser" | /usr/bin/awk '/Name :/ &amp;&amp; ! /loginwindow/ { print $3 }' )
+
+# Get the Console Users' UniqueID
+console_uid=$( /usr/bin/id -u "${console_user}" )
+
+##################################################
+# Bits staged...
+
+if [[ -d "${coressh_helper}" ]]; then
+
+    echo "Creating the CoreShell LaunchAgent..."
+
+    /bin/cat &gt; "${launch_agent_location}" &lt;&lt; EOF
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd"&gt;
+&lt;plist version="1.0"&gt;
+&lt;dict&gt;
+    &lt;key&gt;KeepAlive&lt;/key&gt;
+    &lt;false/&gt;
+    &lt;key&gt;Label&lt;/key&gt;
+    &lt;string&gt;E78WKS7W4U.io.coressh.helper&lt;/string&gt;
+    &lt;key&gt;LimitLoadToSessionType&lt;/key&gt;
+    &lt;string&gt;Aqua&lt;/string&gt;
+    &lt;key&gt;MachServices&lt;/key&gt;
+    &lt;dict&gt;
+        &lt;key&gt;E78WKS7W4U.io.coressh.helper&lt;/key&gt;
+        &lt;true/&gt;
+    &lt;/dict&gt;
+    &lt;key&gt;ProcessType&lt;/key&gt;
+    &lt;string&gt;Interactive&lt;/string&gt;
+    &lt;key&gt;ProgramArguments&lt;/key&gt;
+    &lt;array&gt;
+        &lt;string&gt;$coressh_helper/Contents/MacOS/io.coressh.Helper&lt;/string&gt;
+    &lt;/array&gt;
+&lt;/dict&gt;
+&lt;/plist&gt;
+EOF
+
+    /usr/sbin/chown root:wheel "${launch_agent_location}"
+    /bin/chmod 644 "${launch_agent_location}"
+
+    # Verify install is being performed on the boot volume
+    if [[ "${3}" = "/" ]]; then
+
+        if [[ -z "${console_uid}" || "${console_user}" == "loginwindow" ]]; then
+
+            echo "Notice:  A console user is not currently logged in, will not attempt to bootstrap the LaunchAgent"
+
+        else
+
+            if [[ -e "${launch_agent_location}" ]]; then
+
+                # Check if the LaunchDaemon is running before loading it again.
+                # Determine proper launchctl syntax based on OS Version.
+                # macOS 11+ or macOS 10.11+
+                if [[ $( /usr/bin/bc &lt;&lt;&lt; "${os_major_version} &gt;= 11" ) -eq 1 || ( "${os_major_version}" == 10 &amp;&amp; $( /usr/bin/bc &lt;&lt;&lt; "${os_minor_patch_version} &gt;= 11" ) -eq 1 ) ]]; then
+
+                    launchctl_exit_code=$( /bin/launchctl print gui/"${console_uid}"/"${launch_agent_label}" &gt; /dev/null 2&gt;&amp;1; echo $? )
+
+                    if [[ $launchctl_exit_code == 0 ]]; then
+                        echo "Stopping agent:  ${launch_agent_location}"
+                        /bin/launchctl bootout gui/"${console_uid}"/"${launch_agent_label}"
+
+                    fi
+
+                    echo "Starting agent:  ${launch_agent_location}"
+                    /bin/launchctl bootstrap gui/"${console_uid}" "${launch_agent_location}"
+                    /bin/launchctl enable gui/"${console_uid}"/"${launch_agent_label}"
+
+                # macOS 10.x - macOS 10.10
+                elif [[ "${os_major_version}" == 10 &amp;&amp; $( /usr/bin/bc &lt;&lt;&lt; "${os_minor_patch_version} &lt;= 10" ) -eq 1 ]]; then
+
+                    launchctl_exit_code=$( /bin/launchctl asuser "${console_uid}" /bin/launchctl list "${launch_agent_label}" &gt; /dev/null 2&gt;&amp;1; echo $? )
+
+                    if [[ $launchctl_exit_code == 0 ]]; then
+                        echo "Stopping agent:  ${launch_agent_location}"
+                        /bin/launchctl asuser "${console_uid}" /bin/launchctl unload "${launch_agent_location}"
+
+                    fi
+
+                    echo "Starting agent:  ${launch_agent_location}"
+                    /bin/launchctl asuser "${console_uid}" /bin/launchctl load "${launch_agent_location}"
+                    /bin/launchctl asuser "${console_uid}" /bin/launchctl start "${launch_agent_location}"
+
+                fi
+
+            fi
+
+        fi
+
+    fi
+
+else
+
+    echo "ERROR:  CoreShell Helper application isn't in the expected location!"
+    echo "*****  Install Core Shell Helper process:  FAILED  *****"
+    exit 1
+
+fi
+
+echo "*****  Install Core Shell Helper process:  COMPLETE  *****"
+exit 0</string>
+                <key>file_mode</key>
+                <string>0755</string>
+                <key>file_path</key>
+                <string>%RECIPE_CACHE_DIR%/scripts/postinstall</string>
+            </dict>
+        </dict>
+        <dict>
+            <key>Processor</key>
+            <string>PkgCreator</string>
+            <key>Arguments</key>
+            <dict>
+                <key>pkg_request</key>
+                <dict>
+                    <key>id</key>
+                    <string>io.coressh.helper.installer</string>
+                    <key>pkgname</key>
+                    <string>%NAME%-%version%</string>
+                    <key>pkgroot</key>
+                    <string>%RECIPE_CACHE_DIR%/pkgroot</string>
+                    <key>pkgtype</key>
+                    <string>flat</string>
+                    <key>version</key>
+                    <string>%version%</string>
+                    <key>options</key>
+                    <string>purge_ds_store</string>
+                    <key>scripts</key>
+                    <string>Scripts</string>
+                    <key>chown</key>
+                    <array>
+                        <dict>
+                            <key>path</key>
+                            <string>Library</string>
+                            <key>user</key>
+                            <string>root</string>
+                            <key>group</key>
+                            <string>wheel</string>
+                        </dict>
+                        <dict>
+                            <key>path</key>
+                            <string>Library/PrivilegedHelperTools</string>
+                            <key>user</key>
+                            <string>root</string>
+                            <key>group</key>
+                            <string>wheel</string>
+                        </dict>
+                    </array>
+                </dict>
+            </dict>
+        </dict>
+        <dict>
+            <key>Processor</key>
+            <string>PathDeleter</string>
+            <key>Arguments</key>
+            <dict>
+                <key>path_list</key>
+                <array>
+                    <string>%RECIPE_CACHE_DIR%/expand</string>
+                    <string>%RECIPE_CACHE_DIR%/pkgroot</string>
+                    <string>%RECIPE_CACHE_DIR%/scripts</string>
+                </array>
+            </dict>
+        </dict>
+    </array>
+</dict>
+</plist>

@@ -154,6 +154,16 @@ Available recipe types:
   * jss
 
 
+### CoreShell Helper ###
+
+Downloads the latest release of the CoreShell Helper.
+
+Available recipe types:
+  * download
+  * pkg
+  * jss
+
+
 ### CrowdStrike Falcon ###
 
 Two recipes "types" are available to choice from for CrowdStrike Falcon.

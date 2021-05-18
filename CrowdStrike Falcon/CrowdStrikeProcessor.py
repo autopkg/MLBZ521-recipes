@@ -59,7 +59,7 @@ class CrowdStrikeProcessor(URLGetter):
         client_id = self.env.get('client_id')
         client_secret = self.env.get('client_secret')
         policy_id = self.env.get('policy_id')
-        base_api_url = self.env.get('base_api_url')
+        base_api_url = self.env.get('base_api_url', 'https://api.crowdstrike.com')
         token_url = base_api_url + "/oauth2/token"
         policy_url = base_api_url + "/policy/combined/sensor-update/v1?filter=platform_name%3A'Mac'"
         installer_url = base_api_url + "/sensors/combined/installers/v1?filter=platform%3A%22mac%22"

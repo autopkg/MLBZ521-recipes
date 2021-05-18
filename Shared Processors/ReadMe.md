@@ -1,7 +1,7 @@
 Shared Processors
 ======
 
-This readme will give a short description for each processor and which recipes the processor is used in, for examples of use and my sanity if I update one and don't remember where all I've used it.
+This readme will give a short description for each processor and which recipes the processor is used in.  This is for usage examples and my own sanity if I update one and don't remember where all I've used it.
 
 
 ## AutoDeskPatchProcessor ##
@@ -31,6 +31,7 @@ This processor extracts files with a specified 7zip binary.
 
 Used in:
   * com.github.mlbz521.download.MaplePatch
+  * com.github.mlbz521.pkg.MatlabUpdate
 
 
 ## FileMode ##
@@ -140,6 +141,7 @@ Used in:
   * com.github.mlbz521.download.Maple
   * com.github.mlbz521.download.Mathematica
   * com.github.mlbz521.download.Matlab
+  * com.github.mlbz521.download.MatlabUpdate
   * com.github.mlbz521.download.SPSSStatistics
 
 
@@ -152,17 +154,19 @@ The processor will verify that the occurrence and index input variables are inte
 Used in:
   * com.github.mlbz521.download.Maple
   * com.github.mlbz521.download.SPSSStatistics
+  * com.github.mlbz521.jss.XcodeCLITools
   * com.github.mlbz521.pkg.BomgarJumpClient
   * com.github.mlbz521.pkg.CiscoUmbrellaRoamingClient
 
 
 ## TextFileReader ##
 
-This processor reads a text file, which can point to a path inside a .dmg which will be mounted, looks for a regex pattern and returns the rest of the line that matched the pattern.
+This processor reads a text file and looks for a regex pattern and returns the rest of the line that matched the pattern.  Source path can be a .dmg which will be mounted.
 
 Used in:
   * com.github.mlbz521.pkg.ARCHICADPatch
   * com.github.mlbz521.pkg.ARCHICAD
+  * com.github.mlbz521.pkg.AndroidStudioSDKCLITools
 
 
 ## VersionMajorMinor ##
@@ -193,8 +197,10 @@ Extracts a single file from an archive using xar.
 Used in:
   * com.github.mlbz521.download.CiscoJabber
   * com.github.mlbz521.download.JMP
+  * com.github.mlbz521.download.SetALight3D
   * com.github.mlbz521.pkg.iManageWork
   * com.github.mlbz521.pkg.RespondusLockDownBrowserLabEdition
+  * com.github.mlbz521.pkg.XcodeCLITools
 
 
 ## XPathParser ##
@@ -204,6 +210,7 @@ Parses a XML file to pull the desired info using XPath.
 Used in:
   * com.github.mlbz521.download.CiscoJabber
   * com.github.mlbz521.download.JMP
+  * com.github.mlbz521.download.SetALight3D
   * com.github.mlbz521.pkg.iManageWork
   * com.github.mlbz521.pkg.RespondusLockDownBrowserLabEdition
-
+  * com.github.mlbz521.pkg.XcodeCLITools

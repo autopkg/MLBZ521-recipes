@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Description</key>
+	<string>Downloads and packages the latest specified patch verison of Matlab from a local file share and then uploads it to a JPS.
+
+The created Policy's name will be in the format of "%NAME% %version%".</string>
+	<key>Identifier</key>
+	<string>com.github.mlbz521.jss.MatlabUpdate</string>
+	<key>Input</key>
+	<dict>
+		<key>GROUP_TEMPLATE</key>
+		<string>SmartGroupTemplate.xml</string>
+		<key>POLICY_TEMPLATE</key>
+		<string>PolicyTemplate.xml</string>
+		<key>POLICY_CATEGORY</key>
+		<string>Testing</string>
+		<key>package_notes</key>
+		<string>Product of AutoPkg</string>
+		<key>GROUP_NAME</key>
+		<string>%NAME%-Testing</string>
+		<key>NAME</key>
+		<string>Matlab Patch</string>
+		<key>CATEGORY</key>
+		<string>Mathematics</string>
+		<key>SELF_SERVICE_DESCRIPTION</key>
+		<string>The MATLAB platform is optimized for solving engineering and scientific problems.  The matrix-based MATLAB language is the world’s most natural way to express computational mathematics.  Built-in graphics make it easy to visualize and gain insights from data. A vast library of prebuilt toolboxes lets you get started right away with algorithms essential to your domain.  The desktop environment invites experimentation, exploration, and discovery.  These MATLAB tools and capabilities are all rigorously tested and designed to work together.</string>
+		<key>SELF_SERVICE_ICON</key>
+		<string>Matlab.png</string>
+		<key>package_priority</key>
+		<string>12</string>
+	</dict>
+	<key>ParentRecipe</key>
+	<string>com.github.mlbz521.pkg.MatlabUpdate</string>
+	<key>Process</key>
+	<array>
+		<dict>
+			<key>Processor</key>
+			<string>JSSImporter</string>
+			<key>Arguments</key>
+			<dict>
+				<key>pkg_path</key>
+				<string>%RECIPE_CACHE_DIR%/%NAME%-%version%.pkg</string>
+				<key>prod_name</key>
+				<string>%NAME% %version%</string>
+				<key>category</key>
+				<string>%CATEGORY%</string>
+				<key>policy_category</key>
+				<string>%POLICY_CATEGORY%</string>
+				<key>policy_template</key>
+				<string>%POLICY_TEMPLATE%</string>
+				<key>self_service_description</key>
+				<string>%SELF_SERVICE_DESCRIPTION%</string>
+				<key>self_service_icon</key>
+				<string>%SELF_SERVICE_ICON%</string>
+				<key>groups</key>
+				<array>
+					<dict>
+						<key>name</key>
+						<string>%GROUP_NAME%</string>
+						<key>smart</key>
+						<true/>
+						<key>template_path</key>
+						<string>%GROUP_TEMPLATE%</string>
+					</dict>
+				</array>
+			</dict>
+		</dict>
+	</array>
+</dict>
+</plist>

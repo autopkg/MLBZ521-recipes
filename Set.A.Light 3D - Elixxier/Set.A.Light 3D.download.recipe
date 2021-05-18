@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Description</key>
+	<string>Downloads the latest release of Set.A.Light 3D from Elixxier.
+
+I have not attempted to license this in an programmatic way yet, so the result will need to be licensed manually.</string>
+	<key>Identifier</key>
+	<string>com.github.mlbz521.download.SetALight3D</string>
+	<key>Input</key>
+	<dict>
+		<key>NAME</key>
+		<string>Set.A.Light 3D</string>
+		<key>BASE_URL</key>
+		<string>https://elixxier.com</string>
+		<key>SEARCH_URL</key>
+		<string>%BASE_URL%/en/downloads/index.php</string>
+		<key>SEARCH_PATTERN</key>
+		<string>/downloader\-s3\-usa\.php\?mac=\d+</string>
+	</dict>
+	<key>Process</key>
+	<array>
+		<dict>
+			<key>Processor</key>
+			<string>URLTextSearcher</string>
+			<key>Arguments</key>
+			<dict>
+				<key>url</key>
+				<string>%SEARCH_URL%</string>
+				<key>re_pattern</key>
+				<string>%SEARCH_PATTERN%</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>URLDownloader</string>
+			<key>Arguments</key>
+			<dict>
+				<key>url</key>
+				<string>%BASE_URL%%match%</string>
+				<key>filename</key>
+				<string>Set.a.Light 3D.pkg</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>CodeSignatureVerifier</string>
+			<key>Arguments</key>
+			<dict>
+				<key>input_path</key>
+				<string>%pathname%</string>
+				<key>expected_authority_names</key>
+				<array>
+					<string>Developer ID Installer: elixxier Software GmbH (7UZEFDC862)</string>
+					<string>Developer ID Certification Authority</string>
+					<string>Apple Root CA</string>
+				</array>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>com.github.mlbz521.SharedProcessors/XarExtractSingleFile</string>
+			<key>Arguments</key>
+			<dict>
+				<key>archive_path</key>
+				<string>%pathname%</string>
+				<key>file_to_extract</key>
+				<string>Distribution</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>com.github.mlbz521.SharedProcessors/XPathParser</string>
+			<key>Arguments</key>
+			<dict>
+				<key>xml_file</key>
+				<string>%extracted_file%</string>
+				<key>xpath</key>
+				<string>.//pkg-ref[@id][@version]</string>
+				<key>attribute_one</key>
+				<string>version</string>
+				<key>return_variable_attribute_one</key>
+				<string>version</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>EndOfCheckPhase</string>
+		</dict>
+	</array>
+</dict>
+</plist>

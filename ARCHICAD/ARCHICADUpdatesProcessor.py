@@ -78,6 +78,7 @@ class ARCHICADUpdatesProcessor(URLGetter):
             ):
                 mac_link = json_object.get("downloadLinks", dict()).get("mac", dict()).get("url")
                 if mac_link:
+                    mac_link = 'https://dl.graphisoft.com' + mac_link[3:]
                     available_builds[json_object.get("build")] = mac_link
 
         # Get the latest version.

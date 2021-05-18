@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Identifier</key>
+    <string>com.github.mlbz521.pkg.XcodeCLITools</string>
+    <key>Description</key>
+    <string>Download the Xcode Command Line Tools from the Apple dev portal and creates a .pkg.  Uses Facebook's "xcode.downloader" recipe.
+
+Important Override Variables:
+    * You must override APPLE_ID and ( PASSWORD_FILE or PASSWORD )
+    * BETA must either be empty for stable releases or set to "Beta" in order to match Xcode betas
+
+See https://github.com/facebook/Recipes-for-AutoPkg/tree/master/Xcode for more information.</string>
+    <key>Input</key>
+    <dict>
+        <key>NAME</key>
+        <string>Xcode Command Line Tools</string>
+        <key>PATTERN</key>
+        <string>((?!.*beta).*\/Command_Line_Tools_for_Xcode_.*\/Command_Line_Tools_for_Xcode.*.dmg)</string>
+    </dict>
+    <key>ParentRecipe</key>
+    <string>com.facebook.autopkg.xcode.downloader</string>
+    <key>Process</key>
+    <array>
+        <dict>
+            <key>Processor</key>
+            <string>CodeSignatureVerifier</string>
+            <key>Arguments</key>
+            <dict>
+                <key>input_path</key>
+                <string>%pathname%/*.pkg</string>
+                <key>expected_authority_names</key>
+                <array>
+                    <string>Software Update</string>
+                    <string>Apple Software Update Certification Authority</string>
+                    <string>Apple Root CA</string>
+                </array>
+            </dict>
+        </dict>
+        <dict>
+            <key>Processor</key>
+            <string>Copier</string>
+            <key>Arguments</key>
+            <dict>
+                <key>source_path</key>
+                <string>%pathname%/*.pkg</string>
+                <key>destination_path</key>
+                <string>%RECIPE_CACHE_DIR%/%NAME%.pkg</string>
+            </dict>
+        </dict>
+        <dict>
+            <key>Processor</key>
+            <string>com.github.mlbz521.SharedProcessors/XarExtractSingleFile</string>
+            <key>Arguments</key>
+            <dict>
+                <key>archive_path</key>
+                <string>%RECIPE_CACHE_DIR%/%NAME%.pkg</string>
+                <key>file_to_extract</key>
+                <string>Distribution</string>
+            </dict>
+        </dict>
+        <dict>
+            <key>Processor</key>
+            <string>com.github.mlbz521.SharedProcessors/XPathParser</string>
+            <key>Arguments</key>
+            <dict>
+                <key>xml_file</key>
+                <string>%extracted_file%</string>
+                <key>xpath</key>
+                <string>.//pkg-ref[@id="com.apple.pkg.CLTools_macOS_SDK"][@version]</string>
+                <key>attribute_one</key>
+                <string>version</string>
+                <key>return_variable_attribute_one</key>
+                <string>version</string>
+            </dict>
+        </dict>
+        <dict>
+            <key>Processor</key>
+            <string>FileMover</string>
+            <key>Arguments</key>
+            <dict>
+                <key>source</key>
+                <string>%RECIPE_CACHE_DIR%/%NAME%.pkg</string>
+                <key>target</key>
+                <string>%RECIPE_CACHE_DIR%/%NAME%-%version%.pkg</string>
+            </dict>
+        </dict>
+        <dict>
+            <key>Processor</key>
+            <string>PathDeleter</string>
+            <key>Arguments</key>
+            <dict>
+                <key>path_list</key>
+                <array>
+                    <string>%RECIPE_CACHE_DIR%/extractedfile</string>
+                </array>
+            </dict>
+        </dict>
+    </array>
+</dict>
+</plist>

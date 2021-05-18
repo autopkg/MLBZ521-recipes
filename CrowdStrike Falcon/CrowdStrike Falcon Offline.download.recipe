@@ -55,7 +55,7 @@
 			<dict>
 				<key>input_path</key>
 				<string>%cached_path%/*.pkg</string>
-				<key>exepected_authority_names</key>
+				<key>expected_authority_names</key>
 				<array>
 					<string>Developer ID Installer: CrowdStrike Inc. (X9E956P446)</string>
 					<string>Developer ID Certification Authority</string>

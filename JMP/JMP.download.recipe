@@ -97,7 +97,7 @@
 			<dict>
 				<key>input_path</key>
 				<string>%RECIPE_CACHE_DIR%/%NAME%.pkg</string>
-				<key>exepected_authority_names</key>
+				<key>expected_authority_names</key>
 				<array>
 					<string>Developer ID Installer: SAS Institute Inc. (E828H4LX4D)</string>
 					<string>Developer ID Certification Authority</string>

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Description</key>
+	<string>Downloads the latest Android Studio Command Line Tools (sdkmanager) from Google, creates a .pkg, , and uploads it to the JPS.
+
+The following override variable is available:
+	* SHARED_PATH
+		* This is the path to where you want to "install" the sdk (`/path/to/sdk/location/`)
+			* e.g. `/Users/Shared/Android`
+</string>
+	<key>Identifier</key>
+	<string>com.github.mlbz521.jss.AndroidStudioSDKCLITools</string>
+	<key>Input</key>
+	<dict>
+		<key>GROUP_TEMPLATE</key>
+		<string>SmartGroupTemplate.xml</string>
+		<key>POLICY_TEMPLATE</key>
+		<string>PolicyTemplate.xml</string>
+		<key>POLICY_CATEGORY</key>
+		<string>Testing</string>
+		<key>GROUP_NAME</key>
+		<string>%NAME%-Testing</string>
+		<key>NAME</key>
+		<string>Android Studio SDK CLI Tools</string>
+		<key>CATEGORY</key>
+		<string>Development</string>
+		<key>SELF_SERVICE_DESCRIPTION</key>
+		<string>The Android SDK Command-Line Tools package contains various tools for building and debugging Android apps without needing the entire Android Studio application.  It is released concurrently with Android Studio.
+
+The comman-line tools provide an optional CLI binary, `sdkmanager`, that can be used to manage the necessary SDK components.  This CLI binary can be used as an alternative to or in conjunction with the GUI SDK Manager included with Android Studio.
+
+This package installs the SDK into a shared user space (`%SHARED_PATH%`) so that the SDK components can be utilized by multiple users on a system.</string>
+		<key>SELF_SERVICE_ICON</key>
+		<string>AndroidSDK1.png</string>
+	</dict>
+    <key>ParentRecipe</key>
+    <string>com.github.mlbz521.pkg.AndroidStudioSDKCLITools</string>
+	<key>Process</key>
+	<array>
+		<dict>
+			<key>Processor</key>
+			<string>JSSImporter</string>
+			<key>Arguments</key>
+			<dict>
+				<key>version</key>
+				<string>%match%</string>
+				<key>pkg_path</key>
+				<string>%pkg_path%</string>
+				<key>prod_name</key>
+				<string>%NAME%</string>
+				<key>category</key>
+				<string>%CATEGORY%</string>
+				<key>policy_category</key>
+				<string>%POLICY_CATEGORY%</string>
+				<key>policy_template</key>
+				<string>%POLICY_TEMPLATE%</string>
+				<key>self_service_icon</key>
+				<string>%SELF_SERVICE_ICON%</string>
+				<key>self_service_description</key>
+				<string>%SELF_SERVICE_DESCRIPTION%</string>
+				<key>groups</key>
+				<array>
+					<dict>
+						<key>name</key>
+						<string>%GROUP_NAME%</string>
+						<key>smart</key>
+						<true/>
+						<key>template_path</key>
+						<string>%GROUP_TEMPLATE%</string>
+					</dict>
+				</array>
+			</dict>
+		</dict>
+	</array>
+</dict>
+</plist>

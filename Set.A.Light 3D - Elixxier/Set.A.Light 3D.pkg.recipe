@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Description</key>
+	<string>Downloads the latest release of Set.A.Light 3D from Elixxier and creates a .pkg.
+
+I have not attempted to license this in an programmatic way yet, so the result will need to be licensed manually.</string>
+	<key>Identifier</key>
+	<string>com.github.mlbz521.pkg.SetALight3D</string>
+	<key>Input</key>
+	<dict>
+		<key>NAME</key>
+		<string>Set.A.Light 3D</string>
+	</dict>
+	<key>ParentRecipe</key>
+	<string>com.github.mlbz521.download.SetALight3D</string>
+	<key>Process</key>
+	<array>
+		<dict>
+			<key>Processor</key>
+			<string>Copier</string>
+			<key>Arguments</key>
+			<dict>
+				<key>source_path</key>
+				<string>%pathname%</string>
+				<key>destination_path</key>
+				<string>%RECIPE_CACHE_DIR%/%NAME%-%version%.pkg</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>PathDeleter</string>
+			<key>Arguments</key>
+			<dict>
+				<key>path_list</key>
+				<array>
+					<string>%RECIPE_CACHE_DIR%/extractedfile</string>
+				</array>
+			</dict>
+		</dict>
+	</array>
+</dict>
+</plist>

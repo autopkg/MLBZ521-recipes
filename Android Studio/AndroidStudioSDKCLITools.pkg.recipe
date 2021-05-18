@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Description</key>
+	<string>Downloads the latest Android Studio Command Line Tools (sdkmanager) from Google and creates a .pkg.
+
+The following override variable is available:
+	* SHARED_PATH
+		* This is the path to where you want to "install" the sdk (`/path/to/sdk/location/`)
+			* e.g. `/Users/Shared/Android`
+</string>
+	<key>Identifier</key>
+	<string>com.github.mlbz521.pkg.AndroidStudioSDKCLITools</string>
+	<key>Input</key>
+	<dict>
+		<key>NAME</key>
+		<string>Android Studio SDK CLI Tools</string>
+		<key>SHARED_PATH</key>
+		<string>/Users/Shared/Android</string>
+	</dict>
+    <key>ParentRecipe</key>
+    <string>com.github.mlbz521.download.AndroidStudioSDKCLITools</string>
+	<key>Process</key>
+	<array>
+        <dict>
+            <key>Processor</key>
+            <string>PkgRootCreator</string>
+            <key>Arguments</key>
+            <dict>
+                <key>pkgdirs</key>
+                <dict/>
+                <key>pkgroot</key>
+                <string>%RECIPE_CACHE_DIR%/pkgroot</string>
+            </dict>
+        </dict>
+        <dict>
+            <key>Processor</key>
+            <string>Unarchiver</string>
+            <key>Arguments</key>
+            <dict>
+                <key>archive_path</key>
+                <string>%pathname%</string>
+                <key>destination_path</key>
+                <string>%RECIPE_CACHE_DIR%/unpack</string>
+                <key>purge_destination</key>
+                <true />
+            </dict>
+        </dict>
+        <dict>
+            <key>Processor</key>
+            <string>Copier</string>
+            <key>Arguments</key>
+            <dict>
+                <key>source_path</key>
+                <string>%RECIPE_CACHE_DIR%/unpack/cmdline-tools/</string>
+                <key>destination_path</key>
+                <string>%RECIPE_CACHE_DIR%/pkgroot/%SHARED_PATH%/sdk/cmdline-tools/latest/</string>
+                <key>overwrite</key>
+                <true />
+            </dict>
+        </dict>
+        <dict>
+            <key>Processor</key>
+            <string>com.github.mlbz521.SharedProcessors/TextFileReader</string>
+            <key>Arguments</key>
+            <dict>
+                <key>source_path</key>
+                <string>%RECIPE_CACHE_DIR%/pkgroot/%SHARED_PATH%/sdk/cmdline-tools/latest/source.properties</string>
+                <key>pattern</key>
+                <string>Pkg.Revision=</string>
+            </dict>
+        </dict>
+		<dict>
+			<key>Processor</key>
+			<string>PkgCreator</string>
+			<key>Arguments</key>
+			<dict>
+				<key>pkg_request</key>
+				<dict>
+                    <key>chown</key>
+                    <array>
+                        <dict>
+                            <key>path</key>
+                            <string>%SHARED_PATH%</string>
+                            <key>user</key>
+                            <string>root</string>
+                            <key>group</key>
+                            <string>staff</string>
+                            <key>mode</key>
+                            <string>0775</string>
+                        </dict>
+                    </array>
+					<key>id</key>
+					<string>com.google.android.sdk.cmdline-tools</string>
+					<key>pkgname</key>
+					<string>%NAME%-%match%</string>
+					<key>pkgroot</key>
+					<string>%RECIPE_CACHE_DIR%/pkgroot</string>
+					<key>pkgtype</key>
+					<string>flat</string>
+					<key>version</key>
+					<string>%match%</string>
+				</dict>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>PathDeleter</string>
+			<key>Arguments</key>
+			<dict>
+				<key>path_list</key>
+				<array>
+					<string>%RECIPE_CACHE_DIR%/pkgroot</string>
+					<string>%RECIPE_CACHE_DIR%/unpack</string>
+				</array>
+			</dict>
+		</dict>
+	</array>
+</dict>
+</plist>

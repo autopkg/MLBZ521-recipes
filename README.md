@@ -40,6 +40,42 @@ Available recipe types:
   * jss
 
 
+### Android Studio SDK CLI Tools ###
+
+This can be used with or separately from Android Studio, but the recipe will assume usage with Android Studio.
+
+To provide additional configuration options, my [Manage-AndroidSDKCMDLineTools.sh script](https://github.com/MLBZ521/MacAdmin/blob/master/Software/Manage-AndroidSDKCMDLineTools.sh) is available.
+  * Great for use in multi-user, lab, and non-admin environments
+  * It can perform the following actions:
+    * Initial setup/configuration
+      * Set environment variables via a LaunchAgent that the GUI Android Studio application can utilize
+      * Allow an (almost seamless) first run experience
+        * The first run Android Studio Setup Wizard will run, but the environment variables will be used to pre-configure all settings (the JDK and Android versions would need to be pre-configured in the jdk.table.xml to completely skip the first run wizard)
+        * The required minimum SDK components must be installed before first launch to support this
+      * Accept CLI Tool licenses
+    * Configure Android Studio (GUI) updates settings
+    * Install SDK Components
+    * Perform updates to installed components
+  
+Available recipe types:
+  * download
+  * pkg
+    * Override variable available:
+      * SHARED_PATH
+        * This is the path to where you want to "install" the sdk (`/path/to/sdk/location/`)
+          * e.g. Default install path is set to:  `/Users/Shared/Android`
+            * Great for use in multi-user, lab, and non-admin environments
+  * jss
+
+
+### Apache Ant ###
+
+Parent Recipe:  com.github.n8felton.pkg.Ant
+
+Available recipe types:
+  * jss
+
+
 ### ARCHICAD ###
 
 Recipes for both the full version download as well as the latest patch.
@@ -111,6 +147,16 @@ Available recipe types:
 ### Cisco Umbrella Roaming Client ###
 
 Downloads the latest release of Cisco Umbrella Roaming Client.
+
+Available recipe types:
+  * download
+  * pkg
+  * jss
+
+
+### CoreShell Helper ###
+
+Downloads the latest release of the CoreShell Helper.
 
 Available recipe types:
   * download
@@ -242,9 +288,11 @@ Available recipe types:
 
 ### Matlab ###
 
-Download recipe expects the installer is available in an "offline repository".
+Recipes for both base and patch installers are available.  Download recipe expects the installer is available in an "offline repository".  Patch download recipe will download the the latest patch from Maple for the supplied major version.
 
-I license most software separately in environment and do not use the built licensePath key.  If you want to use the built-in licensePath Key, you'll want to fork this recipe more than likely.
+I attempted to reverse the build-in update mechanism, however, was not successful in determining how the process works.  So offline recipes will have to be used for now.
+
+I license most software separately in my environment and do not use the built licensePath key.  If you want to use the built-in licensePath Key, you'll want to fork this recipe more than likely.
 
 If you want to customize the products that are installed, a copy of an original, albeit old, installer_input.txt is available in the recipe directory.  I've seen people are unable to locate it as it's not included in newer versions even though the documentation points to it.
 
@@ -252,8 +300,9 @@ Available recipe types:
   * download
     * will "download" from a offline repository
   * pkg
-    * Variable overrides for:  INSTALL_INPUT
-  		* As the name suggests, this the "installer.input" that allows you to customize the install of Matlab.  The available parameters are included in the recipe; customize for your environment.
+    * `Matlab.pkg`
+      * Variable overrides for:  INSTALL_INPUT
+        * As the name suggests, this the "installer.input" that allows you to customize the install of Matlab.  The available parameters are included in the recipe; customize for your environment.
   * jss
 
 
@@ -262,6 +311,16 @@ Available recipe types:
 Parent Recipe:  com.github.hansen-m.pkg.Mendeley
 
 Available recipe types:
+  * jss
+
+
+### MiKTeX ###
+
+Downloads the latest release of MiKTeX.
+
+Available recipe types:
+  * download
+  * pkg
   * jss
 
 
@@ -396,6 +455,16 @@ Available recipe types:
   * jss
 
 
+### Set.A.Light 3D ###
+
+Downloads the latest release of Set.A.Light 3D from Elixxier.  I have not attempted to license this in an programmatic way yet, so the result will need to be licensed manually.
+
+Available recipe types:
+  * download
+  * pkg
+  * jss
+
+
 ### Solstice ###
 
 Modified from the original author:  [@joshua-d-miller](https://github.com/autopkg/joshua-d-miller-recipes)
@@ -429,7 +498,7 @@ Available recipe types:
   * pkg 
     * (**LEGACY**) Variable overrides for:
       * INSTALL_PROPERTIES
-  		  * As the name suggests, this the "installer.properties" that allows you to customize the install of SPSS.  The available parameters are included; customize for your environment.
+        * As the name suggests, this the "installer.properties" that allows you to customize the install of SPSS.  The available parameters are included; customize for your environment.
       * INSTALL_JDK_CLI
         * A JDK is required to install SPSS silently; if one is not installed, you can provide a command line command to acquire one through any method that is support in your environment
   * jss
@@ -474,6 +543,59 @@ Available recipe types:
   * jss
 
 
+### Xcode IDE ###
+
+Download the Xcode IDE from the Apple dev portal, creates a .pkg, and uploads it to the JPS.
+
+The Policy will be named "%NAME% %Major Version%", e.g. "Xcode 12"
+
+Important Override Variables:
+  * You must override APPLE_ID and ( PASSWORD_FILE or PASSWORD )
+  * BETA must either be empty for stable releases or set to "Beta" in order to match Xcode betas
+
+See [Facebook's README](https://github.com/facebook/Recipes-for-AutoPkg/tree/master/Xcode) for more information.
+
+To provide additional configuration options, my [Setup-Xcode.sh script](https://github.com/MLBZ521/MacAdmin/blob/master/Software/Setup-Xcode.sh) is available.
+  * Great for use in multi-user, lab, and non-admin environments
+  * It can perform the following initial setup/configuration options:
+    * Specify whether or not to rename the Xcode.app bundle
+    * Specify setting developer permissions
+      * Optional configurations available
+    * Specify whether or not to allow any member of the _developer group to install Apple-provided software
+    * Specifies the version of Xcode to use
+    * Enables _developer group members to be able to use the debugger or performance analysis tools without authenticating
+    * Accept licenses
+    * Perform first launch actions
+
+Parent Recipes:
+  * com.facebook.autopkg.xcode.downloader
+  * com.facebook.autopkg.xcode.extract
+  * com.github.moofit-recipes.pkg.Xcode
+
+Available recipe types:
+  * jss
+
+
+### Xcode Command Line Tools ###
+
+Downloads the Xcode Command Line Tools from the Apple dev portal, creates a .pkg, and uploads it to the JPS.  Uses Facebook's "xcode.downloader" recipe.
+
+The Policy will be named "%NAME% %Major Version%", e.g. "Xcode Command Line Tools 12"
+
+Important Override Variables:
+  * You must override APPLE_ID and ( PASSWORD_FILE or PASSWORD )
+  * BETA must either be empty for stable releases or set to "Beta" in order to match Xcode betas
+
+See [Facebook's README](https://github.com/facebook/Recipes-for-AutoPkg/tree/master/Xcode) for more information.
+
+Parent Recipes:
+  * com.facebook.autopkg.xcode.downloader
+
+Available recipe types:
+  * pkg
+  * jss
+
+
 ### Xerox Print Drivers ###
 
 Downloads the latest Xerox package based on the override-able parameters:  model, download type, and OS Version.  Examples are:
@@ -493,15 +615,24 @@ Available recipe types:
   * jss
 
 
-### Zoom ###
+### Zoom for IT ###
 
-Recipes for both Zoom for IT Admins package and the Zoom Outlook Plugin for macOS.
+Downloads the latest version of Zoom for IT Admins package.  This version of the Zoom installer is for customizing the package at install (e.g. SSO, etc.).
 
 Available recipe types:
   * download
-    * `Zoom-ForIT.download` - Downloads the latest version of Zoom for IT Admins package.  For customizing the package (i.e. SSO, etc)
   * pkg
-    * `Zoom-ForIT.pkg` - Variable overrides for: CONFIG_PLIST
-      * Configure Zoom for your organization with the CONFIG_PLIST Key
+    * Variable overrides for: 
+      * CONFIG_PLIST
+        * Configure Zoom for your organization with the CONFIG_PLIST Key
   * jss
 
+
+### Zoom Outlook Plugin ###
+
+Recipes for the Zoom Outlook Plugin for macOS.
+
+Available recipe types:
+  * download
+  * pkg
+  * jss

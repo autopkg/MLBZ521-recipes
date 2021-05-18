@@ -35,7 +35,7 @@ __all__ = ["SolsticeProcessor"]
 class SolsticeProcessor(Processor):
 
     """This processor uses the extracted "bootstrapper".app to build the final .app as well as grab
-    some addition information for building the package.
+    some additional information for building the package.
     """
 
     input_variables = {
@@ -70,41 +70,54 @@ class SolsticeProcessor(Processor):
             """
             try:
                 process = subprocess.Popen(command)
+
             except subprocess.CalledProcessError as error:
-                print(('return code = ', error.returncode))
-                print(('result = ', error))  
+                self.output(('return code = ', error.returncode))
+                self.output(('result = ', error))
 
             return process
 
         # Define some variables.
         bootstrapperLocation = self.env.get("bootstrapperLocation")
         moveTo = self.env.get("moveTo")
-
-        # Run the binary to build the final .app.
-        bootstrapper = ['{}/Contents/MacOS/SolsticeClientInstallerMac'.format(bootstrapperLocation)]
-        build = runUtility(bootstrapper)
-        
-        # Give it five seconds to build the app, and then kill the process -- we don't want the app launching.
-        time.sleep(5)
-        build.kill()
+        time_counter = 0
 
         # The final .app is saved to the logged in users home directory, so we get that.
         username = (SCDynamicStoreCopyConsoleUser(None, None, None) or [None])[0]
         username = [username,""][username in [u"loginwindow", None, u""]]
 
-        if os.path.exists("/Users/{}/Desktop/Solstice Client.app".format(username)):
+        # Run the binary to build the final .app.
+        bootstrapper = ['{}/Contents/MacOS/SolsticeClientInstallerMac'.format(bootstrapperLocation)]
+        build = runUtility(bootstrapper)
+
+        # Give it eight seconds to build the app, and then kill the process -- we don't want the app launching.
+        while not os.path.exists("/Users/{}/Desktop/Mersive Solstice.app/Contents/Info.plist".format(username)):
+
+            # This method was proposed by @dcoobs (github.com/dcoobs)
+            time.sleep(1)
+            time_counter += 1
+
+            if time_counter > 8:
+                break
+
+        build.kill()
+
+        if os.path.exists("/Users/{}/Desktop/Mersive Solstice.app".format(username)):
+
             # Move the file from the home directory, back into the Autopkg Cache directory.
-            shutil.move("/Users/{}/Desktop/Solstice Client.app".format(username), "{}/Solstice Client.app".format(moveTo))
+            shutil.move("/Users/{}/Desktop/Mersive Solstice.app".format(username), "{}/Mersive Solstice.app".format(moveTo))
+
         else:
-            raise ProcessorError("The Solstice Client.app wasn't at the expected location.")
+            raise ProcessorError("The Mersive Solstice.app wasn't at the expected location.")
 
         # Define the plist file.
-        plist = "{}/Solstice Client.app/Contents/Info.plist".format(moveTo)
+        plist = "{}/Mersive Solstice.app/Contents/Info.plist".format(moveTo)
 
         # Get the contents of the plist file.
         try:
             with open(plist, 'rb') as file:
                 plist_contents = plist_Reader(file)
+
         except Exception:
             raise ProcessorError('Unable to locate the specified plist file.')
 

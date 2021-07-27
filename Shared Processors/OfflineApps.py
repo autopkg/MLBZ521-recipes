@@ -110,7 +110,8 @@ class OfflineApps(Processor):
 
     def get_latest_version(self, found_items, major_version_like, version_separator):
         '''Determines the highest version number of the provided strings.'''
-        latest_version = ""
+        latest_version = None
+        latest_version_folder = None
         # print('found_items:  {}'.format(found_items))
 
         # Loop through the found items

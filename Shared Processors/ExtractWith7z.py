@@ -2,7 +2,10 @@
 #
 # Copyright 2019 Zack T (mlbz521)
 #
-# Inspired by Per Olofsson's "Unarchiver.py", Matt Hansen's "WinInstallerExtractor.py", and Yoann Gini's "Zoom7zUnarchiver.py"
+# Inspired by 
+#   * Per Olofsson's "Unarchiver.py"
+#   * Matt Hansen's "WinInstallerExtractor.py"
+#   * Yoann Gini's "Zoom7zUnarchiver.py"
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,6 +22,7 @@
 from __future__ import absolute_import
 
 import os
+import re
 import shutil
 import subprocess
 
@@ -64,67 +68,111 @@ class ExtractWith7z(Processor):
     def main(self):
 
         # Define variables
-        custom_path = self.env.get('7z_path', '')
         archive_path = self.env.get("archive_path", self.env.get("pathname"))
+
         if not archive_path:
             raise ProcessorError(
-                "Expected an 'archive_path' input variable but none is set!")
-        destination_path = self.env.get("destination_path", os.path.join(self.env["RECIPE_CACHE_DIR"], self.env["NAME"]))
+                "Path to an archive was not provided!")
+
+        custom_path = self.env.get("7z_path", "")
+        destination_path = self.env.get("destination_path", os.path.join(
+            self.env["RECIPE_CACHE_DIR"], self.env["NAME"]))
 
         # Create the directory if needed
         if not os.path.exists(destination_path):
+
             try:
                 os.makedirs(destination_path)
             except OSError as err:
-                raise ProcessorError("Failed to create {destination_path}:  {error}".format(destination_path=destination_path, error=err.strerror))
-        elif self.env.get('purge_destination'):
+                raise ProcessorError("Failed to create {}:  {}".format(
+                    destination_path, err.strerror))
+
+        elif self.env.get("purge_destination"):
+
             for entry in os.listdir(destination_path):
+
                 path = os.path.join(destination_path, entry)
+
                 try:
+
                     if os.path.isdir(path) and not os.path.islink(path):
                         shutil.rmtree(path)
                     else:
                         os.unlink(path)
+
                 except OSError as err:
-                    raise ProcessorError("Failed to remove {path}:  {error}".format(path=path, error=err.strerror))
+                    raise ProcessorError("Failed to remove {}:  {}".format(
+                        path, err.strerror))
 
-        # Set the binaries we're going to look for
-        binary_7z = ['7z', '7za', '7zr', 'p7zip', 'keka7z', '/usr/local/bin/7z', '/Applications/Keka.app/Contents/Resources/keka7z']
+        # Check if a custom binary path was provided
+        if custom_path and custom_path != "/path/to/7z":
 
-        # If a custom binary path was provided, add it at the front of our list
-        if custom_path and custom_path != '%BINARY_7Z_PATH%':
-            self.output("Provided {filename} binary at the following path:  {custom_path}".format(filename=os.path.basename(custom_path), custom_path=os.path.dirname(custom_path)))
-            binary_7z.insert(0, custom_path)
+            # Verify the custom binary exists at provided path
+            if not os.path.exists(custom_path):
+                raise ProcessorError(
+                    "Provided {} binary does not exist at the following path:  {}".format(
+                        os.path.basename(custom_path), os.path.dirname(custom_path)))
+
+            self.output("Provided {} binary at the following path:  {}".format(
+                os.path.basename(custom_path), os.path.dirname(custom_path)), verbose_level=2)
+            binary_7z = [ custom_path ]
+
+        else:
+            # Set the binaries we're going to look for
+            binary_7z = ["7z", "7za", "7zr", "p7zip", "/usr/local/bin/7z", 
+                "/Applications/Keka.app/Contents/MacOS/Keka"]
 
         # Success/Fail Flag
-        found_binary = '1'
+        found_binary = False
 
         # Loop through each binary and check if it exists
         for binary in binary_7z:
             path = shutil.which(binary)
 
             if path != None:
-                # Binary must exist, so build the command to run it
-                self.output("Using the following binary:  {path}".format(path=path))
-                cmd = ['{binary}'.format(binary=path), 'x', '{archive_path}'.format(archive_path=archive_path), '-o{destination_path}'.format(destination_path=destination_path)]
+                found_binary = True
+
+                self.output("Using the 7z binary:  {}".format(path), verbose_level=2)
+
+                if re.search("keka", path, re.IGNORECASE):
+                    cmd = [
+                        "{}".format(path), 
+                        "--client",
+                        "7z",
+                        "x", 
+                        "{}".format(archive_path), 
+                        "-o{}".format(destination_path)
+                    ]
+                else:
+                    cmd = [
+                        "{}".format(path), 
+                        "x", 
+                        "{}".format(archive_path), 
+                        "-o{}".format(destination_path)
+                    ]
 
                 try:
                     result = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                     (_, stderr) = result.communicate()
                 except subprocess.CalledProcessError as error:
-                    raise ProcessorError('{binary} execution failed with error code {error_code}:  \n{error}'.format(binary=os.path.basename(cmd[0]), error_code=error.returncode, error=error))
+                    raise ProcessorError(
+                        "{} execution failed with error code {}:  \n{}".format(
+                            os.path.basename(cmd[0]), error.returncode, error))
 
                 if result.returncode != 0:
-                    raise ProcessorError("Extracting {archive_path} with {binary} failed with:  {error}".format(archive_path=archive_path, binary=os.path.basename(cmd[0]), error=stderr))
+                    raise ProcessorError(
+                        "Extracting {} with {} failed with:  {}".format(
+                            archive_path, os.path.basename(cmd[0]), stderr))
 
-                self.output("Extracted {filename} to {destination_path}".format(filename=os.path.basename(archive_path), destination_path=destination_path))
+                self.output("Extracted {} to {}".format(
+                    os.path.basename(archive_path), destination_path))
 
-                found_binary = '0'
                 break
 
-        if found_binary != '0':
+        if not found_binary:
             raise ProcessorError("ERROR:  Unable to locate a 7z compatible binary!")
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     processor = ExtractWith7z()
     processor.execute_shell()

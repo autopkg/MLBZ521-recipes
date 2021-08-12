@@ -1,7 +1,7 @@
 #!/usr/bin/python
 #
 # Copyright 2020 Zack Thompson (MLBZ521)
-# 
+#
 # Based on work by:
 #   Jesse Peterson / https://github.com/facebook/Recipes-for-AutoPkg/blob/master/Shared_Processors/SubDirectoryList.py
 #       SubDirectoryList
@@ -20,82 +20,103 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-'''See docstring for OfflineApps class'''
+"""See docstring for OfflineApps class"""
 
 from __future__ import absolute_import
+
 import os
-import shutil
-from pkg_resources import parse_version as Compare_Version
-from autopkglib import Processor, ProcessorError
+
+from pkg_resources import parse_version
+
+from autopkglib import Processor, ProcessorError, URLDownloader
+
 
 __all__ = ["OfflineApps"]
 
-class OfflineApps(Processor):
-    '''Used to locate and "download" offline application content that can 
+
+class OfflineApps(URLDownloader):
+    """Used to locate and "download" offline application content that can 
     then be used for child pkg recipes.  This is for applications that are 
     behind a login or not available via normal internet "acquisitional" 
     methods.
-    '''
+    """
 
     input_variables = {
-        'search_path': {
-            'description': 'Root path to search within.',
-            'required': True,
+        "search_path": {
+            "description": "Root path to search within.",
+            "required": True,
         },
-        'search_string': {
-            'description': ('String that will be used to match items in the '
-                            'search_path.'),
-            'required': True,
+        "search_string": {
+            "description": ("String that will be used to match items in the "
+                            "search_path."),
+            "required": True,
         },
-        'major_version': {
-            'description': ('The major version that will be used to match '
-                            'items in the search_path.'),
-            'required': False,
+        "major_version": {
+            "description": ("The major version that will be used to match "
+                            "items in the search_path."),
+            "required": False,
         },
-        'exception_string': {
-            'description': ('String will exclude items from matching the '
-                            'search'),
-            'required': False,
+        "exception_string": {
+            "description": ("String will exclude items from matching the "
+                            "search"),
+            "required": False,
         },
-        'limitation_string': {
-            'description': ('String that will further limit matching the '
-                            'search'),
-            'required': False,
+        "limitation_string": {
+            "description": ("String that will further limit matching the "
+                            "search"),
+            "required": False,
         },
-        'version_separator': {
-            'description': ('Character used to separate the '
-                            '"Software Title Name" from the "Version".'
-                            'For example:  CrowdStrike Falcon-5.27.10803.0'
-                            'The hyphen would be the separator character.'
-                            'Defaults to "-"'),
-            'default': '-',
-            'required': False,
+        "version_separator": {
+            "description": ("Character used to separate the "
+                            "\"Software Title Name\" from the \"Version\"."
+                            "For example:  CrowdStrike Falcon-5.27.10803.0"
+                            "The hyphen would be the separator character."
+                            "Defaults to \"-\""),
+            "default": "-",
+            "required": False,
         },
-        'max_depth': {
-            'description': ('Maximum depth of folders to iterate through.'),
-            'default': '1',
-            'required': False,
+        "max_depth": {
+            "description": ("Maximum depth of folders to iterate through."),
+            "default": "1",
+            "required": False,
+        },
+        "check_filesize": {
+            "default": True,
+            "required": False,
+            "description": (
+                "If True, each file size will be checked to verify whether "
+                "a download is newer than a cached item. This "
+                "is useful to prevent re-downloading files that already exist."
+                "Defaults to True."
+            ),
         }
     }
     output_variables = {
-        'version': {
-            'description': ('The highest version found according to '
-                            'pkg_resources.parse_version logic.')
+        "version": {
+            "description": ("The highest version found according to "
+                            "pkg_resources.parse_version logic.")
         },
-        'found_major_version': {
-            'description': ('The highest version found according to '
-                            'pkg_resources.parse_version logic.')
+        "found_major_version": {
+            "description": ("The highest version found according to "
+                            "pkg_resources.parse_version logic.")
         },
-        'cached_path': {
-            'description': ('Path to the existing contents in the AutoPkg '
-                            'Cache.')
+        "cached_path": {
+            "description": ("Path to the existing contents in the AutoPkg "
+                            "Cache.")
+        },
+        "download_changed": {
+            "description": (
+                "Boolean indicating if the download has changed since the "
+                "last time it was downloaded."
+            )
         }
     }
 
     description = __doc__
 
+
     def walk(self, top, maxdepth):
-        '''Returns a list of files and folders given a root path to transverse.'''
+        """Returns a list of files and folders given a root path to transverse."""
         dirs, nondirs = [], []
 
         for name in os.listdir(top):
@@ -105,52 +126,49 @@ class OfflineApps(Processor):
 
         if maxdepth > 1:
             for name in dirs:
-                for x in self.walk(os.path.join(top, name), maxdepth-1):
-                    yield x
+                yield from self.walk(os.path.join(top, name), maxdepth-1)
+
 
     def get_latest_version(self, found_items, major_version_like, version_separator):
-        '''Determines the highest version number of the provided strings.'''
-        latest_version = None
-        latest_version_folder = None
-        # print('found_items:  {}'.format(found_items))
+        """Determines the highest version number of the provided strings."""
+        latest_version = ""
+        latest_version_folder = ""
 
         # Loop through the found items
         for item in found_items:
-            # print('item:  {}'.format(item))
             item_version = item.split(version_separator)[-1]
-            # print('item_version:  {}'.format(item_version))
-            # print('latest_version:  {}'.format(latest_version))
 
-            # If a major_version is supplied to reference, make sure the version string starts with supplied major version
+            # If a major_version is supplied to reference, make sure 
+            # the version string starts with supplied major version
             if major_version_like and not item_version.startswith(major_version_like):
-                self.output("Does not match major_version")
+                self.output("Does not match major_version", verbose_level=2)
                 continue
 
-            if Compare_Version(item_version) > Compare_Version(latest_version):
-                # print("Matches major_version")
+            if parse_version(item_version) > parse_version(latest_version):
                 latest_version = item_version
                 latest_version_folder = item
 
-        self.output("Newest version found:  {}".format(latest_version))
         return latest_version, latest_version_folder
+
 
     def main(self):
 
         # Get environment variables
-        search_path = self.env.get('search_path')
-        foldername_contains = self.env.get('search_string')
-        foldername_not_contain = self.env.get('exception_string')
-        foldername_must_contain = self.env.get('limitation_string')
-        major_version_like = self.env.get('major_version')
-        version_separator = self.env.get('version_separator')
-        max_depth = self.env.get('max_depth')
-        RECIPE_CACHE_DIR = self.env.get('RECIPE_CACHE_DIR')
+        search_path = self.env.get("search_path")
+        foldername_contains = self.env.get("search_string")
+        foldername_not_contain = self.env.get("exception_string")
+        foldername_must_contain = self.env.get("limitation_string")
+        major_version_like = self.env.get("major_version")
+        version_separator = self.env.get("version_separator")
+        max_depth = self.env.get("max_depth")
+        check_filesize = self.env.get("check_filesize", True)
+        RECIPE_CACHE_DIR = self.env.get("RECIPE_CACHE_DIR")
+        self.env["download_changed"] = False
 
         # Define local variables
-        downloads_dir = os.path.join(RECIPE_CACHE_DIR, 'downloads')
-        search_string = '{0}'
-        directory_list = list()
-        folder_list = list()
+        downloads_dir = os.path.join(RECIPE_CACHE_DIR, "downloads")
+        # search_string = "{0}"
+        folder_list = []
 
         # Verify the directory exists
         if not os.path.isdir(search_path):
@@ -176,36 +194,65 @@ class OfflineApps(Processor):
 
                 # Append matching folder to list for future use
                 folder_list.append(os.path.join(root_directory, foldername))
-                self.output("Matched:  {}".format(foldername))
+                self.output("Matched:  {}".format(foldername), verbose_level=2)
 
-        if len(folder_list) == 0:
-                raise ProcessorError("Was not able to find a match!")
+        if not folder_list:
+            raise ProcessorError("Was not able to find a match!")
 
-        else:
-            # Get the latest version from the matched results
-            self.env['version'], version_location = self.get_latest_version(folder_list, major_version_like, version_separator)
+        # Get the latest version from the matched results
+        self.env["version"], version_location = self.get_latest_version(
+            folder_list, major_version_like, version_separator)
 
-            # if self.env['version'] and version_location not None:
-            if None in { self.env['version'], version_location }:
-                raise ProcessorError("Was not able to match a version!")
+        if None in { self.env["version"], version_location }:
+            raise ProcessorError("Was not able to match a version!")
 
-            else:
-                self.output('Latest version:  {}'.format(self.env['version']))
-                self.env['found_major_version'] = (self.env['version']).split(".", 1)[0]
-                self.output('Found major version:  {}'.format(self.env['found_major_version']))
-                self.output('Location:  {}'.format(version_location))
-                version_folder = (version_location).split("/")[-1]
+        self.env["found_major_version"] = (self.env["version"]).split(".", 1)[0]
+        version_folder = (version_location).split("/")[-1]
 
-                # Set the location where version should be cached
-                self.env['cached_path'] = os.path.join(downloads_dir, version_folder)
+        self.output("Found major version:  {}".format(
+            self.env["found_major_version"]), verbose_level=2)
+        self.output("Latest version found:  {}".format(self.env["version"]))
+        self.output("Location:  {}".format(version_location), verbose_level=2)
 
-                # Check if this has already been cached
-                if os.path.exists(self.env['cached_path']):
-                    self.output('Latest version already downloaded to the AutoPkg Cache:  {}'.format(self.env['cached_path']))
-                else:
-                    self.output('Downloading:  {}'.format(version_folder))
-                    shutil.copytree(version_location, self.env['cached_path'])
+        # Set the location where version should be cached
+        self.env["cached_path"] = os.path.join(downloads_dir, version_folder)
 
-if __name__ == '__main__':
+        # Loop over files in version_location and download each one?
+        for root_directory, folders, files in self.walk(version_location, int(0)):
+
+            for file in files:
+
+                server_path = "{}/{}".format(version_location, file)
+                save_path = "{}/{}".format(self.env["cached_path"], file)
+
+                if os.path.exists(save_path) and check_filesize and \
+                    os.path.getsize(server_path) == os.path.getsize(save_path):
+                    self.output("File exists locally, not downloading...")
+                    continue
+
+                self.output("Downloading file:  {}".format(file))
+                self.output("Path where file will be saved:  {}".format(
+                    save_path), verbose_level=2)
+
+                # Build the required curl switches
+                curl_opts = [
+                    "--url", "file://{}".format(server_path),
+                    "--request", "GET",
+                    "--output", save_path,
+                    "--create-dirs"
+                ]
+
+                try:
+                    # Initialize the curl_cmd, add the curl options, and execute the curl
+                    curl_cmd = self.prepare_curl_cmd()
+                    curl_cmd.extend(curl_opts)
+                    self.download_with_curl(curl_cmd)
+                    self.env["download_changed"] = True
+
+                except:
+                    raise ProcessorError("Failed to download:  {}".format(file))
+
+
+if __name__ == "__main__":
     PROCESSOR = OfflineApps()
     PROCESSOR.execute_shell()

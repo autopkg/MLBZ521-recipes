@@ -12,35 +12,29 @@ I have not attempted to license this in an programmatic way yet, so the result w
 	<dict>
 		<key>NAME</key>
 		<string>Set.A.Light 3D</string>
-		<key>BASE_URL</key>
-		<string>https://elixxier.com</string>
 		<key>SEARCH_URL</key>
-		<string>%BASE_URL%/en/downloads/index.php</string>
-		<key>SEARCH_PATTERN</key>
-		<string>/downloader\-s3\-usa\.php\?mac=\d+</string>
+		<string>https://www.elixxier.com/downloader-s3-usa.php?mac=11</string>
 	</dict>
 	<key>Process</key>
-	<array>
-		<dict>
-			<key>Processor</key>
-			<string>URLTextSearcher</string>
-			<key>Arguments</key>
-			<dict>
-				<key>url</key>
-				<string>%SEARCH_URL%</string>
-				<key>re_pattern</key>
-				<string>%SEARCH_PATTERN%</string>
-			</dict>
-		</dict>
+    <array>
+        <dict>
+            <key>Processor</key>
+            <string>SetALightProcessor</string>
+            <key>Arguments</key>
+            <dict>
+                <key>search_path</key>
+                <string>%SEARCH_URL%</string>
+            </dict>
+        </dict>
 		<dict>
 			<key>Processor</key>
 			<string>URLDownloader</string>
 			<key>Arguments</key>
 			<dict>
 				<key>url</key>
-				<string>%BASE_URL%%match%</string>
-				<key>filename</key>
-				<string>Set.a.Light 3D.pkg</string>
+				<string>%url%</string>
+				<key>prefetch_filename</key>
+				<true />
 			</dict>
 		</dict>
 		<dict>

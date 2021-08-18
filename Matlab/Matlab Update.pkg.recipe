@@ -10,6 +10,8 @@
     <dict>
         <key>NAME</key>
         <string>Matlab Patch</string>
+		<key>BINARY_7Z_PATH</key>
+		<string>/path/to/7z</string>
     </dict>
 	<key>ParentRecipe</key>
 	<string>com.github.mlbz521.download.MatlabUpdate</string>

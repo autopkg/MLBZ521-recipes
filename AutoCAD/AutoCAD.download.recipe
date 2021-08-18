@@ -89,7 +89,7 @@ Supports the new format found with AutoCAD 2021.</string>
 				<key>input_path</key>
 				<string>%RECIPE_CACHE_DIR%/%app_name%</string>
 				<key>requirement</key>
-				<string>identifier "com.autodesk.AutoCAD2021.installer" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = XXKJ396S2Y</string>
+				<string>identifier "com.autodesk.AutoCAD%found_major_version%.installer" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = XXKJ396S2Y</string>
 			</dict>
 		</dict>
         <dict>

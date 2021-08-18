@@ -15,14 +15,15 @@
 		<!-- 
 			Old URL has been changed to:  https://cisco-umbrella-client-downloads.s3.amazonaws.com/mac/production/RoamingClient_MAC.mpkg.zip 
 			Found here:  https://support.umbrella.com/hc/en-us/articles/231356108-Roaming-Client-Deployment-Parameters-for-Mass-Deployment-MSP-
-			However, went ahead and improved the recipe as the above URL still doesn't download the *actual* latest version; always seems to be n-1.  Leaving this here for future notes/reference/just in case.
+			However, went ahead and improved the recipe as the above URL still doesn't download the *actual* latest version; always seems to be n-1.
+			Leaving this here for future notes/reference/just in case.
 		-->
 		<key>BASE_URL</key>
 		<string>https://support.umbrella.com</string>
 		<key>SEARCH_URL</key>
-		<string>%BASE_URL%/hc/en-us/sections/206928207-Release-Notes-for-Umbrella-Software</string>
+		<string>%BASE_URL%/hc/en-us/sections/4404390256788-MacOS</string>
 		<key>SEARCH_PATTERN_1</key>
-		<string>/hc/en\-us/articles/\d+\-Roaming\-Client\-for\-macOS\-Version\-[0-9\-]+</string>
+		<string>/hc/en\-us/articles/\d+\-(?:Umbrella\-)?Roaming\-Client\-for\-[Mm]acOS\-(?:Version\-)?[0-9\-]+</string>
 		<key>SEARCH_PATTERN_2</key>
 		<string>(?P&lt;download_url&gt;https://disthost.umbrella.com/roaming/upgrade/mac/stage/(?P&lt;filename&gt;RoamingClient_MAC_(?P&lt;version&gt;[0-9\.]+).pkg.zip))</string>
 	</dict>

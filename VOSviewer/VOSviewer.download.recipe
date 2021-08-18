@@ -15,7 +15,7 @@ Java is *REQUIRED* to open VOSviewer.  Amazon's Corretto JDK is not compatiable 
         <key>SEARCH_URL</key>
         <string>https://www.vosviewer.com/download</string>
         <key>SEARCH_PATTERN</key>
-        <string>(?P&lt;url&gt;https\://www\.vosviewer\.com/download/.+\.zip).+(Download VOSviewer )(?P&lt;version&gt;[0-9.]+)( for Mac OS X systems)</string>
+        <string>(?P&lt;url&gt;https\://www\.vosviewer\.com/downloads/VOSviewer_(?P&lt;version&gt;[0-9.]+)_mac\.zip)</string>
     </dict>
     <key>Process</key>
     <array>

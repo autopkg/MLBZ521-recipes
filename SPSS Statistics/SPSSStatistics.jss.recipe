@@ -29,7 +29,7 @@ The created Policy's name will be in the format of "%NAME% %MAJOR_VERSION%".</st
 		<key>SELF_SERVICE_DESCRIPTION</key>
 		<string>IBM SPSS Statistics is a statistical analysis family of products that helps to address the entire analytical process, from planning and data collection to analysis, reporting and deployment.</string>
 		<key>SELF_SERVICE_ICON</key>
-		<string>SPSSStatistics.png</string>
+		<string>SPSSStatistics28.png</string>
 	</dict>
 	<key>ParentRecipe</key>
 	<string>com.github.mlbz521.pkg.SPSSStatistics</string>

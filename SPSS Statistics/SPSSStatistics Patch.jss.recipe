@@ -42,7 +42,7 @@ in the INSTALL_PROPERTIES override variable below, which is described above.
 
 IBM SPSS Statistics is an statistical analysis family of products that helps to address the entire analytical process, from planning and data collection to analysis, reporting and deployment.</string>
 		<key>SELF_SERVICE_ICON</key>
-		<string>SPSSStatistics.png</string>
+		<string>SPSSStatistics28.png</string>
 		<key>package_priority</key>
 		<string>12</string>
 	</dict>

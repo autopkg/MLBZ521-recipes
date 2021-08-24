@@ -67,6 +67,12 @@ class InputVariableTextSubstituter(Processor):
         }
     }
     output_variables = {
+        "return_variable": {
+            "description": "The name variable that was set."
+        },
+        "return_variable_value": {
+            "description": "The variable value that was set."
+        }
     }
 
 
@@ -91,8 +97,8 @@ class InputVariableTextSubstituter(Processor):
         new_string = re.sub(string_to_replace, replacement, original_string)
 
         self.env[return_variable] = new_string
+        self.env["return_variable_value"] = new_string
         self.output("{}: {}".format(return_variable, self.env[return_variable]))
-
 
 if __name__ == "__main__":
     processor = InputVariableTextSubstituter()

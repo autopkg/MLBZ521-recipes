@@ -112,7 +112,7 @@ exitCheck() {
 
 # Credit to Onkston for this install method.
 # https://www.jamf.com/jamf-nation/discussions/35944/autocad-2021-deployment-with-network-server
-pkgArray=$( /usr/bin/find -E "${pkgDir}/${AutoCADinstaller}/Contents/Helper/" -iregex ".*[/].*[.]pkg" -prune )
+pkgArray=$( /usr/bin/find -E "${pkgDir}/${AutoCADinstaller}/Contents/Helper" -iregex ".*[/].*[.]pkg" -prune )
 
 # Verify at least one version of SPSS was found.
 if [[ -z "${pkgArray}" ]]; then

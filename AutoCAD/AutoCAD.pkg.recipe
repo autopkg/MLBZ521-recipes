@@ -122,7 +122,7 @@ if [[ -z "${pkgArray}" ]]; then
 else
 
 	# Loop through each .pkg in the array.
-	for pkg in "${pkgArray[@]}"; do
+	while IFS=$'\n' read -r pkg; do
 
 		echo "Installing ${pkg}..."
 		installResult=$( /usr/sbin/installer -dumplog -verbose -pkg "${pkg}" -allowUntrusted -target / )
@@ -131,7 +131,7 @@ else
 		# Function exitCheck
 		exitCheck $exitCode "${pkg}" "${installResult}"
 
-	done
+	done < <( echo "${pkgArray}" )
 
 fi
 

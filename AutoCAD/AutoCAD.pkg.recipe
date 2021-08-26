@@ -131,7 +131,7 @@ else
 		# Function exitCheck
 		exitCheck $exitCode "${pkg}" "${installResult}"
 
-	done < <( echo "${pkgArray}" )
+	done &lt; &lt;( echo "${pkgArray}" )
 
 fi
 

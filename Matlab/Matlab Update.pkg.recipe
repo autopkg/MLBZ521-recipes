@@ -79,7 +79,7 @@ echo "*****  Update Matlab process:  START  *****"
 # Set working directory
 pkgDir=$( /usr/bin/dirname "${0}" )
 # Version that's being updated (this will be set by the autopkg process)
-version="%MAJOR_VERSION%"
+version="%found_major_version%"
 
 ##################################################
 # Bits staged...

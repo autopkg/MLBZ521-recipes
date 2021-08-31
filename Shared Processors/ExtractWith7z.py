@@ -119,8 +119,8 @@ class ExtractWith7z(Processor):
 
         else:
             # Set the binaries we're going to look for
-            binary_7z = ["7z", "7za", "7zr", "p7zip", "/usr/local/bin/7z", 
-                "/Applications/Keka.app/Contents/MacOS/Keka"]
+            binary_7z = [ "7zz", "/usr/local/7zz/7zz", "7z", "7za", "7zr", "p7zip", "/usr/local/bin/7z", 
+                "/Applications/Keka.app/Contents/MacOS/Keka" ]
 
         # Success/Fail Flag
         found_binary = False

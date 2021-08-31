@@ -29,6 +29,20 @@ Used in:
 
 This processor extracts files with a specified 7zip binary.
 
+Input Variables:
+  * archive_path
+    * description:  Path to an archive.  Defaults to contents of the 'pathname' variable, for example as is set by URLDownloader.
+    * required:  False
+  * destination_path
+    * description:  Directory where archive will be unpacked, created if necessary. Defaults to RECIPE_CACHE_DIR/NAME.
+    * required:  False
+  * purge_destination
+    * description:  Whether the contents of the destination directory will be removed before unpacking.
+    * required:  False
+  * 7z_path
+    * description:  Path to a 7z-compatible binary.  This does not ship with macOS, it will need to be installed manually. The processor will prioritize a provided binary, but if it cannot locate it, it'll continue trying to find a 7z-compatible binary in common locations, including the system PATH.
+    * required:  False
+
 Used in:
   * com.github.mlbz521.download.MaplePatch
   * com.github.mlbz521.pkg.MatlabUpdate
@@ -87,7 +101,11 @@ Used in:
 
 ## OfflineApps ##
 
-Used to locate and "download" offline application content that can then be used for child pkg recipes.  This is for applications that are behind a login or not available via normal internet "acquisitional" methods.  This processor was based on work by:
+This processor will allow you to simply drop the vendor provided "package", in the format they provide, into a specifically named folder structure, whether local to the system running autopkg or a remote host that will be mounted, and the processor will be able to determine which version of the content to "download," even if multiple are available, which can then be used in child pkg recipes.  This is for applications that are behind a login or not available via normal internet "acquisitional" methods.
+
+Checks file size before "downloading" files again, uses `cURL` to "download" files, and can mount an SMB share if required.  (Currently the SMB mount logic assumes JSSImporter is installed, if anyone is using this processor and isn't also using JSSImporter, let me know and I can adjust the logic to not use JSSImporter.)  (_Recommended:_) The SMB server input variables values can be set in your autopkg prefs file instead of in every recipe.
+
+This processor was based on work by:
   * Jesse Peterson
     * [SubDirectoryList](https://github.com/facebook/Recipes-for-AutoPkg/blob/master/Shared_Processors/SubDirectoryList.py)
   * Graham R Pugh
@@ -96,7 +114,7 @@ Used to locate and "download" offline application content that can then be used 
 
 Numerous input variable are available to support as many types of scenarios as I could think of:
   * search_path
-    * description: 'Root path to search within.
+    * description: Root path to search within
     * required:  True
   * search_string
     * description:  String that will be used to match items in the search_path
@@ -112,20 +130,47 @@ Numerous input variable are available to support as many types of scenarios as I
     * required:  False
   * version_separator
     * description:  Character used to separate the "Software Title Name" from the "Version" 
-        * For example:  CrowdStrike Falcon-5.27.10803.0'
-            * The hyphen would be the separator character 
-    * default': '-'
+      * For example:  CrowdStrike Falcon-5.27.10803.0'
+        * The hyphen would be the separator character 
+    * default:  `-`
     * required:  False
   * max_depth
     * description:  Maximum depth of folders to iterate through
-    * default': '1'
+    * default:  `1`
+    * required:  False
+  * OFFLINEAPPS_SMB_URL
+    * description:  An optional SMB URL to mount containing the search path
+    * required:  False
+  * OFFLINEAPPS_SMB_SHARE_NAME
+    * description:  Share to mount from the SMB server
+    * required:  False
+  * OFFLINEAPPS_SMB_PORT
+    * description:  Port to use to connect to the SMB server
+    * default:  `445`
+    * required:  False
+  * OFFLINEAPPS_SMB_MOUNT_POINT
+    * description:  Where the SMB share will be mounted too
+    * default:  `/tmp/OfflineApps/`
+    * required:  False
+  * OFFLINEAPPS_SMB_USERNAME
+    * description:  Username required to connect to the SMB server
+    * required:  False
+  * OFFLINEAPPS_SMB_PASSWORD
+    * description:  Password required to connect to the SMB server
+    * required:  False
+  * OFFLINEAPPS_SMB_DOMAIN
+    * description:  Domain, if required, to connect to the SMB server
     * required:  False
 
 The output variables are:
   * version
     * description:  The highest version found according to pkg_resources.parse_version logic
+  * found_major_version
+    * description:  The "major version" of the version string found
   * cached_path
     * description:  Path to the existing contents in the AutoPkg Cache, whether newly or previously downloaded
+  * download_changed
+    * description:  Boolean indicating if the download has changed since the last time it was downloaded
 
 Used in:
   * com.github.mlbz521.download.ARCHICAD

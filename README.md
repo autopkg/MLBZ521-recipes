@@ -3,7 +3,7 @@ mlbz521-recipes
 
 Recipes I have created that were not publicly available in other repositories or are unique enough to warrant a second recipe (very rare or unintentionally created around the same time or before being merged into the autopkg org).
 
-I have a decent number of recipes that use an "offline repository" method.  Basically, these software titles are not available to be downloaded publicly, normally requiring a login to access the download.  So I have written a custom processor that will allow you to simply drop the vendor provided "package", in the format they provide, into a specifically named folder structure, whether local to the system running autopkg or a remote host that is mounted before run, and the recipe will be able to determine which version of the application to "download" even if multiple are available.  For more details, review the Shared Processors README linked below.
+I have a number of recipes that use an "offline repository" method.  Basically, these software titles are not available to be downloaded publicly, normally requiring a login to access the download.  So I have written a custom processor that will allow you to simply drop the vendor provided "package", in the format they provide, into a specifically named folder structure, whether local to the system running autopkg or a remote host that will be mounted, and the recipe will be able to determine which version of the application to "download" even if multiple are available.  For more details, review the Shared Processors README linked below.
 
 
 ## Shared Processors ##
@@ -157,6 +157,8 @@ Available recipe types:
 ### CoreShell Helper ###
 
 Downloads the latest release of the CoreShell Helper.
+
+Please note:  if CoreShell Helper has been installed from the vendor’s install .app, this will not update that previous install.  This is due to the fact that the vendor's installation .app installs the bits into the currently logged in users' home directory (so you can’t deploy it without a user logged in).  The autopkg created .pkg will install the bits into non-user space, so it would/could apply to any/all users on a system.
 
 Available recipe types:
   * download
@@ -364,9 +366,11 @@ Available recipe types:
 
 ### Pharos Popup Client ###
 
-Parent Recipe:  com.github.asemak.pkg.popup
+Added `download` and `pkg` recipes originally created by @asemak (asemak-recipes) after his repo was deprecated and archived.
 
 Available recipe types:
+  * download
+  * pkg
   * jss
 
 

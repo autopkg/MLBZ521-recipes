@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #
 # InputVariableTextSubstituter.py
-# Copyright 2020 by Zack Thompson (MLBZ521)
+# Copyright 2021 by Zack Thompson (MLBZ521)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -64,6 +64,13 @@ class InputVariableTextSubstituter(Processor):
             "required": True,
             "description": ("The name of the variable to assign the "
                             "result of the modified string too.")
+        },
+        "append_space": {
+            "required": False,
+            "type":  "Boolean",
+            "default":  False,
+            "description": ("Append a space before the replacement string or "
+                            "variable.  Default is False")
         }
     }
     output_variables = {
@@ -78,27 +85,35 @@ class InputVariableTextSubstituter(Processor):
 
     def main(self):
 
-        if not self.env.get("replacement_string") and not self.env.get("variable_to_use"):
-                raise ProcessorError("Neither of the input variables 'replacement_string' or 'variable_to_use' were set!")
-
-        elif self.env.get("replacement_string") and self.env.get("variable_to_use"):
+        if self.env.get("replacement_string") and self.env.get("variable_to_use"):
               raise ProcessorError("Both of the input variables 'replacement_string' or 'variable_to_use' were set!")
+
+        elif self.env.get("replacement_string"):
+            replacement = self.env.get("replacement_string")
+
+        elif self.env.get("variable_to_use"):
+            replacement = self.env.get(self.env.get("variable_to_use"))
+
+        else:
+            raise ProcessorError("Neither of the input variables 'replacement_string' or 'variable_to_use' were set!")
 
         original_string = self.env.get("original_string")
         string_to_replace = self.env.get("string_to_replace")
         return_variable = self.env.get("return_variable")
 
-        if self.env.get("replacement_string") != None:
-            replacement = self.env.get("replacement_string")
-        elif self.env.get("variable_to_use") != None:
-            var_value = self.env.get("variable_to_use")
-            replacement = self.env.get(var_value)
+        if self.env.get("append_space"):
+            replacement = " {}".format(replacement)
 
         new_string = re.sub(string_to_replace, replacement, original_string)
 
         self.env[return_variable] = new_string
         self.env["return_variable_value"] = new_string
         self.output("{}: {}".format(return_variable, self.env[return_variable]))
+
+        # For back to back runs of this processor...
+        for variable in ( "replacement_string", "variable_to_use" ):
+            self.env[variable] = ""
+
 
 if __name__ == "__main__":
     processor = InputVariableTextSubstituter()

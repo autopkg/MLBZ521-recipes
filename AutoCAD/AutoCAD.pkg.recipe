@@ -2,21 +2,21 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-    <key>Description</key>
+	<key>Description</key>
 	<string>Downloads and packages the latest verison of AutoCAD from a local file share.
 
 Supports the new format found with AutoCAD 2021.</string>
-    <key>Identifier</key>
-    <string>com.github.mlbz521.pkg.AutoCAD</string>
-    <key>Input</key>
-    <dict>
-        <key>NAME</key>
-        <string>AutoCAD</string>
-    </dict>
+	<key>Identifier</key>
+	<string>com.github.mlbz521.pkg.AutoCAD</string>
+	<key>Input</key>
+	<dict>
+		<key>NAME</key>
+		<string>AutoCAD</string>
+	</dict>
 	<key>ParentRecipe</key>
 	<string>com.github.mlbz521.download.AutoCAD</string>
-    <key>Process</key>
-    <array>
+	<key>Process</key>
+	<array>
 		<dict>
 			<key>Processor</key>
 			<string>PkgRootCreator</string>
@@ -181,6 +181,6 @@ exit 0</string>
 				</array>
 			</dict>
 		</dict>
-    </array>
+	</array>
 </dict>
 </plist>

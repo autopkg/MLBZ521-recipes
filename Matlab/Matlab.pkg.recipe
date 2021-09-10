@@ -2,7 +2,7 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-    <key>Description</key>
+	<key>Description</key>
 	<string>Downloads and packages the latest verison of Matlab from a local file share.
 
 I license most software separately in environment and do not use the built licensePath key.  If you want to use this, you'll want to fork this recipe more than likely.
@@ -16,12 +16,12 @@ If you want to customize the products that are installed, a copy of an original,
 
 I've seen people are unable to locate it as it's not included in newer versions even though the documentation points to it.
 	</string>
-    <key>Identifier</key>
-    <string>com.github.mlbz521.pkg.Matlab</string>
-    <key>Input</key>
-    <dict>
-        <key>NAME</key>
-        <string>Matlab</string>
+	<key>Identifier</key>
+	<string>com.github.mlbz521.pkg.Matlab</string>
+	<key>Input</key>
+	<dict>
+		<key>NAME</key>
+		<string>Matlab</string>
 		<key>INSTALLER_INPUT</key>
 		<string>destinationFolder=/Applications
 fileInstallationKey=
@@ -33,11 +33,11 @@ mode=silent
 # The 'licensePath' is handled in another step in my environment
 # licensePath=
 # lmgrFiles=</string>
-    </dict>
+	</dict>
 	<key>ParentRecipe</key>
 	<string>com.github.mlbz521.download.Matlab</string>
-    <key>Process</key>
-    <array>
+	<key>Process</key>
+	<array>
 		<dict>
 			<key>Processor</key>
 			<string>PkgRootCreator</string>
@@ -87,28 +87,28 @@ mode=silent
 				<string>%found_filename%/%dmg_found_filename%</string>
 				<key>destination_path</key>
 				<string>%RECIPE_CACHE_DIR%/scripts/%dmg_found_filename%</string>
-                <key>overwrite</key>
-                <true/>
+				<key>overwrite</key>
+				<true/>
 			</dict>
 		</dict>
-        <dict>
-            <key>Processor</key>
-            <string>FileCreator</string>
-            <key>Arguments</key>
-            <dict>
+		<dict>
+			<key>Processor</key>
+			<string>FileCreator</string>
+			<key>Arguments</key>
+			<dict>
 				<key>file_content</key>
 				<string>%INSTALLER_INPUT%</string>
-                <key>file_mode</key>
-                <string>0755</string>
-                <key>file_path</key>
-                <string>%RECIPE_CACHE_DIR%/scripts/installer_input.txt</string>
-            </dict>
-        </dict>
-        <dict>
-            <key>Processor</key>
-            <string>FileCreator</string>
-            <key>Arguments</key>
-            <dict>
+				<key>file_mode</key>
+				<string>0755</string>
+				<key>file_path</key>
+				<string>%RECIPE_CACHE_DIR%/scripts/installer_input.txt</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>FileCreator</string>
+			<key>Arguments</key>
+			<dict>
 				<key>file_content</key>
 				<string>#!/bin/bash
 
@@ -128,7 +128,7 @@ echo "*****  Install Matlab process:  START  *****"
 
 # Set working directory
 pkgDir=$( /usr/bin/dirname "${0}" )
-# Version that's being updated (this will be set by the build_Matlab.sh script)
+# Version that's being updated (this will be set by the autopkg process)
 version="%version%"
 
 ##################################################
@@ -169,12 +169,12 @@ echo "Install complete!"
 echo "*****  Install Matlab process:  COMPLETE  *****"
 
 exit 0</string>
-                <key>file_mode</key>
-                <string>0755</string>
-                <key>file_path</key>
-                <string>%RECIPE_CACHE_DIR%/scripts/postinstall</string>
-            </dict>
-        </dict>
+				<key>file_mode</key>
+				<string>0755</string>
+				<key>file_path</key>
+				<string>%RECIPE_CACHE_DIR%/scripts/postinstall</string>
+			</dict>
+		</dict>
 		<dict>
 			<key>Processor</key>
 			<string>PkgCreator</string>
@@ -209,6 +209,6 @@ exit 0</string>
 				</array>
 			</dict>
 		</dict>
-    </array>
+	</array>
 </dict>
 </plist>

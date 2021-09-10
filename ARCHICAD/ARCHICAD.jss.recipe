@@ -8,10 +8,12 @@
 You can provide values for eduSerialNumber and eduUserID as well to license the install.
 
 Please note, there is likely a newer 'patch' available.</string>
-    <key>Identifier</key>
-    <string>com.github.mlbz521.jss.ARCHICAD</string>
+	<key>Identifier</key>
+	<string>com.github.mlbz521.jss.ARCHICAD</string>
 	<key>Input</key>
 	<dict>
+		<key>CUSTOM_TRIGGER</key>
+		<string>ARCHICAD_#MAJOR_VERSION#</string>
 		<key>GROUP_TEMPLATE</key>
 		<string>GroupTemplate.xml</string>
 		<key>POLICY_TEMPLATE</key>
@@ -33,7 +35,7 @@ Please note, there is likely a newer 'patch' available.</string>
 
 It is a BIM software developed by GRAPHISOFT enabling architects to work in a BIM (Building Information Modeling/Management) environment.</string>
 		<key>SELF_SERVICE_ICON</key>
-		<string>ARCHICAD 24.png</string>
+		<string>ARCHICAD 25.png</string>
 
 		<key>SEARCH_STRING</key>
 		<string>ARCHICAD</string>
@@ -45,14 +47,14 @@ It is a BIM software developed by GRAPHISOFT enabling architects to work in a BI
 		<string></string>
 		<key>FILE_SHARE</key>
 		<string>/path/to/offline/repository</string>
-        <key>VERSION_STRING_SEPARATOR</key>
-        <string>-</string>
+		<key>VERSION_STRING_SEPARATOR</key>
+		<string>-</string>
 		<key>MAX_FOLDER_DEPTH</key>
 		<string>1</string>
-        <key>EDUSERIALNUMBER</key>
-        <string></string>
-        <key>EDUUSERID</key>
-        <string></string>
+		<key>EDUSERIALNUMBER</key>
+		<string></string>
+		<key>EDUUSERID</key>
+		<string></string>
 	</dict>
 	<key>ParentRecipe</key>
 	<string>com.github.mlbz521.pkg.ARCHICAD</string>
@@ -60,13 +62,43 @@ It is a BIM software developed by GRAPHISOFT enabling architects to work in a BI
 	<array>
 		<dict>
 			<key>Processor</key>
+			<string>com.github.mlbz521.SharedProcessors/InputVariableTextSubstituter</string>
+			<key>Arguments</key>
+			<dict>
+				<key>original_string</key>
+				<string>%CUSTOM_TRIGGER%</string>
+				<key>return_variable</key>
+				<string>CUSTOM_TRIGGER</string>
+				<key>string_to_replace</key>
+				<string>#MAJOR_VERSION#</string>
+				<key>variable_to_use</key>
+				<string>found_major_version</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>com.github.mlbz521.SharedProcessors/InputVariableTextSubstituter</string>
+			<key>Arguments</key>
+			<dict>
+				<key>original_string</key>
+				<string>%NAME%</string>
+				<key>return_variable</key>
+				<string>NAME</string>
+				<key>string_to_replace</key>
+				<string>$</string>
+				<key>variable_to_use</key>
+				<string>found_major_version</string>
+				<key>append_space</key>
+				<true />
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
 			<string>JSSImporter</string>
 			<key>Arguments</key>
 			<dict>
 				<key>pkg_path</key>
-				<string>%RECIPE_CACHE_DIR%/%NAME% %found_major_version%-%version%.pkg</string>
-				<key>prod_name</key>
-				<string>%NAME% %found_major_version%</string>
+				<string>%RECIPE_CACHE_DIR%/%NAME%-%version%.pkg</string>
 				<key>category</key>
 				<string>%CATEGORY%</string>
 				<key>policy_category</key>

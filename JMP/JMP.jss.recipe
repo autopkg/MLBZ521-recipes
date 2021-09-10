@@ -10,6 +10,8 @@ The created Policy's name will be in the format of "%NAME% %MAJOR_VERSION%"</str
 	<string>com.github.mlbz521.jss.JMP</string>
 	<key>Input</key>
 	<dict>
+		<key>CUSTOM_TRIGGER</key>
+		<string>JMP_Pro_#MAJOR_VERSION#</string>
 		<key>GROUP_TEMPLATE</key>
 		<string>SmartGroupTemplate.xml</string>
 		<key>POLICY_TEMPLATE</key>
@@ -30,6 +32,8 @@ The created Policy's name will be in the format of "%NAME% %MAJOR_VERSION%"</str
 		<string>Data analysis software that is tool of choice for hundreds of thousands of scientists, engineers and other data explorers worldwide. Users leverage powerful statistical and analytic capabilities in JMP to discover the unexpected.</string>
 		<key>SELF_SERVICE_ICON</key>
 		<string>JMP.png</string>
+		<key>STRING_TO_REPLACE</key>
+		<string>$</string>
 	</dict>
 	<key>ParentRecipe</key>
 	<string>com.github.mlbz521.pkg.JMP</string>
@@ -37,13 +41,58 @@ The created Policy's name will be in the format of "%NAME% %MAJOR_VERSION%"</str
 	<array>
 		<dict>
 			<key>Processor</key>
+			<string>com.github.mlbz521.SharedProcessors/InputVariableTextSubstituter</string>
+			<key>Arguments</key>
+			<dict>
+				<key>original_string</key>
+				<string>%CUSTOM_TRIGGER%</string>
+				<key>return_variable</key>
+				<string>CUSTOM_TRIGGER</string>
+				<key>string_to_replace</key>
+				<string>#MAJOR_VERSION#</string>
+				<key>variable_to_use</key>
+				<string>found_major_version</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>com.github.mlbz521.SharedProcessors/InputVariableTextSubstituter</string>
+			<key>Arguments</key>
+			<dict>
+				<key>original_string</key>
+				<string>%NAME%</string>
+				<key>return_variable</key>
+				<string>PKG_NAME</string>
+				<key>string_to_replace</key>
+				<string>JMP</string>
+				<key>replacement_string</key>
+				<string>JMP</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>com.github.mlbz521.SharedProcessors/InputVariableTextSubstituter</string>
+			<key>Arguments</key>
+			<dict>
+				<key>original_string</key>
+				<string>%NAME%</string>
+				<key>return_variable</key>
+				<string>NAME</string>
+				<key>string_to_replace</key>
+				<string>%STRING_TO_REPLACE%</string>
+				<key>variable_to_use</key>
+				<string>found_major_version</string>
+				<key>append_space</key>
+				<true />
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
 			<string>JSSImporter</string>
 			<key>Arguments</key>
 			<dict>
 				<key>pkg_path</key>
-				<string>%RECIPE_CACHE_DIR%/%NAME%-%version%.pkg</string>
-				<key>prod_name</key>
-				<string>%NAME% %found_major_version%</string>
+				<string>%RECIPE_CACHE_DIR%/%PKG_NAME%-%version%.pkg</string>
 				<key>category</key>
 				<string>%CATEGORY%</string>
 				<key>policy_category</key>

@@ -22,6 +22,8 @@ I've seen people are unable to locate it as it's not included in newer versions 
 	<string>com.github.mlbz521.jss.Matlab</string>
 	<key>Input</key>
 	<dict>
+		<key>CUSTOM_TRIGGER</key>
+		<string>Matlab_#VERSION#</string>
 		<key>GROUP_TEMPLATE</key>
 		<string>SmartGroupTemplate.xml</string>
 		<key>POLICY_TEMPLATE</key>
@@ -40,6 +42,8 @@ I've seen people are unable to locate it as it's not included in newer versions 
 		<string>The MATLAB platform is optimized for solving engineering and scientific problems.  The matrix-based MATLAB language is the world’s most natural way to express computational mathematics.  Built-in graphics make it easy to visualize and gain insights from data. A vast library of prebuilt toolboxes lets you get started right away with algorithms essential to your domain.  The desktop environment invites experimentation, exploration, and discovery.  These MATLAB tools and capabilities are all rigorously tested and designed to work together.</string>
 		<key>SELF_SERVICE_ICON</key>
 		<string>Matlab.png</string>
+		<key>STRING_TO_REPLACE</key>
+		<string>$</string>
 	</dict>
 	<key>ParentRecipe</key>
 	<string>com.github.mlbz521.pkg.Matlab</string>
@@ -47,13 +51,43 @@ I've seen people are unable to locate it as it's not included in newer versions 
 	<array>
 		<dict>
 			<key>Processor</key>
+			<string>com.github.mlbz521.SharedProcessors/InputVariableTextSubstituter</string>
+			<key>Arguments</key>
+			<dict>
+				<key>original_string</key>
+				<string>%CUSTOM_TRIGGER%</string>
+				<key>return_variable</key>
+				<string>CUSTOM_TRIGGER</string>
+				<key>string_to_replace</key>
+				<string>#VERSION#</string>
+				<key>variable_to_use</key>
+				<string>version</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>com.github.mlbz521.SharedProcessors/InputVariableTextSubstituter</string>
+			<key>Arguments</key>
+			<dict>
+				<key>original_string</key>
+				<string>%NAME%</string>
+				<key>return_variable</key>
+				<string>NAME</string>
+				<key>string_to_replace</key>
+				<string>%STRING_TO_REPLACE%</string>
+				<key>variable_to_use</key>
+				<string>found_major_version</string>
+				<key>append_space</key>
+				<true />
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
 			<string>JSSImporter</string>
 			<key>Arguments</key>
 			<dict>
 				<key>pkg_path</key>
-				<string>%RECIPE_CACHE_DIR%/%NAME%-%version%.pkg</string>
-				<key>prod_name</key>
-				<string>%NAME% %version%</string>
+				<string>%pkg_path%</string>
 				<key>category</key>
 				<string>%CATEGORY%</string>
 				<key>policy_category</key>

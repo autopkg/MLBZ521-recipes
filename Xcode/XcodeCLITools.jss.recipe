@@ -2,92 +2,139 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-    <key>Identifier</key>
-    <string>com.github.mlbz521.jss.XcodeCLITools</string>
-    <key>Description</key>
-    <string>Download the Xcode Command Line Tools from the Apple dev portal, creates a .pkg, and uploads it to the JPS.  Uses Facebook's "xcode.downloader" recipe.
+	<key>Identifier</key>
+	<string>com.github.mlbz521.jss.XcodeCLITools</string>
+	<key>Description</key>
+	<string>Download the Xcode Command Line Tools from the Apple dev portal, creates a .pkg, and uploads it to the JPS.  Uses Facebook's "xcode.downloader" recipe.
 
 The Policy will be named %NAME% %Major Version%, e.g. "Xcode Command Line Tools 12"
 
 Important Override Variables:
-    * You must override APPLE_ID and ( PASSWORD_FILE or PASSWORD )
-    * BETA must either be empty for stable releases or set to "Beta" in order to match Xcode betas
+	* You must override APPLE_ID and ( PASSWORD_FILE or PASSWORD )
+	* BETA must either be empty for stable releases or set to "Beta" in order to match Xcode betas
 
 See https://github.com/facebook/Recipes-for-AutoPkg/tree/master/Xcode for more information.</string>
-    <key>Input</key>
-    <dict>
-         <key>GROUP_TEMPLATE</key>
-        <string>SmartGroupTemplate.xml</string>
-        <key>POLICY_TEMPLATE</key>
-        <string>PolicyTemplate.xml</string>
-        <key>POLICY_CATEGORY</key>
-        <string>Testing</string>
-        <key>GROUP_NAME</key>
-        <string>%NAME%-Testing</string>
-        <key>NAME</key>
-        <string>Xcode Command Line Tools</string>
-        <key>CATEGORY</key>
-        <string>Development</string>
-        <key>SELF_SERVICE_DESCRIPTION</key>
-        <string>This package enables UNIX-style development via Terminal by installing command line developer tools, as well as macOS SDK frameworks and headers.  Many useful tools are included, such as the Apple LLVM compiler, linker, and Make.  If you use Xcode, these tools are also embedded within the Xcode IDE.</string>
-        <key>SELF_SERVICE_ICON</key>
-        <string>Xcode CLI Tools12.png</string>
-    </dict>
-    <key>ParentRecipe</key>
-    <string>com.github.mlbz521.pkg.XcodeCLITools</string>
-    <key>Process</key>
-    <array>
-        <dict>
-            <key>Processor</key>
-            <string>com.github.mlbz521.SharedProcessors/StringRightSplitter</string>
-            <key>Arguments</key>
-            <dict>
-                <key>string_to_split</key>
-                <string>%version%</string>
-                <key>split_on</key>
-                <string>.</string>
-                <key>occurrence</key>
-                <integer>5</integer>
-                <key>index</key>
-                <integer>0</integer>
-                <key>return_variable</key>
-                <string>major_version</string>
-            </dict>
-        </dict>
-        <dict>
-            <key>Processor</key>
-            <string>JSSImporter</string>
-            <key>Arguments</key>
-            <dict>
-                <key>version</key>
-                <string>%version%</string>
-                <key>pkg_path</key>
-                <string>%RECIPE_CACHE_DIR%/%NAME%-%version%.pkg</string>
-                <key>prod_name</key>
-                <string>%NAME% %major_version%</string>
-                <key>category</key>
-                <string>%CATEGORY%</string>
-                <key>policy_category</key>
-                <string>%POLICY_CATEGORY%</string>
-                <key>policy_template</key>
-                <string>%POLICY_TEMPLATE%</string>
-                <key>self_service_icon</key>
-                <string>%SELF_SERVICE_ICON%</string>
-                <key>self_service_description</key>
-                <string>%SELF_SERVICE_DESCRIPTION%</string>
-                <key>groups</key>
-                <array>
-                    <dict>
-                        <key>name</key>
-                        <string>%GROUP_NAME%</string>
-                        <key>smart</key>
-                        <true/>
-                        <key>template_path</key>
-                        <string>%GROUP_TEMPLATE%</string>
-                    </dict>
-                </array>
-            </dict>
-        </dict>
-    </array>
+	<key>Input</key>
+	<dict>
+		<key>CUSTOM_TRIGGER</key>
+		<string>Xcode_Command_Line_Tools_#MAJOR_VERSION#</string>
+		 <key>GROUP_TEMPLATE</key>
+		<string>SmartGroupTemplate.xml</string>
+		<key>POLICY_TEMPLATE</key>
+		<string>PolicyTemplate.xml</string>
+		<key>POLICY_CATEGORY</key>
+		<string>Testing</string>
+		<key>GROUP_NAME</key>
+		<string>%NAME%-Testing</string>
+		<key>NAME</key>
+		<string>Xcode Command Line Tools</string>
+		<key>CATEGORY</key>
+		<string>Development</string>
+		<key>SELF_SERVICE_DESCRIPTION</key>
+		<string>This package enables UNIX-style development via Terminal by installing command line developer tools, as well as macOS SDK frameworks and headers.  Many useful tools are included, such as the Apple LLVM compiler, linker, and Make.  If you use Xcode, these tools are also embedded within the Xcode IDE.</string>
+		<key>SELF_SERVICE_ICON</key>
+		<string>Xcode CLI Tools12.png</string>
+	</dict>
+	<key>ParentRecipe</key>
+	<string>com.github.mlbz521.pkg.XcodeCLITools</string>
+	<key>Process</key>
+	<array>
+		<dict>
+			<key>Processor</key>
+			<string>com.github.mlbz521.SharedProcessors/StringRightSplitter</string>
+			<key>Arguments</key>
+			<dict>
+				<key>string_to_split</key>
+				<string>%version%</string>
+				<key>split_on</key>
+				<string>.</string>
+				<key>occurrence</key>
+				<integer>5</integer>
+				<key>index</key>
+				<integer>0</integer>
+				<key>return_variable</key>
+				<string>major_version</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>com.github.mlbz521.SharedProcessors/InputVariableTextSubstituter</string>
+			<key>Arguments</key>
+			<dict>
+				<key>original_string</key>
+				<string>%CUSTOM_TRIGGER%</string>
+				<key>return_variable</key>
+				<string>CUSTOM_TRIGGER</string>
+				<key>string_to_replace</key>
+				<string>#MAJOR_VERSION#</string>
+				<key>variable_to_use</key>
+				<string>major_version</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>com.github.mlbz521.SharedProcessors/InputVariableTextSubstituter</string>
+			<key>Arguments</key>
+			<dict>
+				<key>original_string</key>
+				<string>%NAME%</string>
+				<key>return_variable</key>
+				<string>PKG_NAME</string>
+				<key>string_to_replace</key>
+				<string>Xcode</string>
+				<key>replacement_string</key>
+				<string>Xcode</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>com.github.mlbz521.SharedProcessors/InputVariableTextSubstituter</string>
+			<key>Arguments</key>
+			<dict>
+				<key>original_string</key>
+				<string>%NAME%</string>
+				<key>return_variable</key>
+				<string>NAME</string>
+				<key>string_to_replace</key>
+				<string>$</string>
+				<key>variable_to_use</key>
+				<string>major_version</string>
+				<key>append_space</key>
+				<true />
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>JSSImporter</string>
+			<key>Arguments</key>
+			<dict>
+				<key>version</key>
+				<string>%version%</string>
+				<key>pkg_path</key>
+				<string>%RECIPE_CACHE_DIR%/%PKG_NAME%-%version%.pkg</string>
+				<key>category</key>
+				<string>%CATEGORY%</string>
+				<key>policy_category</key>
+				<string>%POLICY_CATEGORY%</string>
+				<key>policy_template</key>
+				<string>%POLICY_TEMPLATE%</string>
+				<key>self_service_icon</key>
+				<string>%SELF_SERVICE_ICON%</string>
+				<key>self_service_description</key>
+				<string>%SELF_SERVICE_DESCRIPTION%</string>
+				<key>groups</key>
+				<array>
+					<dict>
+						<key>name</key>
+						<string>%GROUP_NAME%</string>
+						<key>smart</key>
+						<true/>
+						<key>template_path</key>
+						<string>%GROUP_TEMPLATE%</string>
+					</dict>
+				</array>
+			</dict>
+		</dict>
+	</array>
 </dict>
 </plist>

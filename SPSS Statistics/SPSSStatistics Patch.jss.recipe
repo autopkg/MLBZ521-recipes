@@ -23,6 +23,8 @@ in the INSTALL_PROPERTIES override variable below, which is described above.
 	<string>com.github.mlbz521.jss.SPSSStatisticsPatch</string>
 	<key>Input</key>
 	<dict>
+		<key>CUSTOM_TRIGGER</key>
+		<string>SPSS_Statistics_#MAJOR_VERSION#_Patch</string>
 		<key>GROUP_TEMPLATE</key>
 		<string>SmartGroupTemplate.xml</string>
 		<key>POLICY_TEMPLATE</key>
@@ -52,13 +54,58 @@ IBM SPSS Statistics is an statistical analysis family of products that helps to 
 	<array>
 		<dict>
 			<key>Processor</key>
+			<string>com.github.mlbz521.SharedProcessors/InputVariableTextSubstituter</string>
+			<key>Arguments</key>
+			<dict>
+				<key>original_string</key>
+				<string>%CUSTOM_TRIGGER%</string>
+				<key>return_variable</key>
+				<string>CUSTOM_TRIGGER</string>
+				<key>string_to_replace</key>
+				<string>#MAJOR_VERSION#</string>
+				<key>variable_to_use</key>
+				<string>found_major_version</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>com.github.mlbz521.SharedProcessors/InputVariableTextSubstituter</string>
+			<key>Arguments</key>
+			<dict>
+				<key>original_string</key>
+				<string>%NAME%</string>
+				<key>return_variable</key>
+				<string>NAME</string>
+				<key>string_to_replace</key>
+				<string>Patch</string>
+				<key>variable_to_use</key>
+				<string>found_major_version</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>com.github.mlbz521.SharedProcessors/InputVariableTextSubstituter</string>
+			<key>Arguments</key>
+			<dict>
+				<key>original_string</key>
+				<string>%NAME%</string>
+				<key>return_variable</key>
+				<string>NAME</string>
+				<key>string_to_replace</key>
+				<string>$</string>
+				<key>replacement_string</key>
+				<string>Patch</string>
+				<key>append_space</key>
+				<true />
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
 			<string>JSSImporter</string>
 			<key>Arguments</key>
 			<dict>
 				<key>pkg_path</key>
-				<string>%RECIPE_CACHE_DIR%/%NAME%-%version%.pkg</string>
-				<key>prod_name</key>
-				<string>SPSS Statistics %found_major_version% Patch</string>
+				<string>%pkg_path%</string>
 				<key>category</key>
 				<string>%CATEGORY%</string>
 				<key>policy_category</key>

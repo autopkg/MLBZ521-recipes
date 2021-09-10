@@ -2,13 +2,13 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-    <key>Identifier</key>
-    <string>com.github.mlbz521.jss.MaplePatch</string>
-    <key>Description</key>
-    <string>Downloads the patch for the specified Maple major version.
+	<key>Identifier</key>
+	<string>com.github.mlbz521.jss.MaplePatch</string>
+	<key>Description</key>
+	<string>Downloads the patch for the specified Maple major version.
 
 Specify major version as:  '2020', '2019', '2018', '2017', or 2016</string>
-    <key>Input</key>
+	<key>Input</key>
 	<dict>
 		<key>GROUP_TEMPLATE</key>
 		<string>GroupTemplate.xml</string>
@@ -27,8 +27,8 @@ Specify major version as:  '2020', '2019', '2018', '2017', or 2016</string>
 		<key>CATEGORY</key>
 		<string>Mathematics</string>
 
-        <key>NAME</key>
-        <string>Maple %MAJOR_VERSION% Patch</string>
+		<key>NAME</key>
+		<string>Maple %MAJOR_VERSION% Patch</string>
 		<key>SELF_SERVICE_DESCRIPTION</key>
 		<string>This will update your current version of Maple to the latest version.
 

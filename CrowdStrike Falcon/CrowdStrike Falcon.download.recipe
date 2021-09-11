@@ -19,31 +19,35 @@ You must provide a Client ID and Secret along with the Policy ID to determine wh
 		<string>093Uhd093HqGAH309h309fa3j0H3AsdFJ0AIH3iQ</string>
 		<key>POLICY_ID</key>
 		<string>20983aunw039ufapsuf03u0a0sudfna0</string>
+		<key>API_REGION_URL</key>
+		<string>https://api.crowdstrike.com</string>
 	</dict>
 	<key>Process</key>
 	<array>
-        <dict>
-            <key>Processor</key>
-            <string>CrowdStrikeProcessor</string>
-            <key>Arguments</key>
-            <dict>
-                <key>client_id</key>
-                <string>%CLIENT_ID%</string>
-                <key>client_secret</key>
-                <string>%CLIENT_SECRET%</string>
-                <key>policy_id</key>
-                <string>%POLICY_ID%</string>
-            </dict>
-        </dict>
-        <dict>
-            <key>Processor</key>
-            <string>URLDownloader</string>
-            <key>Arguments</key>
-            <dict>
-                <key>url</key>
-                <string>%download_url%</string>
-                <key>filename</key>
-                <string>%NAME%-%version%.pkg</string>
+		<dict>
+			<key>Processor</key>
+			<string>CrowdStrikeProcessor</string>
+			<key>Arguments</key>
+			<dict>
+				<key>client_id</key>
+				<string>%CLIENT_ID%</string>
+				<key>client_secret</key>
+				<string>%CLIENT_SECRET%</string>
+				<key>policy_id</key>
+				<string>%POLICY_ID%</string>
+				<key>api_region_url</key>
+				<string>%API_REGION_URL%</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>URLDownloader</string>
+			<key>Arguments</key>
+			<dict>
+				<key>url</key>
+				<string>%download_url%</string>
+				<key>filename</key>
+				<string>%NAME%-%version%.pkg</string>
 				<key>request_headers</key>
 				<dict>
 					<key>accept</key>
@@ -51,8 +55,8 @@ You must provide a Client ID and Secret along with the Policy ID to determine wh
 					<key>authorization</key>
 					<string>bearer %access_token%</string>
 				</dict>
-            </dict>
-        </dict>
+			</dict>
+		</dict>
 		<dict>
 			<key>Processor</key>
 			<string>CodeSignatureVerifier</string>

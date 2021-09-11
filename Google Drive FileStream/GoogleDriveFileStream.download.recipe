@@ -21,6 +21,15 @@ This recipe differs from wardsparadox-recipes as it uses the static URL instead 
 	<array>
 		<dict>
 			<key>Processor</key>
+			<string>DeprecationWarning</string>
+			<key>Arguments</key>
+			<dict>
+				<key>warning_message</key>
+				<string>Renaming recipe, please switch to using com.github.mlbz521.download.GoogleDrive</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
 			<string>URLDownloader</string>
 			<key>Arguments</key>
 			<dict>

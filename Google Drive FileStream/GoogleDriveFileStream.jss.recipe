@@ -45,6 +45,15 @@ Drive File Stream is only usable with G-Suite accounts.</string>
 	<array>
 		<dict>
 			<key>Processor</key>
+			<string>DeprecationWarning</string>
+			<key>Arguments</key>
+			<dict>
+				<key>warning_message</key>
+				<string>Renaming recipe, please switch to using com.github.mlbz521.jss.GoogleDrive</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
 			<string>JSSImporter</string>
 			<key>Arguments</key>
 			<dict>

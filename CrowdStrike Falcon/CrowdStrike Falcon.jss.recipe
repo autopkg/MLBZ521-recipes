@@ -29,7 +29,7 @@ Expects your Customer ID (license ID) so that the pkg recipe can license the Sen
 		<key>SELF_SERVICE_DESCRIPTION</key>
 		<string>Falcon is the CrowdStrike platform purpose-built to stop breaches via a unified set of technologies that prevent all types of attacks — including malware and much more.  Today’s sophisticated attackers are going “beyond malware” to breach organizations, increasingly relying on exploits, zero days, and hard-to-detect methods such as credential theft and tools that are already part of the victim’s environment or operating system, such as PowerShell.  CrowdStrike Falcon responds to those challenges with a powerful yet lightweight solution that unifies next-generation antivirus (NGAV), endpoint detection and response (EDR), managed threat hunting capabilities, threat intelligence, and security hygiene — all contained in a tiny, single, lightweight sensor.</string>
 		<key>SELF_SERVICE_ICON</key>
-		<string>CrowdStrike Falcon.png</string>
+		<string>CrowdStrikeFalcon-6.x</string>
 	</dict>
 	<key>ParentRecipe</key>
 	<string>com.github.mlbz521.pkg.CrowdStrikeFalcon</string>

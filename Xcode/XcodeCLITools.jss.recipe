@@ -110,6 +110,8 @@ See https://github.com/facebook/Recipes-for-AutoPkg/tree/master/Xcode for more i
 			<dict>
 				<key>version</key>
 				<string>%version%</string>
+				<key>prod_name</key>
+				<string>%NAME%</string>
 				<key>pkg_path</key>
 				<string>%RECIPE_CACHE_DIR%/%PKG_NAME%-%version%.pkg</string>
 				<key>category</key>

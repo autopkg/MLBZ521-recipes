@@ -88,6 +88,8 @@ I've seen people are unable to locate it as it's not included in newer versions 
 			<dict>
 				<key>pkg_path</key>
 				<string>%pkg_path%</string>
+				<key>prod_name</key>
+				<string>%NAME%</string>
 				<key>category</key>
 				<string>%CATEGORY%</string>
 				<key>policy_category</key>

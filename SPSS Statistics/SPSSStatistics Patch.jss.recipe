@@ -106,6 +106,8 @@ IBM SPSS Statistics is an statistical analysis family of products that helps to 
 			<dict>
 				<key>pkg_path</key>
 				<string>%pkg_path%</string>
+				<key>prod_name</key>
+				<string>%NAME%</string>
 				<key>category</key>
 				<string>%CATEGORY%</string>
 				<key>policy_category</key>

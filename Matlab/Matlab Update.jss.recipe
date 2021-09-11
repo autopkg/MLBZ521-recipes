@@ -91,6 +91,8 @@ The created Policy's name will be in the format of "%NAME% %version%".</string>
 			<dict>
 				<key>pkg_path</key>
 				<string>%pkg_path%</string>
+				<key>prod_name</key>
+				<string>%NAME%</string>
 				<key>category</key>
 				<string>%CATEGORY%</string>
 				<key>policy_category</key>

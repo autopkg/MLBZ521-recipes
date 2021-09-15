@@ -326,8 +326,9 @@ class OfflineApps(URLDownloader):
                         raise ProcessorError("Failed to download:  {}".format(file))
 
         finally:
+
             # Done with distribution point, unmount it.
-            if self.dp_instance.is_mounted():
+            if self.env.get("OFFLINEAPPS_SMB_URL") and self.dp_instance.is_mounted():
                 self.dp_instance.umount()
 
 

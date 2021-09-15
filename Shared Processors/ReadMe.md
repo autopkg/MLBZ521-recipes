@@ -12,6 +12,87 @@ Used in:
   * com.github.mlbz521.download.AutoCADPatch
 
 
+## CanonPrintDriverProcessor ##
+
+This processor finds the download URL for the "Recommended Driver" package based on the override-able parameters.
+
+Notables:
+  * The processor has only been tested against Canon's "imageRUNNER ADVANCE" product line at this time.  Additional adjustments may be needed for other product lines
+  * This processor technically can support Linux, macOS, _and_ Windows
+  * Requires the [Selenium Library](https://www.selenium.dev/documentation/) and requires browser driver to be supplied.
+    * Only support for the ChromeDriver has been added, but support for the other can be
+    * To install Selenium in the expected location for this processor, run:
+      * `sudo pip3 install --target=/Library/AutoPkg/Selenium selenium`
+
+Input Variables:
+  * model:
+    * description:  The official model name of the Canon Printer to search for
+    * required:  True
+    * example:  'imageRUNNER ADVANCE C7565i III'
+  * os_version
+    * description:  The OS version to search against
+    * required:  False
+    * default:  'MACOS_11_0' (i.e. Big Sur)
+    * options:  
+      * macOS Big Sur v11.0:  MACOS_11_0
+      * macOS Catalina v10.15:  MACOS_10_15
+      * macOS Mojave v10.14:  MACOS_10_14
+      * macOS High Sierra v10.13:  MACOS_10_13
+      * macOS Sierra v10.12:  MACOS_V10_12
+      * OS X El Capitan v10.11:  OS_X_V10_11
+      * OS X Yosemite v10.10:  OS_X_V10_10
+      * OS X Mavericks v10.9:  OS_X_V10_9
+      * OS X Mountain Lion v10.8:  MAC_OS_X_V10_8
+      * OS X Lion v10.7:  MAC_OS_X_V10_7
+      * Mac OS X Snow Leopard v10.6:  MAC_OS_X_V10_6
+      * Mac OS X v10.1:  MAC_OS_X_V10_1
+      * Mac OS 9:  MAC_OS_9
+      * Windows 10 (x64):  WINDOWS_10_X64
+      * Windows 10:  WINDOWS_10
+      * Windows 8.1 (x64):  WINDOWS_8_1_X64
+      * Windows 8.1:  WINDOWS_8_1
+      * Windows 8 (x64):  WINDOWS_8_X64
+      * Windows 8:  WINDOWS_8
+      * Windows 7 (x64):  WINDOWS_7_X64
+      * Windows 7:  WINDOWS_7
+      * Windows Vista (x64):  WINDOWS_VISTA_X64
+      * Windows Vista:  WINDOWS_VISTA
+      * Windows XP (x64):  WINDOWS_XP_X64
+      * Windows XP:  WINDOWS_XP
+      * Windows Me:  WINDOWS_ME
+      * Windows 98:  WINDOWS_98
+      * Windows 95:  WINDOWS_95
+      * Windows Server 2019 (x64):  WINDOWS_SERVER_2019_X64
+      * Windows Server 2016 (x64):  WINDOWS_SERVER_2016_X64
+      * Windows Server 2012 R2 (x64):  WINDOWS_SERVER_2012_R2_X64
+      * Windows Server 2012 (x64):  WINDOWS_SERVER_2012_X64
+      * Windows Server 2008 R2 (x64):  WINDOWS_SERVER_2008_R2_X64
+      * Windows Server 2008 (x64):  WINDOWS_SERVER_2008_X64
+      * Windows Server 2008:  WINDOWS_SERVER_2008
+      * Windows Server 2003 R2 (x64):  WINDOWS_SERVER_2003_R2_X64
+      * Windows Server 2003 R2:  WINDOWS_SERVER_2003_R2
+      * Windows Server 2003 (x64):  WINDOWS_SERVER_2003_X64
+      * Windows Server 2003:  WINDOWS_SERVER_2003
+      * Linux 32bit:  LINUX_32BIT
+      * Linux 64bit:  LINUX_64BIT
+      * Linux ARM:  LINUX_ARM
+      * Linux MIPS:  LINUX_MIPS
+  * support_url
+    * description:  The URL to the Canon product support page
+    * required:  False
+  * web_driver
+    * description:  The web driver engine to use
+    * required:  False
+    * default:  Chrome
+  * web_driver_path
+    * description:  The OS version to search against
+    * required:  False
+    * default:  $PATH
+
+Used in:
+  * com.github.mlbz521.download.CanonPrintDriver
+
+
 ## CFBundleInfo ##
 
 Supply a path to a plist file, which can point to a path inside a .dmg which will be mounted, and will returns four output_variables, which you can decide how to use:

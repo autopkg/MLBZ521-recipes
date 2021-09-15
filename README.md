@@ -179,9 +179,22 @@ Available recipe types:
     * `CrowdStrikeFalconOffline.download`
       * will "download" from a offline repository
     * `CrowdStrikeFalcon.download`
-      * Variable overrides for:  CLIENT_ID, CLIENT_SECRET, POLICY_ID
+      * Input Variable:
+        * client_id:
+            * required:  True
+            * description:  CrowdStrike API Client ID
+        * client_secret:
+            * required:  True
+            * description:  CrowdStrike API Client Secret
+        * policy_id:
+            * required:  True
+            * description:  CrowdStrike Policy ID to get the assigned Sensor version
+        * api_region_url:
+            * required:  False
+            * default:  `https://api.crowdstrike.com`
+            * description:  CrowdStrike Region your instance is associated with
   * pkg
-    * Variable override for:  LICENSE_ID
+    * Input Variable for:  LICENSE_ID
   * jss
 
 
@@ -218,9 +231,9 @@ Available recipe types:
   * jss
 
 
-### Google Drive File Stream ###
+### Google Drive ###
 
-Downloads the current release of Google Drive File Stream.
+Downloads the current release of Google Drive.
 
 This recipe differs from the recipe available in wardsparadox-recipes as it uses the static URL instead of the DriveFSURLProvider Processor which redirects to mirrored servers and causes the recipe to register false-positive new versions and download them.
 
@@ -383,6 +396,8 @@ Available recipe types:
 
 
 ### PhET Lab Simulations ###
+
+#### **DEPRECATED** ####
 
 Downloads the latest version of a specified PhET Lab Simulation and creates a pseudo macOS application wrapper around the .jar Java executable.  Which allows it to be fully inventoried into Jamf Pro like a standard app.  I did my best to create an 'App' that looks half was decent with icons and what not...  Not a graphics person, so that could be improved.
 

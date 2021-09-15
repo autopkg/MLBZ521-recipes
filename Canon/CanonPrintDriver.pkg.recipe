@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+	<dict>
+		<key>Description</key>
+		<string>Downloads the latest Canon "Recommended Driver" package based on the override-able parameters:  model and OS Version.
+
+model example:  'imageRUNNER ADVANCE C7565i III'
+OS version options:  
+	- macOS Big Sur v11.0:  MACOS_11_0 (default)
+	- macOS Catalina v10.15:  MACOS_10_15
+	- macOS Mojave v10.14:  MACOS_10_14
+	- macOS High Sierra v10.13:  MACOS_10_13
+	- (older OS Versions, including Windows and Linux should be supported by the processor as well, see my Shared Processors README)
+		</string>
+		<key>Identifier</key>
+		<string>com.github.mlbz521.pkg.CanonPrintDriver</string>
+		<key>Input</key>
+		<dict>
+			<key>NAME</key>
+			<string>Canon URFII Print Drivers</string>
+		</dict>
+		<key>ParentRecipe</key>
+		<string>com.github.mlbz521.download.CanonPrintDriver</string>
+		<key>Process</key>
+		<array>
+			<dict>
+				<key>Processor</key>
+				<string>FileMover</string>
+				<key>Arguments</key>
+				<dict>
+					<key>source</key>
+					<string>%RECIPE_CACHE_DIR%/%NAME%.pkg</string>
+					<key>target</key>
+					<string>%RECIPE_CACHE_DIR%/%NAME%-%version%.pkg</string>
+				</dict>
+			</dict>
+			<dict>
+				<key>Processor</key>
+				<string>PathDeleter</string>
+				<key>Arguments</key>
+				<dict>
+					<key>path_list</key>
+					<array>
+						<string>%RECIPE_CACHE_DIR%/unpack</string>
+						<string>%RECIPE_CACHE_DIR%/extractedfile</string>
+					</array>
+				</dict>
+			</dict>
+		</array>
+	</dict>
+</plist>

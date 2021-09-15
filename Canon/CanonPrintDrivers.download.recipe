@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple/DTD PLIST 1.0//EN" "http://apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+	<dict>
+		<key>Description</key>
+		<string>Downloads the latest Canon "Recommended Driver" package based on the override-able parameters:  model and OS Version.
+
+model example:  'imageRUNNER ADVANCE C7565i III'
+OS version options:  
+	- macOS Big Sur v11.0:  MACOS_11_0 (default)
+	- macOS Catalina v10.15:  MACOS_10_15
+	- macOS Mojave v10.14:  MACOS_10_14
+	- macOS High Sierra v10.13:  MACOS_10_13
+	- (older OS Versions, including Windows and Linux should be supported by the processor as well, see my Shared Processors README)
+		</string>
+		<key>Identifier</key>
+		<string>com.github.mlbz521.download.CanonPrintDriver</string>
+		<key>Input</key>
+		<dict>
+			<key>NAME</key>
+			<string>Canon URFII Print Drivers</string>
+			<key>SUPPORT_URL</key>
+			<string>https://www.usa.canon.com/internet/portal/us/home/support</string>
+			<key>MODEL</key>
+			<string>imageRUNNER ADVANCE C7565i III</string>
+			<key>OS_VERSION</key>
+			<string>MACOS_11_0</string>
+			<key>WEB_DRIVER</key>
+			<string>Chrome</string>
+			<key>WEB_DRIVER_PATH</key>
+			<string>/Users/zthomps3/Downloads/chromedriver</string>
+		</dict>
+		<key>Process</key>
+		<array>
+			<dict>
+				<key>Processor</key>
+				<string>URLTextSearcher</string>
+				<key>Arguments</key>
+				<dict>
+					<key>url</key>
+					<string>%SUPPORT_URL%</string>
+					<key>re_pattern</key>
+					<string>^\s*var ajaxurl = "(?P&lt;match&gt;https:\/\/downloads\.canon\.com\/c\d+dev\/cusa\/ow\/support\/support-home-products\.json)";$</string>
+					<key>re_flags</key>
+					<array>
+						<string>MULTILINE</string>
+					</array>
+				</dict>
+			</dict>
+			<dict>
+				<key>Processor</key>
+				<string>com.github.mlbz521.SharedProcessors/CanonPrintDriverProcessor</string>
+				<key>Arguments</key>
+				<dict>
+					<key>url_products_list</key>
+					<string>%match%</string>
+					<key>model</key>
+					<string>%MODEL%</string>
+					<key>os_version</key>
+					<string>%OS_VERSION%</string>
+					<key>web_driver</key>
+					<string>%WEB_DRIVER%</string>
+					<key>web_driver_path</key>
+					<string>%WEB_DRIVER_PATH%</string>
+				</dict>
+			</dict>
+			<dict>
+				<key>Processor</key>
+				<string>URLDownloader</string>
+				<key>Arguments</key>
+				<dict>
+					<key>url</key>
+					<string>%url%</string>
+					<key>prefetch_filename</key>
+					<true />
+				</dict>
+			</dict>
+			<dict>
+				<key>Processor</key>
+				<string>Unarchiver</string>
+				<key>Arguments</key>
+				<dict>
+					<key>archive_path</key>
+					<string>%pathname%</string>
+					<key>destination_path</key>
+					<string>%RECIPE_CACHE_DIR%/unpack</string>
+					<key>purge_destination</key>
+					<true />
+				</dict>
+			</dict>
+			<dict>
+				<key>Processor</key>
+				<string>FileFinder</string>
+				<key>Arguments</key>
+				<dict>
+					<key>pattern</key>
+					<string>%RECIPE_CACHE_DIR%/unpack/*.dmg</string>
+				</dict>
+			</dict>
+			<dict>
+				<key>Processor</key>
+				<string>Copier</string>
+				<key>Arguments</key>
+				<dict>
+					<key>source_path</key>
+					<string>%found_filename%/*.pkg</string>
+					<key>destination_path</key>
+					<string>%RECIPE_CACHE_DIR%/%NAME%.pkg</string>
+				</dict>
+			</dict>
+			<dict>
+				<key>Processor</key>
+				<string>com.github.mlbz521.SharedProcessors/XarExtractSingleFile</string>
+				<key>Arguments</key>
+				<dict>
+					<key>archive_path</key>
+					<string>%RECIPE_CACHE_DIR%/%NAME%.pkg</string>
+					<key>file_to_extract</key>
+					<string>Distribution</string>
+				</dict>
+			</dict>
+			<dict>
+				<key>Processor</key>
+				<string>com.github.mlbz521.SharedProcessors/XPathParser</string>
+				<key>Arguments</key>
+				<dict>
+					<key>xml_file</key>
+					<string>%extracted_file%</string>
+					<key>xpath</key>
+					<string>.//product[@id="jp.co.canon.CUPSPrinter.pkg"]</string>
+					<key>attribute_one</key>
+					<string>version</string>
+					<key>return_variable_attribute_one</key>
+					<string>version</string>
+				</dict>
+			</dict>
+			<dict>
+				<key>Processor</key>
+				<string>CodeSignatureVerifier</string>
+				<key>Arguments</key>
+				<dict>
+					<key>input_path</key>
+					<string>%RECIPE_CACHE_DIR%/%NAME%.pkg</string>
+					<key>expected_authority_names</key>
+					<array>
+						<string>Developer ID Installer: Canon Inc. (XE2XNRRXZ5)</string>
+						<string>Developer ID Certification Authority</string>
+						<string>Apple Root CA</string>
+					</array>
+				</dict>
+			</dict>
+			<dict>
+				<key>Processor</key>
+				<string>EndOfCheckPhase</string>
+			</dict>
+		</array>
+	</dict>
+</plist>

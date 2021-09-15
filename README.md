@@ -133,6 +133,31 @@ Available recipe types:
   * jss
 
 
+### Canon Print Driver ###
+
+Downloads the latest Canon "Recommended Driver" package based on the override-able parameters.  See the 
+
+The download recipe requires the [Selenium Library](https://www.selenium.dev/documentation/) and requires a browser driver to be supplied.  See the [CanonPrintDriverProcessor](https://github.com/autopkg/MLBZ521-recipes/blob/master/Shared%20Processors/ReadMe.md#canonprintdriverprocessor) section in my Shared Processors README for more info.
+
+Available recipe types:
+  * download
+    * Variable overrides for:
+  * model:
+    * description:  The official model name of the Canon Printer to search for
+    * example:  'imageRUNNER ADVANCE C7565i III'
+  * os_version
+    * description:  The OS version to search against
+    * required:  False
+    * options:  
+      * macOS Big Sur v11.0:  MACOS_11_0 (Default)
+      * macOS Catalina v10.15:  MACOS_10_15
+      * macOS Mojave v10.14:  MACOS_10_14
+      * macOS High Sierra v10.13:  MACOS_10_13
+	- (older OS Versions, including Windows and Linux should be supported by the processor as well, see my Shared Processors README)
+  * pkg
+  * jss
+
+
 ### Cisco Jabber ###
 
 Download recipe expects the installer is available in an "offline repository".

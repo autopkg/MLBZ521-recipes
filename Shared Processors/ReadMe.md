@@ -19,8 +19,9 @@ This processor finds the download URL for the "Recommended Driver" package based
 Notables:
   * The processor has only been tested against Canon's "imageRUNNER ADVANCE" product line at this time.  Additional adjustments may be needed for other product lines
   * This processor technically can support Linux, macOS, _and_ Windows
-  * Requires the [Selenium Library](https://www.selenium.dev/documentation/) and requires browser driver to be supplied.
+  * Requires the [Selenium Library](https://www.selenium.dev/documentation/) and a browser driver to be supplied.
     * Only support for the ChromeDriver has been added, but support for the other can be
+      * Available browser drivers can be found [here](https://www.selenium.dev/downloads/#:~:text=Browsers)
     * To install Selenium in the expected location for this processor, run:
       * `sudo pip3 install --target=/Library/AutoPkg/Selenium selenium`
 

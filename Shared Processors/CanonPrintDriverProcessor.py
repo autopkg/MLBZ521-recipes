@@ -20,6 +20,8 @@ import json
 import os
 import sys
 
+from autopkglib import ProcessorError, URLGetter
+
 if not os.path.exists("/Library/AutoPkg/Selenium"):
     raise ProcessorError("Selenium is required for this recipe!  Please review my Shared Processors README.")
 
@@ -28,8 +30,6 @@ sys.path.insert(0, "/Library/AutoPkg/Selenium")
 from selenium import webdriver
 from selenium.webdriver.support.ui import Select, WebDriverWait
 from selenium.webdriver.support.expected_conditions import presence_of_element_located
-
-from autopkglib import Processor, ProcessorError, URLGetter
 
 
 __all__ = ["CanonPrintDriverProcessor"]

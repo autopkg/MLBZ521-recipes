@@ -59,23 +59,6 @@ The created Policy's name will be in the format of "%NAME% %MAJOR_VERSION%"</str
 		</dict>
 		<dict>
 			<key>Processor</key>
-			<string>com.github.mlbz521.SharedProcessors/InputVariableTextSubstituter</string>
-			<key>Arguments</key>
-			<dict>
-				<key>original_string</key>
-				<string>%NAME%</string>
-				<key>return_variable</key>
-				<string>NAME</string>
-				<key>string_to_replace</key>
-				<string>%STRING_TO_REPLACE%</string>
-				<key>variable_to_use</key>
-				<string>found_major_version</string>
-				<key>append_space</key>
-				<true />
-			</dict>
-		</dict>
-		<dict>
-			<key>Processor</key>
 			<string>JSSImporter</string>
 			<key>Arguments</key>
 			<dict>

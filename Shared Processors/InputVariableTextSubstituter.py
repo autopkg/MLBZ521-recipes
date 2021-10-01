@@ -111,7 +111,7 @@ class InputVariableTextSubstituter(Processor):
         self.output("{}: {}".format(return_variable, self.env[return_variable]))
 
         # For back to back runs of this processor...
-        for variable in ( "replacement_string", "variable_to_use" ):
+        for variable in ( "replacement_string", "variable_to_use", "append_space" ):
             self.env[variable] = ""
 
 

@@ -3,11 +3,13 @@
 <plist version="1.0">
 <dict>
     <key>Description</key>
-	<string>Downloads and packages the latest verison Respondus' LockDown Browser Lab Edition.
+	<string>Downloads and packages the latest verison Respondus' LockDown Browser and configures the install package for the Lab Edition.
 
-The download recipe requires you to set your Institution ID and Lab Hash.
+The download recipe requires you to set your Institution ID and this recipe requires your Lab Hash.
 
-Because Repondus does silly things by expecting the licencing information in the file name, this does package inception so that the package name is a standard format.</string>
+Because Repondus does silly things by expecting the licencing information in the file name, this does package inception so that the package name is a standard format.
+
+This pkg recipe differs from nstrauss-recipes's pkg recipe by not installing the LDB on the AutoPkg runner/system and simply performing the above steps to get the desired results (tl/dr:  less steps, similar result).</string>
 	<key>Identifier</key>
 	<string>com.github.mlbz521.pkg.RespondusLockDownBrowserLabEdition</string>
 	<key>Input</key>
@@ -16,7 +18,7 @@ Because Repondus does silly things by expecting the licencing information in the
 		<string>Respondus LockDown Browser Lab Edition</string>
 	</dict>
 	<key>ParentRecipe</key>
-	<string>com.github.nstrauss.download.RespondusLockDownBrowserLab</string>
+	<string>com.github.nstrauss.download.RespondusLockDownBrowser</string>
     <key>Process</key>
     <array>
         <dict>
@@ -28,36 +30,6 @@ Because Repondus does silly things by expecting the licencing information in the
                 <string>%RECIPE_CACHE_DIR%/%NAME%/*.pkg</string>
             </dict>
         </dict>
-		<dict>
-			<key>Processor</key>
-			<string>com.github.mlbz521.SharedProcessors/XarExtractSingleFile</string>
-			<key>Arguments</key>
-			<dict>
-				<key>archive_path</key>
-				<string>%found_filename%</string>
-				<key>file_to_extract</key>
-				<string>Distribution</string>
-			</dict>
-		</dict>
-		<dict>
-			<key>Processor</key>
-			<string>com.github.mlbz521.SharedProcessors/XPathParser</string>
-			<key>Arguments</key>
-			<dict>
-				<key>xml_file</key>
-				<string>%extracted_file%</string>
-				<key>xpath</key>
-				<string>.//bundle-version/bundle</string>
-				<key>attribute_one</key>
-				<string>CFBundleShortVersionString</string>
-				<key>return_variable_attribute_one</key>
-				<string>version</string>
-				<key>attribute_two</key>
-				<string>id</string>
-				<key>return_variable_attribute_two</key>
-				<string>bundleid</string>
-			</dict>
-		</dict>
         <dict>
             <key>Processor</key>
             <string>PkgRootCreator</string>
@@ -88,7 +60,7 @@ Because Repondus does silly things by expecting the licencing information in the
 				<key>source_path</key>
 				<string>%found_filename%</string>
 				<key>destination_path</key>
-				<string>%RECIPE_CACHE_DIR%/Scripts/</string>
+				<string>%RECIPE_CACHE_DIR%/Scripts/Respondus LockDown Browser Lab %INSTITUTION_ID%{%LAB_HASH%}.pkg</string>
 			</dict>
 		</dict>
         <dict>
@@ -100,15 +72,15 @@ Because Repondus does silly things by expecting the licencing information in the
                 <string>#!/bin/bash
 
 ###################################################################################################
-# Script Name:  install_RespondusLockDownBrowser.sh
+# Script Name:  install_pkg.sh
 # By:  Zack Thompson / Created:  3/18/2020
 # Version:  1.0.0 / Updated:  3/18/2020 / By:  ZT
 #
-# Description:  This script installs Respondus LockDown Browser.
+# Description:  This script installs %NAME%.
 #
 ###################################################################################################
 
-echo "*****  Install Respondus LockDown Browser Process:  START  *****"
+echo "*****  Install %NAME% Process:  START  *****"
 
 ##################################################
 # Define Variables
@@ -130,11 +102,11 @@ exitCode=$?
 if [[ $exitCode != 0 ]]; then
 	echo "ERROR:  Install failed!"
 	echo "Exit Code:  ${exitCode}"
-	echo "*****  Install Respondus LockDown Browser process:  FAILED  *****"
+	echo "*****  Install %NAME% process:  FAILED  *****"
 	exit 1
 fi
 
-echo "*****  Install Respondus LockDown Browser Process:  COMPLETE  *****"
+echo "*****  Install %NAME% Process:  COMPLETE  *****"
 
 exit 0</string>
                 <key>file_mode</key>
@@ -151,7 +123,7 @@ exit 0</string>
 				<key>pkg_request</key>
 				<dict>
 					<key>id</key>
-					<string>%bundleid%</string>
+					<string>com.Respondus.LockDownBrowser</string>
 					<key>pkgname</key>
 					<string>%NAME%-%version%</string>
                     <key>pkgroot</key>
@@ -173,7 +145,6 @@ exit 0</string>
 				<key>path_list</key>
 				<array>
 					<string>%RECIPE_CACHE_DIR%/Scripts</string>
-					<string>%RECIPE_CACHE_DIR%/extractedfile</string>
 					<string>%RECIPE_CACHE_DIR%/%NAME%</string>
 				</array>
 			</dict>

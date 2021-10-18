@@ -19,8 +19,8 @@ This processor finds the download URL for the "Recommended Driver" package based
 Notables:
   * The processor has only been tested against Canon's "imageRUNNER ADVANCE" product line at this time.  Additional adjustments may be needed for other product lines
   * This processor technically can support Linux, macOS, _and_ Windows
-  * Requires the [Selenium Library](https://www.selenium.dev/documentation/) and a browser driver to be supplied.
-    * Only support for the ChromeDriver has been added, but support for the other can be
+  * Requires the [Selenium Library](https://www.selenium.dev/documentation/) and a browser driver to be supplied along with the browser application itself
+    * Only support for the ChromeDriver has been added at this time, but support for others can be added with minimal effort
       * Available browser drivers can be found [here](https://www.selenium.dev/downloads/#:~:text=Browsers)
     * To install Selenium in the expected location for this processor, run:
       * `sudo pip3 install --target=/Library/AutoPkg/Selenium selenium`
@@ -169,6 +169,18 @@ This processor substitutes character(s) in a string with either another string o
 I wrote it to be able to substitute values into an input variable for when you want to use, for example the version in an input variable, but the version variable has not been set yet, not until the (child) recipe runs.  However, it can be used to substitute strings in any other strings.
 
 Used in:
+  * com.github.mlbz521.jss.ARCHICAD
+  * com.github.mlbz521.jss.ARCHICADPatch
+  * com.github.mlbz521.jss.AutoCAD
+  * com.github.mlbz521.pkg.AutoCAD
+  * com.github.mlbz521.jss.AutoCADPatch
+  * com.github.mlbz521.jss.JMP
+  * com.github.mlbz521.jss.JMPPro
+  * com.github.mlbz521.jss.Maple
+  * com.github.mlbz521.jss.Mathematica
+  * com.github.mlbz521.jss.Matlab
+  * com.github.mlbz521.jss.MatlabUpdate
+  * com.github.mlbz521.jss.SPSSStatistics 
   * com.github.mlbz521.pkg.SPSSStatisticsLegacy
   * com.github.mlbz521.pkg.SPSSStatisticsPatch
 
@@ -326,7 +338,6 @@ Used in:
   * com.github.mlbz521.download.JMP
   * com.github.mlbz521.download.SetALight3D
   * com.github.mlbz521.pkg.iManageWork
-  * com.github.mlbz521.pkg.RespondusLockDownBrowserLabEdition
   * com.github.mlbz521.pkg.XcodeCLITools
 
 
@@ -339,5 +350,4 @@ Used in:
   * com.github.mlbz521.download.JMP
   * com.github.mlbz521.download.SetALight3D
   * com.github.mlbz521.pkg.iManageWork
-  * com.github.mlbz521.pkg.RespondusLockDownBrowserLabEdition
   * com.github.mlbz521.pkg.XcodeCLITools

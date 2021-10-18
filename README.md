@@ -470,11 +470,15 @@ Available recipe types:
 
 ### Respondus Lockdown Browser ###
 
-Parent Recipe:  com.github.nstrauss.download.RespondusLockDownBrowserLab
+Parent Recipe:  com.github.nstrauss.download.RespondusLockDownBrowser
 
-The download recipe requires you to set your Institution ID and Lab Hash.
+Downloads and packages the latest verison Respondus' LockDown Browser and configures the install package for the Lab Edition.
 
-Because Respondus does silly things by expecting the licencing information in the file name, the pkg recipe performs "package inception" so that the package name visible in Jamf Pro uses a standard naming convention.
+The download recipe requires you to set your Institution ID and this recipe requires your Lab Hash.
+
+Because Respondus does silly things by expecting the licencing information in the file name, the pkg recipe performs "package inception" so that the package name visible in Jamf Pro uses a standard naming convention and doesn't contain the licensing information.
+
+My pkg recipe differs from nstrauss-recipes's pkg recipe by not installing the LDB on the AutoPkg runner/system and simply performing the above steps to get the desired results (tl/dr:  less steps, similar result).
 
 Available recipe types:
   * pkg

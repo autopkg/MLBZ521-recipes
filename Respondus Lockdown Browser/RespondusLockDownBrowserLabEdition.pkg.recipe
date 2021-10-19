@@ -60,7 +60,7 @@ This pkg recipe differs from nstrauss-recipes's pkg recipe by not installing the
 				<key>source_path</key>
 				<string>%found_filename%</string>
 				<key>destination_path</key>
-				<string>%RECIPE_CACHE_DIR%/Scripts/Respondus LockDown Browser Lab %INSTITUTION_ID%{%LAB_HASH%}.pkg</string>
+				<string>%RECIPE_CACHE_DIR%/Scripts/Respondus LockDown Browser Lab (x64c) %INSTITUTION_ID%{%LAB_HASH%}.pkg</string>
 			</dict>
 		</dict>
         <dict>

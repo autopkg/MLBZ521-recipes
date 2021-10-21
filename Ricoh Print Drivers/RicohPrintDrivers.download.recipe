@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple/DTD PLIST 1.0//EN" "http://apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+	<dict>
+		<key>Description</key>
+		<string>Downloads the latest Ricoh Driver package based on the override-able parameters:  model and OS Version.
+
+model example:  'Aficio SP C830DN'
+OS version options:  
+	- Big Sur
+	- Catalina
+	- Mojave
+	- High Sierra
+	- Sierra
+	- (Windows and Linux could be supported by the processor with some tweaks, see my Shared Processors README)
+
+The download recipe requires the Selenium Library (https://www.selenium.dev/documentation/) and a browser driver to be supplied.  See the RicohPrintDriverProcessor section (https://github.com/autopkg/MLBZ521-recipes/blob/master/Shared%20Processors/ReadMe.md#RicohPrintDriverProcessor) in my Shared Processors README for more info.
+		</string>
+		<key>Identifier</key>
+		<string>com.github.mlbz521.download.RicohPrintDriver</string>
+		<key>Input</key>
+		<dict>
+			<key>NAME</key>
+			<string>Ricoh Print Drivers</string>
+			<key>MODEL</key>
+			<string>Aficio SP C830DN</string>
+			<key>OS_VERSION</key>
+			<string>Big Sur</string>
+			<key>WEB_DRIVER</key>
+			<string>Chrome</string>
+			<key>WEB_DRIVER_PATH</key>
+			<string>/Users/zthomps3/Downloads/chromedriver</string>
+		</dict>
+		<key>Process</key>
+		<array>
+			<dict>
+				<key>Processor</key>
+				<string>com.github.mlbz521.SharedProcessors/RicohPrintDriverProcessor</string>
+				<key>Arguments</key>
+				<dict>
+					<key>model</key>
+					<string>%MODEL%</string>
+					<key>os_version</key>
+					<string>%OS_VERSION%</string>
+					<key>web_driver</key>
+					<string>%WEB_DRIVER%</string>
+					<key>web_driver_path</key>
+					<string>%WEB_DRIVER_PATH%</string>
+				</dict>
+			</dict>
+			<dict>
+				<key>Processor</key>
+				<string>URLDownloader</string>
+				<key>Arguments</key>
+				<dict>
+					<key>url</key>
+					<string>%url%</string>
+					<key>prefetch_filename</key>
+					<true />
+				</dict>
+			</dict>
+			<dict>
+				<key>Processor</key>
+				<string>CodeSignatureVerifier</string>
+				<key>Arguments</key>
+				<dict>
+					<key>input_path</key>
+					<string>%pathname%/*.pkg</string>
+					<key>expected_authority_names</key>
+					<array>
+						<string>Developer ID Installer: Ricoh Co., Ltd. (5KACUT3YX8)</string>
+						<string>Developer ID Certification Authority</string>
+						<string>Apple Root CA</string>
+					</array>
+				</dict>
+			</dict>
+			<dict>
+				<key>Processor</key>
+				<string>EndOfCheckPhase</string>
+			</dict>
+		</array>
+	</dict>
+</plist>

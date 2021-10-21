@@ -284,6 +284,47 @@ Used in:
   * com.github.mlbz521.download.SPSSStatistics
 
 
+## RicohPrintDriverProcessor ##
+
+This processor finds the download URL for the latest Driver package based on the override-able parameters.
+
+Notables:
+  * The processor has only been tested against a few different printer models so far.  Additional adjustments may be needed for other models
+  * This processor could be tweaked to support Linux, macOS, _and_ Windows (didn't spend the time on this yet)
+  * Requires the [Selenium Library](https://www.selenium.dev/documentation/) and a browser driver to be supplied along with the browser application itself
+    * Only support for the ChromeDriver has been added at this time, but support for others can be added with minimal effort
+      * Available browser drivers can be found [here](https://www.selenium.dev/downloads/#:~:text=Browsers)
+    * To install Selenium in the expected location for this processor, run:
+      * `sudo pip3 install --target=/Library/AutoPkg/Selenium selenium`
+
+Input Variables:
+  * model:
+    * description:  The official model name of the Ricoh Printer to search for
+    * required:  True
+    * example:  'Aficio SP C830DN'
+  * os_version
+    * description:  The OS version to search against
+    * required:  False
+    * default:  'MACOS_11_0' (i.e. Big Sur)
+    * options:  
+      * Big Sur
+      * Catalina
+      * Mojave
+      * High Sierra
+      * Sierra
+  * web_driver
+    * description:  The web driver engine to use
+    * required:  False
+    * default:  Chrome
+  * web_driver_path
+    * description:  The OS version to search against
+    * required:  False
+    * default:  $PATH
+
+Used in:
+  * com.github.mlbz521.download.RicohPrintDriver
+
+
 ## StringRightSplitter ##
 
 This processor splits a string starting from the right. Uses the "rsplit()" function.
@@ -296,6 +337,7 @@ Used in:
   * com.github.mlbz521.jss.XcodeCLITools
   * com.github.mlbz521.pkg.BomgarJumpClient
   * com.github.mlbz521.pkg.CiscoUmbrellaRoamingClient
+  * com.github.mlbz521.pkg.RicohPrintDriver
 
 
 ## TextFileReader ##
@@ -338,6 +380,7 @@ Used in:
   * com.github.mlbz521.download.JMP
   * com.github.mlbz521.download.SetALight3D
   * com.github.mlbz521.pkg.iManageWork
+  * com.github.mlbz521.pkg.RicohPrintDriver
   * com.github.mlbz521.pkg.XcodeCLITools
 
 
@@ -350,4 +393,5 @@ Used in:
   * com.github.mlbz521.download.JMP
   * com.github.mlbz521.download.SetALight3D
   * com.github.mlbz521.pkg.iManageWork
+  * com.github.mlbz521.pkg.RicohPrintDriver
   * com.github.mlbz521.pkg.XcodeCLITools

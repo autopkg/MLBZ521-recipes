@@ -1,6 +1,6 @@
 #!/usr/bin/python
 #
-# Copyright 2021 Zack Thompson (MLBZ521)
+# Copyright 2022 Zack Thompson (MLBZ521)
 #
 # Based on work by:
 #   Jesse Peterson / https://github.com/facebook/Recipes-for-AutoPkg/blob/master/Shared_Processors/SubDirectoryList.py
@@ -32,7 +32,7 @@ from pkg_resources import parse_version
 sys.path.insert(0, "/Library/AutoPkg/JSSImporter")
 import jss
 
-from autopkglib import Processor, ProcessorError, URLDownloader
+from autopkglib import ProcessorError, URLDownloader
 
 
 __all__ = ["OfflineApps"]
@@ -71,9 +71,9 @@ class OfflineApps(URLDownloader):
         "OFFLINEAPPS_SMB_MOUNT_POINT": {
             "description": (
                 "Where the SMB share will be mounted too.  "
-                "Default mount point will be '/tmp/OfflineApps/'."
+                "Default mount point will be '/private/tmp/OfflineApps'."
             ),
-            "default": "/tmp/OfflineApps/",
+            "default": "/private/tmp/OfflineApps",
             "required": False
         },
         "OFFLINEAPPS_SMB_USERNAME": {
@@ -164,15 +164,16 @@ class OfflineApps(URLDownloader):
         """Mount a share via JSSImporter"""
 
         try:
-            self.dp_instance = jss.distribution_point.SMBDistributionPoint(
+            self.dp_instance = jss.distribution_point.SMBDistributionPoint( 
                 url = self.env.get("OFFLINEAPPS_SMB_URL"), 
                 share_name = self.env.get("OFFLINEAPPS_SMB_SHARE_NAME"), 
                 port = self.env.get("OFFLINEAPPS_SMB_PORT", "445"), 
-                mount_point = self.env.get("OFFLINEAPPS_SMB_MOUNT_POINT", "/tmp/OfflineApps/"), 
+                mount_point = self.env.get(
+                    "OFFLINEAPPS_SMB_MOUNT_POINT", "/private/tmp/OfflineApps"), 
                 username = self.env.get("OFFLINEAPPS_SMB_USERNAME"), 
                 password = self.env.get("OFFLINEAPPS_SMB_PASSWORD"), 
                 domain = self.env.get("OFFLINEAPPS_SMB_DOMAIN"), 
-                jss = jss.JSS(url="/")
+                jss = jss.JSS(url="/") 
             )
 
             self.dp_instance.mount()
@@ -183,6 +184,7 @@ class OfflineApps(URLDownloader):
 
     def walk(self, top, maxdepth):
         """Returns a list of files and folders given a root path to transverse."""
+
         dirs, nondirs = [], []
 
         for name in os.listdir(top):
@@ -195,8 +197,47 @@ class OfflineApps(URLDownloader):
                 yield from self.walk(os.path.join(top, name), maxdepth-1)
 
 
+    def check_for_matching(self, items, contains=None, excludes=None, limitation=None):
+        """Find matches based on the passed criteria.
+
+        Args:
+            items (list): list of items to check
+            contains (str, optional): Each item must contain this string. Defaults to None.
+            excludes (str, optional): Each item cannot contain this string. Defaults to None.
+            limitation (str, optional): Each item must also include this string. Defaults to None.
+
+        Returns:
+            list: A list of matches
+        """
+
+        matches = []
+
+        # Loop through the folders in the root directory
+        for item in items:
+
+            # If the item does not contain a string it should contain, skip it
+            if contains and (contains not in item):
+                continue
+
+            # If the item contains the string it should not contain, skip it
+            if excludes and (excludes in item):
+                continue
+
+            # If the item does not contain the secondary 
+            # string it should contain, skip it
+            if limitation and (limitation not in item):
+                continue
+
+            # Append matching folder to list for future use
+            matches.append(item)
+            self.output("Matched:  {}".format(item), verbose_level=2)
+
+        return matches
+
+
     def get_latest_version(self, found_items, major_version_like, version_separator):
         """Determines the highest version number of the provided strings."""
+
         latest_version = ""
         latest_version_folder = ""
 
@@ -217,28 +258,76 @@ class OfflineApps(URLDownloader):
         return latest_version, latest_version_folder
 
 
+    def download_local_file(self, file_to_download, save_path):
+        """Downloads the file passed from an on disk or mounted path.
+
+        Args:
+            file_to_download (str): A path of the file to download
+            save_path (str): The destination to save the file
+
+        Raises:
+            ProcessorError: Error if the download fails
+        """
+
+        file_name = os.path.basename(file_to_download)
+        destination_path = "{}/{}".format(save_path, file_name)
+
+        if ( 
+            os.path.exists(destination_path), 
+            self.check_filesize, 
+            os.path.getsize(file_to_download) == os.path.getsize(destination_path) 
+        ):
+            self.output("File exists locally, not downloading...")
+
+        else:
+
+            self.output("Downloading file:  {}".format(file_name))
+            self.output("Destination:  {}".format(
+                destination_path), verbose_level=2)
+
+            # Build the required curl switches
+            curl_opts = [
+                "--url", "file://{}".format(file_to_download),
+                "--request", "GET",
+                "--output", destination_path,
+                "--create-dirs"
+            ]
+
+            try:
+                # Initialize the curl_cmd, add the curl options, and execute the curl
+                curl_cmd = self.prepare_curl_cmd()
+                curl_cmd.extend(curl_opts)
+                self.download_with_curl(curl_cmd)
+                self.env["download_changed"] = True
+
+            except:
+                raise ProcessorError("Failed to download:  {}".format(file_to_download))
+
+
     def main(self):
 
         # Get environment variables
         search_path = self.env.get("search_path")
         smb_path = self.env.get("smb_path")
-        foldername_contains = self.env.get("search_string")
-        foldername_not_contain = self.env.get("exception_string")
-        foldername_must_contain = self.env.get("limitation_string")
+        contains_search_string = self.env.get("search_string")
+        not_contain_exception_string = self.env.get("exception_string")
+        must_contain_limitation_string = self.env.get("limitation_string")
         major_version_like = self.env.get("major_version")
         version_separator = self.env.get("version_separator")
         max_depth = self.env.get("max_depth")
-        check_filesize = self.env.get("check_filesize", True)
+        self.check_filesize = self.env.get("check_filesize", True)
         RECIPE_CACHE_DIR = self.env.get("RECIPE_CACHE_DIR")
         self.env["download_changed"] = False
 
         # Define local variables
         downloads_dir = os.path.join(RECIPE_CACHE_DIR, "downloads")
-        folder_list = []
+        list_of_versions = []
 
         # Mount SMB share if passed
         if self.env.get("OFFLINEAPPS_SMB_URL"):
             self.mount_via_jssimporter()
+            search_path = "{}{}".format(self.dp_instance.connection.get("mount_point"), search_path)
+            self.output("Mounted Search Path:  {}".format(search_path), verbose_level=2)
 
         try:
 
@@ -249,32 +338,23 @@ class OfflineApps(URLDownloader):
             # Build the directory list of the root of the search_path
             for root_directory, folders, files in self.walk(search_path, int(max_depth)):
 
-                # Loop through the folders
-                for foldername in folders:
+                items_to_check = folders + files
 
-                    # If the foldername does not contain a string it should contain, skip it
-                    if foldername_contains and (foldername_contains not in foldername):
-                        continue
+                list_of_versions.extend( os.path.join(root_directory, match) for match in 
+                    self.check_for_matching( 
+                        items_to_check, 
+                        contains = contains_search_string, 
+                        excludes = not_contain_exception_string, 
+                        limitation = must_contain_limitation_string 
+                    ) 
+                )
 
-                    # If the foldername contains the string it should not contain, skip it
-                    if foldername_not_contain and (foldername_not_contain in foldername):
-                        continue
-
-                    # If the foldername does not contain the secondary 
-                    # string it should contain, skip it
-                    if foldername_must_contain and (foldername_must_contain not in foldername):
-                        continue
-
-                    # Append matching folder to list for future use
-                    folder_list.append(os.path.join(root_directory, foldername))
-                    self.output("Matched:  {}".format(foldername), verbose_level=2)
-
-            if not folder_list:
+            if not list_of_versions:
                 raise ProcessorError("Was not able to find a match!")
 
             # Get the latest version from the matched results
             self.env["version"], version_location = self.get_latest_version(
-                folder_list, major_version_like, version_separator)
+                list_of_versions, major_version_like, version_separator)
 
             if None in { self.env["version"], version_location }:
                 raise ProcessorError("Was not able to match a version!")
@@ -290,40 +370,23 @@ class OfflineApps(URLDownloader):
             # Set the location where version should be cached
             self.env["cached_path"] = os.path.join(downloads_dir, version_folder)
 
-            # Loop over files in version_location and download each one?
-            for root_directory, folders, files in self.walk(version_location, int(0)):
+            if os.path.isdir(version_location):
 
-                for file in files:
+                # Loop over files in version_location and download each one
+                for root_directory, folders, files in self.walk(version_location, int(0)):
 
-                    server_path = "{}/{}".format(version_location, file)
-                    save_path = "{}/{}".format(self.env["cached_path"], file)
+                    for file in files:
 
-                    if os.path.exists(save_path) and check_filesize and \
-                        os.path.getsize(server_path) == os.path.getsize(save_path):
-                        self.output("File exists locally, not downloading...")
-                        continue
+                        # Download each file
+                        self.download_local_file( 
+                            "{}/{}".format(version_location, file), 
+                            self.env["cached_path"] 
+                        )
 
-                    self.output("Downloading file:  {}".format(file))
-                    self.output("Path where file will be saved:  {}".format(
-                        save_path), verbose_level=2)
+            else:
 
-                    # Build the required curl switches
-                    curl_opts = [
-                        "--url", "file://{}".format(server_path),
-                        "--request", "GET",
-                        "--output", save_path,
-                        "--create-dirs"
-                    ]
-
-                    try:
-                        # Initialize the curl_cmd, add the curl options, and execute the curl
-                        curl_cmd = self.prepare_curl_cmd()
-                        curl_cmd.extend(curl_opts)
-                        self.download_with_curl(curl_cmd)
-                        self.env["download_changed"] = True
-
-                    except:
-                        raise ProcessorError("Failed to download:  {}".format(file))
+                # Download the file
+                self.download_local_file(version_location, self.env["cached_path"])
 
         finally:
 

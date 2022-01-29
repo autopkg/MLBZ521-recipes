@@ -5,9 +5,9 @@
 	<key>Identifier</key>
 	<string>com.github.mlbz521.jss.Anaconda</string>
 	<key>Description</key>
-	<string>Downloads the latest version of Anaconda CLI (.sh) installer, set permissions as executable, and creates a package, and uploads to the JSS.
+	<string>Downloads the latest version of Anaconda CLI (.sh) installer, sets permissions as executable, creates a package, and uploads to the JSS.
 
-Install path is set to:  /Users/Shared/anaconda2</string>
+Default install path is set to:  "/Users/Shared/anaconda3" -- adjustable via substitution variable in an override.</string>
 	<key>Input</key>
 	<dict>
 		<key>GROUP_TEMPLATE</key>

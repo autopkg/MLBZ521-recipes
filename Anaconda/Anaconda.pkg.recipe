@@ -7,7 +7,7 @@
 	<key>Description</key>
 	<string>Downloads the latest version of Anaconda CLI (.sh) installer, sets permissions as executable, and creates a package.
 
-Default install path is set to:  /Users/Shared/anaconda2 -- adjustable via substitution variable in an override.</string>
+Default install path is set to:  "/Users/Shared/anaconda3" -- adjustable via substitution variable in an override.</string>
 	<key>Input</key>
 	<dict>
 		<key>PYTHON_MAJOR_VERSION</key>
@@ -20,7 +20,7 @@ Default install path is set to:  /Users/Shared/anaconda2 -- adjustable via subst
 		<string>/Users/Shared/anaconda3</string>
 	</dict>
 	<key>ParentRecipe</key>
-	<string>com.github.hansen-m.download.Anaconda</string>
+	<string>com.github.hansen-m.download.Anaconda3</string>
 	<key>Process</key>
 	<array>
 		<dict>

@@ -20,7 +20,7 @@ Default install path is set to:  "/Users/Shared/anaconda3" -- adjustable via sub
 		<string>/Users/Shared/anaconda3</string>
 	</dict>
 	<key>ParentRecipe</key>
-	<string>com.github.hansen-m.download.Anaconda3</string>
+	<string>com.github.hansen-m.download.Anaconda</string>
 	<key>Process</key>
 	<array>
 		<dict>

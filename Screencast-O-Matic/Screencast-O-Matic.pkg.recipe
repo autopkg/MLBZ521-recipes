@@ -90,7 +90,7 @@ if [[ $3 != "/" ]]; then
 fi
 
 # Get current user
-currentUser=$( /usr/sbin/scutil <<< "show State:/Users/ConsoleUser" | 
+currentUser=$( /usr/sbin/scutil &lt;&lt;&lt; "show State:/Users/ConsoleUser" | 
     /usr/bin/awk '/Name :/ &amp;&amp; ! /loginwindow/ { print $3 }' )
 
 # Check if the Screencast-O-Matic is currently installed...

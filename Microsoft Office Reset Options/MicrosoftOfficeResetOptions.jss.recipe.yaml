@@ -1,0 +1,64 @@
+Description: Downloads the latest version of the Microsoft Office Reset package.
+  This is the _base_ package with *no options* selected.  Then creates a package
+  with a script that checks the available choices in the .pkg and prompts the 
+  user for which action(s) they'd like to select.
+  This package is then uploaded to the JPS.
+Identifier: com.github.mlbz521.jss.MicrosoftOfficeResetOptions
+ParentRecipe: com.github.mlbz521.pkg.MicrosoftOfficeResetOptions
+MinimumVersion: "2.3"
+
+Input:
+  NAME: Microsoft Office Reset Options
+  IGNORE_CHOICES: "com.microsoft.remove.Office"
+  PROMPT_TITLE: "Reset Microsoft Office"
+  PROD_NAME:  "%PROMPT_TITLE%"
+  GROUP_TEMPLATE: SmartGroupTemplate.xml
+  POLICY_TEMPLATE: PolicyTemplate.xml
+  POLICY_CATEGORY: Testing
+  package_notes: Product of AutoPkg
+  GROUP_NAME: "%NAME%-Testing"
+  CATEGORY: Maintenance
+  SELF_SERVICE_DESCRIPTION: |
+    WARNING:  This process has the potential for DATA LOSS.  PLEASE ensure you read this entire description before continuing!
+    
+    This self service process can completely reset Microsoft applications on your system to factory defaults.  You will be prompted to select which application(s) you would like to reset (multiple can be selected at a time).  This process can lead to data loss if your files and content are not synced to the cloud or backed up in another location prior to executing.
+    
+    If you have any questions please contact your Deskside support before continuing.
+    
+    The following actions are supported:
+      * Resetting
+        * Word
+        * Excel
+        * Outlook
+        * PowerPoint
+        * OneDrive
+        * OneNote
+        * Teams
+        * Microsoft AutoUpdate
+        * Credentials
+          * Resets only sign-in related information, e.g. O365, apps that require sign-in (e.g Outlook), and other "account"-tied functionality
+        * Factory Reset All App
+          * Includes all options listed above
+      * Removing
+        * Skype For Business
+        * Zoom Plugin
+        * WebExPT
+        * Outlook Data
+
+    Applications will only reset to their factory defaults, they will not be deleted or uninstalled as a result of running this process.  Supports Microsoft Office 2016 and newer.
+  SELF_SERVICE_ICON: OfficeReset.png
+
+Process:
+  - Processor: PkgRootCreator
+    Arguments:
+      pkg_path: "%pkg_path%"
+      prod_name: "%PROD_NAME%"
+      category: "%CATEGORY%"
+      policy_category: "%POLICY_CATEGORY%"
+      policy_template: "%POLICY_TEMPLATE%"
+      self_service_icon: "%SELF_SERVICE_ICON%"
+      self_service_description: "%SELF_SERVICE_DESCRIPTION%"
+      groups:
+        - name: "%GROUP_NAME%"
+          smart: true
+          template_path: "%GROUP_TEMPLATE%"

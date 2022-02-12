@@ -239,11 +239,16 @@ class OfflineApps(URLDownloader):
         """Determines the highest version number of the provided strings."""
 
         latest_version = ""
-        latest_version_folder = ""
+        latest_version_location = ""
 
         # Loop through the found items
         for item in found_items:
-            item_version = item.split(version_separator)[-1]
+
+            if os.path.isfile(item):
+                item_version = (os.path.splitext(item)[0]).split(version_separator)[-1]
+
+            else:
+                item_version = item.split(version_separator)[-1]
 
             # If a major_version is supplied to reference, make sure 
             # the version string starts with supplied major version
@@ -253,9 +258,9 @@ class OfflineApps(URLDownloader):
 
             if parse_version(item_version) > parse_version(latest_version):
                 latest_version = item_version
-                latest_version_folder = item
+                latest_version_location = item
 
-        return latest_version, latest_version_folder
+        return latest_version, latest_version_location
 
 
     def download_local_file(self, file_to_download, save_path):

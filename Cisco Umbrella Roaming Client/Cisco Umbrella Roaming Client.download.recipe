@@ -27,8 +27,19 @@
 		<key>SEARCH_PATTERN_2</key>
 		<string>(?P&lt;download_url&gt;https://disthost.umbrella.com/roaming/upgrade/mac/stage/(?P&lt;filename&gt;RoamingClient_MAC_(?P&lt;version&gt;[0-9\.]+).pkg.zip))</string>
 	</dict>
+	<key>MinimumVersion</key>
+	<string>1.1</string>
 	<key>Process</key>
 	<array>
+		<dict>
+			<key>Processor</key>
+			<string>DeprecationWarning</string>
+			<key>Arguments</key>
+			<dict>
+				<key>warning_message</key>
+				<string>This recipe is has been deprecated in favor of the set and download method in Rich Trouton's repo (rtrouton-recipes).</string>
+			</dict>
+		</dict>
 		<dict>
 			<key>Processor</key>
 			<string>URLTextSearcher</string>

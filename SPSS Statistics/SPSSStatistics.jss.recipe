@@ -77,7 +77,7 @@ The created Policy's name will be in the format of "%NAME% %MAJOR_VERSION%".</st
 			<key>Arguments</key>
 			<dict>
 				<key>pkg_path</key>
-				<string>%RECIPE_CACHE_DIR%/%NAME%-%version%.pkg</string>
+				<string>%pkg_path%</string>
 				<key>prod_name</key>
 				<string>%NAME%</string>
 				<key>category</key>

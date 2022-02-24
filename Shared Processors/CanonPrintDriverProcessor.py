@@ -19,6 +19,7 @@ from __future__ import absolute_import, print_function
 import json
 import os
 import sys
+import time
 
 from autopkglib import ProcessorError, URLGetter
 
@@ -222,6 +223,7 @@ class CanonPrintDriverProcessor(URLGetter):
                 WebDriverWait(web_engine, timeout=10).until(
                     lambda d: d.find_element_by_id("dd_platform")
                 )
+                time.sleep(1)
                 select_os = Select(web_engine.find_element_by_id("dd_platform"))
                 presence_of_element_located(select_os)
                 select_os.select_by_value(os_version)

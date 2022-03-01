@@ -5,7 +5,7 @@
 		<key>Description</key>
 		<string>Downloads the latest Ricoh Driver package based on the override-able parameters:  model and OS Version.
 
-model example:  'Aficio SP C830DN'
+model example:  'SP C830DN'
 OS version options:  
 	- Big Sur
 	- Catalina
@@ -23,7 +23,7 @@ The download recipe requires the Selenium Library (https://www.selenium.dev/docu
 			<key>NAME</key>
 			<string>Ricoh Print Drivers</string>
 			<key>MODEL</key>
-			<string>Aficio SP C830DN</string>
+			<string>SP C830DN</string>
 			<key>OS_VERSION</key>
 			<string>Big Sur</string>
 			<key>WEB_DRIVER</key>

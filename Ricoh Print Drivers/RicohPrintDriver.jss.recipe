@@ -53,7 +53,7 @@ The download recipe requires the Selenium Library (https://www.selenium.dev/docu
 				<key>Arguments</key>
 				<dict>
 					<key>pkg_path</key>
-					<string>%RECIPE_CACHE_DIR%/%NAME%-%version%.pkg</string>
+					<string>%pkg_path%.pkg</string>
 					<key>prod_name</key>
 					<string>%NAME%</string>
 					<key>category</key>

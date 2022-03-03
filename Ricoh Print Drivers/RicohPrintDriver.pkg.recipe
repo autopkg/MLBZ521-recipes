@@ -29,20 +29,11 @@ The download recipe requires the Selenium Library (https://www.selenium.dev/docu
 		<array>
 			<dict>
 				<key>Processor</key>
-				<string>PkgCopier</string>
-				<key>Arguments</key>
-				<dict>
-					<key>source_pkg</key>
-					<string>%pathname%/*.pkg</string>
-				</dict>
-			</dict>
-			<dict>
-				<key>Processor</key>
 				<string>FileFinder</string>
 				<key>Arguments</key>
 				<dict>
 					<key>pattern</key>
-					<string>%pathname%</string>
+					<string>%pathname%/*.pkg</string>
 				</dict>
 			</dict>
 			<dict>
@@ -51,7 +42,7 @@ The download recipe requires the Selenium Library (https://www.selenium.dev/docu
 				<key>Arguments</key>
 				<dict>
 					<key>string_to_split</key>
-					<string>%found_basename%</string>
+					<string>%dmg_found_filename%</string>
 					<key>split_on</key>
 					<string>_</string>
 					<key>occurrence</key>
@@ -68,7 +59,7 @@ The download recipe requires the Selenium Library (https://www.selenium.dev/docu
 				<key>Arguments</key>
 				<dict>
 					<key>archive_path</key>
-					<string>%pkg_path%</string>
+					<string>%pathname%/%dmg_found_filename%</string>
 					<key>file_to_extract</key>
 					<string>Distribution</string>
 				</dict>
@@ -90,12 +81,12 @@ The download recipe requires the Selenium Library (https://www.selenium.dev/docu
 			</dict>
 			<dict>
 				<key>Processor</key>
-				<string>FileMover</string>
+				<string>PkgCopier</string>
 				<key>Arguments</key>
 				<dict>
-					<key>source</key>
-					<string>%pkg_path%</string>
-					<key>target</key>
+					<key>source_pkg</key>
+					<string>%pathname%/*.pkg</string>
+					<key>pkg_path</key>
 					<string>%RECIPE_CACHE_DIR%/%NAME%-%version%.pkg</string>
 				</dict>
 			</dict>

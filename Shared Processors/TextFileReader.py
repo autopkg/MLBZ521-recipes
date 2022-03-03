@@ -1,7 +1,6 @@
-#!/usr/bin/env python
+#!/usr/local/autopkg/python
 #
-# Copyright 2019 Zack T (mlbz521)
-# Borrowed some of the dmg mount logic from included autopkg processors.
+# Copyright 2022 Zack T (mlbz521)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,15 +14,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+"""See docstring for TextFileReader class"""
+
 from __future__ import absolute_import
 
 import os.path
 import re
 
-from autopkglib import Processor, ProcessorError
+from autopkglib import ProcessorError
 from autopkglib.DmgMounter import DmgMounter
 
+
 __all__ = ["TextFileReader"]
+
 
 class TextFileReader(DmgMounter):
 
@@ -63,9 +66,8 @@ class TextFileReader(DmgMounter):
         (dmg_path, dmg, dmg_source_path) = self.parsePathForDMG(source_path)
 
         self.output(
-            f"Parsed dmg results: dmg_path: {dmg_path}, dmg: {dmg}, "
-            f"dmg_source_path: {dmg_source_path}",
-            verbose_level=2,)
+            "Parsed dmg results: dmg_path: {}, dmg: {}, dmg_source_path: {}".format(
+                dmg_path, dmg, dmg_source_path), verbose_level=2)
 
         if dmg:
 
@@ -76,14 +78,10 @@ class TextFileReader(DmgMounter):
             except Exception:
                 raise ProcessorError("Unable to mount the dmg.")
 
-        # Wrap in a try/finally so if we mount an image, it will always be unmounted.
+        # Wrap in a try/finally so if a dmg is mounted, it will always be unmounted
         try:
-
-            # Open, read, and close file
-            file = open(source_path, 'r')
-            contents = file.read()
-            file.close()
-
+            with open(source_path, 'r') as file:
+                contents = file.read()
         except Exception:
             raise ProcessorError(f"Unable to open '{file_to_open}'")
 

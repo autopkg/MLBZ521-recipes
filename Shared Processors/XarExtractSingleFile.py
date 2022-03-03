@@ -1,6 +1,6 @@
-#!/usr/bin/python
+#!/usr/local/autopkg/python
 #
-# XarExtractSingleFile.py Copyright 2020 by Zack Thompson (MLBZ521)
+# Copyright 2022 by Zack T (mlbz521)
 #
 # Inspired by DistributionPkgInfo.py from dataJar
 #   https://github.com/autopkg/dataJAR-recipes/blob/master/Shared%20Processors/DistributionPkgInfo.py
@@ -26,20 +26,25 @@ import shlex
 import subprocess
 
 from fnmatch import fnmatch
-from autopkglib import Processor, ProcessorError
+
+from autopkglib import ProcessorError
+from autopkglib.DmgMounter import DmgMounter
+
 
 __all__ = ["XarExtractSingleFile"]
 
 
-class XarExtractSingleFile(Processor):
-    """Extracts a single file from an archive using xar."""
+class XarExtractSingleFile(DmgMounter):
+    """Extracts a single file from an archive using xar.  Archive path 
+    can be within a .dmg which will be mounted."""
 
     description = __doc__
 
     input_variables = {
         "archive_path": {
             "required": True,
-            "description": ("Path to archive to extract.")
+            "description": ("Path to archive. Can point to an archive "
+            "inside a .dmg which will be mounted.")
         },
         "extract_file_path": {
             "required": False,
@@ -74,66 +79,96 @@ class XarExtractSingleFile(Processor):
 
         command = shlex.split(command)
 
-        process = subprocess.Popen( command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=False )
+        process = subprocess.Popen( 
+            command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=False )
         (stdout, stderr) = process.communicate()
 
-        result_dict = {
+        return {
             "stdout": (stdout).strip(),
             "stderr": (stderr).strip() if stderr != None else None,
             "status": process.returncode,
             "success": True if process.returncode == 0 else False
         }
 
-        return result_dict
 
     def main(self):
 
         # Define variables
-        archive_path = os.path.join(self.env["archive_path"])
-        extract_file_path = self.env.get("extract_file_path", os.path.join(self.env.get("RECIPE_CACHE_DIR"), "extractedfile"))
+        source_path = os.path.normpath(self.env["archive_path"])
+        extract_file_path = self.env.get("extract_file_path", 
+            os.path.join(self.env.get("RECIPE_CACHE_DIR"), "extractedfile")
+        )
         file_to_extract = self.env["file_to_extract"]
         found_match = False
 
-        # Get a list of files in the archive
-        cmd_list_files = '/usr/bin/xar -tf "{}"'.format(archive_path)
-        results_list_files = self.runUtility(cmd_list_files)
+        # Check to see if the source_path is a dmg
+        (dmg_path, dmg, dmg_source_path) = self.parsePathForDMG(source_path)
 
-        if not results_list_files['success']:
-            raise ProcessorError("Failed to list the files in the archive:  {archive_path} -- due to error:  {error}".format(archive_path=archive_path, error=results_list_files['stderr']))
+        self.output(
+            "Parsed dmg results: dmg_path: {}, dmg: {}, dmg_source_path: {}".format(
+                dmg_path, dmg, dmg_source_path), verbose_level=2)
 
-        # Split the file names
-        list_of_files = (results_list_files['stdout'].decode("utf-8")).split('\n')
+        if dmg:
 
-        # Create destintation directory if it doesn't exist
-        if not os.path.exists(extract_file_path):
             try:
-                os.mkdir(extract_file_path)
-            except OSError as err:
-                raise ProcessorError("Can't create {}:  {}".format(extract_file_path, err.strerror))
+                mount_point = self.mount(dmg_path)
+                source_path = os.path.join(mount_point, dmg_source_path)
 
-        # Walk trough the list of files entries
-        for filename in [ item for item in list_of_files if fnmatch(item, file_to_extract) ]:
-            cmd_extract = '/usr/bin/xar -xf "{archive_path}" "{filename}" -C "{extract_file_path}"'.format(archive_path=archive_path, filename=filename, extract_file_path=extract_file_path)
-            results_list_files = self.runUtility(cmd_extract)
+            except Exception:
+                raise ProcessorError("Unable to mount the dmg.")
+
+        # Wrap in a try/finally so if a dmg is mounted, it will always be unmounted
+        try:
+
+            # Get a list of files in the archive
+            cmd_list_files = '/usr/bin/xar -tf "{}"'.format(source_path)
+            results_list_files = self.runUtility(cmd_list_files)
 
             if not results_list_files['success']:
-                raise ProcessorError("Failed to extract the archive:  {archive_path} -- due to error:  {error}".format(archive_path=archive_path, error=results_list_files['stderr']))
+                raise ProcessorError(
+                    "Failed to list the files in the archive:  {} -- due to error:  {}".format(
+                        source_path, results_list_files['stderr']))
 
-            # Path to the extract file
-            extracted_file = os.path.join(extract_file_path, filename)
+            # Split the file names
+            list_of_files = (results_list_files['stdout'].decode("utf-8")).split('\n')
 
-        # Verify file exists
-        for filename in os.listdir(extract_file_path):
-            if fnmatch(filename, file_to_extract):
-                found_match = True
+            # Create destintation directory if it doesn't exist
+            if not os.path.exists(extract_file_path):
+                try:
+                    os.mkdir(extract_file_path)
+                except OSError as err:
+                    raise ProcessorError("Can't create {}:  {}".format(extract_file_path, err.strerror))
 
-        if found_match == True:
+            # Walk trough the list of files entries
+            for filename in [ item for item in list_of_files if fnmatch(item, file_to_extract) ]:
+                cmd_extract = '/usr/bin/xar -xf "{}" "{}" -C "{}"'.format(
+                    source_path, filename, extract_file_path)
+                results_list_files = self.runUtility(cmd_extract)
+
+                if not results_list_files['success']:
+                    raise ProcessorError(
+                        "Failed to extract the archive:  {} -- due to error:  {}".format(
+                            source_path, results_list_files['stderr']))
+
+                # Path to the extract file
+                extracted_file = os.path.join(extract_file_path, filename)
+
+            # Verify file exists
+            for filename in os.listdir(extract_file_path):
+                if fnmatch(filename, file_to_extract):
+                    found_match = True
+
+            if not found_match:
+                raise ProcessorError("Cannot find the file:  {}".format(file_to_extract))
+
             self.output('extracted_file:  {}'.format(extracted_file))
             self.env["extracted_file"] = extracted_file
-        else:
-            raise ProcessorError("Cannot find the file:  {}".format(file_to_extract))
+
+        finally:
+            if dmg:
+                self.unmount(dmg_path)
 
 
 if __name__ == '__main__':
-    PROCESSOR = XarExtractSingleFile()
+    processor = XarExtractSingleFile()
     processor.execute_shell()

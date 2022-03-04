@@ -49,7 +49,7 @@ Input:
   SELF_SERVICE_ICON: OfficeReset.png
 
 Process:
-  - Processor: PkgRootCreator
+  - Processor: JSSImporter
     Arguments:
       pkg_path: "%pkg_path%"
       prod_name: "%PROD_NAME%"

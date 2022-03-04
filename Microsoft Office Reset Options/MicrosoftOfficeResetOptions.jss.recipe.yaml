@@ -19,11 +19,11 @@ Input:
   GROUP_NAME: "%NAME%-Testing"
   CATEGORY: Maintenance
   SELF_SERVICE_DESCRIPTION: |
-    WARNING:  This process has the potential for DATA LOSS.  PLEASE ensure you read this entire description before continuing!
+    *WARNING*:  This process has the potential for *DATA LOSS*.  _PLEASE_ ensure you read this entire description before continuing!
     
     This self service process can completely reset Microsoft applications on your system to factory defaults.  You will be prompted to select which application(s) you would like to reset (multiple can be selected at a time).  This process can lead to data loss if your files and content are not synced to the cloud or backed up in another location prior to executing.
     
-    If you have any questions please contact your Deskside support before continuing.
+    If you have _any_ questions please contact IT support before continuing.
     
     The following actions are supported:
       * Resetting
@@ -37,7 +37,7 @@ Input:
         * Microsoft AutoUpdate
         * Credentials
           * Resets only sign-in related information, e.g. O365, apps that require sign-in (e.g Outlook), and other "account"-tied functionality
-        * Factory Reset All App
+        * Factory Reset All Apps
           * Includes all options listed above
       * Removing
         * Skype For Business

@@ -282,7 +282,7 @@ Process:
   - Processor: PkgCreator
     Arguments:
       pkg_request: 
-        id: "us.zoom.xos"
+        id: "com.office.resetoptions"
         pkgname: "%NAME%-%version%"
         pkgroot: "%RECIPE_CACHE_DIR%/pkgroot"
         pkgtype: flat

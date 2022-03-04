@@ -373,7 +373,7 @@ Used in:
 
 ## XarExtractSingleFile ##
 
-Extracts a single file from an archive using xar.
+Extracts a single file from an archive using xar.  Archive path can be within a .dmg which will be mounted.
 
 Used in:
   * com.github.mlbz521.download.CiscoJabber

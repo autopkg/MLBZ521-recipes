@@ -26,7 +26,7 @@ The name of the bundled application and the package will be named based on the N
 		<key>CATEGORY</key>
 		<string>Technical Support</string>
 		<key>SELF_SERVICE_DESCRIPTION</key>
-		<string>The Bomgar Jump Client is an installable application that enables a technician to access your remote computer, regardless of your location, for support puroses.  The remote computer does not need to reside on a known, internal network.  Jump Clients are persistently connected, thus allowing a technican to provide support to systems on remote networks anywhere in the world.</string>
+		<string>The Bomgar Jump Client is an installable application that enables a technician to access your remote computer, regardless of your location, for support purposes.  The remote computer does not need to reside on a known, internal network.  Jump Clients are persistently connected, thus allowing a technician to provide support to systems on remote networks anywhere in the world.</string>
 		<key>SELF_SERVICE_ICON</key>
 		<string>Bomgar.png</string>
 	</dict>

@@ -16,7 +16,7 @@
 
 import json
 
-from autopkglib import Processor, ProcessorError, URLGetter
+from autopkglib import ProcessorError, URLGetter
 
 __all__ = ["AutoDeskPatchProcessor"]
 
@@ -69,7 +69,7 @@ class AutoDeskPatchProcessor(URLGetter):
         # Look up the product and major_version
         response = self.download(lookupURL)
 
-        if json:
+        if response:
             # Load the JSON Response
             json_data = json.loads(response)
 

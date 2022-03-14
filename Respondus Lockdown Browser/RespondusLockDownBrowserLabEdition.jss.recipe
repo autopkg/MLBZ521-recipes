@@ -3,11 +3,11 @@
 <plist version="1.0">
 <dict>
 	<key>Description</key>
-	<string>Downloads and packages the latest verison Respondus' LockDown Browser Lab Edition and then uploads it to a JPS.
+	<string>Downloads and packages the latest verison Respondus' LockDown Browser, configures the install package for the Lab Edition, and then uploads it to a JPS.
 
-The download recipe requires you to set your Institution ID and Lab Hash.
+The download recipe requires you to set your Institution ID and the pkg recipe requires your Lab Hash.
 
-Because Repondus does silly things by expecting the licencing information in the file name, this does package inception so that the package name in Jamf Pro is a standard format.</string>
+Because Respondus does silly things by expecting the licensing information in the file name, this does package inception so that the package name is a standard format.</string>
 	<key>Identifier</key>
 	<string>com.github.mlbz521.jss.RespondusLockDownBrowserLabEdition</string>
 	<key>Input</key>

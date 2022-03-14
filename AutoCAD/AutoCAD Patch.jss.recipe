@@ -36,7 +36,7 @@ major_version examples:  2020, 2019, 2018, etc</string>
 AutoCAD is computer-aided design (CAD) software that architects, engineers, and construction professionals rely on to create precise 2D and 3D drawings.
 
   * Draft, annotate, and design 2D geometry and 3D models with solids, surfaces, and mesh objects
-  * Automate tasks such as comparing drawings, addings blocks, creating schedules, and more</string>
+  * Automate tasks such as comparing drawings, adding blocks, creating schedules, and more</string>
 		<key>SELF_SERVICE_ICON</key>
 		<string>AutoCAD.png</string>
 	</dict>

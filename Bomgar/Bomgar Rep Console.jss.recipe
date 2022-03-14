@@ -39,7 +39,7 @@ Additional information on Bomgar Remote Support can be found in the [BeyondTrust
 
 Note:  You must be provisioned an account before use.</string>
 		<key>SELF_SERVICE_ICON</key>
-		<string>Bomgar.png</string>
+		<string>RepConsole.png</string>
 	</dict>
 	<key>ParentRecipe</key>
 	<string>com.github.mlbz521.pkg.BomgarConsole</string>

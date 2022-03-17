@@ -13,7 +13,7 @@ Originally created by @asemak (asemak-recipes).</string>
             <key>NAME</key>
             <string>Pharos Popup Client</string>
             <key>SEARCH_URL</key>
-            <string>https://pharos.com/uniprint/mac-updates/</string>
+            <string>https://community.pharos.com/s/article/Macintosh-Updates-For-Uniprint</string>
             <key>DOWNLOAD_URL</key>
             <string>https://pharos.com/support/downloads/mac</string>
             <key>DOWNLOAD_PREFIX</key>

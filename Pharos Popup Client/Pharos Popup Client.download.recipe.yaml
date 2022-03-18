@@ -1,0 +1,41 @@
+Description: Downloads the latest version of the Pharos Popup client.
+Identifier: com.github.mlbz521.download.PharosPopupClient
+MinimumVersion: "2.3"
+
+Input:
+  NAME:  Pharos Popup Client
+	DOWNLOAD_PAGE: https://community.pharos.com/s/article/Macintosh-Updates-For-Uniprint
+	DOWNLOAD_URL_PREFIX: https://pharos.com/support/downloads/mac/Mac OS X Popup
+	WEB_DRIVER: Chrome
+	WEB_DRIVER_PATH: /path/to/chromedriver
+	EXTRACTED_FOLDER_NAME: Mac OS X Popups
+
+Process:
+	- Processor: PharosProcessor
+		Arguments:
+			downloads_page: "%DOWNLOAD_PAGE%"
+			prefix_dl_url: "%DOWNLOAD_URL_PREFIX%"
+			web_driver: "%WEB_DRIVER%"
+			web_driver_path: "%WEB_DRIVER_PATH%"
+
+	- Processor: URLDownloader
+	  Arguments:
+			url: "%url%"
+			filename: "%NAME%-%version%.zip"
+			prefetch_filename: true
+
+	- Processor: Unarchiver
+		Arguments:
+			archive_path: "%pathname%"
+			destination_path: "%RECIPE_CACHE_DIR%/unzipped"
+			purge_destination: true
+
+	- Processor: CodeSignatureVerifier
+		Arguments:
+			input_path: "%RECIPE_CACHE_DIR%/unzipped/%EXTRACTED_FOLDER_NAME% %version%/Popup.dmg/Popup.pkg"
+			expected_authority_names:
+				- "Developer ID Installer: Pharos Systems International (QMY9322U6D)"
+				- Developer ID Certification Authority
+				- Apple Root CA
+
+	- Processor: EndOfCheckPhase

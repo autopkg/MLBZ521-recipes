@@ -1,0 +1,21 @@
+Description: Downloads the latest Pharos Popup client and copies out the flat installer pkg
+  within, appending the version number to the filename.
+Identifier: com.github.mlbz521.pkg.PharosPopupClient
+ParentRecipe: com.github.mlbz521.download.PharosPopupClient
+MinimumVersion: "2.3"
+
+Input:
+  NAME: Pharos Popup Client
+  IGNORE_CHOICES: "com.microsoft.remove.Office"
+  PROMPT_TITLE: "Reset Microsoft Office"
+
+Process:
+  - Processor: PkgCopier
+    Arguments:
+      source_pkg: "%RECIPE_CACHE_DIR%/unzipped/%EXTRACTED_FOLDER_NAME% %version%/Popup.dmg/Popup.pkg"
+      pkg_path: "%RECIPE_CACHE_DIR%/%NAME%-%version%.pkg"
+
+  - Processor: PathDeleter
+    Arguments:
+      path_list: 
+        - "%RECIPE_CACHE_DIR%/unzipped"

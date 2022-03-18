@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-# Copyright 2021 Zack Thompson (mlbz521)
+# Copyright 2022 Zack Thompson (mlbz521)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -44,20 +44,14 @@ class RicohPrintDriverProcessor(URLGetter):
         "model": {
             "required": True,
             "description": (
-                "The official model name of the Canon Printer to search for."
-            )
-        },
-        "model": {
-            "required": True,
-            "description": (
-                "The official model name of the Canon Printer to search for."
+                "The official model name of the Ricoh Printer to search for."
             )
         },
         "os_version": {
             "required": False,
             "description": (
                 "The OS version to search against.",
-                "Default:  'MACOS_11_0' (i.e. Big Sur)"
+                "Default:  'Big Sur"
             )
         },
         "web_driver": {
@@ -128,11 +122,11 @@ class RicohPrintDriverProcessor(URLGetter):
 
                     if self.path:
                         self.web_engine = webdriver.Chrome(
-                            executable_path=self.path, chrome_options=options
+                            executable_path=self.path, options=options
                         )
 
                     else:
-                        self.web_engine = webdriver.Chrome(chrome_options=options)
+                        self.web_engine = webdriver.Chrome(options=options)
 
             except:
                 raise ProcessorError("Failed to load the specified WebDriver engine.")
@@ -244,7 +238,7 @@ class RicohPrintDriverProcessor(URLGetter):
             try:
                 # Get the hyperlink for the driver download file
                 download_url = section_selected_os_version.find_element_by_xpath(
-                    '//*[@id="os-driver-list"]/div[4]/div/div/div[2]/div[1]/div/div/div[2]/div/div/div/div/div/div[1]/p[2]/a'.format(os_version_keycode)).get_attribute("href"
+                    '//*[@id="os-driver-list"]/div[4]/div/div/div[2]/div[1]/div/div/div[2]/div/div/div/div/div/div[1]/p[2]/a').get_attribute("href"
                 )
 
             except:

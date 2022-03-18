@@ -15,16 +15,16 @@ Input:
   SELF_SERVICE_ICON: Pharos.png
 
 Process:
-    - Processor: JSSImporter
-    Arguments:
-      pkg_path: "%pkg_path%"
-      prod_name: "%NAME%"
-      category: "%CATEGORY%"
-      policy_category: "%POLICY_CATEGORY%"
-      policy_template: "%POLICY_TEMPLATE%"
-      self_service_icon: "%SELF_SERVICE_ICON%"
-      self_service_description: "%SELF_SERVICE_DESCRIPTION%"
-      groups:
-        - name: "%GROUP_NAME%"
-          smart: true
-          template_path: "%GROUP_TEMPLATE%"
+  - Processor: JSSImporter
+  Arguments:
+    pkg_path: "%pkg_path%"
+    prod_name: "%NAME%"
+    category: "%CATEGORY%"
+    policy_category: "%POLICY_CATEGORY%"
+    policy_template: "%POLICY_TEMPLATE%"
+    self_service_icon: "%SELF_SERVICE_ICON%"
+    self_service_description: "%SELF_SERVICE_DESCRIPTION%"
+    groups:
+      - name: "%GROUP_NAME%"
+        smart: true
+        template_path: "%GROUP_TEMPLATE%"

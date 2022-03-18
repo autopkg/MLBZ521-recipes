@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-# Copyright 2021 Zack T (mlbz521)
+# Copyright 2022 Zack Thompson (mlbz521)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -129,11 +129,11 @@ class CanonPrintDriverProcessor(URLGetter):
 
                     if self.path:
                         self.web_engine = webdriver.Chrome(
-                            executable_path=self.path, chrome_options=options
+                            executable_path=self.path, options=options
                         )
 
                     else:
-                        self.web_engine = webdriver.Chrome(chrome_options=options)
+                        self.web_engine = webdriver.Chrome(options=options)
 
             except:
                 raise ProcessorError("Failed to load the specified WebDriver engine.")

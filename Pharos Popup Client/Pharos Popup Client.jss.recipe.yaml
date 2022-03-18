@@ -4,19 +4,19 @@ ParentRecipe: com.github.mlbz521.pkg.PharosPopupClient
 MinimumVersion: "2.3"
 
 Input:
-	GROUP_TEMPLATE: SmartGroupTemplate.xml
-	POLICY_TEMPLATE: PolicyTemplate.xml
-	POLICY_CATEGORY: Testing
-	package_notes: Product of AutoPkg
-	GROUP_NAME: "%NAME%-Testing"
-	NAME: Pharos Popup Client
-	CATEGORY: Printers
-	SELF_SERVICE_DESCRIPTION: Pharos Popup allows you to print to organizational printers and manage your print jobs.  It allows you to utilize printers that require authentication before printing.
-	SELF_SERVICE_ICON: Pharos.png
+  GROUP_TEMPLATE: SmartGroupTemplate.xml
+  POLICY_TEMPLATE: PolicyTemplate.xml
+  POLICY_CATEGORY: Testing
+  package_notes: Product of AutoPkg
+  GROUP_NAME: "%NAME%-Testing"
+  NAME: Pharos Popup Client
+  CATEGORY: Printers
+  SELF_SERVICE_DESCRIPTION: Pharos Popup allows you to print to organizational printers and manage your print jobs.  It allows you to utilize printers that require authentication before printing.
+  SELF_SERVICE_ICON: Pharos.png
 
 Process:
-		- Processor: JSSImporter
-		Arguments:
+    - Processor: JSSImporter
+    Arguments:
       pkg_path: "%pkg_path%"
       prod_name: "%NAME%"
       category: "%CATEGORY%"

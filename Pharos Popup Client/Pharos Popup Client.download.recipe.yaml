@@ -3,7 +3,7 @@ Identifier: com.github.mlbz521.download.PharosPopupClient
 MinimumVersion: "2.3"
 
 Input:
-  NAME:  Pharos Popup Client
+  NAME: Pharos Popup Client
   DOWNLOAD_PAGE: https://community.pharos.com/s/article/Macintosh-Updates-For-Uniprint
   DOWNLOAD_URL_PREFIX: https://pharos.com/support/downloads/mac/Mac OS X Popup
   WEB_DRIVER: Chrome

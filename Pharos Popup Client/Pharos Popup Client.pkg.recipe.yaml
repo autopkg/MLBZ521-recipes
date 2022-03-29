@@ -1,4 +1,5 @@
-Description: Downloads the latest Pharos Popup client and copies out the flat installer pkg
+Description:
+  Downloads the latest Pharos Popup client and copies out the flat installer pkg
   within, appending the version number to the filename.
 Identifier: com.github.mlbz521.pkg.PharosPopupClient
 ParentRecipe: com.github.mlbz521.download.PharosPopupClient
@@ -15,5 +16,5 @@ Process:
 
   - Processor: PathDeleter
     Arguments:
-      path_list: 
+      path_list:
         - "%RECIPE_CACHE_DIR%/unzipped"

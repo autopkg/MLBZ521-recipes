@@ -59,7 +59,7 @@ class MaplePatchProcessor(URLGetter):
 
         if major_version == "2021":
             uuid = '1281b851-d7ce-4c6d-af1f-81d4549db8fc' # This is technically 2021.1
-        if major_version == "2020":
+        elif major_version == "2020":
             uuid = '80c01c3a-4a87-4421-95f3-6511001dc329' # This is technically 2020.1
         elif major_version == "2019":
             uuid = 'a8326412-07ae-4dbb-a727-6bd0ca623bbf'

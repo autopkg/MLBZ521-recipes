@@ -278,8 +278,8 @@ class OfflineApps(URLDownloader):
         destination_path = "{}/{}".format(save_path, file_name)
 
         if ( 
-            os.path.exists(destination_path), 
-            self.check_filesize, 
+            os.path.exists(destination_path) and 
+            self.check_filesize and 
             os.path.getsize(file_to_download) == os.path.getsize(destination_path) 
         ):
             self.output("File exists locally, not downloading...")
@@ -370,7 +370,7 @@ class OfflineApps(URLDownloader):
             self.output("Found major version:  {}".format(
                 self.env["found_major_version"]), verbose_level=2)
             self.output("Latest version found:  {}".format(self.env["version"]))
-            self.output("Location:  {}".format(version_location), verbose_level=2)
+            self.output("Source path:  {}".format(version_location), verbose_level=2)
 
             # Set the location where version should be cached
             self.env["cached_path"] = os.path.join(downloads_dir, version_folder)

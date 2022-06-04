@@ -16,10 +16,8 @@
 		<string>%CATEGORY%</string>
 		<key>package_notes</key>
 		<string>Product of AutoPkg</string>
-
 		<key>GROUP_NAME</key>
 		<string>%NAME%-Testing</string>
-
 		<key>NAME</key>
 		<string>Zoom Outlook Plugin</string>
 		<key>CATEGORY</key>
@@ -28,9 +26,6 @@
 		<string>The Zoom Plugin for Outlook installs a button on the Microsoft Outlook tool bar to enable you to start or schedule a meeting with one-click.</string>
 		<key>SELF_SERVICE_ICON</key>
 		<string>Zoom-OutlookPlugin.png</string>
-		<key>os_requirements</key>
-		<string>10.13.x,10.12.x,10.11.x,10.10.x,10.9.x,10.8.x,10.7.x</string>
-
 		<key>DOWNLOAD_URL</key>
 		<string>https://zoom.us/client/latest/ZoomMacOutlookPlugin.pkg</string>
 	</dict>

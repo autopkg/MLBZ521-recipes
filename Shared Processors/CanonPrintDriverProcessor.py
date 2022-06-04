@@ -23,12 +23,14 @@ import time
 
 from autopkglib import ProcessorError, URLGetter
 
+
 if not os.path.exists("/Library/AutoPkg/Selenium"):
-    raise ProcessorError("Selenium is required for this recipe!  Please review my Shared Processors README.")
+    raise ProcessorError("Selenium is required for this recipe!  "
+    "Please review my Shared Processors README.")
+
+from SeluniumWebScrapper import WebEngine
 
 sys.path.insert(0, "/Library/AutoPkg/Selenium")
-
-from selenium import webdriver
 from selenium.webdriver.support.ui import Select, WebDriverWait
 from selenium.webdriver.support.expected_conditions import presence_of_element_located
 
@@ -41,13 +43,13 @@ class CanonPrintDriverProcessor(URLGetter):
     """
 
     input_variables = {
-        "support_url": {
-            "required": False,
-            "description": (
-                "The URL to the Canon product support page.",
-                "Default:  https://www.usa.canon.com/internet/portal/us/home/support"
-            )
-        },
+        # "support_url": {
+        #     "required": False,
+        #     "description": (
+        #         "The URL to the Canon product support page.",
+        #         "Default:  https://www.usa.canon.com/internet/portal/us/home/support"
+        #     )
+        # },
         "model": {
             "required": True,
             "description": (
@@ -64,15 +66,23 @@ class CanonPrintDriverProcessor(URLGetter):
         "web_driver": {
             "required": False,
             "description": (
-                "The web driver engine to use.",
+                "The web driver engine to use.  Only Chrome is supported at this time, "
+                "but support for additional web drivers can be added.",
                 "Default:  Chrome"
             )
         },
         "web_driver_path": {
             "required": False,
             "description": (
-                "The OS version to search against.",
+                "The path to the web driver.  _If_ it is not in your system $PATH.",
                 "Default:  $PATH"
+            )
+        },
+        "web_driver_binary_location": {
+            "required": False,
+            "description": (
+                "The path to the browser's binary.  Defaults to using Chromium.",
+                "Default:  /Applications/Chromium.app/Contents/MacOS/Chromium"
             )
         }
     }
@@ -110,40 +120,6 @@ class CanonPrintDriverProcessor(URLGetter):
                 self.link = node.get("spdplinks")
 
 
-    class WebDriver():
-        """A Class that creates a Context Manager to interact with a WebDriver Engine"""
-
-        def __init__(self, engine, path=None):
-            self.engine = engine
-            self.path = path
-
-        def __enter__(self):
-            """Opens a connection to the database"""
-
-            try:
-
-                if self.engine == "Chrome":
-
-                    options = webdriver.ChromeOptions()
-                    options.add_argument("headless")
-
-                    if self.path:
-                        self.web_engine = webdriver.Chrome(
-                            executable_path=self.path, options=options
-                        )
-
-                    else:
-                        self.web_engine = webdriver.Chrome(options=options)
-
-            except:
-                raise ProcessorError("Failed to load the specified WebDriver engine.")
-
-            return self.web_engine
-
-        def __exit__(self, exc_type, exc_value, exc_traceback):
-            self.web_engine.close
-
-
     def main(self):
         """Do the main thing."""
 
@@ -155,20 +131,15 @@ class CanonPrintDriverProcessor(URLGetter):
         os_version = self.env.get("os_version", "MACOS_11_0")
         web_driver = self.env.get("web_driver", "Chrome")
         web_driver_path = self.env.get("web_driver_path")
+        web_driver_binary_location = self.env.get("web_driver_binary_location")
         recipe_cache_dir = self.env.get("RECIPE_CACHE_DIR")
-        json_product_list = "{}/product_list.json".format(recipe_cache_dir)
+        json_product_list = f"{recipe_cache_dir}/product_list.json"
 
-        self.output("Searching for:  {}".format(model), verbose_level=1)
-        self.output("Canon's json product list URL:  {}".format(url_products_list), verbose_level=2)
-        self.output("Using Web Driver:  {}".format(web_driver), verbose_level=1)
+        self.output(f"Searching for printer model:  {model}", verbose_level=1)
+        self.output(f"Canon's json product list URL:  {url_products_list}", verbose_level=2)
 
         if not os.path.exists(recipe_cache_dir):
             raise ProcessorError("Recipe Cache directory does not exist!")
-
-        if web_driver_path:
-            self.output("Path to Web Driver Engine:  {}".format(web_driver_path), verbose_level=2)
-        else:
-            self.output("The Web Driver Engine is assumed to be in the $PATH.", verbose_level=2)
 
         # Build the required curl switches
         curl_opts = [
@@ -186,7 +157,7 @@ class CanonPrintDriverProcessor(URLGetter):
             result = self.download_with_curl(curl_cmd)
 
         except:
-            raise ProcessorError("Failed to match the provided model:  {}".format(model))
+            raise ProcessorError(f"Failed to match the provided model:  {model}")
 
         try:
             # Load the JSON Response
@@ -194,13 +165,13 @@ class CanonPrintDriverProcessor(URLGetter):
                 json_data = json.load(json_product_list_file)
 
             self.canon_product_parse(json_data, model)
-            self.output("Model downloads page:  {}".format(self.link), verbose_level=2)
+            self.output(f"Model downloads page:  {self.link}", verbose_level=2)
 
         except:
             raise ProcessorError("Failed to find a model url in the results!")
 
-
-        with self.WebDriver(web_driver, web_driver_path) as web_engine:
+        with WebEngine(
+            web_driver, web_driver_binary_location, path=web_driver_path,) as web_engine:
 
             try:
                 web_engine.get(self.link)
@@ -256,14 +227,12 @@ class CanonPrintDriverProcessor(URLGetter):
                 raise ProcessorError(
                     "Failed to find and collect the download url from the download button.")
 
-
-        if download_url:
-            # Return results
-            self.env["url"] = download_url
-            self.output("Download URL: {}".format(self.env["url"]), verbose_level=1)
-
-        else:
+        if not download_url:
             raise ProcessorError("Failed to find a matching download type for the provided model.")
+
+        # Return results
+        self.env["url"] = download_url
+        self.output(f'Download URL: {self.env["url"]}', verbose_level=1)
 
 
 if __name__ == "__main__":

@@ -24,9 +24,10 @@ if not os.path.exists("/Library/AutoPkg/Selenium"):
     raise ProcessorError("Selenium is required for this recipe!  "
         "Please review my Shared Processors README.")
 
-sys.path.insert(0, "/Library/AutoPkg/Selenium")
+sys.path.insert(0, f"{os.path.dirname(os.path.dirname(os.path.abspath(__file__)))}/Shared Processors")
+from SeleniumWebScrapper import WebEngine
 
-from selenium import webdriver
+sys.path.insert(0, "/Library/AutoPkg/Selenium")
 from selenium.webdriver.support.ui import WebDriverWait
 # from selenium.webdriver.support.expected_conditions import presence_of_element_located
 
@@ -36,8 +37,7 @@ __all__ = ["PharosProcessor"]
 
 class PharosProcessor(Processor):
 
-    """This processor finds the download URL for Ricoh print driver.
-    """
+    """This processor finds the download URL for Pharos Popup Client."""
 
     input_variables = {
         "downloads_page": {
@@ -57,15 +57,23 @@ class PharosProcessor(Processor):
         "web_driver": {
             "required": False,
             "description": (
-                "The web driver engine to use.",
+                "The web driver engine to use.  Only Chrome is supported at this time, "
+                "but support for additional web drivers can be added.",
                 "Default:  Chrome"
             )
         },
         "web_driver_path": {
             "required": False,
             "description": (
-                "The OS version to search against.",
+                "The path to the web driver.  _If_ it is not in your system $PATH.",
                 "Default:  $PATH"
+            )
+        },
+        "web_driver_binary_location": {
+            "required": False,
+            "description": (
+                "The path to the browser's binary.  Defaults to using Chromium.",
+                "Default:  /Applications/Chromium.app/Contents/MacOS/Chromium"
             )
         }
     }
@@ -78,63 +86,24 @@ class PharosProcessor(Processor):
     description = __doc__
 
 
-    class WebDriver():
-        """A Class that creates a Context Manager to interact with a WebDriver Engine"""
-
-        def __init__(self, engine, path=None):
-            self.engine = engine
-            self.path = path
-
-
-        def __enter__(self):
-            """Opens a connection to the database"""
-
-            try:
-
-                if self.engine == "Chrome":
-
-                    options = webdriver.ChromeOptions()
-                    options.add_argument("headless")
-
-                    if self.path:
-                        self.web_engine = webdriver.Chrome(
-                            executable_path=self.path, options=options
-                        )
-
-                    else:
-                        self.web_engine = webdriver.Chrome(options=options)
-
-            except:
-                raise ProcessorError("Failed to load the specified WebDriver engine.")
-
-            return self.web_engine
-
-
-        def __exit__(self, exc_type, exc_value, exc_traceback):
-            self.web_engine.close
-
-
     def main(self):
         """Do the main thing."""
 
         # Define variables
-        downloads_page = self.env.get('downloads_page', 
+        downloads_page = self.env.get("downloads_page", 
             "https://community.pharos.com/s/article/Macintosh-Updates-For-Uniprint")
-        prefix_dl_url = self.env.get('prefix_dl_url', 
+        prefix_dl_url = self.env.get("prefix_dl_url", 
             "https://pharos.com/support/downloads/mac/Mac OS X Popup")
         prefix_dl_url = re.sub(r"\s", "%20", prefix_dl_url)
         web_driver = self.env.get("web_driver", "Chrome")
         web_driver_path = self.env.get("web_driver_path")
+        web_driver_binary_location = self.env.get("web_driver_binary_location")
 
-        self.output("Using Web Driver:  {}".format(web_driver), verbose_level=1)
-        self.output("downloads_page:  {}".format(downloads_page), verbose_level=1)
+        # self.output(f"downloads_page:  {downloads_page}", verbose_level=3)
+        # self.output(f"prefix_dl_url:  {prefix_dl_url}", verbose_level=3)
 
-        if web_driver_path:
-            self.output("Path to Web Driver Engine:  {}".format(web_driver_path), verbose_level=2)
-        else:
-            self.output("The Web Driver Engine is assumed to be in the $PATH.", verbose_level=2)
-
-        with self.WebDriver(web_driver, web_driver_path) as web_engine:
+        with WebEngine(
+            web_driver, web_driver_binary_location, path=web_driver_path,) as web_engine:
 
             try:
                 web_engine.get(downloads_page)
@@ -148,18 +117,17 @@ class PharosProcessor(Processor):
                 download_links = web_engine.find_elements_by_link_text("Download")
             except:
                 raise ProcessorError("Failed to find and open the operating "
-                    "system section labled \"Mac OS X\".")
+                    "system section labeled \"Mac OS X\".")
 
             try:
                 for link in download_links:
                     if re.match(prefix_dl_url, link.get_attribute("href")):
                         download_url = link.get_attribute("href")
-                        version = re.match(r".+(\d+\.\d+\.\d+).+", download_url).group(1)
+                        version = re.match(r".+(\d+\.\d+\.\d+).+", download_url)[1]
 
             except:
                 raise ProcessorError(
                     "Failed to find and collect the download url from the download link.")
-
 
         if not download_url:
             raise ProcessorError("Failed to find a matching download type for the provided model.")
@@ -168,9 +136,9 @@ class PharosProcessor(Processor):
             raise ProcessorError("Failed to identify the version of the download.")
 
         self.env["url"] = download_url
-        self.output("Download URL: {}".format(self.env["url"]), verbose_level=1)
+        self.output(f"Download URL: {self.env['url']}", verbose_level=1)
         self.env["version"] = version
-        self.output("Version: {}".format(self.env["version"]), verbose_level=1)
+        self.output(f"Version: {self.env['version']}", verbose_level=1)
 
 
 if __name__ == "__main__":

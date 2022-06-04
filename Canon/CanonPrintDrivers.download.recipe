@@ -30,7 +30,9 @@ The download recipe requires the Selenium Library (https://www.selenium.dev/docu
 			<key>WEB_DRIVER</key>
 			<string>Chrome</string>
 			<key>WEB_DRIVER_PATH</key>
-			<string>/path/to/chromedriver</string>
+			<string></string>
+			<key>WEB_DRIVER_BINARY_LOCATION</key>
+			<string>/Applications/Chromium.app/Contents/MacOS/Chromium</string>
 		</dict>
 		<key>Process</key>
 		<array>
@@ -64,6 +66,8 @@ The download recipe requires the Selenium Library (https://www.selenium.dev/docu
 					<string>%WEB_DRIVER%</string>
 					<key>web_driver_path</key>
 					<string>%WEB_DRIVER_PATH%</string>
+					<key>web_driver_binary_location</key>
+					<string>%WEB_DRIVER_BINARY_LOCATION%</string>
 				</dict>
 			</dict>
 			<dict>

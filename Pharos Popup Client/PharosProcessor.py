@@ -24,12 +24,12 @@ if not os.path.exists("/Library/AutoPkg/Selenium"):
     raise ProcessorError("Selenium is required for this recipe!  "
         "Please review my Shared Processors README.")
 
-sys.path.insert(0, f"{os.path.dirname(os.path.dirname(os.path.abspath(__file__)))}/Shared Processors")
-from SeleniumWebScrapper import WebEngine
-
 sys.path.insert(0, "/Library/AutoPkg/Selenium")
 from selenium.webdriver.support.ui import WebDriverWait
 # from selenium.webdriver.support.expected_conditions import presence_of_element_located
+
+sys.path.insert(0, f"{os.path.dirname(os.path.dirname(os.path.abspath(__file__)))}/Shared Processors")
+from SeleniumWebScrapper import WebEngine
 
 
 __all__ = ["PharosProcessor"]
@@ -103,7 +103,7 @@ class PharosProcessor(Processor):
         # self.output(f"prefix_dl_url:  {prefix_dl_url}", verbose_level=3)
 
         with WebEngine(
-            web_driver, web_driver_binary_location, path=web_driver_path,) as web_engine:
+            engine=web_driver, binary=web_driver_binary_location, path=web_driver_path, parent=self) as web_engine:
 
             try:
                 web_engine.get(downloads_page)

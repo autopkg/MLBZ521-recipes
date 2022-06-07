@@ -26,7 +26,6 @@ if not os.path.exists("/Library/AutoPkg/Selenium"):
 sys.path.insert(0, "/Library/AutoPkg/Selenium")
 
 from selenium import webdriver
-from selenium.webdriver.support.ui import WebDriverWait
 
 
 __all__ = ["SeleniumWebScrapper"]
@@ -65,22 +64,22 @@ class WebEngine(Processor):
     description = __doc__
 
 
-    def __init__(self, engine, binary, path=None):
+    def __init__(self, engine, binary, parent=None, path=None):
         self.binary = binary
         self.engine = engine
         self.path = path
-
+        self.parent = parent
 
     def __enter__(self):
         """Creates a Web Engine instance to interact with."""
 
-        self.output(f"Using Web Driver:  {self.engine}", verbose_level=3)
-        self.output(f"Web Driver Binary Location:  {self.binary}", verbose_level=3)
+        self.parent.output(f"Using Web Driver:  {self.engine}", verbose_level=3)
+        self.parent.output(f"Web Driver Binary Location:  {self.binary}", verbose_level=3)
 
         if self.path:
-            self.output(f"Path to Web Driver Engine:  {self.path}", verbose_level=3)
+            self.parent.output(f"Path to Web Driver Engine:  {self.path}", verbose_level=3)
         else:
-            self.output("The Web Driver Engine is assumed to be in the $PATH.", verbose_level=3)
+            self.parent.output("The Web Driver Engine is assumed to be in the $PATH.", verbose_level=3)
 
         try:
 
@@ -112,5 +111,5 @@ class WebEngine(Processor):
 
 
 if __name__ == "__main__":
-    processor = WebEngine()
+    processor = WebEngine.main()
     processor.execute_shell()

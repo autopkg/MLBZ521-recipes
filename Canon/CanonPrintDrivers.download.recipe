@@ -7,7 +7,8 @@
 
 model example:  'imageRUNNER ADVANCE C7565i III'
 OS version options:  
-	- macOS Big Sur v11.0:  MACOS_11_0 (default)
+	- macOS Monterey v12.0:  MACOS_12 (default)
+	- macOS Big Sur v11.0:  MACOS_11
 	- macOS Catalina v10.15:  MACOS_10_15
 	- macOS Mojave v10.14:  MACOS_10_14
 	- macOS High Sierra v10.13:  MACOS_10_13
@@ -26,7 +27,7 @@ The download recipe requires the Selenium Library (https://www.selenium.dev/docu
 			<key>MODEL</key>
 			<string>imageRUNNER ADVANCE C7565i III</string>
 			<key>OS_VERSION</key>
-			<string>MACOS_11_0</string>
+			<string>MACOS_12</string>
 			<key>WEB_DRIVER</key>
 			<string>Chrome</string>
 			<key>WEB_DRIVER_PATH</key>
@@ -83,7 +84,7 @@ The download recipe requires the Selenium Library (https://www.selenium.dev/docu
 			</dict>
 			<dict>
 				<key>Processor</key>
-				<string>Unarchiver</string>
+				<string>com.github.mlbz521.SharedProcessors/ConditionalUnarchiver</string>
 				<key>Arguments</key>
 				<dict>
 					<key>archive_path</key>
@@ -92,15 +93,8 @@ The download recipe requires the Selenium Library (https://www.selenium.dev/docu
 					<string>%RECIPE_CACHE_DIR%/unpack</string>
 					<key>purge_destination</key>
 					<true />
-				</dict>
-			</dict>
-			<dict>
-				<key>Processor</key>
-				<string>FileFinder</string>
-				<key>Arguments</key>
-				<dict>
-					<key>pattern</key>
-					<string>%RECIPE_CACHE_DIR%/unpack/*.dmg</string>
+					<key>find_extracted_file_pattern</key>
+					<string>*.dmg</string>
 				</dict>
 			</dict>
 			<dict>
@@ -127,16 +121,20 @@ The download recipe requires the Selenium Library (https://www.selenium.dev/docu
 			</dict>
 			<dict>
 				<key>Processor</key>
-				<string>com.github.mlbz521.SharedProcessors/XPathParser</string>
+				<string>com.github.mlbz521.SharedProcessors/XPathParserRegEx</string>
 				<key>Arguments</key>
 				<dict>
 					<key>xml_file</key>
 					<string>%extracted_file%</string>
-					<key>xpath</key>
-					<string>.//product[@id="jp.co.canon.CUPSPrinter.pkg"]</string>
-					<key>attribute_one</key>
+					<key>xpath_element</key>
+					<string>product</string>
+					<key>xpath_attribute_to_match</key>
+					<string>id</string>
+					<key>xpath_value_of_attribute_to_match</key>
+					<string>jp.co.canon.CUPS(MF)?Printer.pkg</string>
+					<key>attribute_id_to_return</key>
 					<string>version</string>
-					<key>return_variable_attribute_one</key>
+					<key>variable_to_assign_attribute_value</key>
 					<string>version</string>
 				</dict>
 			</dict>

@@ -17,13 +17,11 @@ Used in:
 This processor finds the download URL for the "Recommended Driver" package based on the override-able parameters.
 
 Notables:
+  * This Processor inherits from the SeleniumWebScrapper Processor
   * The processor has only been tested against Canon's "imageRUNNER ADVANCE" product line at this time.  Additional adjustments may be needed for other product lines
+    * I've made adjustments that _should_ support "Color imageCLASS" at this time
   * This processor technically can support Linux, macOS, _and_ Windows
-  * Requires the [Selenium Library](https://www.selenium.dev/documentation/) and a browser driver to be supplied along with the browser application itself
-    * Only support for the ChromeDriver has been added at this time, but support for others can be added with minimal effort
-      * Available browser drivers can be found [here](https://www.selenium.dev/downloads/#:~:text=Browsers)
-    * To install Selenium in the expected location for this processor, run:
-      * `sudo pip3 install --target=/Library/AutoPkg/Selenium selenium`
+  * See the requirements for the SeleniumWebScrapper Processor
 
 Input Variables:
   * model:
@@ -33,9 +31,10 @@ Input Variables:
   * os_version
     * description:  The OS version to search against
     * required:  False
-    * default:  'MACOS_11_0' (i.e. Big Sur)
+    * default:  'MACOS_12' (i.e. Monterey)
     * options:  
-      * macOS Big Sur v11.0:  MACOS_11_0
+      * macOS Monterey v12.0:  MACOS_12
+      * macOS Big Sur v11.0:  MACOS_11
       * macOS Catalina v10.15:  MACOS_10_15
       * macOS Mojave v10.14:  MACOS_10_14
       * macOS High Sierra v10.13:  MACOS_10_13
@@ -105,6 +104,18 @@ Supply a path to a plist file, which can point to a path inside a .dmg which wil
 Used in:
   * com.github.mlbz521.pkg.RealVNCViewer
   * com.github.mlbz521.pkg.VOSviewer
+
+
+## ConditionalUnarchiver ##
+
+This process provides a condition wrapper around the Core Unarchiver Processor.
+
+If extraction is needed, it uses Unarchiver to do and then (optionally) uses the FileFinder Processor to locate an extracted file.
+
+If extraction is not needed, the processor simply assigns the %pathname% env variable to the %found_filename% env variable.
+
+Used in:
+  * com.github.mlbz521.download.CanonPrintDriver
 
 
 ## ExtractWith7z ##
@@ -289,24 +300,24 @@ Used in:
 This processor finds the download URL for the latest Driver package based on the override-able parameters.
 
 Notables:
+  * This Processor inherits from the SeleniumWebScrapper Processor
   * The processor has only been tested against a few different printer models so far.  Additional adjustments may be needed for other models
   * This processor could be tweaked to support Linux, macOS, _and_ Windows (didn't spend the time on this yet)
-  * Requires the [Selenium Library](https://www.selenium.dev/documentation/) and a browser driver to be supplied along with the browser application itself
-    * Only support for the ChromeDriver has been added at this time, but support for others can be added with minimal effort
-      * Available browser drivers can be found [here](https://www.selenium.dev/downloads/#:~:text=Browsers)
-    * To install Selenium in the expected location for this processor, run:
-      * `sudo pip3 install --target=/Library/AutoPkg/Selenium selenium`
+  * See the requirements for the SeleniumWebScrapper Processor
 
 Input Variables:
   * model:
     * description:  The official model name of the Ricoh Printer to search for
     * required:  True
-    * example:  'Aficio SP C830DN'
+    * example:  'SP C830DN'
   * os_version
     * description:  The OS version to search against
     * required:  False
-    * default:  'MACOS_11_0' (i.e. Big Sur)
-    * options:  
+    * default:  'latest'
+    * options:
+      * latest
+        * Setting the OS_VERSION key to latest will default to the latest version of macOS **supported by the Processor**
+      * Monterey
       * Big Sur
       * Catalina
       * Mojave
@@ -323,6 +334,22 @@ Input Variables:
 
 Used in:
   * com.github.mlbz521.download.RicohPrintDriver
+
+
+## SeleniumWebScrapper ##
+
+Creates a Context Manager for Selenium to interact with a WebDriver Engine.  Not intended for direct use.
+
+Notables:
+  * Requires the [Selenium Library](https://www.selenium.dev/documentation/) and a browser driver to be supplied along with the browser application itself
+    * Only support for the ChromeDriver has been added at this time, but support for others can be added with minimal effort
+      * Available browser drivers can be found [here](https://www.selenium.dev/downloads/#:~:text=Browsers)
+    * To install Selenium in the expected location for this processor, run:
+      * `sudo pip3 install --target=/Library/AutoPkg/Selenium selenium`
+
+Used in:
+  * RicohPrintDriverProcessor
+  * CanonPrintDriverProcessor
 
 
 ## StringRightSplitter ##
@@ -395,3 +422,11 @@ Used in:
   * com.github.mlbz521.pkg.iManageWork
   * com.github.mlbz521.pkg.RicohPrintDriver
   * com.github.mlbz521.pkg.XcodeCLITools
+
+
+## XPathParserRegEx ##
+
+Parses a XML file to pull the desired info using XPath and provides a method to support parsing element attributes via RegEx.
+
+Used in:
+  * com.github.mlbz521.download.CanonPrintDriver

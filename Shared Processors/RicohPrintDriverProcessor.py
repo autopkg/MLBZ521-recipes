@@ -116,7 +116,7 @@ class RicohPrintDriverProcessor(URLGetter):
 
         # Define variables
         model = self.env.get('model')
-        os_version = self.env.get("os_version", "Big Sur")
+        os_version = self.env.get("os_version", "latest")
         web_driver = self.env.get("web_driver", "Chrome")
         web_driver_path = self.env.get("web_driver_path")
         web_driver_binary_location = self.env.get("web_driver_binary_location")
@@ -127,7 +127,9 @@ class RicohPrintDriverProcessor(URLGetter):
 
         self.output(f'Searching for printer model:  {model}')
 
-        if os_version == "Big Sur":
+        if os_version in ["Monterey", "latest", "", None]:
+            os_version_keycode="121887"
+        elif os_version == "Big Sur":
             os_version_keycode="120905"
         elif os_version == "Catalina":
             os_version_keycode="119803"

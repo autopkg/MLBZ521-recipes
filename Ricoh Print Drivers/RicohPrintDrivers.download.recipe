@@ -7,6 +7,9 @@
 
 model example:  'SP C830DN'
 OS version options:  
+	- latest
+		- Setting the OS_VERSION key to latest will default to the latest version of macOS *supported by the Processor*
+	- Monterey
 	- Big Sur
 	- Catalina
 	- Mojave
@@ -25,7 +28,7 @@ The download recipe requires the Selenium Library (https://www.selenium.dev/docu
 			<key>MODEL</key>
 			<string>SP C830DN</string>
 			<key>OS_VERSION</key>
-			<string>Big Sur</string>
+			<string>latest</string>
 			<key>WEB_DRIVER</key>
 			<string>Chrome</string>
 			<key>WEB_DRIVER_PATH</key>

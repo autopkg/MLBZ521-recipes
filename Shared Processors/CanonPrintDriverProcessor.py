@@ -129,7 +129,7 @@ class CanonPrintDriverProcessor(URLGetter):
         url_products_list = self.env.get("url_products_list")
         # support_url = self.env.get(
             # "support_url", "https://www.usa.canon.com/internet/portal/us/home/support")
-        os_version = self.env.get("os_version", "MACOS_11_0")
+        os_version = self.env.get("os_version", "MACOS_12")
         web_driver = self.env.get("web_driver", "Chrome")
         web_driver_path = self.env.get("web_driver_path")
         web_driver_binary_location = self.env.get("web_driver_binary_location")

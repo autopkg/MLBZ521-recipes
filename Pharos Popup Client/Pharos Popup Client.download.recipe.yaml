@@ -7,7 +7,7 @@ Input:
   DOWNLOAD_PAGE: https://community.pharos.com/s/article/Macintosh-Updates-For-Uniprint
   DOWNLOAD_URL_PREFIX: https://pharos.com/support/downloads/mac/Mac OS X Popup
   WEB_DRIVER: Chrome
-  WEB_DRIVER_PATH: null # /path/to/chromedriver
+  WEB_DRIVER_PATH: /Library/AutoPkg/chromedriver
   WEB_DRIVER_BINARY_LOCATION: /Applications/Chromium.app/Contents/MacOS/Chromium
   EXTRACTED_FOLDER_NAME: Mac OS X Popups
 

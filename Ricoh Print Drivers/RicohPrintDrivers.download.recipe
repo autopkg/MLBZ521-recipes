@@ -32,7 +32,7 @@ The download recipe requires the Selenium Library (https://www.selenium.dev/docu
 			<key>WEB_DRIVER</key>
 			<string>Chrome</string>
 			<key>WEB_DRIVER_PATH</key>
-			<string></string>
+			<string>/Library/AutoPkg/chromedriver</string>
 			<key>WEB_DRIVER_BINARY_LOCATION</key>
 			<string>/Applications/Chromium.app/Contents/MacOS/Chromium</string>
 		</dict>

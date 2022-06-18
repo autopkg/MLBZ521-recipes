@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/local/autopkg/python
 #
 # XPathParserRegEx.py Copyright 2022 by Zack Thompson (MLBZ521)
 #
@@ -93,8 +93,8 @@ class XPathParserRegEx(Processor):
                 if re.match(rf"{xpath_value_of_attribute_to_match}", element.attrib[f"{xpath_attribute_to_match}"])
             ][0]
 
-        except ElementTree.ParseError as err:
-                raise ProcessorError(f"Failed to parse the xml file {xml_file}: {err.strerror}") from err
+        except Exception as error:
+            raise ProcessorError(f"Failed to parse the xml file {xml_file}") from error
 
         if not value:
             raise ProcessorError(f"Unable to determine a value for:  {attribute_id_to_return}")

@@ -285,8 +285,8 @@ class CanonPrintDriverProcessor(URLGetter):
                         for link in links
                         if re.match(
                             fr"^{download_type}.+",
-                            os.path.basename(link.get_attribute("href"),
-                            re.IGNORECASE)
+                            os.path.basename(link.get_attribute("href")),
+                            re.IGNORECASE
                         )
                     ]
 
@@ -301,7 +301,7 @@ class CanonPrintDriverProcessor(URLGetter):
                     for url in download_version_urls:
                         download_version_urls_dict[parse_version(os.path.basename(url))] = url
 
-                    download_url = download_version_urls.get(max(download_version_urls.keys()))
+                    download_url = download_version_urls_dict.get(max(download_version_urls_dict.keys()))
 
                 except:
                     raise ProcessorError("Failed to identify the the latest version to download.")

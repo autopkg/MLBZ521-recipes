@@ -34,6 +34,8 @@ The download recipe requires the Selenium Library (https://www.selenium.dev/docu
 			<string>/Library/AutoPkg/chromedriver</string>
 			<key>WEB_DRIVER_BINARY_LOCATION</key>
 			<string>/Applications/Chromium.app/Contents/MacOS/Chromium</string>
+			<key>XPATH_PARSER_STRING</key>
+			<string>jp.co.canon.CUPS(MF)?Printer.pkg</string>
 		</dict>
 		<key>Process</key>
 		<array>
@@ -131,7 +133,7 @@ The download recipe requires the Selenium Library (https://www.selenium.dev/docu
 					<key>xpath_attribute_to_match</key>
 					<string>id</string>
 					<key>xpath_value_of_attribute_to_match</key>
-					<string>jp.co.canon.CUPS(MF)?Printer.pkg</string>
+					<string>%XPATH_PARSER_STRING%</string>
 					<key>attribute_id_to_return</key>
 					<string>version</string>
 					<key>variable_to_assign_attribute_value</key>

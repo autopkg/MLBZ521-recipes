@@ -1,6 +1,6 @@
-#!/usr/bin/env python
+#!/usr/local/autopkg/python
 #
-# Copyright 2022 Zack Thompson (mlbz521)
+# Copyright 2022 Zack Thompson (MLBZ521)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -87,6 +87,9 @@ class WebEngine(Processor):
 
                 options = webdriver.ChromeOptions()
                 options.add_argument("headless")
+                options.add_argument("window-size=1920,1080")
+                options.add_argument("start-maximized")
+                options.add_argument("user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102 Safari/537.36")
                 options.binary_location = self.binary
 
                 if self.path:
@@ -111,5 +114,5 @@ class WebEngine(Processor):
 
 
 if __name__ == "__main__":
-    processor = WebEngine.main()
+    processor = WebEngine()
     processor.execute_shell()

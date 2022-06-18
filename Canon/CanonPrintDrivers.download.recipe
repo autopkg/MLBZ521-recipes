@@ -3,19 +3,28 @@
 <plist version="1.0">
 	<dict>
 		<key>Description</key>
-		<string>Downloads the latest Canon "Recommended Driver" package based on the override-able parameters:  model and OS Version.
+		<string>Downloads the latest Canon driver package based on the override-able parameters:  model, OS Version, and download type.
 
-model example:  'imageRUNNER ADVANCE C7565i III'
-OS version options:  
+MODEL:
+	- example:  'imageRUNNER ADVANCE C7565i III'
+OS_VERSION options:  
 	- macOS Monterey v12.0:  MACOS_12 (default)
 	- macOS Big Sur v11.0:  MACOS_11
 	- macOS Catalina v10.15:  MACOS_10_15
 	- macOS Mojave v10.14:  MACOS_10_14
 	- macOS High Sierra v10.13:  MACOS_10_13
 	- (older OS Versions, including Windows and Linux should be supported by the processor as well, see my Shared Processors README)
+DOWNLOAD_TYPE options:
+	- Recommended will download whatever option is in the "Recommended Driver(s)" section
+		Note:  The "Recommended" driver may not be the *_latest_* driver
+	- UFRII will download the latest UFRII optional driver
+	- PS will download the latest PS optional driver
+	- FAX will download the latest FAX optional driver
+	- PPD will download the latest PPD optional driver
+		Note:  The `com.github.mlbz521.pkg.CanonPrintDriver` recipe does not support the PPD file type
 
-The download recipe requires the Selenium Library (https://www.selenium.dev/documentation/) and a browser driver to be supplied.  See the CanonPrintDriverProcessor section (https://github.com/autopkg/MLBZ521-recipes/blob/master/Shared%20Processors/ReadMe.md#canonprintdriverprocessor) in my Shared Processors README for more info.
-		</string>
+The download recipe requires the Selenium Library (https://www.selenium.dev/documentation/) and a browser driver to be supplied.
+See the CanonPrintDriverProcessor section (https://github.com/autopkg/MLBZ521-recipes/blob/master/Shared%20Processors/ReadMe.md#canonprintdriverprocessor) in my Shared Processors README for more info.</string>
 		<key>Identifier</key>
 		<string>com.github.mlbz521.download.CanonPrintDriver</string>
 		<key>Input</key>
@@ -35,7 +44,9 @@ The download recipe requires the Selenium Library (https://www.selenium.dev/docu
 			<key>WEB_DRIVER_BINARY_LOCATION</key>
 			<string>/Applications/Chromium.app/Contents/MacOS/Chromium</string>
 			<key>XPATH_PARSER_STRING</key>
-			<string>jp.co.canon.CUPS(MF)?Printer.pkg</string>
+			<string>jp.co.canon.CUPS(MF|PS|FAX\.)?(Printer|Installer).pkg</string>
+			<key>DOWNLOAD_TYPE</key>
+			<string>Recommended</string>
 		</dict>
 		<key>Process</key>
 		<array>
@@ -71,6 +82,8 @@ The download recipe requires the Selenium Library (https://www.selenium.dev/docu
 					<string>%WEB_DRIVER_PATH%</string>
 					<key>web_driver_binary_location</key>
 					<string>%WEB_DRIVER_BINARY_LOCATION%</string>
+					<key>download_type</key>
+					<string>%DOWNLOAD_TYPE%</string>
 				</dict>
 			</dict>
 			<dict>

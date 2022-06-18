@@ -1,6 +1,6 @@
-#!/usr/bin/env python
+#!/usr/local/autopkg/python
 #
-# Copyright 2022 Zack Thompson (mlbz521)
+# Copyright 2022 Zack Thompson (MLBZ521)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,15 +14,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from __future__ import absolute_import, print_function
-
 import json
 import os
+import re
 import sys
 import time
 
-from autopkglib import ProcessorError, URLGetter
+from pkg_resources import parse_version
 
+from autopkglib import ProcessorError, URLGetter
 
 if not os.path.exists("/Library/AutoPkg/Selenium"):
     raise ProcessorError("Selenium is required for this recipe!  "
@@ -31,6 +31,9 @@ if not os.path.exists("/Library/AutoPkg/Selenium"):
 sys.path.insert(0, "/Library/AutoPkg/Selenium")
 from selenium.webdriver.support.ui import Select, WebDriverWait
 from selenium.webdriver.support.expected_conditions import presence_of_element_located
+# from selenium.webdriver.support import expected_conditions as EC
+# from selenium.webdriver.common.by import By
+# from selenium.webdriver import ActionChains
 
 sys.path.insert(0, f"{os.path.dirname(os.path.dirname(os.path.abspath(__file__)))}/Shared Processors")
 from SeleniumWebScrapper import WebEngine
@@ -42,6 +45,8 @@ __all__ = ["CanonPrintDriverProcessor"]
 class CanonPrintDriverProcessor(URLGetter):
     """This processor finds the download URL for the "recommended" Canon print driver.
     """
+
+    description = __doc__
 
     input_variables = {
         # "support_url": {
@@ -61,8 +66,9 @@ class CanonPrintDriverProcessor(URLGetter):
             "required": False,
             "description": (
                 "The OS version to search against.",
-                "Default:  'MACOS_11_0' (i.e. Big Sur)"
-            )
+                "Default:  'MACOS_12' (i.e. Monterey)",
+            ),
+            "default": "MACOS_12"
         },
         "web_driver": {
             "required": False,
@@ -70,7 +76,8 @@ class CanonPrintDriverProcessor(URLGetter):
                 "The web driver engine to use.  Only Chrome is supported at this time, "
                 "but support for additional web drivers can be added.",
                 "Default:  Chrome"
-            )
+            ),
+            "default": "Chrome"
         },
         "web_driver_path": {
             "required": False,
@@ -84,7 +91,23 @@ class CanonPrintDriverProcessor(URLGetter):
             "description": (
                 "The path to the browser's binary.  Defaults to using Chromium.",
                 "Default:  /Applications/Chromium.app/Contents/MacOS/Chromium"
-            )
+            ),
+            "default": "/Applications/Chromium.app/Contents/MacOS/Chromium"
+        },
+        "download_type": {
+            "required": False,
+            "description": (
+                "What to download from the available list. For example:",
+                "   - \"Recommended\" will download whatever option is in the "
+                "       \"Recommended Driver(s)\" section.",
+                "       Note:  The \"Recommended\" driver may not be the *_latest_* driver.",
+                "   - \"UFRII\" will download the latest UFRII optional driver",
+                "   - \"PS\" will download the latest PS optional driver",
+                "   - \"FAX\" will download the latest FAX optional driver",
+                "   - \"PPD\" will download the latest PPD optional driver",
+                "Default:  Recommended"
+            ),
+            "default": "Recommended"
         }
     }
     output_variables = {
@@ -92,8 +115,6 @@ class CanonPrintDriverProcessor(URLGetter):
             "description": "Returns the url to download."
         }
     }
-
-    description = __doc__
 
 
     def canon_product_parse(self, node, model):
@@ -118,7 +139,7 @@ class CanonPrintDriverProcessor(URLGetter):
                     self.canon_product_parse(printer, model)
 
             elif item == model:
-                self.link = node.get("spdplinks")
+                self.model_url = node.get("spdplinks")
 
 
     def main(self):
@@ -133,6 +154,7 @@ class CanonPrintDriverProcessor(URLGetter):
         web_driver = self.env.get("web_driver", "Chrome")
         web_driver_path = self.env.get("web_driver_path")
         web_driver_binary_location = self.env.get("web_driver_binary_location")
+        download_type = self.env.get("download_type", "Recommended")
         recipe_cache_dir = self.env.get("RECIPE_CACHE_DIR")
         json_product_list = f"{recipe_cache_dir}/product_list.json"
 
@@ -166,16 +188,17 @@ class CanonPrintDriverProcessor(URLGetter):
                 json_data = json.load(json_product_list_file)
 
             self.canon_product_parse(json_data, model)
-            self.output(f"Model downloads page:  {self.link}", verbose_level=2)
+            self.output(f"Model downloads page:  {self.model_url}", verbose_level=2)
 
         except:
             raise ProcessorError("Failed to find a model url in the results!")
 
-        with WebEngine(
-            engine=web_driver, binary=web_driver_binary_location, path=web_driver_path, parent=self) as web_engine:
+        with WebEngine(engine=web_driver, binary=web_driver_binary_location, 
+            path=web_driver_path, parent=self
+        ) as web_engine:
 
             try:
-                web_engine.get(self.link)
+                web_engine.get(self.model_url)
 
             except:
                 raise ProcessorError("Failed to access the model page.")
@@ -203,37 +226,93 @@ class CanonPrintDriverProcessor(URLGetter):
             except:
                 raise ProcessorError("Failed to select the desired OS Version")
 
-            try:
-                # Find the "Recommended Driver(s)" section
-                drivers_section = web_engine.find_element_by_id("DataTables_Table_2")
+            if re.match(download_type, "Recommended", re.IGNORECASE):
 
-            except:
-                raise ProcessorError("Failed to find the \"Recommended Driver(s)\" section.")
+                try:
+                    # Find the "Recommended Driver(s)" section
+                    drivers_section = web_engine.find_element_by_id("DataTables_Table_2")
 
-            try:
-                # Click the "SELECT" button so the download link becomes visible
-                drivers_section.find_element_by_xpath("//*/tbody/tr/td[*]/button").click()
+                except:
+                    raise ProcessorError("Failed to find the \"Recommended Driver(s)\" section.")
 
-            except:
-                raise ProcessorError(
-                    "Failed to find and click the SELECT button for the recommended driver.")
+                try:
+                    # Click the "SELECT" button so the download link becomes visible
+                    drivers_section.find_element_by_xpath("//*/tbody/tr/td[*]/button").click()
 
-            try:
-                # Get the hyperlink for the driver download file
-                download_url = drivers_section.find_element_by_xpath(
-                    "//*/tbody/tr[*]/td/table/tbody/tr[*]/td[*]/div/div/a").get_attribute("href"
-                )
+                except:
+                    raise ProcessorError(
+                        "Failed to find and click the SELECT button for the recommended driver.")
 
-            except:
-                raise ProcessorError(
-                    "Failed to find and collect the download url from the download button.")
+                try:
+                    # Get the hyperlink for the driver download file
+                    download_url = drivers_section.find_element_by_xpath(
+                        "//*/tbody/tr[*]/td/table/tbody/tr[*]/td[*]/div/div/a").get_attribute("href")
 
-        if not download_url:
-            raise ProcessorError("Failed to find a matching download type for the provided model.")
+                except:
+                    raise ProcessorError(
+                        "Failed to find and collect the download url from the download button.")
 
-        # Return results
-        self.env["url"] = download_url
-        self.output(f'Download URL: {self.env["url"]}', verbose_level=1)
+            else:
+
+                try:
+                    # Find all the "SELECT" buttons
+                    buttons = web_engine.find_elements_by_xpath(
+                        "//*/button[@class='cbtn-canon-red-o cbtn pull-right'][text()='Select']")
+
+                except:
+                    raise ProcessorError("Failed to find any \"SELECT\" buttons.")
+
+                try:
+                    # Click the "SELECT" buttons so all of the download links become visible
+                    for button in buttons:
+                        # WebDriverWait(web_engine, timeout=10).until(
+                        #     EC.element_to_be_clickable((By.ID, button.id))
+                        # )
+                        # ActionChains(web_engine).click(button).perform() # Works, but slower
+                        button.click()
+
+                except Exception:
+                    # Do not care about errors here
+                    pass
+
+                try:
+                    # Find all the DOWNLOAD Buttons
+                    links = web_engine.find_elements_by_partial_link_text("DOWNLOAD")
+
+                    # Collect all the download links that match the download type
+                    download_version_urls = [
+                        link.get_attribute("href")
+                        for link in links
+                        if re.match(
+                            fr"^{download_type}.+",
+                            os.path.basename(link.get_attribute("href"),
+                            re.IGNORECASE)
+                        )
+                    ]
+
+                except:
+                    raise ProcessorError("Failed to identify any \"DOWNLOAD\" buttons.")
+
+                try:
+                    # Parse the links by versioning information, build a dictionary of the 
+                    # versions, and determine the latest
+                    download_version_urls_dict = {}
+
+                    for url in download_version_urls:
+                        download_version_urls_dict[parse_version(os.path.basename(url))] = url
+
+                    download_url = download_version_urls.get(max(download_version_urls.keys()))
+
+                except:
+                    raise ProcessorError("Failed to identify the the latest version to download.")
+
+        try:
+            # Return results
+            self.env["url"] = download_url
+            self.output(f'Download URL: {self.env["url"]}', verbose_level=1)
+
+        except:
+            raise ProcessorError("Failed to find a download url for the provided model.")
 
 
 if __name__ == "__main__":

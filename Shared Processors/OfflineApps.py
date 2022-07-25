@@ -365,7 +365,11 @@ class OfflineApps(URLDownloader):
                 raise ProcessorError("Was not able to match a version!")
 
             self.env["found_major_version"] = (self.env["version"]).split(".", 1)[0]
-            version_folder = (version_location).split("/")[-1]
+            version_folder = " ".join(
+                filter(None, 
+                    [contains_search_string, must_contain_limitation_string, self.env["version"]]
+                )
+            )
 
             self.output("Found major version:  {}".format(
                 self.env["found_major_version"]), verbose_level=2)

@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/local/autopkg/python
 #
 # Copyright 2022 Zack Thompson (MLBZ521)
 #
@@ -20,9 +20,9 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
 """See docstring for OfflineApps class"""
 
-from __future__ import absolute_import
 
 import os
 import sys
@@ -45,6 +45,7 @@ class OfflineApps(URLDownloader):
     methods.
     """
 
+    description = __doc__
     input_variables = {
         "search_path": {
             "description": "Root path to search within.",
@@ -157,8 +158,6 @@ class OfflineApps(URLDownloader):
         }
     }
 
-    description = __doc__
-
 
     def mount_via_jssimporter(self):
         """Mount a share via JSSImporter"""
@@ -187,8 +186,7 @@ class OfflineApps(URLDownloader):
 
         dirs, nondirs = [], []
 
-        for name in os.listdir(top):
-            (dirs if os.path.isdir(os.path.join(top, name)) else nondirs).append(name)
+        (dirs if os.path.isdir(os.path.join(top, name)) else nondirs).extend(iter(os.listdir(top)))
 
         yield top, dirs, nondirs
 
@@ -223,14 +221,13 @@ class OfflineApps(URLDownloader):
             if excludes and (excludes in item):
                 continue
 
-            # If the item does not contain the secondary 
-            # string it should contain, skip it
+            # If the item does not contain the secondary string it should contain, skip it
             if limitation and (limitation not in item):
                 continue
 
             # Append matching folder to list for future use
             matches.append(item)
-            self.output("Matched:  {}".format(item), verbose_level=2)
+            self.output(f"Matched:  {item}", verbose_level=2)
 
         return matches
 
@@ -275,7 +272,7 @@ class OfflineApps(URLDownloader):
         """
 
         file_name = os.path.basename(file_to_download)
-        destination_path = "{}/{}".format(save_path, file_name)
+        destination_path = f"{save_path}/{file_name}"
 
         if ( 
             os.path.exists(destination_path) and 
@@ -286,13 +283,12 @@ class OfflineApps(URLDownloader):
 
         else:
 
-            self.output("Downloading file:  {}".format(file_name))
-            self.output("Destination:  {}".format(
-                destination_path), verbose_level=2)
+            self.output(f"Downloading file:  {file_name}")
+            self.output(f"Destination:  {destination_path}", verbose_level=2)
 
             # Build the required curl switches
             curl_opts = [
-                "--url", "file://{}".format(file_to_download),
+                "--url", f"file://{file_to_download}",
                 "--request", "GET",
                 "--output", destination_path,
                 "--create-dirs"
@@ -306,7 +302,7 @@ class OfflineApps(URLDownloader):
                 self.env["download_changed"] = True
 
             except:
-                raise ProcessorError("Failed to download:  {}".format(file_to_download))
+                raise ProcessorError(f"Failed to download:  {file_to_download}")
 
 
     def main(self):
@@ -331,8 +327,8 @@ class OfflineApps(URLDownloader):
         # Mount SMB share if passed
         if self.env.get("OFFLINEAPPS_SMB_URL"):
             self.mount_via_jssimporter()
-            search_path = "{}{}".format(self.dp_instance.connection.get("mount_point"), search_path)
-            self.output("Mounted Search Path:  {}".format(search_path), verbose_level=2)
+            search_path = f"{self.dp_instance.connection.get('mount_point')}{search_path}"
+            self.output(f"Mounted Search Path:  {search_path}", verbose_level=2)
 
         try:
 
@@ -371,10 +367,9 @@ class OfflineApps(URLDownloader):
                 )
             )
 
-            self.output("Found major version:  {}".format(
-                self.env["found_major_version"]), verbose_level=2)
-            self.output("Latest version found:  {}".format(self.env["version"]))
-            self.output("Source path:  {}".format(version_location), verbose_level=2)
+            self.output(f"Found major version:  {self.env['found_major_version']}", verbose_level=2)
+            self.output(f"Latest version found:  {self.env['version']}")
+            self.output(f"Source path:  {version_location}", verbose_level=2)
 
             # Set the location where version should be cached
             self.env["cached_path"] = os.path.join(downloads_dir, version_folder)
@@ -382,15 +377,13 @@ class OfflineApps(URLDownloader):
             if os.path.isdir(version_location):
 
                 # Loop over files in version_location and download each one
-                for root_directory, folders, files in self.walk(version_location, int(0)):
+                for root_directory, folders, files in self.walk(version_location, 0):
 
                     for file in files:
 
                         # Download each file
-                        self.download_local_file( 
-                            "{}/{}".format(version_location, file), 
-                            self.env["cached_path"] 
-                        )
+                        self.download_local_file(
+                            f"{version_location}/{file}", self.env["cached_path"])
 
             else:
 

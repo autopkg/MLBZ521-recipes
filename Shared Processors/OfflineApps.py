@@ -361,7 +361,7 @@ class OfflineApps(URLDownloader):
             self.env["version"], version_location = self.get_latest_version(
                 list_of_versions, major_version_like, version_separator)
 
-            if None in { self.env["version"], version_location }:
+            if "" in { self.env["version"], version_location }:
                 raise ProcessorError("Was not able to match a version!")
 
             self.env["found_major_version"] = (self.env["version"]).split(".", 1)[0]

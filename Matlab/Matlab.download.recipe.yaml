@@ -1,0 +1,35 @@
+Description: |
+  Downloads the latest version of Matlab from a local file share.
+
+  This recipe version uses the offline media created with the "MathWorks Installer" described in the guide here:  https://www.mathworks.com/matlabcentral/answers/259632-how-can-i-get-matlab-installation-files-for-use-on-an-offline-machine
+
+  For information on how this recipe works, please see the README in my repo (https://github.com/autopkg/MLBZ521-recipes/blob/master/ReadMe.md).
+Identifier: com.github.mlbz521.download.Matlab
+Input:
+  FILE_SHARE: /path/to/offline/repository
+  MAJOR_VERSION: ""
+  MAX_FOLDER_DEPTH: "1"
+  NAME: Matlab
+  NAME_EXCEPTION: Patch
+  NAME_LIMITATION: ""
+  SEARCH_STRING: Matlab
+  VERSION_STRING_SEPARATOR: "-"
+Process:
+- Arguments:
+    exception_string: "%NAME_EXCEPTION%"
+    limitation_string: "%NAME_LIMITATION%"
+    major_version: "%MAJOR_VERSION%"
+    max_depth: "%MAX_FOLDER_DEPTH%"
+    search_path: "%FILE_SHARE%"
+    search_string: "%SEARCH_STRING%"
+    version_separator: "%VERSION_STRING_SEPARATOR%"
+  Processor: com.github.mlbz521.SharedProcessors/OfflineApps
+- Arguments:
+    pattern: "%cached_path%/*.zip"
+  Processor: FileFinder
+- Arguments:
+    archive_path: "%found_filename%"
+    destination_path: "%RECIPE_CACHE_DIR%/unpack"
+    purge_destination: true
+  Processor: Unarchiver
+- Processor: EndOfCheckPhase

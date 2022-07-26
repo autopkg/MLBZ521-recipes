@@ -1,0 +1,36 @@
+Description: |
+  Downloads the latest version of Matlab from a local file share.
+  
+  This recipe version uses the offline install media (ISO) from Matlab.
+  
+  For information on how this recipe works, please see the README in my repo (https://github.com/autopkg/MLBZ521-recipes/blob/master/ReadMe.md).
+Identifier: com.github.mlbz521.download.Matlab-ISO
+Input:
+  FILE_SHARE: /path/to/offline/repository
+  MAJOR_VERSION: ""
+  MAX_FOLDER_DEPTH: "1"
+  NAME: Matlab
+  NAME_EXCEPTION: Patch
+  NAME_LIMITATION: ""
+  SEARCH_STRING: Matlab
+  VERSION_STRING_SEPARATOR: "-"
+Process:
+- Arguments:
+    exception_string: "%NAME_EXCEPTION%"
+    limitation_string: "%NAME_LIMITATION%"
+    major_version: "%MAJOR_VERSION%"
+    max_depth: "%MAX_FOLDER_DEPTH%"
+    search_path: "%FILE_SHARE%"
+    search_string: "%SEARCH_STRING%"
+    version_separator: "%VERSION_STRING_SEPARATOR%"
+  Processor: com.github.mlbz521.SharedProcessors/OfflineApps
+- Arguments:
+    pattern: "%cached_path%/*.dmg"
+  Processor: FileFinder
+- Arguments:
+    input_path: "%found_filename%/*.app"
+    requirement: identifier "com.mathworks.installer" and anchor apple generic and
+      certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13]
+      /* exists */ and certificate leaf[subject.OU] = "94DN422U8R"
+  Processor: CodeSignatureVerifier
+- Processor: EndOfCheckPhase

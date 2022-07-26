@@ -3,9 +3,14 @@
 <plist version="1.0">
 <dict>
 	<key>Description</key>
-	<string>Downloads the latest verison of Matlab from a local file share.</string>
+	<string>Downloads the latest verison of Matlab from a local file share.
+
+This recipe version uses the offline install media (ISO) from Matlab.
+
+For information on how this recipe works, please see the README in my repo (https://github.com/autopkg/MLBZ521-recipes/blob/master/ReadMe.md).
+	</string>
 	<key>Identifier</key>
-	<string>com.github.mlbz521.download.Matlab</string>
+	<string>com.github.mlbz521.download.Matlab-ISO</string>
 	<key>Input</key>
 	<dict>
 		<key>NAME</key>

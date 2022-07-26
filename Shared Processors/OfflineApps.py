@@ -186,7 +186,8 @@ class OfflineApps(URLDownloader):
 
         dirs, nondirs = [], []
 
-        (dirs if os.path.isdir(os.path.join(top, name)) else nondirs).extend(iter(os.listdir(top)))
+        for name in os.listdir(top):
+            (dirs if os.path.isdir(os.path.join(top, name)) else nondirs).append(name)
 
         yield top, dirs, nondirs
 

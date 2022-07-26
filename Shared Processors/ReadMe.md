@@ -14,12 +14,11 @@ Used in:
 
 ## CanonPrintDriverProcessor ##
 
-This processor finds the download URL for the "Recommended Driver" package based on the override-able parameters.
+Downloads and packages the latest Canon driver package based on the override-able parameters:  model, OS Version, and download type.
 
 Notables:
+  * Processor was originally written to download the UFRII drivers, but has been updated to also download drivers for Canon's Multi-Function Printers as well
   * This Processor inherits from the SeleniumWebScrapper Processor
-  * The processor has only been tested against Canon's "imageRUNNER ADVANCE" product line at this time.  Additional adjustments may be needed for other product lines
-    * I've made adjustments that _should_ support "Color imageCLASS" at this time
   * This processor technically can support Linux, macOS, _and_ Windows
   * See the requirements for the SeleniumWebScrapper Processor
 
@@ -28,6 +27,20 @@ Input Variables:
     * description:  The official model name of the Canon Printer to search for
     * required:  True
     * example:  'imageRUNNER ADVANCE C7565i III'
+  * download_type:
+    * description:  What to download from the available list.  Options:
+  	  * Recommended
+        * Will download _whatever_ option is in the "Recommended Driver(s)" section
+		      * _Note_:  the "Recommended" driver may not be the *_latest_* driver
+      * UFRII
+        * will download the latest UFRII optional driver
+      * PS
+        * will download the latest PS optional driver
+      * FAX
+        * will download the latest FAX optional driver
+      * PPD
+        * will download the latest PPD optional driver
+        * Note:  The `com.github.mlbz521.pkg.CanonPrintDriver` recipe does not support the PPD file type
   * os_version
     * description:  The OS version to search against
     * required:  False
@@ -112,7 +125,7 @@ This process provides a condition wrapper around the Core Unarchiver Processor.
 
 If extraction is needed, it uses Unarchiver to do and then (optionally) uses the FileFinder Processor to locate an extracted file.
 
-If extraction is not needed, the processor simply assigns the %pathname% env variable to the %found_filename% env variable.
+If extraction is not needed, the processor simply assigns the %pathname% env variable to the value of the %found_filename% env variable.
 
 Used in:
   * com.github.mlbz521.download.CanonPrintDriver
@@ -206,9 +219,16 @@ Used in:
 
 ## OfflineApps ##
 
-This processor will allow you to simply drop the vendor provided "package", in the format they provide, into a specifically named folder structure, whether local to the system running autopkg or a remote host that will be mounted, and the processor will be able to determine which version of the content to "download," even if multiple are available, which can then be used in child pkg recipes.  This is for applications that are behind a login or not available via normal internet "acquisitional" methods.
+This was designed for applications that are behind a login or not available via normal internet "acquisitional" methods.
 
-Checks file size before "downloading" files again, uses `cURL` to "download" files, and can mount an SMB share if required.  (Currently the SMB mount logic assumes JSSImporter is installed, if anyone is using this processor and isn't also using JSSImporter, let me know and I can adjust the logic to not use JSSImporter.)  (_Recommended:_) The SMB server input variables values can be set in your autopkg prefs file instead of in every recipe.
+This processor allows you to simply drop the vendor provided "media", in the format they provide, into a specifically named directory and the processor will be able to determine which version of the content to "download," even if multiple versions are available.  
+
+The processor originally expected the vendor content to be organized in sub-directories like `<Software Title>-<version>`, however, this is no longer required and the media can be stored in the root of the specified directory, but the naming convention **must** match or problems will occur.
+
+The specified directory can be local to the AutoPkg runner or on a remote host that will be mounted.  _Before_ "downloading" the processor checks the file size and because it subclasses `URLDownloader`, it uses `cURL` to "download" files.
+  * Currently the SMB mount logic uses the process in JSSImporter
+    * This prerequisite will be removed in the near future
+  * _Recommended:_  The SMB server input variables values can be set in your autopkg prefs file instead of in every recipe
 
 This processor was based on work by:
   * Jesse Peterson
@@ -291,6 +311,7 @@ Used in:
   * com.github.mlbz521.download.Maple
   * com.github.mlbz521.download.Mathematica
   * com.github.mlbz521.download.Matlab
+  * com.github.mlbz521.download.Matlab-ISO
   * com.github.mlbz521.download.MatlabUpdate
   * com.github.mlbz521.download.SPSSStatistics
 
@@ -348,9 +369,9 @@ Notables:
       * `sudo pip3 install --target=/Library/AutoPkg/Selenium selenium`
 
 Used in:
-  * RicohPrintDriverProcessor
   * CanonPrintDriverProcessor
-
+  * PharosProcessor
+  * RicohPrintDriverProcessor
 
 ## StringRightSplitter ##
 

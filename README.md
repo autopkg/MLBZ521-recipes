@@ -328,21 +328,34 @@ Available recipe types:
 
 ### Matlab ###
 
-Recipes for both base and patch installers are available.  Download recipe expects the installer is available in an "offline repository".  Patch download recipe will download the the latest patch from Maple for the supplied major version.
+Recipes for both base and patch installers are available.  Download recipe expects the installer is available in an "offline repository".
 
-I attempted to reverse the build-in update mechanism, however, was not successful in determining how the process works.  So offline recipes will have to be used for now.
+For the Patch recipe, I attempted to reverse the built-in update mechanism, however, have not yet determined how the process works.  So offline recipes will have to be used for now.
 
-I license most software separately in my environment and do not use the built licensePath key.  If you want to use the built-in licensePath Key, you'll want to fork this recipe more than likely.
+I now have _two_ different recipes for the base installer, each depend on which source you use.
+  * ISO Image (aka Offline Media)
+    * This method was the "original" method the recipe used, but it has not worked since 2019b, I'm leaving it here in case MathWorks ever decides to resolve the issue.
+    * I've opened two ticket with MathWorks, back in 2020 and again in 2022, both times they've acknowledge and confirmed the issue, but provided no indication that it will be fixed
+  * Download Only (download only, but do not install)
+    * This recipe version uses the offline media created with the "MathWorks Installer" described in [this guide](https://www.mathworks.com/matlabcentral/answers/259632-how-can-i-get-matlab-installation-files-for-use-on-an-offline-machine).
+    * This is the "new" method that the non-specified recipe will be using
 
-If you want to customize the products that are installed, a copy of an original, albeit old, installer_input.txt is available in the recipe directory.  I've seen people are unable to locate it as it's not included in newer versions even though the documentation points to it.
+I license most software separately in my environment and do not use the installer.input's `licensePath` key.  If you want to use this key, you'll need to fork this recipe and adjust the postinstall script.
+
+If you want to customize the products that are installed, a copy of an original, albeit old, `installer_input.txt` is available in the recipe directory.  I've seen people are unable to locate it as it's not included in newer versions even though the documentation points to it.
 
 Available recipe types:
   * download
-    * will "download" from a offline repository
+    * Will "download" from a offline repository
+    * Two versions
+      * (non-specified)
+      * ISO
   * pkg
-    * `Matlab.pkg`
-      * Variable overrides for:  INSTALL_INPUT
-        * As the name suggests, this the "installer.input" that allows you to customize the install of Matlab.  The available parameters are included in the recipe; customize for your environment.
+    * Variable override for:  INSTALL_INPUT
+      * As the name suggests, this the "installer.input" that allows you to customize the install of Matlab.  The available parameters are included in the sample `installer_input.txt` file; customize for your environment.
+    * Two versions
+      * (non-specified)
+      * ISO
   * jss
 
 
@@ -392,7 +405,7 @@ Available recipe types:
   * jss
 
 
-### Nvivo ###
+### NVivo ###
 
 Parent Recipe:  com.github.jazzace.pkg.NVivo
 
@@ -441,7 +454,7 @@ Available recipe types:
 
 ### QGIS ###
 
-Downloads the latest specified major_version of QGIS.  Requires python.org Python 3.6 to be pre-installed - other distributions (newer or older) are not supported.  This probably isn't the best way to do it, but it's simple and works for now.
+Downloads the latest specified major_version of QGIS.
 
 The other publicly available QGIS recipe was no longer functional when the download location moved.  Also added support for different major versions.
 
@@ -449,9 +462,7 @@ Available recipe types:
   * download
     * Variable overrides for:  QGIS_Major_Version
   * pkg
-    * Python 3.6+ is a prerequisite before installing QGIS 3 -- the created .pkg will hard fail if Python 3.6+ is not installed.
     * The created .pkg will "uninstall" previous versions of QGIS.
-    * The QGIS installer process will also install the necessary Python modules using pip. This requires an internet connection during installation.
   * jss
 
 
@@ -472,11 +483,11 @@ Available recipe types:
 
 Parent Recipe:  com.github.nstrauss.download.RespondusLockDownBrowser
 
-Downloads and packages the latest verison Respondus' LockDown Browser and configures the install package for the Lab Edition.
+Downloads and packages the latest version Respondus' LockDown Browser and configures the install package for the Lab Edition.
 
 The download recipe requires you to set your Institution ID and this recipe requires your Lab Hash.
 
-Because Respondus does silly things by expecting the licencing information in the file name, the pkg recipe performs "package inception" so that the package name visible in Jamf Pro uses a standard naming convention and doesn't contain the licensing information.
+Because Respondus does silly things by expecting the licensing information in the file name, the pkg recipe performs "package inception" so that the package name visible in Jamf Pro uses a standard naming convention and doesn't contain the licensing information.
 
 My pkg recipe differs from nstrauss-recipes's pkg recipe by not installing the LDB on the AutoPkg runner/system and simply performing the above steps to get the desired results (tl/dr:  less steps, similar result).
 
@@ -607,7 +618,7 @@ Available recipe types:
 
 Downloads the latest release of VOSviewer.
 
-Java is *REQUIRED* to open VOSviewer.  Amazon's Corretto JDK is not compatiable in my testing.
+Java is *REQUIRED* to open VOSviewer.  Amazon's Corretto JDK is not compatible in my testing.
 
 Be aware the .app is NOT SIGNED.
 

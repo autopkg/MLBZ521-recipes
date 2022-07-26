@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Description</key>
+	<string>Downloads and packages the latest verison of Matlab from a local file share.
+
+This recipe version uses the offline media created with the "MathWorks Installer" described in the guide here:  https://www.mathworks.com/matlabcentral/answers/259632-how-can-i-get-matlab-installation-files-for-use-on-an-offline-machine
+
+For information on how this recipe works, please see the README in my repo (https://github.com/autopkg/MLBZ521-recipes/blob/master/ReadMe.md).
+
+I license most software separately in my environment and do not use the installer.input's `licensePath` key.  If you want to use this key, you'll need to fork this recipe and adjust the postinstall script.
+
+An override variable is avilable to support the installation of Matlab:
+	* INSTALL_INPUT
+		* As the name suggests, this is the "installer.input" that allows you to customize the install
+			of Matlab.  The available parameters are included; customize for your environment.
+
+If you want to customize the products that are installed, a copy of an original, albeit old, installer_input.txt is available in the recipe directory.  I've seen people are unable to locate it as it's not included in newer ISO downloads even though the documentation points to it.
+	</string>
+	<key>Identifier</key>
+	<string>com.github.mlbz521.pkg.Matlab</string>
+	<key>Input</key>
+	<dict>
+		<key>NAME</key>
+		<string>Matlab</string>
+		<key>INSTALLER_INPUT</key>
+		<string>destinationFolder=/Applications
+fileInstallationKey=
+agreeToLicense=yes
+outputFile=/var/log/matlab_installation.log
+mode=silent
+# automatedModeTimeout=
+# activationPropertiesFile=
+# The 'licensePath' is handled in another step in my environment
+# licensePath=
+# lmgrFiles=</string>
+	</dict>
+	<key>ParentRecipe</key>
+	<string>com.github.mlbz521.download.Matlab</string>
+	<key>Process</key>
+	<array>
+		<dict>
+			<key>Processor</key>
+			<string>PkgRootCreator</string>
+			<key>Arguments</key>
+			<dict>
+				<key>pkgroot</key>
+				<string>%RECIPE_CACHE_DIR%/pkgroot</string>
+				<key>pkgdirs</key>
+				<dict/>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>PkgRootCreator</string>
+			<key>Arguments</key>
+			<dict>
+				<key>pkgroot</key>
+				<string>%RECIPE_CACHE_DIR%/scripts</string>
+				<key>pkgdirs</key>
+				<dict/>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>FileMover</string>
+			<key>Arguments</key>
+			<dict>
+				<key>source</key>
+				<string>%RECIPE_CACHE_DIR%/unpack</string>
+				<key>target</key>
+				<string>%RECIPE_CACHE_DIR%/scripts/install</string>
+				<key>overwrite</key>
+				<true/>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>FileCreator</string>
+			<key>Arguments</key>
+			<dict>
+				<key>file_content</key>
+				<string>%INSTALLER_INPUT%</string>
+				<key>file_mode</key>
+				<string>0755</string>
+				<key>file_path</key>
+				<string>%RECIPE_CACHE_DIR%/scripts/installer_input.txt</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>FileCreator</string>
+			<key>Arguments</key>
+			<dict>
+				<key>file_content</key>
+				<string>#!/bin/bash
+
+###################################################################################################
+# Script Name:  install_MatLab.sh
+# By:  Zack Thompson / Created:  3/6/2017
+# Version:  1.7.0 / Updated:  7/25/2022 / By:  ZT
+#
+# Description:  This script installs MatLab.
+#
+###################################################################################################
+
+echo "*****  Install Matlab process:  START  *****"
+
+##################################################
+# Define Variables
+
+# Set working directory
+pkgDir=$( /usr/bin/dirname "${0}" )
+# Version that's being updated (this will be set by the autopkg process)
+version="%version%"
+
+##################################################
+# Bits staged...
+
+# Install MatLab with option file.
+echo "Installing Matlab..."
+
+if [[ $version == "2017a" ]]; then
+	# Inject dummy location to the installer.input file -- hacky, but works
+	LANG=C /usr/bin/sed -Ei '' 's,(#)? ?licensePath=.*,'"licensePath=${pkgDir}/installer_input.txt"',' "${pkgDir}/installer_input.txt"
+	# -mode silent did not work in the option file for me.
+	exitStatus=$("${pkgDir}/install" -mode silent -inputFile "${pkgDir}/installer_input.txt")
+elif [[ $version == "2017b" ]]; then
+	# I'm assuming all future version will be packaged in this manner...(/hoping)..?
+	exitStatus=$("${pkgDir}/InstallForMacOSX.app/Contents/MacOS/InstallForMacOSX" -inputFile "${pkgDir}/installer_input.txt")
+else
+	# 2018a did not work like 2017b unfortunately, where I didn't have to specify the licensePath...
+	# Inject dummy location to the installer.input file -- hacky, but works
+	LANG=C /usr/bin/sed -Ei '' 's,(#)? ?licensePath=.*,'"licensePath=${pkgDir}/installer_input.txt"',' "${pkgDir}/installer_input.txt"
+
+	exitStatus=$("${pkgDir}/install/InstallForMacOSX.app/Contents/MacOS/InstallForMacOSX" -inputFile "${pkgDir}/installer_input.txt")
+fi
+exitCode=$?
+
+if [[ $exitCode != 0 ]]; then
+	echo "Exit Code:  ${exitCode}"
+fi
+
+if [[ $exitStatus == *"End - Unsuccessful"* ]]; then
+	echo "ERROR:  Install failed!"
+	echo "ERROR Content:  ${exitStatus}"
+	echo "*****  Install Matlab process:  FAILED  *****"
+	exit 1
+fi
+
+echo "Install complete!"
+echo "*****  Install Matlab process:  COMPLETE  *****"
+
+exit 0</string>
+				<key>file_mode</key>
+				<string>0755</string>
+				<key>file_path</key>
+				<string>%RECIPE_CACHE_DIR%/scripts/postinstall</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>PkgCreator</string>
+			<key>Arguments</key>
+			<dict>
+				<key>pkg_request</key>
+				<dict>
+					<key>pkgname</key>
+					<string>%NAME%-%version%</string>
+					<key>pkgroot</key>
+					<string>%RECIPE_CACHE_DIR%/pkgroot</string>
+					<key>version</key>
+					<string>%version%</string>
+					<key>id</key>
+					<string>com.mathworks.installer</string>
+					<key>options</key>
+					<string>purge_ds_store</string>
+					<key>scripts</key>
+					<string>Scripts</string>
+				</dict>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>PathDeleter</string>
+			<key>Arguments</key>
+			<dict>
+				<key>path_list</key>
+				<array>
+					<string>%RECIPE_CACHE_DIR%/pkgroot</string>
+					<string>%RECIPE_CACHE_DIR%/scripts</string>
+				</array>
+			</dict>
+		</dict>
+	</array>
+</dict>
+</plist>

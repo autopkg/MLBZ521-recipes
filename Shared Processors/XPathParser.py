@@ -1,6 +1,6 @@
-#!/usr/bin/python
+#!/usr/local/autopkg/python
 #
-# XPathParser.py Copyright 2020 by Zack Thompson (MLBZ521)
+# Copyright 2022 by Zack T (MLBZ521)
 #
 # Inspired by DistributionPkgInfo.py from dataJar
 #   https://github.com/autopkg/dataJAR-recipes/blob/master/Shared%20Processors/DistributionPkgInfo.py
@@ -19,8 +19,6 @@
 
 """See docstring for XPathParser class"""
 
-from __future__ import absolute_import
-
 import os.path
 from xml.etree import ElementTree
 
@@ -33,11 +31,10 @@ class XPathParser(Processor):
     """Parses a XML file to pull the desired info using XPath."""
 
     description = __doc__
-
     input_variables = {
         "xml_file": {
             "required": True,
-            "description": ("Path to xml file to parse.")
+            "description": "Path to xml file to parse."
         },
         "xpath": {
             "required": True,
@@ -47,11 +44,11 @@ class XPathParser(Processor):
         },
         "attribute_one": {
             "required": True,
-            "description": ("Attribute to get the value from.")
+            "description": "Attribute to get the value from."
         },
         "attribute_two": {
             "required": False,
-            "description": ("A second attribute to get the value from.")
+            "description": "A second attribute to get the value from."
         },
         "return_variable_attribute_one": {
             "required": False,
@@ -81,45 +78,42 @@ class XPathParser(Processor):
         try:
             attribute_two = self.env["attribute_two"]
             return_variable_two =self.env["return_variable_attribute_two"]
-        except:
+        except Exception:
             attribute_two = None
             return_variable_two = None
 
         # Verify file exists
         if not os.path.exists(xml_file):
-            raise ProcessorError("Cannot find the file:  {}".format(xml_file))
+            raise ProcessorError(f"Cannot find the file:  {xml_file}")
 
-        else:
+        # Parse the xml file
+        tree = ElementTree.parse(xml_file)
 
-            # Parse the xml file
-            tree = ElementTree.parse(xml_file)
-
-            # Find the desired element and its attribute(s)
-            try:
-                xml_info = tree.findall(xpath)[0]
-                value_one = xml_info.get(attribute_one)
-
-                if attribute_two != None:
-                    value_two = xml_info.get(attribute_two)
-
-            except ElementTree.ParseError as err:
-                 raise ProcessorError("Can't parse xml file {}: {}".format(xml_file, err.strerror))
-
-        if not value_one:
-            raise ProcessorError("Unable to determine a value for:  {}".format(attribute_one))
-
-        else:
-            self.output('attribute_one:  {}'.format(value_one))
-            self.env[return_variable_one] = value_one
+        # Find the desired element and its attribute(s)
+        try:
+            xml_info = tree.findall(xpath)[0]
+            value_one = xml_info.get(attribute_one)
 
             if attribute_two != None:
-                if not value_two:
-                    raise ProcessorError("Unable to determine a value for:  {}".format(attribute_two))
+                value_two = xml_info.get(attribute_two)
 
-                self.output('attribute_two:  {}'.format(value_two))
-                self.env[return_variable_two] = value_two
+        except Exception as error:
+                raise ProcessorError(f"Can't parse xml file {xml_file}: {error.strerror}") from error
+
+        if not value_one:
+            raise ProcessorError(f"Unable to determine a value for:  {attribute_one}")
+
+        self.output(f'attribute_one:  {value_one}')
+        self.env[return_variable_one] = value_one
+
+        if attribute_two != None:
+            if not value_two:
+                raise ProcessorError(f"Unable to determine a value for:  {attribute_two}")
+
+            self.output(f'attribute_two:  {value_two}')
+            self.env[return_variable_two] = value_two
 
 
 if __name__ == '__main__':
     PROCESSOR = XPathParser()
-    processor.execute_shell()
+    PROCESSOR.execute_shell()

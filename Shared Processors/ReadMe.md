@@ -381,6 +381,7 @@ The processor will verify that the occurrence and index input variables are inte
 
 Used in:
   * com.github.mlbz521.download.Maple
+  * com.github.mlbz521.download.SetALight3D
   * com.github.mlbz521.download.SPSSStatistics
   * com.github.mlbz521.jss.XcodeCLITools
   * com.github.mlbz521.pkg.BomgarJumpClient
@@ -415,6 +416,7 @@ This processor substitutes character(s) in a string by number of occurrences.  Y
   * Default behavior example: "3.0.8-2" --> "3.0.8b2"
 
 Used in:
+  * com.github.mlbz521.download.SetALight3D
   * com.github.mlbz521.pkg.ARCHICADPatch
   * com.github.mlbz521.pkg.ARCHICAD
 

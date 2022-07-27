@@ -60,7 +60,71 @@ I have not attempted to license this in an programmatic way yet, so the result w
 				<key>archive_path</key>
 				<string>%pathname%</string>
 				<key>file_to_extract</key>
-				<string>Distribution</string>
+				<string>*PackageInfo</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>com.github.mlbz521.SharedProcessors/StringRightSplitter</string>
+			<key>Arguments</key>
+			<dict>
+				<key>string_to_split</key>
+				<string>%extracted_file%</string>
+				<key>split_on</key>
+				<string>/</string>
+				<key>occurrence</key>
+				<integer>1</integer>
+				<key>index</key>
+				<integer>0</integer>
+				<key>return_variable</key>
+				<string>id_value</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>com.github.mlbz521.SharedProcessors/StringRightSplitter</string>
+			<key>Arguments</key>
+			<dict>
+				<key>string_to_split</key>
+				<string>%id_value%</string>
+				<key>split_on</key>
+				<string>/</string>
+				<key>occurrence</key>
+				<integer>1</integer>
+				<key>index</key>
+				<integer>-1</integer>
+				<key>return_variable</key>
+				<string>id_value</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>com.github.mlbz521.SharedProcessors/VersionSubstituter</string>
+			<key>Arguments</key>
+			<dict>
+				<key>version</key>
+				<string>%id_value%</string>
+				<key>index</key>
+				<integer>2</integer>
+				<key>old</key>
+				<string>_</string>
+				<key>new</key>
+				<string> </string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>com.github.mlbz521.SharedProcessors/VersionSubstituter</string>
+			<key>Arguments</key>
+			<dict>
+				<key>version</key>
+				<string>%version%</string>
+				<key>index</key>
+				<integer>1</integer>
+				<key>old</key>
+				<string>.pkg</string>
+				<key>new</key>
+				<string>.app</string>
 			</dict>
 		</dict>
 		<dict>
@@ -71,9 +135,9 @@ I have not attempted to license this in an programmatic way yet, so the result w
 				<key>xml_file</key>
 				<string>%extracted_file%</string>
 				<key>xpath</key>
-				<string>.//pkg-ref[@id][@version]</string>
+				<string>.//bundle-version/bundle/[@path='./Applications/%version%']</string>
 				<key>attribute_one</key>
-				<string>version</string>
+				<string>CFBundleShortVersionString</string>
 				<key>return_variable_attribute_one</key>
 				<string>version</string>
 			</dict>

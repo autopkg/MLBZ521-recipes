@@ -1,6 +1,6 @@
 #!/usr/local/autopkg/python
 #
-# Copyright 2022 by Zack T (mlbz521)
+# Copyright 2022 by Zack T (MLBZ521)
 #
 # Inspired by DistributionPkgInfo.py from dataJar
 #   https://github.com/autopkg/dataJAR-recipes/blob/master/Shared%20Processors/DistributionPkgInfo.py
@@ -18,8 +18,6 @@
 # limitations under the License.
 
 """See docstring for XarExtractSingleFile class"""
-
-from __future__ import absolute_import
 
 import os.path
 import shlex
@@ -48,22 +46,20 @@ class XarExtractSingleFile(DmgMounter):
         },
         "extract_file_path": {
             "required": False,
-            "description": ("Path to extract the file to."
-            "Default:  extractedfile")
+            "description": "Path to extract the file to."
+            "Default:  extractedfile"
         },
         "file_to_extract": {
             "required": True,
-            "description": ("File to extract out of the archive.")
+            "description": "File to extract out of the archive."
         }
     }
 
     output_variables = {
         "extracted_file": {
-            "description": ("The file that was extracted from the archive.")
+            "description": "The file that was extracted from the archive."
         }
     }
-
-    description = __doc__
 
     def runUtility(self, command):
         """A helper function for subprocess.
@@ -104,64 +100,66 @@ class XarExtractSingleFile(DmgMounter):
         # Check to see if the source_path is a dmg
         (dmg_path, dmg, dmg_source_path) = self.parsePathForDMG(source_path)
 
-        self.output(
-            "Parsed dmg results: dmg_path: {}, dmg: {}, dmg_source_path: {}".format(
-                dmg_path, dmg, dmg_source_path), verbose_level=2)
-
         if dmg:
+
+            self.output(
+                f"Parsed dmg results: dmg_path: {dmg_path}, dmg: {dmg}, dmg_source_path: {dmg_source_path}", 
+                verbose_level=2
+            )
 
             try:
                 mount_point = self.mount(dmg_path)
                 source_path = os.path.join(mount_point, dmg_source_path)
 
-            except Exception:
-                raise ProcessorError("Unable to mount the dmg.")
+            except Exception as error:
+                raise ProcessorError("Unable to mount the dmg.") from error
 
         # Wrap in a try/finally so if a dmg is mounted, it will always be unmounted
         try:
 
             # Get a list of files in the archive
-            cmd_list_files = '/usr/bin/xar -tf "{}"'.format(source_path)
+            cmd_list_files = f'/usr/bin/xar -tf "{source_path}"'
             results_list_files = self.runUtility(cmd_list_files)
 
             if not results_list_files['success']:
                 raise ProcessorError(
-                    "Failed to list the files in the archive:  {} -- due to error:  {}".format(
-                        source_path, results_list_files['stderr']))
+                    f"Failed to list the files in the archive:  {source_path} -- due to error:  {results_list_files['stderr']}")
 
             # Split the file names
             list_of_files = (results_list_files['stdout'].decode("utf-8")).split('\n')
 
-            # Create destintation directory if it doesn't exist
+            # Create destination directory if it doesn't exist
             if not os.path.exists(extract_file_path):
                 try:
                     os.mkdir(extract_file_path)
-                except OSError as err:
-                    raise ProcessorError("Can't create {}:  {}".format(extract_file_path, err.strerror))
+                except OSError as error:
+                    raise ProcessorError(f"Can't create {extract_file_path}:  {error.strerror}") from error
 
-            # Walk trough the list of files entries
-            for filename in [ item for item in list_of_files if fnmatch(item, file_to_extract) ]:
-                cmd_extract = '/usr/bin/xar -xf "{}" "{}" -C "{}"'.format(
-                    source_path, filename, extract_file_path)
-                results_list_files = self.runUtility(cmd_extract)
+            # Find a match in the list of files
+            match = [ item for item in list_of_files if fnmatch(item, file_to_extract) ]
 
-                if not results_list_files['success']:
-                    raise ProcessorError(
-                        "Failed to extract the archive:  {} -- due to error:  {}".format(
-                            source_path, results_list_files['stderr']))
+            # Ensure there was only one match
+            if len(match) != 1:
+                raise ProcessorError(
+                    "Multiple matches found in the archive.  Only one file is supported to be extracted.")
 
-                # Path to the extract file
-                extracted_file = os.path.join(extract_file_path, filename)
+            match = match[0]
+
+            cmd_extract = f'/usr/bin/xar -xf "{source_path}" "{match}" -C "{extract_file_path}"'
+            results_list_files = self.runUtility(cmd_extract)
+
+            if not results_list_files['success']:
+                raise ProcessorError(
+                    f"Failed to extract the archive:  {source_path} -- due to error:  {results_list_files['stderr']}")
+
+            # Path to the extract file
+            extracted_file = os.path.join(extract_file_path, match)
 
             # Verify file exists
-            for filename in os.listdir(extract_file_path):
-                if fnmatch(filename, file_to_extract):
-                    found_match = True
+            if not os.path.exists(extracted_file):
+                raise ProcessorError(f"Cannot find the file:  {file_to_extract}")
 
-            if not found_match:
-                raise ProcessorError("Cannot find the file:  {}".format(file_to_extract))
-
-            self.output('extracted_file:  {}'.format(extracted_file))
+            self.output(f'extracted_file:  {extracted_file}')
             self.env["extracted_file"] = extracted_file
 
         finally:
@@ -170,5 +168,5 @@ class XarExtractSingleFile(DmgMounter):
 
 
 if __name__ == '__main__':
-    processor = XarExtractSingleFile()
-    processor.execute_shell()
+    PROCESSOR = XarExtractSingleFile()
+    PROCESSOR.execute_shell()

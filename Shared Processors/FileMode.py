@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/local/autopkg/python
 #
 # Copyright 2011 Per Olofsson
 # Modified 2018 by Zack Thompson
@@ -23,6 +23,7 @@ from autopkglib import Processor, ProcessorError
 
 __all__ = ["FileMode"]
 
+
 class FileMode(Processor):
 
     """This processor essentinally runs `chmod` on a file.
@@ -37,22 +38,23 @@ class FileMode(Processor):
         },
         "file_mode": {
             "required": True,
-            "description": "String. Numeric mode for file in octal format."
-        }
+            "description": "String. Numeric mode for file in octal format.",
+        },
     }
-    output_variables = {
-    }
+    output_variables = {}
 
     def main(self):
-        if 'file_mode' in self.env:
+        if "file_mode" in self.env:
             try:
-                os.chmod(self.env['file_path'], int(self.env['file_mode'], 8))
-                self.output("Set permissions on file at %s" % self.env['file_path'])
+                os.chmod(self.env["file_path"], int(self.env["file_mode"], 8))
+                self.output("Set permissions on file at %s" % self.env["file_path"])
             except Exception as err:
                 raise ProcessorError(
                     "Can't set mode of %s to %s: %s"
-                    % (self.env['file_path'], self.env['file_mode'], err))
+                    % (self.env["file_path"], self.env["file_mode"], err)
+                )
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     PROCESSOR = FileMode()
     PROCESSOR.execute_shell()

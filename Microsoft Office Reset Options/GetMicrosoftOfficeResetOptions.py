@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/local/autopkg/python
 #
 # 2022 Zack T (mlbz521)
 #
@@ -30,10 +30,10 @@ __all__ = ["GetMicrosoftOfficeResetOptions"]
 
 
 class GetMicrosoftOfficeResetOptions(Processor):
-    """This processor obtains the choice options from the Office Reset.pkg 
+    """This processor obtains the choice options from the Office Reset.pkg
     from Paul Bowden (https://office-reset.com/macadmins/).
 
-    It allows you to ignore specific options, so as not to provide them to 
+    It allows you to ignore specific options, so as not to provide them to
     your customers.
 
     The results are passed to the postinstall script the pkg recipe.
@@ -41,11 +41,12 @@ class GetMicrosoftOfficeResetOptions(Processor):
 
     input_variables = {
         "ignore_choices": {
-            "description": ( "A comma separated string of choices that will "
+            "description": (
+                "A comma separated string of choices that will "
                 "not be included as selectable options to users. Example:  "
                 "com.microsoft.remove.Office, com.microsoft.reset.Outlook"
             ),
-            "required": False
+            "required": False,
         }
     }
 
@@ -58,13 +59,12 @@ class GetMicrosoftOfficeResetOptions(Processor):
 
     description = __doc__
 
-
     def execute_process(self, command, input=None):
         """
         A helper function for subprocess.
 
         Args:
-            command (str):  The command line level syntax that would be written in a 
+            command (str):  The command line level syntax that would be written in a
                 shell script or a terminal window
 
         Returns:
@@ -79,8 +79,14 @@ class GetMicrosoftOfficeResetOptions(Processor):
         command = shlex.split(command)
 
         # Run the command
-        process = subprocess.Popen( command, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, 
-            shell=False, universal_newlines=True )
+        process = subprocess.Popen(
+            command,
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            shell=False,
+            universal_newlines=True,
+        )
 
         if input:
             (stdout, stderr) = process.communicate(input=input)
@@ -92,12 +98,11 @@ class GetMicrosoftOfficeResetOptions(Processor):
             "stdout": (stdout).strip(),
             "stderr": (stderr).strip() if stderr != None else None,
             "exitcode": process.returncode,
-            "success": True if process.returncode == 0 else False
+            "success": True if process.returncode == 0 else False,
         }
 
-
     def main(self):
-        """Find the latest receipt that contains all 
+        """Find the latest receipt that contains all
             the information we're looking for.
 
         Raises:
@@ -116,17 +121,16 @@ class GetMicrosoftOfficeResetOptions(Processor):
 
         results = self.execute_process(
             "/usr/sbin/installer -showChoiceChangesXML -pkg {} -target /".format(
-                pkg_path))
+                pkg_path
+            )
+        )
 
         if not results["success"]:
             raise ProcessorError("Failed to obtain the available choices from the pkg!")
 
         plist_contents = plistlib.loads(results["stdout"].encode("utf-8"))
 
-        choices = {
-            choice.get("choiceIdentifier")
-            for choice in plist_contents
-        }
+        choices = {choice.get("choiceIdentifier") for choice in plist_contents}
 
         if not choices:
             raise ProcessorError("Failed to identify possible choices!")
@@ -142,21 +146,35 @@ class GetMicrosoftOfficeResetOptions(Processor):
 
                 if re.match(r"com.microsoft.reset.Factory", choice):
                     available_choices.add("Factory Reset All Apps")
-                    self.output("Found choice for Factory Reset:  {}".format(choice), verbose_level=3)
+                    self.output(
+                        "Found choice for Factory Reset:  {}".format(choice),
+                        verbose_level=3,
+                    )
 
                 elif re.match(r"com.microsoft.remove.Outlook.Data", choice):
                     available_choices.add("Remove Outlook Data")
-                    self.output("Found choice for Remove Outlook Data:  {}".format(choice), verbose_level=3)
+                    self.output(
+                        "Found choice for Remove Outlook Data:  {}".format(choice),
+                        verbose_level=3,
+                    )
 
                 elif re.match(r"com.microsoft.reset.+", choice):
                     # reset_choices.add(choice.split("com.microsoft.reset.")[1])
-                    available_choices.add(re.sub(r"com.microsoft.reset.", "Reset ", choice))
-                    self.output("Found reset choice:  {}".format(choice), verbose_level=3)
+                    available_choices.add(
+                        re.sub(r"com.microsoft.reset.", "Reset ", choice)
+                    )
+                    self.output(
+                        "Found reset choice:  {}".format(choice), verbose_level=3
+                    )
 
                 elif re.match(r"com.microsoft.remove.+", choice):
                     # remove_choices.add(choice.split("com.microsoft.remove.")[1])
-                    available_choices.add(re.sub(r"com.microsoft.remove.", "Remove ", choice))
-                    self.output("Found remove choice:  {}".format(choice), verbose_level=3)
+                    available_choices.add(
+                        re.sub(r"com.microsoft.remove.", "Remove ", choice)
+                    )
+                    self.output(
+                        "Found remove choice:  {}".format(choice), verbose_level=3
+                    )
 
         # if reset_choices or remove_choices:
         if not available_choices:
@@ -164,7 +182,9 @@ class GetMicrosoftOfficeResetOptions(Processor):
 
         prompt_choices = "\n".join(sorted(available_choices, reverse=True))
         self.env["prompt_choices"] = prompt_choices
-        self.output("Prompt Choice Options:\n{}".format(prompt_choices), verbose_level=3)
+        self.output(
+            "Prompt Choice Options:\n{}".format(prompt_choices), verbose_level=3
+        )
 
 
 if __name__ == "__main__":

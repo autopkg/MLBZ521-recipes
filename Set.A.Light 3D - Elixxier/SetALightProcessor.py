@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/local/autopkg/python
 #
 # Copyright 2021 Zack Thompson (MLBZ521)
 #
@@ -34,14 +34,9 @@ class SetALightProcessor(URLDownloader):
             "required": True,
         }
     }
-    output_variables = {
-        "url": {
-            "description": ("URL to download.")
-        }
-    }
+    output_variables = {"url": {"description": ("URL to download.")}}
 
     description = __doc__
-
 
     def main(self):
 
@@ -52,18 +47,21 @@ class SetALightProcessor(URLDownloader):
             # Initialize the curl_cmd with the required curl switches
             curl_opts = [
                 self.curl_binary(),
-                "--url", "{}".format(search_url),
-                "--request", "GET",
+                "--url",
+                "{}".format(search_url),
+                "--request",
+                "GET",
                 "--silent",
                 "--show-error",
                 "--no-buffer",
-                "--dump-header", "-",
-                "--fail"
+                "--dump-header",
+                "-",
+                "--fail",
             ]
 
             # Execute curl
             stdout, stderr, returncode = self.execute_curl(curl_opts)
-            parse_results = stdout.split('\n')
+            parse_results = stdout.split("\n")
 
             for item in parse_results:
                 if re.search("location: ", item):

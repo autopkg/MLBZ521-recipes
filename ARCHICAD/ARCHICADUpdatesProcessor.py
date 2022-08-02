@@ -1,6 +1,6 @@
-#!/usr/bin/env python
+#!/usr/local/autopkg/python
 #
-# Copyright 2019 Zack T (mlbz521)
+# Copyright 2022 Zack Thompson (MLBZ521)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,11 +14,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from __future__ import absolute_import, print_function
-
 import json
 
-from autopkglib import Processor, ProcessorError, URLGetter
+from autopkglib import ProcessorError, URLGetter
+
 
 __all__ = ["ARCHICADUpdatesProcessor"]
 
@@ -27,6 +26,7 @@ class ARCHICADUpdatesProcessor(URLGetter):
     """This processor finds the URL for the desired version, localization, and type of ARCHICAD.
     """
 
+    description = __doc__
     input_variables = {
         "major_version": {
             "required": True,
@@ -48,7 +48,6 @@ class ARCHICADUpdatesProcessor(URLGetter):
                     "and build number. Same as CFBundleVersion."}
     }
 
-    description = __doc__
 
     def main(self):
         """Main process."""
@@ -66,43 +65,34 @@ class ARCHICADUpdatesProcessor(URLGetter):
         )
         json_data = json.loads(response)
 
-        # Parse through the available downloads for versions that match the requested paramters.
+        # Parse through the available downloads for versions that match the requested parameters.
         for json_object in json_data:
             if all(
-                (
-                    json_object.get("version") == major_version,
-                    json_object.get("localization") == localization,
-                    json_object.get("type") == release_type,
-                    json_object.get("build")
-                )
+                json_object.get("version") == major_version,
+                json_object.get("localization") == localization,
+                json_object.get("type") == release_type,
+                json_object.get("build")
             ):
-                mac_link = json_object.get("downloadLinks", dict()).get("mac", dict()).get("url")
-                if mac_link:
-                    mac_link = 'https://dl.graphisoft.com' + mac_link[3:]
-                    available_builds[json_object.get("build")] = mac_link
+                if mac_link := json_object.get("downloadLinks", dict()).get("mac", dict()).get("url", None):
+                    available_builds[json_object.get("build")] = f"https://dl.graphisoft.com{mac_link[3:]}"
 
         # Get the latest version.
-        if available_builds:
-            build = sorted(available_builds.keys())[-1]
-            version = "{}.0.0.{}".format(major_version, build)
-            url = available_builds[build]
-            build = str(build)
-        else:
-            build = "0"
-            version = "0"
-            url = None
+        try:
+            if available_builds:
+                build = sorted(available_builds.keys())[-1]
+                version = f"{major_version}.0.0.{build}"
+                url = available_builds[build]
+                build = str(build)
 
-        if url:
             self.env["url"] = url
-            self.output("Download URL: {}".format(self.env["url"]))
+            self.output(f"Download URL: {self.env['url']}", verbose_level=2)
             self.env["build"] = build
-            self.output("build: {}".format(self.env["build"]))
+            self.output(f"build: {self.env['build']}", verbose_level=2)
             self.env["version"] = version
-            self.output("version: {}".format(self.env["version"]))
-        else:
-            raise ProcessorError(
-                "Unable to find a url based on the parameters provided."
-            )
+            self.output(f"version: {self.env['version']}", verbose_level=2)
+
+        except:
+            raise ProcessorError("Unable to find a url based on the parameters provided.")
 
 
 if __name__ == "__main__":

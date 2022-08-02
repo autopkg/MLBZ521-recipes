@@ -81,7 +81,9 @@ class MaplePatchProcessor(URLGetter):
         lookupURL = f"http://update.maplesoft.com/update.php?uuid={uuid}"
 
         # Look up the model
-        if xml := self.download(lookupURL):
+        xml = self.download(lookupURL)
+
+        if xml:
             # self.output(f"Results:  \n{xml}, verbose_level=4)"
     
             # Import xml string into an object

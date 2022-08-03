@@ -4,7 +4,7 @@
 <dict>
 	<key>Description</key>
 	<string>Downloads a CrowdStrike Falcon Sensor pkg via CrowdStrike's API.
-	
+
 You must provide a Client ID and Secret along with the Policy ID to determine which senor version to download.
 	</string>
 	<key>Identifier</key>
@@ -26,7 +26,7 @@ You must provide a Client ID and Secret along with the Policy ID to determine wh
 	<array>
 		<dict>
 			<key>Processor</key>
-			<string>CrowdStrikeProcessor</string>
+			<string>CrowdStrikeURLProvider</string>
 			<key>Arguments</key>
 			<dict>
 				<key>client_id</key>

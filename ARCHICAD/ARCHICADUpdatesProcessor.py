@@ -67,12 +67,12 @@ class ARCHICADUpdatesProcessor(URLGetter):
 
         # Parse through the available downloads for versions that match the requested parameters.
         for json_object in json_data:
-            if all(
+            if all((
                 json_object.get("version") == major_version,
                 json_object.get("localization") == localization,
                 json_object.get("type") == release_type,
                 json_object.get("build")
-            ):
+            )):
 
                 mac_link = json_object.get("downloadLinks", dict()).get("mac", dict()).get("url", None)
 

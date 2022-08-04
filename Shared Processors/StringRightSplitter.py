@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/local/autopkg/python
 #
 # StringRightSplitter.py Copyright 2020 by Zack Thompson (MLBZ521)
 #

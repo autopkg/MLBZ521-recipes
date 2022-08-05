@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/local/autopkg/python
 #
 # Copyright 2011 Per Olofsson
 # Modified 2018 by Zack Thompson

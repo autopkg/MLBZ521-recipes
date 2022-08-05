@@ -207,13 +207,13 @@ Available recipe types:
       * Input Variable:
         * client_id:
             * required:  True
-            * description:  CrowdStrike API Client ID
+            * description:  CrowdStrike API Client ID. This API account will need a minimum of Read: Sensor download, and Read: Sensor update policies access
         * client_secret:
             * required:  True
             * description:  CrowdStrike API Client Secret
         * policy_id:
             * required:  True
-            * description:  CrowdStrike Policy ID to get the assigned Sensor version
+            * description:  CrowdStrike Policy ID to get the assigned Sensor version. This can be obtained from the end of the URL when viewing the policy details page
         * api_region_url:
             * required:  False
             * default:  `https://api.crowdstrike.com`

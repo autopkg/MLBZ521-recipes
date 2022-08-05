@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/local/autopkg/python
 #
 # InputVariableTextSubstituter.py
 # Copyright 2021 by Zack Thompson (MLBZ521)

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/local/autopkg/python
 #
 # Original:  VersionSplitter.py
 # Copyright 2015 Elliot Jordan

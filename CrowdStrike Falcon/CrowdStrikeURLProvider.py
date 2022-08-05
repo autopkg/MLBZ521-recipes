@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/local/autopkg/python
 #
 # Copyright 2021 Zack Thompson (mlbz521)
 #
@@ -18,25 +18,23 @@ import json
 
 from autopkglib import Processor, ProcessorError, URLGetter
 
-__all__ = ["CrowdStrikeProcessor"]
+__all__ = ["CrowdStrikeURLProvider"]
 
-class CrowdStrikeProcessor(URLGetter):
 
-    """This processor finds the download URL for the CrowdStrike Sensor 
+class CrowdStrikeURLProvider(URLGetter):
+
+    """This processor finds the download URL for the CrowdStrike Sensor
     version of the supplied Policy ID."""
 
     input_variables = {
-        "client_id": {
-            "required": True,
-            "description": "CrowdStrike API Client ID."
-        },
+        "client_id": {"required": True, "description": "CrowdStrike API Client ID."},
         "client_secret": {
             "required": True,
-            "description": "CrowdStrike API Client Secret."
+            "description": "CrowdStrike API Client Secret.",
         },
         "policy_id": {
             "required": True,
-            "description": "CrowdStrike Policy ID to get the assigned Sensor version."
+            "description": "CrowdStrike Policy ID to get the assigned Sensor version.",
         },
         "api_region_url": {
             "required": False,
@@ -44,22 +42,18 @@ class CrowdStrikeProcessor(URLGetter):
             "description": (
                 "CrowdStrike Region your instance is associated with."
                 "Default region:  https://api.crowdstrike.com"
-            )
-        }
+            ),
+        },
     }
     output_variables = {
-        "download_url": {
-            "description": "Returns the url to download."
-        },
-        "version": {
-            "description": "Returns the version of the package to download."
-        },
+        "download_url": {"description": "Returns the url to download."},
+        "version": {"description": "Returns the version of the package to download."},
         "access_token": {
             "description": (
                 "Authorization Bearer Token required to "
                 "interact with the CrowdStrike API."
             )
-        }
+        },
     }
 
     description = __doc__
@@ -72,11 +66,17 @@ class CrowdStrikeProcessor(URLGetter):
         policy_id = self.env.get("policy_id")
         api_region_url = self.env.get("api_region_url", "https://api.crowdstrike.com")
 
-        token_url =  "{}/oauth2/token".format(api_region_url)
-        policy_url = "{}/policy/combined/sensor-update/v1?filter=platform_name%3A'Mac'".format(
-            api_region_url)
-        installer_url = "{}/sensors/combined/installers/v1?filter=platform%3A%22mac%22".format(
-            api_region_url)
+        token_url = "{}/oauth2/token".format(api_region_url)
+        policy_url = (
+            "{}/policy/combined/sensor-update/v1?filter=platform_name%3A'Mac'".format(
+                api_region_url
+            )
+        )
+        installer_url = (
+            "{}/sensors/combined/installers/v1?filter=platform%3A%22mac%22".format(
+                api_region_url
+            )
+        )
 
         # Verify the input variables were provided
         if not client_id or client_id == "%CLIENT_ID%":
@@ -89,14 +89,17 @@ class CrowdStrikeProcessor(URLGetter):
         # Build the headers
         headers = {
             "accept": "application/json",
-            "Content-Type": "application/x-www-form-urlencoded"
+            "Content-Type": "application/x-www-form-urlencoded",
         }
 
         # Build the required curl switches
         curl_opts = [
-            "--url", "{}".format(token_url),
-            "--request", "POST",
-            "--data", "client_id={}&client_secret={}".format(client_id, client_secret)
+            "--url",
+            "{}".format(token_url),
+            "--request",
+            "POST",
+            "--data",
+            "client_id={}&client_secret={}".format(client_id, client_secret),
         ]
 
         try:
@@ -122,7 +125,7 @@ class CrowdStrikeProcessor(URLGetter):
 
             auth_headers = {
                 "accept": "application/json",
-                "authorization": "bearer {}".format(access_token)
+                "authorization": "bearer {}".format(access_token),
             }
 
             # Execute curl
@@ -146,7 +149,9 @@ class CrowdStrikeProcessor(URLGetter):
 
             build_version = build.split("|", 1)[0]
             self.output(
-                "Build version for matching Policy:  {}".format(build_version), verbose_level=1)
+                "Build version for matching Policy:  {}".format(build_version),
+                verbose_level=1,
+            )
 
         except:
             raise ProcessorError("Failed to match a Sensor Update Policy!")
@@ -172,25 +177,33 @@ class CrowdStrikeProcessor(URLGetter):
 
         except:
             raise ProcessorError(
-                "Failed to match an available sensor version to the Policy assigned build version!")
-
+                "Failed to match an available sensor version to the Policy assigned build version!"
+            )
 
         try:
             download_url = "{}/sensors/entities/download-installer/v1?id={}".format(
-                api_region_url, sha256)
+                api_region_url, sha256
+            )
 
             self.env["access_token"] = access_token
-            self.env["version"] = "{}.0".format(version) # This is appended to match the _actual_ CFBundleShortVersionString
+            # This version is appended to match the _actual_ CFBundleShortVersionString
+            self.env["version"] = "{}.0".format(version)
             self.env["download_url"] = download_url
 
-            self.output("Sensor version that will be downloaded: {}".format(
-                self.env["version"]), verbose_level=1)
+            self.output(
+                "Sensor version that will be downloaded: {}".format(
+                    self.env["version"]
+                ),
+                verbose_level=1,
+            )
             self.output("Download URL:  {}".format(download_url), verbose_level=3)
 
         except:
-            raise ProcessorError("Something went wrong assigning environment variables!")
+            raise ProcessorError(
+                "Something went wrong assigning environment variables!"
+            )
 
 
 if __name__ == "__main__":
-    processor = CrowdStrikeProcessor()
+    processor = CrowdStrikeURLProvider()
     processor.execute_shell()

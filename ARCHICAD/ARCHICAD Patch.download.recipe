@@ -2,51 +2,51 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-    <key>Description</key>
-    <string>Downloads the latest updated build of ARCHICAD based on the override-able parameters:  major_version, localization, and release_type
+	<key>Description</key>
+	<string>Downloads the latest updated build of ARCHICAD based on the override-able parameters:  major_version, localization, and release_type
 
 MAJOR_VERSION tested options are:  20, 21, 22, 23, 24, 25 (newer are expected to work)
 LOCALIZATION options include:  INT (international english, part of many other licenses), AUS, AUT, BRA, CHE, CHI, CZE, FIN, FRA, GER, GRE, HUN, ITA, JPN, KOR, NED, NOR, NZE, POL, POR, RUS, SPA, SWE, TAI, TUR, UKI, UKR, and USA
 RELEASE_TYPE options include:  FULL, SOLO, and START</string>
-    <key>Identifier</key>
-    <string>com.github.mlbz521.download.ARCHICADPatch</string>
-    <key>Input</key>
-    <dict>
-        <key>NAME</key>
-        <string>ARCHICAD Patch</string>
-        <key>MAJOR_VERSION</key>
-        <string>25</string>
-        <key>LOCALIZATION</key>
-        <string>USA</string>
+	<key>Identifier</key>
+	<string>com.github.mlbz521.download.ARCHICADPatch</string>
+	<key>Input</key>
+	<dict>
+		<key>NAME</key>
+		<string>ARCHICAD Patch</string>
+		<key>MAJOR_VERSION</key>
+		<string>25</string>
+		<key>LOCALIZATION</key>
+		<string>USA</string>
 		<key>RELEASE_TYPE</key>
 		<string>FULL</string>
-    </dict>
-    <key>Process</key>
-    <array>
-        <dict>
-            <key>Processor</key>
-            <string>ARCHICADUpdatesProcessor</string>
-            <key>Arguments</key>
-            <dict>
-                <key>major_version</key>
-                <string>%MAJOR_VERSION%</string>
-                <key>localization</key>
-                <string>%LOCALIZATION%</string>
-                <key>release_type</key>
-                <string>%RELEASE_TYPE%</string>
-            </dict>
-        </dict>
-        <dict>
-            <key>Processor</key>
-            <string>URLDownloader</string>
-            <key>Arguments</key>
-            <dict>
-                <key>url</key>
-                <string>%url%</string>
-                <key>filename</key>
-                <string>%NAME% %major_version%-%version%.dmg</string>
-            </dict>
-        </dict>
+	</dict>
+	<key>Process</key>
+	<array>
+		<dict>
+			<key>Processor</key>
+			<string>ARCHICADUpdatesURLProvider</string>
+			<key>Arguments</key>
+			<dict>
+				<key>major_version</key>
+				<string>%MAJOR_VERSION%</string>
+				<key>localization</key>
+				<string>%LOCALIZATION%</string>
+				<key>release_type</key>
+				<string>%RELEASE_TYPE%</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>URLDownloader</string>
+			<key>Arguments</key>
+			<dict>
+				<key>url</key>
+				<string>%url%</string>
+				<key>filename</key>
+				<string>%NAME% %major_version%-%version%.dmg</string>
+			</dict>
+		</dict>
 		<dict>
 			<key>Processor</key>
 			<string>CodeSignatureVerifier</string>
@@ -58,10 +58,10 @@ RELEASE_TYPE options include:  FULL, SOLO, and START</string>
 				<string>identifier "com.graphisoft.installer" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "3E9E9FN277"</string>
 			</dict>
 		</dict>
-        <dict>
-            <key>Processor</key>
-            <string>EndOfCheckPhase</string>
-        </dict>
-    </array>
+		<dict>
+			<key>Processor</key>
+			<string>EndOfCheckPhase</string>
+		</dict>
+	</array>
 </dict>
 </plist>

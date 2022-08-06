@@ -19,10 +19,10 @@ import json
 from autopkglib import ProcessorError, URLGetter
 
 
-__all__ = ["ARCHICADUpdatesProcessor"]
+__all__ = ["ARCHICADUpdatesURLProvider"]
 
 
-class ARCHICADUpdatesProcessor(URLGetter):
+class ARCHICADUpdatesURLProvider(URLGetter):
     """This processor finds the URL for the desired version, localization, and type of ARCHICAD.
     """
 
@@ -99,5 +99,5 @@ class ARCHICADUpdatesProcessor(URLGetter):
 
 
 if __name__ == "__main__":
-    PROCESSOR = ARCHICADUpdatesProcessor()
+    PROCESSOR = ARCHICADUpdatesURLProvider()
     PROCESSOR.execute_shell()

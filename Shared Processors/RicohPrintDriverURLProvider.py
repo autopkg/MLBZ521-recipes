@@ -1,6 +1,6 @@
 #!/usr/local/autopkg/python
 #
-# Copyright 2022 Zack Thompson (mlbz521)
+# Copyright 2022 Zack Thompson (MLBZ521)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -34,11 +34,10 @@ sys.path.insert(0, f"{os.path.dirname(os.path.dirname(os.path.abspath(__file__))
 from SeleniumWebScrapper import WebEngine
 
 
-__all__ = ["RicohPrintDriverProcessor"]
+__all__ = ["RicohPrintDriverURLProvider"]
 
 
-class RicohPrintDriverProcessor(URLGetter):
-
+class RicohPrintDriverURLProvider(URLGetter):
     """This processor finds the download URL for Ricoh print driver."""
 
     input_variables = {
@@ -183,10 +182,10 @@ class RicohPrintDriverProcessor(URLGetter):
                     lambda d: d.find_element_by_xpath(section_MacOSX)
                 )
                 web_engine.find_element_by_xpath(section_MacOSX).click()
-                self.output("Selected operating system section labled \"Mac OS X\"", verbose_level=3)
+                self.output("Selected operating system section labeled \"Mac OS X\"", verbose_level=3)
 
             except:
-                raise ProcessorError("Failed to find and open the operating system section labled \"Mac OS X\".")
+                raise ProcessorError("Failed to find and open the operating system section labeled \"Mac OS X\".")
 
             try:
                 # Select the desired OS Version
@@ -224,5 +223,5 @@ class RicohPrintDriverProcessor(URLGetter):
 
 
 if __name__ == "__main__":
-    processor = RicohPrintDriverProcessor()
-    processor.execute_shell()
+    PROCESSOR = RicohPrintDriverURLProvider()
+    PROCESSOR.execute_shell()

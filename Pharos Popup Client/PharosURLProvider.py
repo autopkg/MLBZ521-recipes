@@ -1,6 +1,6 @@
 #!/usr/local/autopkg/python
 #
-# Copyright 2022 Zack Thompson (mlbz521)
+# Copyright 2022 Zack Thompson (MLBZ521)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -32,10 +32,10 @@ sys.path.insert(0, f"{os.path.dirname(os.path.dirname(os.path.abspath(__file__))
 from SeleniumWebScrapper import WebEngine
 
 
-__all__ = ["PharosProcessor"]
+__all__ = ["PharosURLProvider"]
 
 
-class PharosProcessor(Processor):
+class PharosURLProvider(Processor):
 
     """This processor finds the download URL for Pharos Popup Client."""
 
@@ -142,5 +142,5 @@ class PharosProcessor(Processor):
 
 
 if __name__ == "__main__":
-    processor = PharosProcessor()
-    processor.execute_shell()
+    PROCESSOR = PharosURLProvider()
+    PROCESSOR.execute_shell()

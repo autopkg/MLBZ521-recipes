@@ -17,7 +17,7 @@ OS version options:
 	- Sierra
 	- (Windows and Linux could be supported by the processor with some tweaks, see my Shared Processors README)
 
-The download recipe requires the Selenium Library (https://www.selenium.dev/documentation/) and a browser driver to be supplied.  See the RicohPrintDriverProcessor section (https://github.com/autopkg/MLBZ521-recipes/blob/master/Shared%20Processors/ReadMe.md#RicohPrintDriverProcessor) in my Shared Processors README for more info.
+The download recipe requires the Selenium Library (https://www.selenium.dev/documentation/) and a browser driver to be supplied.  See the RicohPrintDriverURLProvider section (https://github.com/autopkg/MLBZ521-recipes/blob/master/Shared%20Processors/ReadMe.md#RicohPrintDriverURLProvider) in my Shared Processors README for more info.
 		</string>
 		<key>Identifier</key>
 		<string>com.github.mlbz521.download.RicohPrintDriver</string>
@@ -40,7 +40,7 @@ The download recipe requires the Selenium Library (https://www.selenium.dev/docu
 		<array>
 			<dict>
 				<key>Processor</key>
-				<string>com.github.mlbz521.SharedProcessors/RicohPrintDriverProcessor</string>
+				<string>com.github.mlbz521.SharedProcessors/RicohPrintDriverURLProvider</string>
 				<key>Arguments</key>
 				<dict>
 					<key>model</key>

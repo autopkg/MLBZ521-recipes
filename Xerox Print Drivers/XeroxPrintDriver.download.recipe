@@ -24,11 +24,11 @@ Tested both "macOS Print and Scan Driver Installer" and "ICA Scan USB Driver" to
     <string>com.github.mlbz521.download.XeroxPrintDriver</string>
     <key>Input</key>
     <dict>
-        <key>model</key>
+        <key>MODEL</key>
         <string>Workcentre 6515</string>
-        <key>downloadType</key>
+        <key>DOWNLOAD_TYPE</key>
         <string>macOS Print and Scan Driver Installer</string>
-        <key>osVersion</key>
+        <key>OS_VERSION</key>
         <string>x11</string>
         <key>NAME</key>
         <string>Xerox Print Drivers</string>
@@ -37,15 +37,15 @@ Tested both "macOS Print and Scan Driver Installer" and "ICA Scan USB Driver" to
     <array>
         <dict>
             <key>Processor</key>
-            <string>XeroxPrintDriverProcessor</string>
+            <string>XeroxPrintDriverURLProvider</string>
             <key>Arguments</key>
             <dict>
                 <key>model</key>
-                <string>%model%</string>
-                <key>downloadType</key>
-                <string>%downloadType%</string>
-                <key>osVersion</key>
-                <string>%osVersion%</string>
+                <string>%MODEL%</string>
+                <key>download_type</key>
+                <string>%DOWNLOAD_TYPE%</string>
+                <key>os_version</key>
+                <string>%OS_VERSION%</string>
             </dict>
         </dict>
         <dict>
@@ -56,7 +56,7 @@ Tested both "macOS Print and Scan Driver Installer" and "ICA Scan USB Driver" to
                 <key>url</key>
                 <string>%url%</string>
                 <key>filename</key>
-                <string>Xerox %downloadType% %model%.dmg</string>
+                <string>Xerox %DOWNLOAD_TYPE% %MODEL%.dmg</string>
             </dict>
         </dict>
         <dict>

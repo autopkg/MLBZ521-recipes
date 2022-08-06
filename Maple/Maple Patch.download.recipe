@@ -19,7 +19,7 @@ Specify major version as:  '2020', '2019', '2018', '2017', or 2016</string>
     <array>
         <dict>
             <key>Processor</key>
-            <string>MaplePatchProcessor</string>
+            <string>MaplePatchURLProvider</string>
             <key>Arguments</key>
             <dict>
                 <key>major_version</key>

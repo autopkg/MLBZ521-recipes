@@ -2,54 +2,54 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-    <key>Description</key>
-    <string>Downloads the latest patch of AutoCAD based supplied "major_version."
+	<key>Description</key>
+	<string>Downloads the latest patch of AutoCAD based supplied "major_version."
 
 major_version examples:  2021, 2020, 2019, 2018, etc</string>
-    <key>Identifier</key>
-    <string>com.github.mlbz521.download.AutoCADPatch</string>
-    <key>Input</key>
-    <dict>
-        <key>NAME</key>
-        <string>AutoCAD Patch</string>
-        <key>PRODUCT</key>
-        <string>ACDMAC</string>
-        <key>MAJOR_VERSION</key>
-        <string>2021</string>
-    </dict>
-    <key>Process</key>
-    <array>
-        <dict>
-            <key>Processor</key>
-            <string>com.github.mlbz521.SharedProcessors/AutoDeskPatchProcessor</string>
-            <key>Arguments</key>
-            <dict>
-                <key>major_version</key>
-                <string>%MAJOR_VERSION%</string>
-                <key>product</key>
-                <string>%PRODUCT%</string>
-            </dict>
-        </dict>
-        <dict>
-            <key>Processor</key>
-            <string>URLTextSearcher</string>
-            <key>Arguments</key>
-            <dict>
-                <key>url</key>
-                <string>%search_url%</string>
-                <key>re_pattern</key>
-                <string>%search_pattern%/.*.dmg</string>
-            </dict>
-        </dict>
-        <dict>
-            <key>Processor</key>
-            <string>URLDownloader</string>
-            <key>Arguments</key>
-            <dict>
-                <key>url</key>
-                <string>%match%</string>
-            </dict>
-        </dict>
+	<key>Identifier</key>
+	<string>com.github.mlbz521.download.AutoCADPatch</string>
+	<key>Input</key>
+	<dict>
+		<key>NAME</key>
+		<string>AutoCAD Patch</string>
+		<key>PRODUCT</key>
+		<string>ACDMAC</string>
+		<key>MAJOR_VERSION</key>
+		<string>2021</string>
+	</dict>
+	<key>Process</key>
+	<array>
+		<dict>
+			<key>Processor</key>
+			<string>com.github.mlbz521.SharedProcessors/AutoDeskPatchURLProvider</string>
+			<key>Arguments</key>
+			<dict>
+				<key>major_version</key>
+				<string>%MAJOR_VERSION%</string>
+				<key>product</key>
+				<string>%PRODUCT%</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>URLTextSearcher</string>
+			<key>Arguments</key>
+			<dict>
+				<key>url</key>
+				<string>%search_url%</string>
+				<key>re_pattern</key>
+				<string>%search_pattern%/.*.dmg</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>URLDownloader</string>
+			<key>Arguments</key>
+			<dict>
+				<key>url</key>
+				<string>%match%</string>
+			</dict>
+		</dict>
 		<dict>
 			<key>Processor</key>
 			<string>CodeSignatureVerifier</string>
@@ -65,10 +65,10 @@ major_version examples:  2021, 2020, 2019, 2018, etc</string>
 				</array>
 			</dict>
 		</dict>
-        <dict>
-            <key>Processor</key>
-            <string>EndOfCheckPhase</string>
-        </dict>
-    </array>
+		<dict>
+			<key>Processor</key>
+			<string>EndOfCheckPhase</string>
+		</dict>
+	</array>
 </dict>
 </plist>

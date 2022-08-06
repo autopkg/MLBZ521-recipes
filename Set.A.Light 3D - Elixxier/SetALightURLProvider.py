@@ -13,21 +13,20 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""See docstring for SetALightProcessor class"""
-
-from __future__ import absolute_import
+"""See docstring for SetALightURLProvider class"""
 
 import re
 
-from autopkglib import Processor, ProcessorError, URLDownloader
+from autopkglib import ProcessorError, URLDownloader
 
 
-__all__ = ["SetALightProcessor"]
+__all__ = ["SetALightURLProvider"]
 
 
-class SetALightProcessor(URLDownloader):
+class SetALightURLProvider(URLDownloader):
     """This processor finds the URL for the Set.A.Light 3D download."""
 
+    description = __doc__
     input_variables = {
         "SEARCH_URL": {
             "description": "URL to search.",
@@ -40,8 +39,6 @@ class SetALightProcessor(URLDownloader):
         }
     }
 
-    description = __doc__
-
 
     def main(self):
 
@@ -52,7 +49,7 @@ class SetALightProcessor(URLDownloader):
             # Initialize the curl_cmd with the required curl switches
             curl_opts = [
                 self.curl_binary(),
-                "--url", "{}".format(search_url),
+                "--url", f"{search_url}",
                 "--request", "GET",
                 "--silent",
                 "--show-error",
@@ -68,12 +65,12 @@ class SetALightProcessor(URLDownloader):
             for item in parse_results:
                 if re.search("location: ", item):
                     self.env["url"] = (item.split(": ")[-1]).replace(" ", "%20")
-                    self.output("Download URL: {}".format(self.env["url"]))
+                    self.output(f"Download URL: {self.env['url']}")
 
         except:
             raise ProcessorError("Failed to identify the URL to download.")
 
 
 if __name__ == "__main__":
-    PROCESSOR = SetALightProcessor()
+    PROCESSOR = SetALightURLProvider()
     PROCESSOR.execute_shell()

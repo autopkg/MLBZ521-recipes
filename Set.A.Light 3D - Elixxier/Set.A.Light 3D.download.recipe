@@ -16,16 +16,16 @@ I have not attempted to license this in an programmatic way yet, so the result w
 		<string>https://www.elixxier.com/downloader-s3-usa.php?mac=11</string>
 	</dict>
 	<key>Process</key>
-    <array>
-        <dict>
-            <key>Processor</key>
-            <string>SetALightProcessor</string>
-            <key>Arguments</key>
-            <dict>
-                <key>search_path</key>
-                <string>%SEARCH_URL%</string>
-            </dict>
-        </dict>
+	<array>
+		<dict>
+			<key>Processor</key>
+			<string>SetALightURLProvider</string>
+			<key>Arguments</key>
+			<dict>
+				<key>search_path</key>
+				<string>%SEARCH_URL%</string>
+			</dict>
+		</dict>
 		<dict>
 			<key>Processor</key>
 			<string>URLDownloader</string>

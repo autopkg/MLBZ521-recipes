@@ -19,10 +19,10 @@ import xml.etree.ElementTree as ET
 from autopkglib import ProcessorError, URLGetter
 
 
-__all__ = ["MaplePatchProcessor"]
+__all__ = ["MaplePatchURLProvider"]
 
 
-class MaplePatchProcessor(URLGetter):
+class MaplePatchURLProvider(URLGetter):
 
     """This processor finds the URL for the latest patch of the supplied major
      version of Maple."""
@@ -108,5 +108,5 @@ class MaplePatchProcessor(URLGetter):
 
 
 if __name__ == "__main__":
-    PROCESSOR = MaplePatchProcessor()
+    PROCESSOR = MaplePatchURLProvider()
     PROCESSOR.execute_shell()

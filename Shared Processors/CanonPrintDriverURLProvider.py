@@ -39,15 +39,14 @@ sys.path.insert(0, f"{os.path.dirname(os.path.dirname(os.path.abspath(__file__))
 from SeleniumWebScrapper import WebEngine
 
 
-__all__ = ["CanonPrintDriverProcessor"]
+__all__ = ["CanonPrintDriverURLProvider"]
 
 
-class CanonPrintDriverProcessor(URLGetter):
+class CanonPrintDriverURLProvider(URLGetter):
     """This processor finds the download URL for the "recommended" Canon print driver.
     """
 
     description = __doc__
-
     input_variables = {
         # "support_url": {
         #     "required": False,
@@ -170,7 +169,7 @@ class CanonPrintDriverProcessor(URLGetter):
             "--request", "GET",
             "--output", json_product_list
         ]
-        headers = {'Accept': 'application/json'}
+        headers = {"Accept": "application/json"}
 
         try:
             # Initialize the curl_cmd, add the curl options, and execute curl
@@ -184,7 +183,7 @@ class CanonPrintDriverProcessor(URLGetter):
 
         try:
             # Load the JSON Response
-            with open(json_product_list, 'rb') as json_product_list_file:
+            with open(json_product_list, "rb") as json_product_list_file:
                 json_data = json.load(json_product_list_file)
 
             self.canon_product_parse(json_data, model)
@@ -309,12 +308,12 @@ class CanonPrintDriverProcessor(URLGetter):
         try:
             # Return results
             self.env["url"] = download_url
-            self.output(f'Download URL: {self.env["url"]}', verbose_level=1)
+            self.output(f"Download URL: {self.env['url']}", verbose_level=1)
 
         except:
             raise ProcessorError("Failed to find a download url for the provided model.")
 
 
 if __name__ == "__main__":
-    processor = CanonPrintDriverProcessor()
-    processor.execute_shell()
+    PROCESSOR = CanonPrintDriverURLProvider()
+    PROCESSOR.execute_shell()

@@ -34,7 +34,7 @@ The download recipe requires the Selenium Library (https://www.selenium.dev/docu
 			<key>CATEGORY</key>
 			<string>Testing</string>
 			<key>SELF_SERVICE_DESCRIPTION</key>
-			<string>Install Canon's UFRII Printer Drivers.  This driver package support various models in Canon's imageRUNNER ADVANCE product line.</string>
+			<string>Install Canon's UFRII Printer Drivers.  This driver package supports various models in Canon's imageRUNNER ADVANCE product line.</string>
 			<key>SELF_SERVICE_ICON</key>
 			<string>CanonPrinter.png</string>
 		</dict>

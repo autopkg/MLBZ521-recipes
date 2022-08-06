@@ -12,7 +12,7 @@ Input:
   EXTRACTED_FOLDER_NAME: Mac OS X Popups
 
 Process:
-  - Processor: PharosProcessor
+  - Processor: PharosURLProvider
     Arguments:
       downloads_page: "%DOWNLOAD_PAGE%"
       prefix_dl_url: "%DOWNLOAD_URL_PREFIX%"

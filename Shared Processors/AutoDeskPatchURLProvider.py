@@ -1,6 +1,6 @@
 #!/usr/local/autopkg/python
 #
-# Copyright 2020 Zack Thompson (mlbz521)
+# Copyright 2022 Zack Thompson (MLBZ521)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,13 +18,15 @@ import json
 
 from autopkglib import ProcessorError, URLGetter
 
-__all__ = ["AutoDeskPatchProcessor"]
 
-class AutoDeskPatchProcessor(URLGetter):
+__all__ = ["AutoDeskPatchURLProvider"]
 
+
+class AutoDeskPatchURLProvider(URLGetter):
     """This processor finds the URL for the latest patch of the supplied major
     version of AutoDesk."""
 
+    description = __doc__
     input_variables = {
         "product": {
             "required": True,
@@ -44,7 +46,6 @@ class AutoDeskPatchProcessor(URLGetter):
         }
     }
 
-    description = __doc__
 
     def main(self):
 
@@ -60,11 +61,11 @@ class AutoDeskPatchProcessor(URLGetter):
             raise ProcessorError(
                 "Expected an 'major_version' input variable but one was not set!")
 
-        self.output('Searching for patches for:  {product} {major_version}'.format(product=product, major_version=major_version))
+        self.output(f'Searching for patches for:  {product} {major_version}')
 
         # Build the URLs
-        lookupURL = "https://knowledge.autodesk.com/autodesk-downloads-finder/search?p={product}&v={major_version}".format(product=product, major_version=major_version)
-        pattern = "https://up.autodesk.com/{major_version}/{product}".format(product=product, major_version=major_version)
+        lookupURL = f"https://knowledge.autodesk.com/autodesk-downloads-finder/search?p={product}&v={major_version}"
+        pattern = f"https://up.autodesk.com/{major_version}/{product}"
 
         # Look up the product and major_version
         response = self.download(lookupURL)
@@ -88,13 +89,14 @@ class AutoDeskPatchProcessor(URLGetter):
 
             # Return results
             self.env["search_url"] = search_url
-            self.output("URL URL: {}".format(self.env["search_url"]))
+            self.output(f"URL URL: {self.env['search_url']}")
             self.env["search_pattern"] = pattern
-            self.output("Search Pattern: {}".format(self.env["search_pattern"]))
+            self.output(f"Search Pattern: {self.env['search_pattern']}")
 
         else:
             raise ProcessorError("Unable to find an update for the provided product and major_version.")
 
+
 if __name__ == "__main__":
-    processor = AutoDeskPatchProcessor()
-    processor.execute_shell()
+    PROCESSOR = AutoDeskPatchURLProvider()
+    PROCESSOR.execute_shell()

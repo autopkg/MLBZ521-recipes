@@ -67,7 +67,7 @@ See the CanonPrintDriverProcessor section (https://github.com/autopkg/MLBZ521-re
 			</dict>
 			<dict>
 				<key>Processor</key>
-				<string>com.github.mlbz521.SharedProcessors/CanonPrintDriverProcessor</string>
+				<string>com.github.mlbz521.SharedProcessors/CanonPrintDriverURLProvider</string>
 				<key>Arguments</key>
 				<dict>
 					<key>url_products_list</key>

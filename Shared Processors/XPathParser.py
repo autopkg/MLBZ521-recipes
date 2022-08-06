@@ -1,6 +1,6 @@
 #!/usr/local/autopkg/python
 #
-# Copyright 2022 by Zack T (MLBZ521)
+# Copyright 2022 Zack Thompson (MLBZ521)
 #
 # Inspired by DistributionPkgInfo.py from dataJar
 #   https://github.com/autopkg/dataJAR-recipes/blob/master/Shared%20Processors/DistributionPkgInfo.py
@@ -61,9 +61,7 @@ class XPathParser(Processor):
                             "value of attribute_two")
         }
     }
-
-    output_variables = {
-    }
+    output_variables = {}
 
 
     def main(self):

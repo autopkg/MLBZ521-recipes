@@ -1,6 +1,6 @@
 #!/usr/local/autopkg/python
 #
-# Copyright 2019 Zack T (mlbz521)
+# Copyright 2022 Zack Thompson (MLBZ521)
 #
 # Inspired by 
 #   * Per Olofsson's "Unarchiver.py"
@@ -19,8 +19,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from __future__ import absolute_import
-
 import os
 import re
 import shutil
@@ -28,12 +26,14 @@ import subprocess
 
 from autopkglib import Processor, ProcessorError
 
+
 __all__ = ["ExtractWith7z"]
 
-class ExtractWith7z(Processor):
 
+class ExtractWith7z(Processor):
     """This processor extracts files with a specified 7zip binary."""
 
+    description = __doc__
     input_variables = {
         "archive_path": {
             "required": False,
@@ -60,10 +60,8 @@ class ExtractWith7z(Processor):
                             "the system PATH."
         }
     }
-    output_variables = {
-    }
+    output_variables = {}
 
-    description = __doc__
 
     def main(self):
 
@@ -71,8 +69,7 @@ class ExtractWith7z(Processor):
         archive_path = self.env.get("archive_path", self.env.get("pathname"))
 
         if not archive_path:
-            raise ProcessorError(
-                "Path to an archive was not provided!")
+            raise ProcessorError("Path to an archive was not provided!")
 
         custom_path = self.env.get("7z_path", "")
         destination_path = self.env.get("destination_path", os.path.join(
@@ -83,9 +80,8 @@ class ExtractWith7z(Processor):
 
             try:
                 os.makedirs(destination_path)
-            except OSError as err:
-                raise ProcessorError("Failed to create {}:  {}".format(
-                    destination_path, err.strerror))
+            except OSError as error:
+                raise ProcessorError(f"Failed to create {destination_path}:  {error.strerror}") from error
 
         elif self.env.get("purge_destination"):
 
@@ -100,9 +96,8 @@ class ExtractWith7z(Processor):
                     else:
                         os.unlink(path)
 
-                except OSError as err:
-                    raise ProcessorError("Failed to remove {}:  {}".format(
-                        path, err.strerror))
+                except OSError as error:
+                    raise ProcessorError(f"Failed to remove {path}:  {error.strerror}") from error
 
         # Check if a custom binary path was provided
         if custom_path and custom_path != "/path/to/7z":
@@ -110,17 +105,15 @@ class ExtractWith7z(Processor):
             # Verify the custom binary exists at provided path
             if not os.path.exists(custom_path):
                 raise ProcessorError(
-                    "Provided {} binary does not exist at the following path:  {}".format(
-                        os.path.basename(custom_path), os.path.dirname(custom_path)))
+                    f"Provided {os.path.basename(custom_path)} binary does not exist at the following path:  {os.path.dirname(custom_path)}")
 
-            self.output("Provided {} binary at the following path:  {}".format(
-                os.path.basename(custom_path), os.path.dirname(custom_path)), verbose_level=2)
+            self.output(f"Provided {os.path.basename(custom_path)} binary at the following path:  {os.path.dirname(custom_path)}", verbose_level=2)
             binary_7z = [ custom_path ]
 
         else:
             # Set the binaries we're going to look for
-            binary_7z = [ "7zz", "/usr/local/7zz/7zz", "7z", "7za", "7zr", "p7zip", "/usr/local/bin/7z", 
-                "/Applications/Keka.app/Contents/MacOS/Keka" ]
+            binary_7z = [ "7zz", "/usr/local/7zz/7zz", "7z", "7za", "7zr", "p7zip", 
+                "/usr/local/bin/7z", "/Applications/Keka.app/Contents/MacOS/Keka" ]
 
         # Success/Fail Flag
         found_binary = False
@@ -132,23 +125,23 @@ class ExtractWith7z(Processor):
             if path != None:
                 found_binary = True
 
-                self.output("Using the 7z binary:  {}".format(path), verbose_level=2)
+                self.output(f"Using the 7z binary:  {path}", verbose_level=2)
 
                 if re.search("keka", path, re.IGNORECASE):
                     cmd = [
-                        "{}".format(path), 
+                        f"{path}", 
                         "--client",
                         "7z",
                         "x", 
-                        "{}".format(archive_path), 
-                        "-o{}".format(destination_path)
+                        f"{archive_path}", 
+                        f"-o{destination_path}"
                     ]
                 else:
                     cmd = [
-                        "{}".format(path), 
+                        f"{path}", 
                         "x", 
-                        "{}".format(archive_path), 
-                        "-o{}".format(destination_path)
+                        f"{archive_path}", 
+                        f"-o{destination_path}"
                     ]
 
                 try:
@@ -156,16 +149,13 @@ class ExtractWith7z(Processor):
                     (_, stderr) = result.communicate()
                 except subprocess.CalledProcessError as error:
                     raise ProcessorError(
-                        "{} execution failed with error code {}:  \n{}".format(
-                            os.path.basename(cmd[0]), error.returncode, error))
+                        f"{os.path.basename(cmd[0])} execution failed with error code {error.returncode}:  \n{error}") from error
 
                 if result.returncode != 0:
                     raise ProcessorError(
-                        "Extracting {} with {} failed with:  {}".format(
-                            archive_path, os.path.basename(cmd[0]), stderr))
+                        f"Extracting {archive_path} with {os.path.basename(cmd[0])} failed with:  {stderr}")
 
-                self.output("Extracted {} to {}".format(
-                    os.path.basename(archive_path), destination_path))
+                self.output(f"Extracted {os.path.basename(archive_path)} to {destination_path}")
 
                 break
 
@@ -174,5 +164,5 @@ class ExtractWith7z(Processor):
 
 
 if __name__ == "__main__":
-    processor = ExtractWith7z()
-    processor.execute_shell()
+    PROCESSOR = ExtractWith7z()
+    PROCESSOR.execute_shell()

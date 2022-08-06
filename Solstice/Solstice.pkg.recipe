@@ -50,9 +50,9 @@ Download recipe's original author was @joshua-d-miller (https://github.com/autop
 			<string>SolsticeProcessor</string>
 			<key>Arguments</key>
 			<dict>
-				<key>bootstrapperLocation</key>
+				<key>bootstrapper_location</key>
 				<string>%found_filename%</string>
-				<key>moveTo</key>
+				<key>move_to</key>
 				<string>%RECIPE_CACHE_DIR%/pkgroot/Applications</string>
 			</dict>
 		</dict>
@@ -77,17 +77,17 @@ Download recipe's original author was @joshua-d-miller (https://github.com/autop
 					<string>scripts</string>
 					<key>version</key>
 					<string>%version%</string>
-                    <key>chown</key>
-                    <array>
-                        <dict>
-                            <key>path</key>
-                            <string>Applications</string>
-                            <key>user</key>
-                            <string>root</string>
-                            <key>group</key>
-                            <string>admin</string>
-                        </dict>
-                    </array>
+					<key>chown</key>
+					<array>
+						<dict>
+							<key>path</key>
+							<string>Applications</string>
+							<key>user</key>
+							<string>root</string>
+							<key>group</key>
+							<string>admin</string>
+						</dict>
+					</array>
 				</dict>
 			</dict>
 		</dict>

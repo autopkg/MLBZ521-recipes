@@ -1,6 +1,6 @@
 #!/usr/local/autopkg/python
 #
-# StringRightSplitter.py Copyright 2020 by Zack Thompson (MLBZ521)
+# Copyright 2022 Zack Thompson (MLBZ521)
 #
 # Inspired by VersionSplitter.py from Elliot Jordan
 #
@@ -16,14 +16,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from __future__ import absolute_import
 from autopkglib import Processor, ProcessorError
+
 
 __all__ = ["StringRightSplitter"]
 
 
 class StringRightSplitter(Processor):
-
     """This processor splits a string starting from the right.
     Uses the "rsplit()" function.
 
@@ -33,6 +32,7 @@ class StringRightSplitter(Processor):
     This was done since most people use key/string pairs and not key/integers.
     """
 
+    description = __doc__
     input_variables = {
         "string_to_split": {
             "required": True,
@@ -58,10 +58,8 @@ class StringRightSplitter(Processor):
             "description": "The desired variable name to assign the value to."
         }
     }
-    output_variables = {
-    }
+    output_variables = {}
 
-    description = __doc__
 
     def main(self):
 
@@ -72,16 +70,17 @@ class StringRightSplitter(Processor):
         return_variable = self.env["return_variable"]
 
         # Check if the index and occurrence values passed are an integer, if not set them to the integer type
-        if isinstance(index, int) == False:
+        if not isinstance(index, int):
             index = int(index)
-        if isinstance(occurrence, int) == False:
+        if not isinstance(occurrence, int):
             occurrence = int(occurrence)
 
         desired_string = string_to_split.rsplit(split_on, occurrence)[index]
 
-        self.output("Result:  {}".format(desired_string))
+        self.output(f"Result:  {desired_string}")
         self.env[return_variable] = desired_string
 
+
 if __name__ == "__main__":
-    processor = StringRightSplitter()
-    processor.execute_shell()
+    PROCESSOR = StringRightSplitter()
+    PROCESSOR.execute_shell()

@@ -134,5 +134,5 @@ class ConditionalUnarchiver(Processor):
 
 
 if __name__ == "__main__":
-    processor = ConditionalUnarchiver()
-    processor.execute_shell()
+    PROCESSOR = ConditionalUnarchiver()
+    PROCESSOR.execute_shell()

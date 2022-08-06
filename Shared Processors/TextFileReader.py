@@ -1,6 +1,6 @@
 #!/usr/local/autopkg/python
 #
-# Copyright 2022 Zack T (mlbz521)
+# Copyright 2022 Zack Thompson (MLBZ521)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,8 +16,6 @@
 
 """See docstring for TextFileReader class"""
 
-from __future__ import absolute_import
-
 import os.path
 import re
 
@@ -29,12 +27,12 @@ __all__ = ["TextFileReader"]
 
 
 class TextFileReader(DmgMounter):
-
     """This processor reads a text file and looks for a regex pattern and 
     returns the rest of the line that matched the pattern.  Source path 
     can be a .dmg which will be mounted.
     """
 
+    description = __doc__
     input_variables = {
         "source_path": {
             "required": True,
@@ -53,7 +51,6 @@ class TextFileReader(DmgMounter):
         }
     }
 
-    description = __doc__
 
     def main(self):
 
@@ -66,8 +63,8 @@ class TextFileReader(DmgMounter):
         (dmg_path, dmg, dmg_source_path) = self.parsePathForDMG(source_path)
 
         self.output(
-            "Parsed dmg results: dmg_path: {}, dmg: {}, dmg_source_path: {}".format(
-                dmg_path, dmg, dmg_source_path), verbose_level=2)
+            f"Parsed dmg results: dmg_path: {dmg_path}, dmg: {dmg}, dmg_source_path: {dmg_source_path}",
+            verbose_level=2)
 
         if dmg:
 
@@ -75,15 +72,16 @@ class TextFileReader(DmgMounter):
                 mount_point = self.mount(dmg_path)
                 source_path = os.path.join(mount_point, dmg_source_path)
 
-            except Exception:
-                raise ProcessorError("Unable to mount the dmg.")
+            except Exception as error:
+                raise ProcessorError("Unable to mount the dmg.") from error
 
         # Wrap in a try/finally so if a dmg is mounted, it will always be unmounted
         try:
             with open(source_path, 'r') as file:
                 contents = file.read()
-        except Exception:
-            raise ProcessorError(f"Unable to open '{file_to_open}'")
+
+        except Exception as error:
+            raise ProcessorError(f"Unable to open '{file_to_open}'") from error
 
         finally:
             if dmg:
@@ -92,16 +90,16 @@ class TextFileReader(DmgMounter):
         try:
 
             # Look for a match
-            line = re.search(pattern + r'.*', contents)
+            line = re.search(f'{pattern}.*', contents)
             match = re.split(pattern, line.group())[1]
 
             self.env["match"] = match
-            self.output("match: {}".format(self.env["match"]))
+            self.output("match: {self.env['match']}")
 
-        except Exception:
-            raise ProcessorError("Unable to find a match based on the pattern provided.")
+        except Exception as error:
+            raise ProcessorError("Unable to find a match based on the pattern provided.") from error
 
 
 if __name__ == "__main__":
-    processor = TextFileReader()
-    processor.execute_shell()
+    PROCESSOR = TextFileReader()
+    PROCESSOR.execute_shell()

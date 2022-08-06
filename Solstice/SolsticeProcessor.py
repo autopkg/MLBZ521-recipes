@@ -1,6 +1,6 @@
 #!/usr/local/autopkg/python
 #
-# Copyright 2019 Zack T (mlbz521)
+# Copyright 2022 Zack Thompson (MLBZ521)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,9 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from __future__ import absolute_import, print_function
-
 import os
+import plistlib
 import shutil
 import subprocess
 import time
@@ -24,13 +23,9 @@ import time
 from autopkglib import Processor, ProcessorError
 from SystemConfiguration import SCDynamicStoreCopyConsoleUser
 
-try:
-    from plistlib import load as plist_Reader  # For Python 3
-except ImportError:
-    from plistlib import readPlist as plist_Reader  # For Python 2
-
 
 __all__ = ["SolsticeProcessor"]
+
 
 class SolsticeProcessor(Processor):
 
@@ -38,12 +33,13 @@ class SolsticeProcessor(Processor):
     some additional information for building the package.
     """
 
+    description = __doc__
     input_variables = {
-        "bootstrapperLocation": {
+        "bootstrapper_location": {
             "required": True,
             "description": "The location of the extracted .app that builds the final .app.",
         },
-        "moveTo": {
+        "move_to": {
             "required": True,
             "description": "The Autopkg Cache directory for this recipe.",
         }
@@ -57,7 +53,6 @@ class SolsticeProcessor(Processor):
         }
     }
 
-    description = __doc__
 
     def main(self):
 
@@ -72,14 +67,15 @@ class SolsticeProcessor(Processor):
                 process = subprocess.Popen(command)
 
             except subprocess.CalledProcessError as error:
-                self.output(('return code = ', error.returncode))
-                self.output(('result = ', error))
+                self.output(f"return code = {error.returncode}")
+                self.output(f"result = {error}")
 
             return process
 
+
         # Define some variables.
-        bootstrapperLocation = self.env.get("bootstrapperLocation")
-        moveTo = self.env.get("moveTo")
+        bootstrapper_location = self.env.get("bootstrapper_location")
+        move_to = self.env.get("move_to")
         time_counter = 0
 
         # The final .app is saved to the logged in users home directory, so we get that.
@@ -87,11 +83,11 @@ class SolsticeProcessor(Processor):
         username = [username,""][username in [u"loginwindow", None, u""]]
 
         # Run the binary to build the final .app.
-        bootstrapper = ['{}/Contents/MacOS/SolsticeClientInstallerMac'.format(bootstrapperLocation)]
+        bootstrapper = [f"{bootstrapper_location}/Contents/MacOS/SolsticeClientInstallerMac"]
         build = runUtility(bootstrapper)
 
         # Give it eight seconds to build the app, and then kill the process -- we don't want the app launching.
-        while not os.path.exists("/Users/{}/Desktop/Mersive Solstice.app/Contents/Info.plist".format(username)):
+        while not os.path.exists(f"/Users/{username}/Desktop/Mersive Solstice.app/Contents/Info.plist"):
 
             # This method was proposed by @dcoobs (github.com/dcoobs)
             time.sleep(1)
@@ -102,35 +98,36 @@ class SolsticeProcessor(Processor):
 
         build.kill()
 
-        if os.path.exists("/Users/{}/Desktop/Mersive Solstice.app".format(username)):
+        if os.path.exists(f"/Users/{username}/Desktop/Mersive Solstice.app"):
 
             # Move the file from the home directory, back into the Autopkg Cache directory.
-            shutil.move("/Users/{}/Desktop/Mersive Solstice.app".format(username), "{}/Mersive Solstice.app".format(moveTo))
+            shutil.move(f"/Users/{username}/Desktop/Mersive Solstice.app", f"{move_to}/Mersive Solstice.app")
 
         else:
             raise ProcessorError("The Mersive Solstice.app wasn't at the expected location.")
 
         # Define the plist file.
-        plist = "{}/Mersive Solstice.app/Contents/Info.plist".format(moveTo)
+        plist = f"{move_to}/Mersive Solstice.app/Contents/Info.plist"
 
         # Get the contents of the plist file.
         try:
-            with open(plist, 'rb') as file:
-                plist_contents = plist_Reader(file)
+            with open(plist, "rb") as file:
+                plist_contents = plistlib.load(file)
 
         except Exception:
-            raise ProcessorError('Unable to locate the specified plist file.')
+            raise ProcessorError("Unable to locate the specified plist file.")
 
         # Get the version and bundle id
-        version=plist_contents.get('CFBundleShortVersionString')
-        bundle_id=plist_contents.get('CFBundleIdentifier')
+        version=plist_contents.get("CFBundleShortVersionString")
+        bundle_id=plist_contents.get("CFBundleIdentifier")
 
         # Output
         self.env["version"] = version
-        self.output("Version: {}".format(self.env["version"]))
+        self.output(f"Version: {self.env['version']}")
         self.env["bundle_id"] = bundle_id
-        self.output("Bundle Identifier: {}".format(self.env["bundle_id"]))
+        self.output(f"Bundle Identifier: {self.env['bundle_id']}")
+
 
 if __name__ == "__main__":
-    processor = SolsticeProcessor()
-    processor.execute_shell()
+    PROCESSOR = SolsticeProcessor()
+    PROCESSOR.execute_shell()

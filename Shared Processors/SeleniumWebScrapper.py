@@ -32,10 +32,10 @@ __all__ = ["SeleniumWebScrapper"]
 
 
 class WebEngine(Processor):
-
     """Creates a Context Manager for Selenium to interact with a WebDriver Engine.
     Not intended for direct use."""
 
+    description = __doc__
     input_variables = {
         "web_driver": {
             "required": False,
@@ -60,8 +60,6 @@ class WebEngine(Processor):
             )
         }
     }
-
-    description = __doc__
 
 
     def __init__(self, engine, binary, parent=None, path=None):
@@ -114,5 +112,5 @@ class WebEngine(Processor):
 
 
 if __name__ == "__main__":
-    processor = WebEngine()
-    processor.execute_shell()
+    PROCESSOR = WebEngine()
+    PROCESSOR.execute_shell()

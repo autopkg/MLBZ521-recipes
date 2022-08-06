@@ -1,10 +1,10 @@
 #!/usr/local/autopkg/python
 #
-# Copyright 2014-2017 Shea G. Craig
-#
-# Modified by Zack Thompson (MLBZ521)
+# Copyright 2022 Zack Thompson (MLBZ521)
 #   Borrowed and customized the find_file_in_search_path function from JSSImporter.py
 #       https://github.com/jssimporter/JSSImporter/blob/master/JSSImporter.py
+#
+# Copyright 2014-2017 Shea G. Craig
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,13 +19,15 @@
 # limitations under the License.
 
 import os
+
 from collections import OrderedDict
 from autopkglib import Processor, ProcessorError
 
+
 __all__ = ["FindFileInSearchPath"]
 
-class FindFileInSearchPath(Processor):
 
+class FindFileInSearchPath(Processor):
     """Search search_paths for the first existing instance of path.
     Searches, in order, through the following directories
     until a matching file is found:
@@ -54,6 +56,7 @@ class FindFileInSearchPath(Processor):
         ProcessorError if none of the above files exist.
     """
 
+    description = __doc__
     input_variables = {
         "find_file": {
             "required": True,
@@ -66,7 +69,6 @@ class FindFileInSearchPath(Processor):
         }
     }
 
-    description = __doc__
 
     def main(self):
 
@@ -113,21 +115,19 @@ class FindFileInSearchPath(Processor):
                     final_path = test_sub_directory
                 tested.append(test_sub_directory)
 
-            tested.append(test_path)
-            tested.append(test_parent_folder_path)
+            tested.extend((test_path, test_parent_folder_path))
 
             if final_path:
                 break
 
         if not final_path:
-            raise ProcessorError("Unable to find file {} at any of the following locations: {}"
-                .format(filename, tested))
+            raise ProcessorError(f"Unable to find file {filename} at any of the following locations: {tested}")
 
         # Return values
         self.env["path_to_found_file"] = final_path
-        self.output("Path to found file: {}".format(self.env["path_to_found_file"]))
+        self.output(f"Path to found file: {self.env['path_to_found_file']}")
 
 
 if __name__ == "__main__":
-    processor = FindFileInSearchPath()
-    processor.execute_shell()
+    PROCESSOR = FindFileInSearchPath()
+    PROCESSOR.execute_shell()

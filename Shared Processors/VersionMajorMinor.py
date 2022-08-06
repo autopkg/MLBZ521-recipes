@@ -1,10 +1,9 @@
 #!/usr/local/autopkg/python
 #
+# Copyright 2022 Zack Thompson (MLBZ521)
+#
 # Original:  VersionSplitter.py
 # Copyright 2015 Elliot Jordan
-#
-# VersionMajorMinor.py
-# Modified 2018 by Zack Thompson
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,22 +17,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from __future__ import absolute_import
-
 import re
 
 from autopkglib import Processor, ProcessorError
+
 
 __all__ = ["VersionMajorMinor"]
 
 
 class VersionMajorMinor(Processor):
-
     """This processor splits a version string into only the 'Major.Minor' numerals.
     Expected format is Semantic Versioning.
     Default behavior example: "3.6.5" --> "3.6"
     """
 
+    description = __doc__
     input_variables = {
         "version": {
             "required": True,
@@ -45,14 +43,15 @@ class VersionMajorMinor(Processor):
             "description": "The cleaned up version string."
         }
     }
-    description = __doc__
+
 
     def main(self):
 
         major_minor_version = re.search(r"\d[.]\d", self.env["version"])
         self.env["major_minor_version"] = major_minor_version.group()
-        self.output("Major.Minor Version: {}".format(self.env["major_minor_version"]))
+        self.output(f"Major.Minor Version: {self.env['major_minor_version']}")
+
 
 if __name__ == "__main__":
-    processor = VersionMajorMinor()
-    processor.execute_shell()
+    PROCESSOR = VersionMajorMinor()
+    PROCESSOR.execute_shell()

@@ -1,6 +1,6 @@
 #!/usr/local/autopkg/python
 #
-# Copyright 2022 by Zack T (MLBZ521)
+# Copyright 2022 Zack Thompson (MLBZ521)
 #
 # Inspired by DistributionPkgInfo.py from dataJar
 #   https://github.com/autopkg/dataJAR-recipes/blob/master/Shared%20Processors/DistributionPkgInfo.py
@@ -37,7 +37,6 @@ class XarExtractSingleFile(DmgMounter):
     can be within a .dmg which will be mounted."""
 
     description = __doc__
-
     input_variables = {
         "archive_path": {
             "required": True,
@@ -54,7 +53,6 @@ class XarExtractSingleFile(DmgMounter):
             "description": "File to extract out of the archive."
         }
     }
-
     output_variables = {
         "extracted_file": {
             "description": "The file that was extracted from the archive."

@@ -15,8 +15,6 @@ Process:
     Arguments:
       url: "https://office-reset.com/%url%"
 
-  - Processor: EndOfCheckPhase
-
   - Processor: CodeSignatureVerifier
     Arguments:
       expected_authority_names:
@@ -24,3 +22,5 @@ Process:
         - Developer ID Certification Authority
         - Apple Root CA
       input_path: "%pathname%"
+
+  - Processor: EndOfCheckPhase

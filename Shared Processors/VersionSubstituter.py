@@ -1,10 +1,9 @@
 #!/usr/local/autopkg/python
 #
+# Copyright 2022 Zack Thompson (MLBZ521)
+#
 # Original:  VersionSplitter.py
 # Copyright 2015 Elliot Jordan
-#
-# VersionSubstituter.py
-# Modified 2018 by Zack Thompson
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,20 +17,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from __future__ import absolute_import
-
 from autopkglib import Processor, ProcessorError
+
 
 __all__ = ["VersionSubstituter"]
 
 
 class VersionSubstituter(Processor):
-
     """This processor substitutes character(s) in a string by number of occurrences.
     By default, it splits using a dash only the first item.
     Default behavior example: "3.0.8-2" --> "3.0.8b2"
     """
 
+    description = __doc__
     input_variables = {
         "version": {
             "required": True,
@@ -58,7 +56,7 @@ class VersionSubstituter(Processor):
             "description": "The cleaned up version string."
         }
     }
-    description = __doc__
+
 
     def main(self):
 
@@ -66,9 +64,9 @@ class VersionSubstituter(Processor):
         new = self.env.get("new")
         index = self.env.get("index", 1)
         self.env["version"] = self.env["version"].replace(old, new, index)
-        self.output("Substitute version: {}".format(self.env["version"]))
+        self.output(f"Substitute version: {self.env['version']}")
 
 
 if __name__ == "__main__":
-    processor = VersionSubstituter()
-    processor.execute_shell()
+    PROCESSOR = VersionSubstituter()
+    PROCESSOR.execute_shell()

@@ -1,6 +1,6 @@
 #!/usr/local/autopkg/python
 #
-# Copyright 2021 Zack Thompson (mlbz521)
+# Copyright 2022 Zack Thompson (MLBZ521)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,7 +16,8 @@
 
 import json
 
-from autopkglib import Processor, ProcessorError, URLGetter
+from autopkglib import ProcessorError, URLGetter
+
 
 __all__ = ["CrowdStrikeURLProvider"]
 
@@ -26,6 +27,7 @@ class CrowdStrikeURLProvider(URLGetter):
     """This processor finds the download URL for the CrowdStrike Sensor
     version of the supplied Policy ID."""
 
+    description = __doc__
     input_variables = {
         "client_id": {"required": True, "description": "CrowdStrike API Client ID."},
         "client_secret": {
@@ -56,7 +58,6 @@ class CrowdStrikeURLProvider(URLGetter):
         },
     }
 
-    description = __doc__
 
     def main(self):
 
@@ -66,17 +67,9 @@ class CrowdStrikeURLProvider(URLGetter):
         policy_id = self.env.get("policy_id")
         api_region_url = self.env.get("api_region_url", "https://api.crowdstrike.com")
 
-        token_url = "{}/oauth2/token".format(api_region_url)
-        policy_url = (
-            "{}/policy/combined/sensor-update/v1?filter=platform_name%3A'Mac'".format(
-                api_region_url
-            )
-        )
-        installer_url = (
-            "{}/sensors/combined/installers/v1?filter=platform%3A%22mac%22".format(
-                api_region_url
-            )
-        )
+        token_url = f"{api_region_url}/oauth2/token"
+        policy_url = f"{api_region_url}/policy/combined/sensor-update/v1?filter=platform_name%3A'Mac'"
+        installer_url = f"{api_region_url}/sensors/combined/installers/v1?filter=platform%3A%22mac%22"
 
         # Verify the input variables were provided
         if not client_id or client_id == "%CLIENT_ID%":
@@ -95,11 +88,11 @@ class CrowdStrikeURLProvider(URLGetter):
         # Build the required curl switches
         curl_opts = [
             "--url",
-            "{}".format(token_url),
+            f"{token_url}",
             "--request",
             "POST",
             "--data",
-            "client_id={}&client_secret={}".format(client_id, client_secret),
+            f"client_id={client_id}&client_secret={client_secret}"
         ]
 
         try:
@@ -116,7 +109,7 @@ class CrowdStrikeURLProvider(URLGetter):
             # Load the JSON response
             json_data = json.loads(response_token)
             access_token = json_data["access_token"]
-            self.output("Access Token:  {}".format(access_token), verbose_level=3)
+            self.output(f"Access Token:  {access_token}", verbose_level=3)
 
         except:
             raise ProcessorError("Failed to acquire the bearer authentication token!")
@@ -125,7 +118,7 @@ class CrowdStrikeURLProvider(URLGetter):
 
             auth_headers = {
                 "accept": "application/json",
-                "authorization": "bearer {}".format(access_token),
+                "authorization": f"bearer {access_token}",
             }
 
             # Execute curl
@@ -149,9 +142,7 @@ class CrowdStrikeURLProvider(URLGetter):
 
             build_version = build.split("|", 1)[0]
             self.output(
-                "Build version for matching Policy:  {}".format(build_version),
-                verbose_level=1,
-            )
+                f"Build version for matching Policy:  {build_version}", verbose_level=1)
 
         except:
             raise ProcessorError("Failed to match a Sensor Update Policy!")
@@ -177,31 +168,22 @@ class CrowdStrikeURLProvider(URLGetter):
 
         except:
             raise ProcessorError(
-                "Failed to match an available sensor version to the Policy assigned build version!"
-            )
+                "Failed to match an available sensor version to the Policy assigned build version!")
 
         try:
-            download_url = "{}/sensors/entities/download-installer/v1?id={}".format(
-                api_region_url, sha256
-            )
+            download_url = f"{api_region_url}/sensors/entities/download-installer/v1?id={sha256}"
 
             self.env["access_token"] = access_token
             # This version is appended to match the _actual_ CFBundleShortVersionString
-            self.env["version"] = "{}.0".format(version)
+            self.env["version"] = f"{version}.0"
             self.env["download_url"] = download_url
 
             self.output(
-                "Sensor version that will be downloaded: {}".format(
-                    self.env["version"]
-                ),
-                verbose_level=1,
-            )
-            self.output("Download URL:  {}".format(download_url), verbose_level=3)
+                f"Sensor version that will be downloaded: {self.env['version']}", verbose_level=1)
+            self.output(f"Download URL:  {download_url}", verbose_level=3)
 
         except:
-            raise ProcessorError(
-                "Something went wrong assigning environment variables!"
-            )
+            raise ProcessorError("Something went wrong assigning environment variables!")
 
 
 if __name__ == "__main__":

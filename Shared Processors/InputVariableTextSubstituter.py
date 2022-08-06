@@ -1,7 +1,6 @@
 #!/usr/local/autopkg/python
 #
-# InputVariableTextSubstituter.py
-# Copyright 2021 by Zack Thompson (MLBZ521)
+# Copyright 2022 Zack Thompson (MLBZ521)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,17 +14,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from __future__ import absolute_import
-
 import re
 
 from autopkglib import Processor, ProcessorError
+
 
 __all__ = ["InputVariableTextSubstituter"]
 
 
 class InputVariableTextSubstituter(Processor):
-
     """This processor substitutes character(s) in a string with either 
     another string or the value of a set autopkg variable and then returns
     the modified string as a supplied variable.
@@ -38,7 +35,6 @@ class InputVariableTextSubstituter(Processor):
     """
 
     description = __doc__
-
     input_variables = {
         "original_string": {
             "required": True,
@@ -102,13 +98,13 @@ class InputVariableTextSubstituter(Processor):
         return_variable = self.env.get("return_variable")
 
         if self.env.get("append_space"):
-            replacement = " {}".format(replacement)
+            replacement = f" {replacement}"
 
         new_string = re.sub(string_to_replace, replacement, original_string)
 
         self.env[return_variable] = new_string
         self.env["return_variable_value"] = new_string
-        self.output("{}: {}".format(return_variable, self.env[return_variable]))
+        self.output(f"{return_variable}: {self.env[return_variable]}")
 
         # For back to back runs of this processor...
         for variable in ( "replacement_string", "variable_to_use", "append_space" ):
@@ -116,5 +112,5 @@ class InputVariableTextSubstituter(Processor):
 
 
 if __name__ == "__main__":
-    processor = InputVariableTextSubstituter()
-    processor.execute_shell()
+    PROCESSOR = InputVariableTextSubstituter()
+    PROCESSOR.execute_shell()

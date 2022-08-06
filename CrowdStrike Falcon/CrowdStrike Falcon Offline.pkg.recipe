@@ -38,7 +38,7 @@
                 <key>pkgroot</key>
                 <string>%RECIPE_CACHE_DIR%/scripts</string>
             </dict>
-        </dict> 
+        </dict>
 		<dict>
 			<key>Processor</key>
 			<string>Copier</string>

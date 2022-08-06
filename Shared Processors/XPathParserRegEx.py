@@ -1,6 +1,6 @@
 #!/usr/local/autopkg/python
 #
-# XPathParserRegEx.py Copyright 2022 by Zack Thompson (MLBZ521)
+# Copyright 2022 Zack Thompson (MLBZ521)
 #
 # Built from XPathParser, which was inspired by DistributionPkgInfo.py from dataJar
 #   https://github.com/autopkg/dataJAR-recipes/blob/master/Shared%20Processors/DistributionPkgInfo.py
@@ -35,7 +35,6 @@ class XPathParserRegEx(Processor):
     parsing element attributes via RegEx."""
 
     description = __doc__
-
     input_variables = {
         "xml_file": {
             "required": True,
@@ -64,7 +63,6 @@ class XPathParserRegEx(Processor):
                             "value of attribute_id_to_return")
         }
     }
-
     output_variables = {}
 
 

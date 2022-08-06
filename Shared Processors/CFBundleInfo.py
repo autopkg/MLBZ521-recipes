@@ -23,6 +23,7 @@ import plistlib
 from autopkglib import ProcessorError
 from autopkglib.DmgMounter import DmgMounter
 
+
 __all__ = ["CFBundleInfo"]
 
 
@@ -30,7 +31,6 @@ class CFBundleInfo(DmgMounter):
     """Returns version information from a plist"""
 
     description = __doc__
-
     input_variables = {
         "input_plist_path": {
             "required": True,
@@ -55,13 +55,17 @@ class CFBundleInfo(DmgMounter):
         }
     }
 
+
     def main(self):
         """Return a version for file at input_plist_path"""
+
         # Check if we're trying to read something inside a dmg.
         (dmg_path, dmg, dmg_source_path) = self.parsePathForDMG(
             self.env["input_plist_path"]
         )
+
         try:
+
             if dmg:
                 # Mount dmg and copy path inside.
                 mount_point = self.mount(dmg_path)
@@ -69,10 +73,11 @@ class CFBundleInfo(DmgMounter):
             else:
                 # just use the given path
                 input_plist_path = self.env["input_plist_path"]
+
             if not os.path.exists(input_plist_path):
                 raise ProcessorError(
-                    f"File '{input_plist_path}' does not exist or could not be read."
-                )
+                    f"File '{input_plist_path}' does not exist or could not be read.")
+
             try:
                 with open(input_plist_path, "rb") as f:
                     plist = plistlib.load(f)
@@ -87,8 +92,8 @@ class CFBundleInfo(DmgMounter):
                     f"Found CFBundleVersion {self.env['cfbundle_version']} in file {input_plist_path}"
                     f"Found CFBundleIdentifier {self.env['cfbundle_identifier']} in file {input_plist_path}"
                 )
-            except Exception as err:
-                raise ProcessorError(err)
+            except Exception as error:
+                raise ProcessorError(error) from error
 
         finally:
             if dmg:

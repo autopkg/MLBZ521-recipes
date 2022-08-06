@@ -12,7 +12,7 @@ Used in:
   * com.github.mlbz521.download.AutoCADPatch
 
 
-## CanonPrintDriverProcessor ##
+## CanonPrintDriverURLProvider ##
 
 Downloads and packages the latest Canon driver package based on the override-able parameters:  model, OS Version, and download type.
 
@@ -316,7 +316,7 @@ Used in:
   * com.github.mlbz521.download.SPSSStatistics
 
 
-## RicohPrintDriverProcessor ##
+## RicohPrintDriverURLProvider ##
 
 This processor finds the download URL for the latest Driver package based on the override-able parameters.
 
@@ -369,9 +369,9 @@ Notables:
       * `sudo pip3 install --target=/Library/AutoPkg/Selenium selenium`
 
 Used in:
-  * CanonPrintDriverProcessor
-  * PharosProcessor
-  * RicohPrintDriverProcessor
+  * CanonPrintDriverURLProvider
+  * PharosURLProvider
+  * RicohPrintDriverURLProvider
 
 ## StringRightSplitter ##
 

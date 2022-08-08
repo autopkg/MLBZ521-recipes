@@ -105,9 +105,11 @@ class XeroxPrintDriverURLProvider(URLGetter):
 
         # Build the required curl switches
         curl_opts = [
-            "--url", "https://platform.cloud.coveo.com/rest/search/v2?organizationId=xeroxcorporationproductiono2r4c199",
+            "--url", 
+            "https://platform.cloud.coveo.com/rest/search/v2?organizationId=xeroxcorporationproductiono2r4c199",
             "--request", "POST",
-            "--data", f"&referrer=https://www.support.xerox.com/&aq=@producttagname=='{input_model}'&cq=@source=='Xerox Support'&tab=DriversDownloads&pipeline=XeroxPublic&context={{'locale':'en-us','lang':'en','fulllang':'en-us','product':'','supportlang':'English','supportshortlang':'en'}}&fieldsToInclude=[]"
+            "--data", 
+            f'&referrer=https://www.support.xerox.com/&aq=@producttagname=="{input_model}"&cq=@source=="Xerox Support"&tab=DriversDownloads&pipeline=XeroxPublic&context={{"locale":"en-us","lang":"en","fulllang":"en-us","product":"","supportlang":"English","supportshortlang":"en"}}&fieldsToInclude=[]'
         ]
 
         try:

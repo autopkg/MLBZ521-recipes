@@ -9,7 +9,7 @@ MODEL:
 	- example:  'imageRUNNER ADVANCE C7565i III'
 OS_VERSION options:  
 	- macOS Monterey v12.0:  MACOS_12 (default)
-	- macOS Big Sur v11.0:  MACOS_11
+	- macOS Big Sur v11.0:  MACOS_11_0
 	- macOS Catalina v10.15:  MACOS_10_15
 	- macOS Mojave v10.14:  MACOS_10_14
 	- macOS High Sierra v10.13:  MACOS_10_13
@@ -24,15 +24,13 @@ DOWNLOAD_TYPE options:
 		Note:  The `com.github.mlbz521.pkg.CanonPrintDriver` recipe does not support the PPD file type
 
 The download recipe requires the Selenium Library (https://www.selenium.dev/documentation/) and a browser driver to be supplied.
-See the CanonPrintDriverProcessor section (https://github.com/autopkg/MLBZ521-recipes/blob/master/Shared%20Processors/ReadMe.md#canonprintdriverprocessor) in my Shared Processors README for more info.</string>
+See the CanonPrintDriverURLProvider section (https://github.com/autopkg/MLBZ521-recipes/blob/master/Shared%20Processors/ReadMe.md#CanonPrintDriverURLProvider) in my Shared Processors README for more info.</string>
 		<key>Identifier</key>
 		<string>com.github.mlbz521.download.CanonPrintDriver</string>
 		<key>Input</key>
 		<dict>
 			<key>NAME</key>
 			<string>Canon URFII Print Drivers</string>
-			<key>SUPPORT_URL</key>
-			<string>https://www.usa.canon.com/internet/portal/us/home/support</string>
 			<key>MODEL</key>
 			<string>imageRUNNER ADVANCE C7565i III</string>
 			<key>OS_VERSION</key>
@@ -52,26 +50,9 @@ See the CanonPrintDriverProcessor section (https://github.com/autopkg/MLBZ521-re
 		<array>
 			<dict>
 				<key>Processor</key>
-				<string>URLTextSearcher</string>
-				<key>Arguments</key>
-				<dict>
-					<key>url</key>
-					<string>%SUPPORT_URL%</string>
-					<key>re_pattern</key>
-					<string>^\s*var ajaxurl = "(?P&lt;match&gt;https:\/\/downloads\.canon\.com\/c\d+dev\/cusa\/ow\/support\/support-home-products\.json)";$</string>
-					<key>re_flags</key>
-					<array>
-						<string>MULTILINE</string>
-					</array>
-				</dict>
-			</dict>
-			<dict>
-				<key>Processor</key>
 				<string>com.github.mlbz521.SharedProcessors/CanonPrintDriverURLProvider</string>
 				<key>Arguments</key>
 				<dict>
-					<key>url_products_list</key>
-					<string>%match%</string>
 					<key>model</key>
 					<string>%MODEL%</string>
 					<key>os_version</key>

@@ -135,9 +135,9 @@ Available recipe types:
 
 ### Canon Print Driver ###
 
-Downloads the latest Canon "Recommended Driver" package based on the override-able parameters.
+Downloads a Canon Print Driver package based on the override-able parameters.  The recipe was originally written to download the Recommended driver for Canon's imageRUNNER class, but has been updated to also download drivers for Canon's Multi-Function Printers as well.
 
-The download recipe requires the [Selenium Library](https://www.selenium.dev/documentation/) and requires a browser driver to be supplied.  See the [CanonPrintDriverProcessor](https://github.com/autopkg/MLBZ521-recipes/blob/master/Shared%20Processors/ReadMe.md#canonprintdriverprocessor) section in my Shared Processors README for more info.
+The download recipe requires the [Selenium Library](https://www.selenium.dev/documentation/) and requires a browser driver to be supplied.  See the [CanonPrintDriverURLProvider](https://github.com/autopkg/MLBZ521-recipes/blob/master/Shared%20Processors/ReadMe.md#CanonPrintDriverURLProvider) section in my Shared Processors README for more info.
 
 Available recipe types:
   * download
@@ -145,11 +145,26 @@ Available recipe types:
       * model:
         * description:  The official model name of the Canon Printer to search for
         * example:  'imageRUNNER ADVANCE C7565i III'
+      * download_type:
+        * description:  What to download from the available list.  Options:
+          * Recommended (Default)
+            * Will download _whatever_ option is in the "Recommended Driver(s)" section
+              * _Note_:  the "Recommended" driver may not be the *_latest_* driver
+          * UFRII
+            * will download the latest UFRII optional driver
+          * PS
+            * will download the latest PS optional driver
+          * FAX
+            * will download the latest FAX optional driver
+          * PPD
+            * will download the latest PPD optional driver
+            * Note:  The `com.github.mlbz521.pkg.CanonPrintDriver` recipe does not support the PPD file type
       * os_version
         * description:  The OS version to search against
         * required:  False
         * options:  
-          * macOS Big Sur v11.0:  MACOS_11_0 (Default)
+          * macOS Monterey v12.0:  MACOS_12 (Default)
+          * macOS Big Sur v11.0:  MACOS_11_0
           * macOS Catalina v10.15:  MACOS_10_15
           * macOS Mojave v10.14:  MACOS_10_14
           * macOS High Sierra v10.13:  MACOS_10_13

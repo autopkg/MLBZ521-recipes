@@ -47,7 +47,7 @@ Input Variables:
     * default:  'MACOS_12' (i.e. Monterey)
     * options:  
       * macOS Monterey v12.0:  MACOS_12
-      * macOS Big Sur v11.0:  MACOS_11
+      * macOS Big Sur v11.0:  MACOS_11_0
       * macOS Catalina v10.15:  MACOS_10_15
       * macOS Mojave v10.14:  MACOS_10_14
       * macOS High Sierra v10.13:  MACOS_10_13
@@ -90,9 +90,6 @@ Input Variables:
       * Linux 64bit:  LINUX_64BIT
       * Linux ARM:  LINUX_ARM
       * Linux MIPS:  LINUX_MIPS
-  * support_url
-    * description:  The URL to the Canon product support page
-    * required:  False
   * web_driver
     * description:  The web driver engine to use
     * required:  False

@@ -1,0 +1,29 @@
+Description: Downloads the latest version of the YoYo GameMaker and creates a .pkg.
+Identifier: com.github.mlbz521.pkg.YoYoGameMaker
+MinimumVersion: "2.3"
+ParentRecipe: com.github.davidbpirie.download.GameMaker
+Input:
+  NAME: YoYo GameMaker
+Process:
+  - Processor: FlatPkgUnpacker
+    Arguments:
+      destination_path: "%RECIPE_CACHE_DIR%/expanded"
+      flat_pkg_path: "%pathname%"
+  - Processor: PkgPayloadUnpacker
+    Arguments:
+      destination_path: "%RECIPE_CACHE_DIR%/unpack"
+      pkg_payload_path: "%RECIPE_CACHE_DIR%/expanded/GameMakerStudio2-Installer.pkg/Payload"
+      purge_destination: true
+  - Processor: BustedPlistReader
+    Arguments:
+      source_path: "%RECIPE_CACHE_DIR%/unpack/GameMaker.app/Contents/Info.plist"
+      pattern: <key>CFBundleShortVersionString</key>[\r\n]+([^\r\n]+)
+  - Processor: PkgCopier
+    Arguments:
+      source_pkg: "%pathname%"
+      pkg_path: "%RECIPE_CACHE_DIR%/%NAME%-%version%.pkg"
+  - Processor: PathDeleter
+    Arguments:
+      path_list: 
+        - "%RECIPE_CACHE_DIR%/expanded"
+        - "%RECIPE_CACHE_DIR%/unpack"

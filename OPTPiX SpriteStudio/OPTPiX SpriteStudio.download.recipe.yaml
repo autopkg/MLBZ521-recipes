@@ -1,0 +1,36 @@
+Description: Downloads the latest version of the OPTPiX SpriteStudio.
+Identifier: com.github.mlbz521.download.OPTPiXSpriteStudio
+MinimumVersion: "2.3"
+Input:
+  NAME: OPTPiX SpriteStudio
+  SEARCH_URL: https://www.webtech.co.jp/help/en/spritestudio7/download/
+  SEARCH_PATTERN: (?P<url>https\://www\.webtech\.co\.jp/spritestudio/ss7download/OPTPiX_SpriteStudio_Setup[\d_]+\.pkg)
+Process:
+  - Processor: URLTextSearcher
+    Arguments:
+      url: "%SEARCH_URL%"
+      re_pattern: "%SEARCH_PATTERN%"
+  - Processor: URLDownloader
+    Arguments:
+      url: "%url%"
+  - Processor: FlatPkgUnpacker
+    Arguments:
+      destination_path: "%RECIPE_CACHE_DIR%/expanded"
+      flat_pkg_path: "%pathname%"
+  - Processor: PkgPayloadUnpacker
+    Arguments:
+      destination_path: "%RECIPE_CACHE_DIR%/unpack"
+      pkg_payload_path: "%RECIPE_CACHE_DIR%/expanded/SpriteStudio7.pkg/Payload"
+      purge_destination: true
+  - Processor: Versioner
+    Arguments:
+      input_plist_path: "%RECIPE_CACHE_DIR%/unpack/SpriteStudio7.app/Contents/Info.plist"
+      plist_version_key: CFBundleShortVersionString
+  - Processor: CodeSignatureVerifier
+    Arguments:
+      input_path: "%pathname%"
+      expected_authority_names:
+        - "Developer ID Installer: CRI Middleware Co., Ltd. (24UK89WELY)"
+        - Developer ID Certification Authority
+        - Apple Root CA
+  - Processor: EndOfCheckPhase

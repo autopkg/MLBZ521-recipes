@@ -1,0 +1,15 @@
+Description: Downloads the latest version of the OPTPiX SpriteStudio and creates a .pkg.
+Identifier: com.github.mlbz521.pkg.OPTPiXSpriteStudio
+MinimumVersion: "2.3"
+Input:
+  NAME: OPTPiX SpriteStudio
+Process:
+  - Processor: PkgCopier
+    Arguments:
+      source_pkg: "%pathname%"
+      pkg_path: "%RECIPE_CACHE_DIR%/%NAME%-%version%.pkg"
+  - Processor: PathDeleter
+    Arguments:
+      path_list: 
+        - "%RECIPE_CACHE_DIR%/expanded"
+        - "%RECIPE_CACHE_DIR%/unpack"

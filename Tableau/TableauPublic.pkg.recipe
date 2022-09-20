@@ -52,7 +52,7 @@
 		</dict>
 		<dict>
 			<key>Processor</key>
-			<string>FilePkgCopierMover</string>
+			<string>PkgCopier</string>
 			<key>Arguments</key>
 			<dict>
 				<key>source_pkg</key>

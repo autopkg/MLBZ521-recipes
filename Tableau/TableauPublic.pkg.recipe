@@ -13,21 +13,8 @@
 	</dict>
 	<key>ParentRecipe</key>
 	<string>com.github.foigus.download.tableau-public</string>
-    <key>Process</key>
-    <array>
-		<dict>
-			<key>Processor</key>
-			<string>Copier</string>
-			<key>Arguments</key>
-			<dict>
-				<key>source_path</key>
-				<string>%pathname%/*.pkg</string>
-				<key>destination_path</key>
-				<string>%RECIPE_CACHE_DIR%/%NAME%.pkg</string>
-                <key>overwrite</key>
-                <true/>
-			</dict>
-		</dict>
+	<key>Process</key>
+	<array>
 		<dict>
 			<key>Processor</key>
 			<string>FlatPkgUnpacker</string>
@@ -36,7 +23,7 @@
 				<key>destination_path</key>
 				<string>%RECIPE_CACHE_DIR%/expanded</string>
 				<key>flat_pkg_path</key>
-				<string>%RECIPE_CACHE_DIR%/%NAME%.pkg</string>
+				<string>%pathname%/*.pkg</string>
 			</dict>
 		</dict>
 		<dict>
@@ -65,6 +52,17 @@
 		</dict>
 		<dict>
 			<key>Processor</key>
+			<string>FilePkgCopierMover</string>
+			<key>Arguments</key>
+			<dict>
+				<key>source_pkg</key>
+				<string>%pathname%/*.pkg</string>	
+				<key>pkg_path</key>
+				<string>%RECIPE_CACHE_DIR%/%NAME%-%version%.pkg</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
 			<string>PathDeleter</string>
 			<key>Arguments</key>
 			<dict>
@@ -75,17 +73,6 @@
 				</array>
 			</dict>
 		</dict>
-		<dict>
-			<key>Processor</key>
-			<string>FileMover</string>
-			<key>Arguments</key>
-			<dict>
-				<key>source</key>
-				<string>%RECIPE_CACHE_DIR%/%NAME%.pkg</string>	
-				<key>target</key>
-				<string>%RECIPE_CACHE_DIR%/%NAME%-%version%.pkg</string>
-			</dict>
-		</dict>
-    </array>
+	</array>
 </dict>
 </plist>

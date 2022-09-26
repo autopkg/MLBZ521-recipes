@@ -12,7 +12,7 @@ Process:
   - Processor: PkgPayloadUnpacker
     Arguments:
       destination_path: "%RECIPE_CACHE_DIR%/unpack"
-      pkg_payload_path: "%RECIPE_CACHE_DIR%/expanded/Insta360 Studio 2022.pkg/Payload"
+      pkg_payload_path: "%RECIPE_CACHE_DIR%/expanded/Insta360_Studio_2022.pkg/Payload"
       purge_destination: true
   - Processor: Versioner
     Arguments:

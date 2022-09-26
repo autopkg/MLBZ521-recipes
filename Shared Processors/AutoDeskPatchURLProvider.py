@@ -83,6 +83,9 @@ class AutoDeskPatchURLProvider(URLGetter):
                 for hotfix in json_data.get("Service Packs").get("docs"):
                     patches[hotfix.get("published")] = hotfix.get("link")
 
+            if not patches:
+                raise ProcessorError("Unable to find an update for the provided product and major_version.")
+
             # Get the latest patch
             # The "published" key is the epoch time of the release date, so simply get the largest number
             search_url = patches[sorted(patches.keys())[-1]]
@@ -94,7 +97,7 @@ class AutoDeskPatchURLProvider(URLGetter):
             self.output(f"Search Pattern: {self.env['search_pattern']}")
 
         else:
-            raise ProcessorError("Unable to find an update for the provided product and major_version.")
+            raise ProcessorError(f"Failed to find a match for product '{product}' with major_version '{major_version}'.")
 
 
 if __name__ == "__main__":

@@ -2,26 +2,26 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-    <key>Description</key>
+	<key>Description</key>
 	<string>Downloads and packages the latest verison of JMP/JMP Pro from a local file share.</string>
-    <key>Identifier</key>
-    <string>com.github.mlbz521.pkg.JMP</string>
-    <key>Input</key>
-    <dict>
-        <key>NAME</key>
-        <string>JMP</string>
-    </dict>
+	<key>Identifier</key>
+	<string>com.github.mlbz521.pkg.JMP</string>
+	<key>Input</key>
+	<dict>
+		<key>NAME</key>
+		<string>JMP</string>
+	</dict>
 	<key>ParentRecipe</key>
 	<string>com.github.mlbz521.download.JMP</string>
-    <key>Process</key>
-    <array>
+	<key>Process</key>
+	<array>
 		<dict>
 			<key>Processor</key>
 			<string>com.github.mlbz521.SharedProcessors/XarExtractSingleFile</string>
 			<key>Arguments</key>
 			<dict>
 				<key>archive_path</key>
-				<string>%RECIPE_CACHE_DIR%/%NAME%.pkg</string>
+				<string%found_filename%/*.pkg</string>
 				<key>file_to_extract</key>
 				<string>JMP*.pkg</string>
 			</dict>
@@ -43,13 +43,13 @@
 		</dict>
 		<dict>
 			<key>Processor</key>
-			<string>FileMover</string>
+			<string>PkgCopier</string>
 			<key>Arguments</key>
 			<dict>
-				<key>source</key>
-				<string>%RECIPE_CACHE_DIR%/%NAME%.pkg</string>				
-				<key>target</key>
-				<string>%RECIPE_CACHE_DIR%/%NAME%-%version%.pkg</string>				
+				<key>source_pkg</key>
+				<string>%found_filename%/*.pkg</string>
+				<key>pkg_path</key>
+				<string>%RECIPE_CACHE_DIR%/%NAME%-%version%.pkg</string>
 			</dict>
 		</dict>
 		<dict>
@@ -64,6 +64,6 @@
 				</array>
 			</dict>
 		</dict>
-    </array>
+	</array>
 </dict>
 </plist>

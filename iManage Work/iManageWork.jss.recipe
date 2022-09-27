@@ -50,7 +50,7 @@ iManage Work 10 enables professionals and organizations to respond to business d
 			<key>Arguments</key>
 			<dict>
 				<key>pkg_path</key>
-				<string>%RECIPE_CACHE_DIR%/%NAME%-%version%.pkg</string>
+				<string>%pkg_path%</string>
 				<key>prod_name</key>
 				<string>%NAME%</string>
 				<key>category</key>

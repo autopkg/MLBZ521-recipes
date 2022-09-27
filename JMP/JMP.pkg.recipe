@@ -21,7 +21,7 @@
 			<key>Arguments</key>
 			<dict>
 				<key>archive_path</key>
-				<string%found_filename%/*.pkg</string>
+				<string>%found_filename%/*.pkg</string>
 				<key>file_to_extract</key>
 				<string>JMP*.pkg</string>
 			</dict>

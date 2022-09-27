@@ -35,7 +35,7 @@ from selenium.webdriver.support.expected_conditions import (
 from selenium.webdriver.common.by import By
 from selenium.webdriver import ActionChains
 
-sys.path.insert(0, 
+sys.path.insert(0,
     f"{os.path.dirname(os.path.dirname(os.path.abspath(__file__)))}/Shared Processors")
 from SeleniumWebScrapper import WebEngine
 
@@ -174,7 +174,7 @@ class CanonPrintDriverURLProvider(URLGetter):
             for result in json_data.get("results"):
                 if result.get("title") == model:
                     model_url = result.get("uri")
-                
+
             self.output(f"Model downloads page:  {model_url}", verbose_level=2)
 
         except:
@@ -186,6 +186,9 @@ class CanonPrintDriverURLProvider(URLGetter):
 
             try:
                 web_engine.get(model_url)
+                # Workaround for when the page fails to load new content after interacting with it
+                web_engine.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
+                web_engine.delete_all_cookies()
 
             except:
                 raise ProcessorError("Failed to access the model page.")
@@ -194,7 +197,7 @@ class CanonPrintDriverURLProvider(URLGetter):
                 # Select Software & Drivers section
                 self.output("Expanding the 'Software & Drivers' section...", verbose_level=3)
                 self.scroll_into_view_and_click(
-                    web_engine, 
+                    web_engine,
                     "//*/div[contains(@class, 'accordion-title')][contains(text(), 'Software & Drivers')]"
                 )
 
@@ -202,29 +205,32 @@ class CanonPrintDriverURLProvider(URLGetter):
                 raise ProcessorError("Failed to find and open the 'Software & Drivers' section.")
 
             try:
-                # Select the OS Type
-                self.output("Selecting the OS Type:  Mac", verbose_level=3)
+                # Open the "OS type" dropdown menu
                 web_engine.find_element_by_css_selector(
                     "div[class='software-downloads'] div[class='os-dropdown os-names ada-clickable'] button[class='dropdown-btn']").click()
+                # Select the "OS type"
+                self.output("Selecting the OS type:  Mac", verbose_level=3)
                 web_engine.find_element_by_xpath(
                     "//*/ul[contains(@class, 'dropdown os-names-dropdown')]/li[@class='os-type'][@filtervalue='Mac']").click()
 
-                # Select the OS Version
-                self.output(f"Selecting the OS Version:  {os_version}", verbose_level=3)
+                # Open the "OS version" dropdown menu
                 os_version_dropdown = web_engine.find_element_by_css_selector(
                     "div[class='software-downloads'] div[class='os-dropdown os-versions ada-clickable'] button[class='dropdown-btn']")
                 os_version_dropdown.click()
-                web_engine.find_element_by_xpath(
-                    "//*/ul[contains(@class, 'dropdown os-versions-dropdown')]/li[@osfamily='Mac'][@filtervalue='MACOS_11']/a[@class='os-version__name']").click()
 
+                # Select the "OS version"
+                self.output(f"Selecting the OS version:  {os_version}", verbose_level=3)
                 # Workaround for a quirk where the first selection does not work if it's the first item in the list
-                os_version_dropdown.click()
+                # web_engine.find_element_by_xpath(
+                #     "//*/ul[contains(@class, 'dropdown os-versions-dropdown')]/li[@osfamily='Mac'][@filtervalue='MACOS_11']/a[@class='os-version__name']").click()
+                # os_version_dropdown.click()
+                # Workaround stopped working, some additional workarounds above resolve this issue now
                 web_engine.find_element_by_xpath(
                     f"//*/ul[contains(@class, 'dropdown os-versions-dropdown')]/li[@osfamily='Mac'][@filtervalue='{os_version}']/a[@class='os-version__name']").click()
                 self.output("The OS Version was selected.", verbose_level=3)
 
             except:
-                raise ProcessorError("Failed to select the desired OS Version")
+                raise ProcessorError("Failed attempting to select the desired OS type or version")
 
             try:
                 # Open the "Sort" dropdown menu
@@ -246,7 +252,7 @@ class CanonPrintDriverURLProvider(URLGetter):
                 raise ProcessorError("Failed to sort the list of options.")
 
             if re.match(download_type, "Recommended", re.IGNORECASE):
-                
+
                 try:
                     download_url = web_engine.find_element_by_xpath(
                         "//*/div[@class='software-downloads__container']/div[@recommended='Y']//div[@class='download__cta']//a[@role='button']").get_attribute("href")
@@ -258,10 +264,23 @@ class CanonPrintDriverURLProvider(URLGetter):
             else:
 
                 # Load all options
-                self.scroll_into_view_and_click(
-                    web_engine,
-                    "//*/a[@role='button'][contains(@class, 'softwares-load-more')]/span[contains(text(), 'LOAD MORE')]"
-                )
+
+                # Using the commented out method would scroll _past_ the button...
+                # self.scroll_into_view_and_click(
+                #     web_engine,
+                #     "//*/a[@role='button'][contains(@class, 'softwares-load-more')]/span[contains(text(), 'LOAD MORE')]"
+                # )
+
+                # This method attempts to scroll the button into the middle of the screen, instead of to the top
+                load_more_section = web_engine.find_element_by_xpath("//*[contains(@class, 'advisories-load-more-button-container')]")
+                web_engine.execute_script('arguments[0].scrollIntoView({"block": "center", "inline": "center"});', load_more_section)
+                time.sleep(1)
+
+                load_more = web_engine.find_element_by_xpath("//*/a[@role='button'][contains(@class, 'softwares-load-more')]")
+                web_engine.execute_script('arguments[0].scrollIntoView({"block": "center", "inline": "center"});', load_more)
+                time.sleep(1)
+
+                load_more.click()
 
                 # Get the downloads container element
                 download_list = web_engine.find_element_by_xpath(
@@ -289,17 +308,17 @@ class CanonPrintDriverURLProvider(URLGetter):
                 except:
                     raise ProcessorError("Failed find matches for the selected download_type.")
 
-                try:
-                    # Parse the links by versioning information, build a dictionary of the 
-                    # versions, and determine the latest
-                    download_version_urls_dict = {
-                        parse_version(os.path.basename(url)): url for url in download_version_urls}
+        try:
+            # Parse the links by versioning information, build a dictionary of the
+            # versions, and determine the latest
+            download_version_urls_dict = {
+                parse_version(os.path.basename(url)): url for url in download_version_urls}
 
-                    download_url = download_version_urls_dict.get(
-                        max(download_version_urls_dict.keys()))
+            download_url = download_version_urls_dict.get(
+                max(download_version_urls_dict.keys()))
 
-                except:
-                    raise ProcessorError("Failed to identify the the latest version to download.")
+        except:
+            raise ProcessorError("Failed to identify the the latest version to download.")
 
         try:
             # Return results

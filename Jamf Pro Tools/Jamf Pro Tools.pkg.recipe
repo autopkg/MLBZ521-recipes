@@ -2,34 +2,34 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-    <key>Description</key>
+	<key>Description</key>
 	<string>Downloads and packages the latest verison of the Jamf Pro Tools from a local file share for use by Site Admins.
 
-Only the Composer, Jamf Remote, and Recon applications are checked for code sign verified and packaged.  These are the only apps that our Site Admins use, which is what this recipe is written for.
+Only the Composer and Recon applications are checked for code sign verified and packaged.  These are the only apps that our Site Admins use, which is what this recipe is written for.
 
-The name of the folder name in /Applications and the package will be named based on the NAME substituion variable.</string>
-    <key>Identifier</key>
-    <string>com.github.mlbz521.pkg.JamfProTools</string>
-    <key>Input</key>
-    <dict>
-        <key>NAME</key>
-        <string>Jamf Pro Tools</string>
-    </dict>
+The name of the folder name in /Applications and the package will be named based on the NAME Input variable.</string>
+	<key>Identifier</key>
+	<string>com.github.mlbz521.pkg.JamfProTools</string>
+	<key>Input</key>
+	<dict>
+		<key>NAME</key>
+		<string>Jamf Pro Tools</string>
+	</dict>
 	<key>ParentRecipe</key>
 	<string>com.github.mlbz521.download.JamfProTools</string>
-    <key>Process</key>
-    <array>
-        <dict>
-            <key>Processor</key>
-            <string>PkgRootCreator</string>
-            <key>Arguments</key>
-            <dict>
-                <key>pkgdirs</key>
-                <dict/>
-                <key>pkgroot</key>
-                <string>%RECIPE_CACHE_DIR%/scripts</string>
-            </dict>
-        </dict>
+	<key>Process</key>
+	<array>
+		<dict>
+			<key>Processor</key>
+			<string>PkgRootCreator</string>
+			<key>Arguments</key>
+			<dict>
+				<key>pkgdirs</key>
+				<dict/>
+				<key>pkgroot</key>
+				<string>%RECIPE_CACHE_DIR%/scripts</string>
+			</dict>
+		</dict>
 		<dict>
 			<key>Processor</key>
 			<string>PkgRootCreator</string>
@@ -68,24 +68,13 @@ The name of the folder name in /Applications and the package will be named based
 		</dict>
 		<dict>
 			<key>Processor</key>
-			<string>Copier</string>
+			<string>com.github.mlbz521.SharedProcessors/FindFileInSearchPath</string>
 			<key>Arguments</key>
 			<dict>
-				<key>source_path</key>
-				<string>%found_filename%/Jamf Pro/Recon.app</string>
-				<key>destination_path</key>
-				<string>%pkgroot%/Applications/%NAME%/Recon.app</string>
+				<key>find_file</key>
+				<string>fileicon</string>
 			</dict>
 		</dict>
-        <dict>
-            <key>Processor</key>
-            <string>com.github.mlbz521.SharedProcessors/FindFileInSearchPath</string>
-            <key>Arguments</key>
-            <dict>
-                <key>find_file</key>
-                <string>fileicon</string>
-            </dict>
-        </dict>
 		<dict>
 			<key>Processor</key>
 			<string>Copier</string>
@@ -97,15 +86,15 @@ The name of the folder name in /Applications and the package will be named based
 				<string>%RECIPE_CACHE_DIR%/scripts/fileicon</string>
 			</dict>
 		</dict>
-        <dict>
-            <key>Processor</key>
-            <string>com.github.mlbz521.SharedProcessors/FindFileInSearchPath</string>
-            <key>Arguments</key>
-            <dict>
-                <key>find_file</key>
-                <string>Jamf Pro Tools.icns</string>
-            </dict>
-        </dict>
+		<dict>
+			<key>Processor</key>
+			<string>com.github.mlbz521.SharedProcessors/FindFileInSearchPath</string>
+			<key>Arguments</key>
+			<dict>
+				<key>find_file</key>
+				<string>Jamf Pro Tools.icns</string>
+			</dict>
+		</dict>
 		<dict>
 			<key>Processor</key>
 			<string>Copier</string>
@@ -117,13 +106,13 @@ The name of the folder name in /Applications and the package will be named based
 				<string>%RECIPE_CACHE_DIR%/scripts/Jamf Pro Tools.icns</string>
 			</dict>
 		</dict>
-        <dict>
-            <key>Processor</key>
-            <string>FileCreator</string>
-            <key>Arguments</key>
-            <dict>
-                <key>file_content</key>
-                <string>#!/bin/bash
+		<dict>
+			<key>Processor</key>
+			<string>FileCreator</string>
+			<key>Arguments</key>
+			<dict>
+				<key>file_content</key>
+				<string>#!/bin/bash
 
 ###################################################################################################
 # Script Name:  uninstall_JamfProTools.sh
@@ -146,19 +135,19 @@ fi
 echo "*****  Uninstall Jamf Pro Tools Process:  COMPLETE  *****"
 
 exit 0</string>
-                <key>file_mode</key>
-                <string>0755</string>
-                <key>file_path</key>
-                <string>%RECIPE_CACHE_DIR%/scripts/preinstall</string>
-            </dict>
-        </dict>
-        <dict>
-            <key>Processor</key>
-            <string>FileCreator</string>
-            <key>Arguments</key>
-            <dict>
-                <key>file_content</key>
-                <string>#!/bin/bash
+				<key>file_mode</key>
+				<string>0755</string>
+				<key>file_path</key>
+				<string>%RECIPE_CACHE_DIR%/scripts/preinstall</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>FileCreator</string>
+			<key>Arguments</key>
+			<dict>
+				<key>file_content</key>
+				<string>#!/bin/bash
 
 ###################################################################################################
 # Script Name:  set_JamfProToolsFolderIcon.sh
@@ -196,12 +185,12 @@ iconFile=$( /bin/ls "${pkgDir}" | /usr/bin/grep "Jamf Pro Tools.icns" )
 echo "*****  Set Folder Icon Process:  COMPLETE  *****"
 
 exit 0</string>
-                <key>file_mode</key>
-                <string>0755</string>
-                <key>file_path</key>
-                <string>%RECIPE_CACHE_DIR%/scripts/postinstall</string>
-            </dict>
-        </dict>
+				<key>file_mode</key>
+				<string>0755</string>
+				<key>file_path</key>
+				<string>%RECIPE_CACHE_DIR%/scripts/postinstall</string>
+			</dict>
+		</dict>
 		<dict>
 			<key>Processor</key>
 			<string>PkgCreator</string>
@@ -245,6 +234,6 @@ exit 0</string>
 				</array>
 			</dict>
 		</dict>
-    </array>
+	</array>
 </dict>
 </plist>

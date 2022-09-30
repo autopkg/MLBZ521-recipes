@@ -5,7 +5,7 @@
 	<key>Description</key>
 	<string>Downloads the latest verison of the Jamf Pro Tools from a local file share.
 	
-Only the Composer, Jamf Remote, and Recon applications are checked for code sign verified.  These are the only apps that our Site Admins use, which is what this recipe is written for.</string>
+Only the Composer and Recon applications are checked for code sign verified.  These are the only apps that our Site Admins use, which is what this recipe is written for.</string>
 	<key>Identifier</key>
 	<string>com.github.mlbz521.download.JamfProTools</string>
 	<key>Input</key>
@@ -22,34 +22,34 @@ Only the Composer, Jamf Remote, and Recon applications are checked for code sign
 		<string>testing</string>
 		<key>FILE_SHARE</key>
 		<string>/path/to/offline/repository</string>
-        <key>VERSION_STRING_SEPARATOR</key>
-        <string>-</string>
+		<key>VERSION_STRING_SEPARATOR</key>
+		<string>-</string>
 		<key>MAX_FOLDER_DEPTH</key>
 		<string>1</string>
 	</dict>
 	<key>Process</key>
 	<array>
-        <dict>
-            <key>Processor</key>
-            <string>com.github.mlbz521.SharedProcessors/OfflineApps</string>
-            <key>Arguments</key>
-            <dict>
-                <key>search_path</key>
-                <string>%FILE_SHARE%</string>
-                <key>search_string</key>
-                <string>%SEARCH_STRING%</string>
-                <key>major_version</key>
-                <string>%MAJOR_VERSION%</string>
-                <key>exception_string</key>
-                <string>%NAME_EXCEPTION%</string>
-                <key>limitation_string</key>
-                <string>%NAME_LIMITATION%</string>
-                <key>version_separator</key>
-                <string>%VERSION_STRING_SEPARATOR%</string>
-                <key>max_depth</key>
-                <string>%MAX_FOLDER_DEPTH%</string>
-            </dict>
-        </dict>
+		<dict>
+			<key>Processor</key>
+			<string>com.github.mlbz521.SharedProcessors/OfflineApps</string>
+			<key>Arguments</key>
+			<dict>
+				<key>search_path</key>
+				<string>%FILE_SHARE%</string>
+				<key>search_string</key>
+				<string>%SEARCH_STRING%</string>
+				<key>major_version</key>
+				<string>%MAJOR_VERSION%</string>
+				<key>exception_string</key>
+				<string>%NAME_EXCEPTION%</string>
+				<key>limitation_string</key>
+				<string>%NAME_LIMITATION%</string>
+				<key>version_separator</key>
+				<string>%VERSION_STRING_SEPARATOR%</string>
+				<key>max_depth</key>
+				<string>%MAX_FOLDER_DEPTH%</string>
+			</dict>
+		</dict>
 		<dict>
 			<key>Processor</key>
 			<string>FileFinder</string>
@@ -85,26 +85,15 @@ Only the Composer, Jamf Remote, and Recon applications are checked for code sign
 			<key>Arguments</key>
 			<dict>
 				<key>input_path</key>
-				<string>%found_filename%/Jamf Pro/Jamf Remote.app</string>
-				<key>requirement</key>
-				<string>anchor apple generic and identifier "com.jamfsoftware.JamfRemote" and (certificate leaf[field.1.2.840.113635.100.6.1.9] /* exists */ or certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "483DWKW443")</string>
-			</dict>
-		</dict>
-		<dict>
-			<key>Processor</key>
-			<string>CodeSignatureVerifier</string>
-			<key>Arguments</key>
-			<dict>
-				<key>input_path</key>
 				<string>%found_filename%/Jamf Pro/Recon.app</string>
 				<key>requirement</key>
 				<string>anchor apple generic and identifier "com.jamfsoftware.Recon" and (certificate leaf[field.1.2.840.113635.100.6.1.9] /* exists */ or certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "483DWKW443")</string>
 			</dict>
 		</dict>
-        <dict>
-            <key>Processor</key>
-            <string>EndOfCheckPhase</string>
-        </dict>
-    </array>
+		<dict>
+			<key>Processor</key>
+			<string>EndOfCheckPhase</string>
+		</dict>
+	</array>
 </dict>
 </plist>

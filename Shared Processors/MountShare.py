@@ -21,6 +21,7 @@
 import os
 import re
 import subprocess
+import tempfile
 
 from urllib.parse import quote
 
@@ -163,9 +164,18 @@ class MountShare(Processor):
 
 		if not self.is_mounted():
 			self.output("Mounting share...", verbose_level=3)
+
 			# Ensure the mount point exists
 			if not os.path.exists(self.connection["mount_point"]):
 				os.mkdir(self.connection["mount_point"])
+
+			temp_dir = tempfile.TemporaryDirectory(
+				dir=self.connection["mount_point"], 
+				ignore_cleanup_errors=True)
+
+			self.connection["mount_point"] = temp_dir.name
+			self.output(f"Mount point is:  {self.connection['mount_point']}", verbose_level=2)
+
 			args = [
 				"mount", "-t",
 				self.connection["protocol"],

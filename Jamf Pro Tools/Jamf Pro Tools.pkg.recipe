@@ -61,9 +61,9 @@ The name of the folder name in /Applications and the package will be named based
 			<key>Arguments</key>
 			<dict>
 				<key>source_path</key>
-				<string>%found_filename%/Jamf Pro/Jamf Remote.app</string>
+				<string>%found_filename%/Jamf Pro/Recon.app</string>
 				<key>destination_path</key>
-				<string>%pkgroot%/Applications/%NAME%/Jamf Remote.app</string>
+				<string>%pkgroot%/Applications/%NAME%/Recon.app</string>
 			</dict>
 		</dict>
 		<dict>

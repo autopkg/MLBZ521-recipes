@@ -27,6 +27,7 @@ if not os.path.exists("/Library/AutoPkg/Selenium"):
     "Please review my Shared Processors README.")
 
 sys.path.insert(0, "/Library/AutoPkg/Selenium")
+from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support.expected_conditions import presence_of_element_located
 
@@ -179,9 +180,9 @@ class RicohPrintDriverURLProvider(URLGetter):
                 section_MacOSX = '//*[@id="os-driver-list"]/div[4]/div/div/div[1]/a'
                 # Open the "Drivers & Download" section
                 WebDriverWait(web_engine, timeout=10).until(
-                    lambda d: d.find_element_by_xpath(section_MacOSX)
+                    lambda d: d.find_element(By.XPATH, section_MacOSX)
                 )
-                web_engine.find_element_by_xpath(section_MacOSX).click()
+                web_engine.find_element(By.XPATH, section_MacOSX).click()
                 self.output("Selected operating system section labeled \"Mac OS X\"", verbose_level=3)
 
             except:
@@ -192,11 +193,11 @@ class RicohPrintDriverURLProvider(URLGetter):
                 xpath_os_version = f'//*[@id="os-driver-list"]/div[4]/div/div/div[2]//a[@keycode={os_version_keycode}]'
 
                 WebDriverWait(web_engine, timeout=10).until(
-                    lambda d: d.find_element_by_xpath(xpath_os_version)
+                    lambda d: d.find_element(By.XPATH, xpath_os_version)
                 )
                 presence_of_element_located(xpath_os_version)
 
-                section_selected_os_version = web_engine.find_element_by_xpath(xpath_os_version)
+                section_selected_os_version = web_engine.find_element(By.XPATH, xpath_os_version)
                 section_selected_os_version.click
 
                 self.output(f"Selected the section for OS Version:  {os_version}", verbose_level=3)
@@ -206,7 +207,7 @@ class RicohPrintDriverURLProvider(URLGetter):
 
             try:
                 # Get the hyperlink for the driver download file
-                download_url = section_selected_os_version.find_element_by_xpath(
+                download_url = section_selected_os_version.find_element(By.XPATH, 
                     '//*[@id="os-driver-list"]/div[4]/div/div/div[2]/div[1]/div/div/div[2]/div/div/div/div/div/div[1]/p[2]/a').get_attribute("href"
                 )
 

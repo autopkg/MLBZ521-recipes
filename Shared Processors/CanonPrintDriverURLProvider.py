@@ -121,7 +121,7 @@ class CanonPrintDriverURLProvider(URLGetter):
         WebDriverWait(web_engine, 10).until(presence_of_element_located((By.XPATH, xpath)))
         WebDriverWait(web_engine, 10).until(visibility_of_element_located((By.XPATH, xpath)))
         WebDriverWait(web_engine, 10).until(element_to_be_clickable((By.XPATH, xpath)))
-        element = web_engine.find_element_by_xpath(xpath)
+        element = web_engine.find_element(By.XPATH, xpath)
         web_engine.execute_script("arguments[0].scrollIntoView();", element)
         time.sleep(1)
         ActionChains(web_engine).move_to_element(element).click().perform()
@@ -206,26 +206,26 @@ class CanonPrintDriverURLProvider(URLGetter):
 
             try:
                 # Open the "OS type" dropdown menu
-                web_engine.find_element_by_css_selector(
+                web_engine.find_element(By.CSS_SELECTOR, 
                     "div[class='software-downloads'] div[class='os-dropdown os-names ada-clickable'] button[class='dropdown-btn']").click()
                 # Select the "OS type"
                 self.output("Selecting the OS type:  Mac", verbose_level=3)
-                web_engine.find_element_by_xpath(
+                web_engine.find_element(By.XPATH, 
                     "//*/ul[contains(@class, 'dropdown os-names-dropdown')]/li[@class='os-type'][@filtervalue='Mac']").click()
 
                 # Open the "OS version" dropdown menu
-                os_version_dropdown = web_engine.find_element_by_css_selector(
+                os_version_dropdown = web_engine.find_element(By.CSS_SELECTOR, 
                     "div[class='software-downloads'] div[class='os-dropdown os-versions ada-clickable'] button[class='dropdown-btn']")
                 os_version_dropdown.click()
 
                 # Select the "OS version"
                 self.output(f"Selecting the OS version:  {os_version}", verbose_level=3)
                 # Workaround for a quirk where the first selection does not work if it's the first item in the list
-                # web_engine.find_element_by_xpath(
+                # web_engine.find_element(By.XPATH, 
                 #     "//*/ul[contains(@class, 'dropdown os-versions-dropdown')]/li[@osfamily='Mac'][@filtervalue='MACOS_11']/a[@class='os-version__name']").click()
                 # os_version_dropdown.click()
                 # Workaround stopped working, some additional workarounds above resolve this issue now
-                web_engine.find_element_by_xpath(
+                web_engine.find_element(By.XPATH, 
                     f"//*/ul[contains(@class, 'dropdown os-versions-dropdown')]/li[@osfamily='Mac'][@filtervalue='{os_version}']/a[@class='os-version__name']").click()
                 self.output("The OS Version was selected.", verbose_level=3)
 
@@ -235,17 +235,17 @@ class CanonPrintDriverURLProvider(URLGetter):
             try:
                 # Open the "Sort" dropdown menu
                 self.output(f"Selecting the download type:  {download_type}", verbose_level=3)
-                web_engine.find_element_by_xpath(
+                web_engine.find_element(By.XPATH, 
                     "//*/div[contains(@class, 'os-dropdown medium downloads_sort ada-clickable')]").click()
 
                 if re.match(download_type, "Recommended", re.IGNORECASE):
                     # Sort by Recommended
-                    web_engine.find_element_by_xpath(
+                    web_engine.find_element(By.XPATH, 
                         f"//*/ul[@class='dropdown'][@filtertype='sort']/li[@filtervalue='{download_type}']").click()
 
                 else:
                     # Sort by Date
-                    web_engine.find_element_by_xpath(
+                    web_engine.find_element(By.XPATH, 
                         "//*/ul[@class='dropdown'][@filtertype='sort']/li[@filtervalue='Date']").click()
 
             except:
@@ -254,7 +254,7 @@ class CanonPrintDriverURLProvider(URLGetter):
             if re.match(download_type, "Recommended", re.IGNORECASE):
 
                 try:
-                    download_url = web_engine.find_element_by_xpath(
+                    download_url = web_engine.find_element(By.XPATH, 
                         "//*/div[@class='software-downloads__container']/div[@recommended='Y']//div[@class='download__cta']//a[@role='button']").get_attribute("href")
 
                 except:
@@ -272,24 +272,24 @@ class CanonPrintDriverURLProvider(URLGetter):
                 # )
 
                 # This method attempts to scroll the button into the middle of the screen, instead of to the top
-                load_more_section = web_engine.find_element_by_xpath("//*[contains(@class, 'advisories-load-more-button-container')]")
+                load_more_section = web_engine.find_element(By.XPATH, "//*[contains(@class, 'advisories-load-more-button-container')]")
                 web_engine.execute_script('arguments[0].scrollIntoView({"block": "center", "inline": "center"});', load_more_section)
-                time.sleep(1)
+                time.sleep(2)
 
-                load_more = web_engine.find_element_by_xpath("//*/a[@role='button'][contains(@class, 'softwares-load-more')]")
+                load_more = web_engine.find_element(By.XPATH, "//*/a[@role='button'][contains(@class, 'softwares-load-more')]")
                 web_engine.execute_script('arguments[0].scrollIntoView({"block": "center", "inline": "center"});', load_more)
-                time.sleep(1)
+                time.sleep(2)
 
                 load_more.click()
 
                 # Get the downloads container element
-                download_list = web_engine.find_element_by_xpath(
+                download_list = web_engine.find_element(By.XPATH, 
                     "//*/div[@class='software-downloads__container']")
 
                 try:
 
                     # Find all the DOWNLOAD button elements
-                    links = download_list.find_elements_by_partial_link_text("DOWNLOAD")
+                    links = download_list.find_elements(By.PARTIAL_LINK_TEXT, "DOWNLOAD")
 
                     for link in links:
                         link.get_attribute("href")

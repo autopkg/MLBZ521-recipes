@@ -25,6 +25,7 @@ if not os.path.exists("/Library/AutoPkg/Selenium"):
         "Please review my Shared Processors README.")
 
 sys.path.insert(0, "/Library/AutoPkg/Selenium")
+from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 # from selenium.webdriver.support.expected_conditions import presence_of_element_located
 
@@ -112,9 +113,9 @@ class PharosURLProvider(Processor):
 
             try:
                 WebDriverWait(web_engine, timeout=10).until(
-                    lambda d: d.find_elements_by_link_text("Download")
+                    lambda d: d.find_elements(By.LINK_TEXT, "Download")
                 )
-                download_links = web_engine.find_elements_by_link_text("Download")
+                download_links = web_engine.find_elements(By.LINK_TEXT, "Download")
             except:
                 raise ProcessorError("Failed to find and open the operating "
                     "system section labeled \"Mac OS X\".")

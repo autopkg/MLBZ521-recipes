@@ -21,7 +21,6 @@
 import os
 import re
 import subprocess
-import tempfile
 
 from urllib.parse import quote
 
@@ -34,8 +33,7 @@ __all__ = ["MountShare"]
 class MountShare(Processor):
 	"""Mounts a share from an external server.
 
-	Not intended for direct use.
-	"""
+	Not intended for direct use."""
 
 	description = __doc__
 	input_variables = {
@@ -87,7 +85,6 @@ class MountShare(Processor):
 		},
 	}
 	output_variables = {}
-
 	required_attrs = {
 		"url",
 		"share_name",
@@ -128,7 +125,7 @@ class MountShare(Processor):
 	def __repr__(self):
 		"""Return string representation of connection arguments."""
 		output = [
-			f"Share:  {self.connection['url']}", 
+			f"Share:  {self.connection['url']}",
 			f"Type: {type(self)}", "Connection Information:"
 		]
 		output.extend("\t%s: %s" % (key, val) for key, val in self.connection.items())
@@ -144,37 +141,32 @@ class MountShare(Processor):
 	def _build_url(self):
 		"""Build the URL string to mount this file share."""
 		if self.connection.get("username") and self.connection.get("password"):
-			auth = f'{self.connection["username"]}:{self._encoded_password}@'
-			pwless = f'{self.connection["username"]}@'
+			auth = f"{self.connection['username']}:{self._encoded_password}@"
+			pwless = f"{self.connection['username']}@"
 			if self.connection.get("domain"):
-				auth = f'{self.connection["domain"]};{auth}'
-				pwless = f'{self.connection["domain"]};{pwless}'
+				auth = f"{self.connection['domain']};{auth}"
+				pwless = f"{self.connection['domain']};{pwless}"
 		else:
 			auth = ""
 			pwless = ""
 		port = self.connection.get("port")
 		port = f":{port}" if port else ""
 
-		self.connection["mount_url"] = f'//{auth}{self.connection["url"]}{port}/{self.connection["share_name"]}'
-		self.connection["mount_url_passwordless"] = f'//{pwless}{self.connection["url"]}{port}/{self.connection["share_name"]}'
+		self.connection["mount_url"] = f"//{auth}{self.connection['url']}{port}/{self.connection['share_name']}"
+		self.connection["mount_url_passwordless"] = f"//{pwless}{self.connection['url']}{port}/{self.connection['share_name']}"
 
 
 	def mount(self):
 		"""Mount the SMB Share"""
 
+		# Ensure the mount point directory exists
+		if not os.path.exists(self.connection["mount_point"]):
+			os.mkdir(self.connection["mount_point"])
+
+		self.output(f"Mount point will be:  {self.connection['mount_point']}", verbose_level=3)
+
 		if not self.is_mounted():
-			self.output("Mounting share...", verbose_level=3)
-
-			# Ensure the mount point exists
-			if not os.path.exists(self.connection["mount_point"]):
-				os.mkdir(self.connection["mount_point"])
-
-			temp_dir = tempfile.TemporaryDirectory(
-				dir=self.connection["mount_point"], 
-				ignore_cleanup_errors=True)
-
-			self.connection["mount_point"] = temp_dir.name
-			self.output(f"Mount point is:  {self.connection['mount_point']}", verbose_level=2)
+			self.output("Mounting share...", verbose_level=2)
 
 			args = [
 				"mount", "-t",
@@ -206,44 +198,47 @@ class MountShare(Processor):
 	def is_mounted(self):
 		"""Test for whether a mount point is mounted.
 		If it is currently mounted, determine the path where it's
-		mounted and update the connection's mount_point accordingly.
-		"""
+		mounted and update the connection's mount_point accordingly."""
 
 		self.output("Checking if share is mounted", verbose_level=3)
-		mount_check = subprocess.check_output("mount").decode().splitlines()
 		was_mounted = False
-		mount_string_regex = re.compile(r"\(([\w]*),*.*\)$")
-		mount_point_regex = re.compile(r"on ([\w/ -]*) \(.*$")
+		mount_check = subprocess.check_output("mount").decode().splitlines()
 
 		for mount in mount_check:
-		
-			# Get the mount fs type.
-			fs_match = re.search(mount_string_regex, mount)
-			fs_type = fs_match[1] if fs_match else None
 
-			# Split the reported mount and get the mounted item.
-			mount_string = mount.split(" on ")[0]
+			# Get the source and mount point string between from the end back to the last "on", but
+			# before the options (wrapped in parenthesis). Considers alphanumerics,
+			# / , _ , - and a blank space as valid, but no crazy chars.
+			mount_url_regex = re.compile(r"([\\\w/ -;@$]*) on .*$")
+			mount_point_regex = re.compile(r"on ([\w/ -]*) \(.*$")
+			mount_url_match = re.search(mount_url_regex, mount)
+			mount_url = mount_url_match[1] if mount_url_match else None
+			mount_point_match = re.search(mount_point_regex, mount)
+			mount_point = mount_point_match[1] if mount_point_match else None
+
+			# Get the mount fs type.
+			mount_fs_regex = re.compile(r"\(([\w]*),*.*\)$")
+			fs_match = re.search(mount_fs_regex, mount)
+			fs_type = fs_match[1] if fs_match else None
 
 			# Does the mount_string match the mount url?
 			if (
-				mount_string == self.connection["mount_url_passwordless"] 
+				mount_url == self.connection["mount_url_passwordless"]
 				and self.fs_type == fs_type
+				and mount_point
 			):
 
-				# Get the mount point string between from the end back to the last "on", but 
-				# before the options (wrapped in parenthesis). Considers alphanumerics, 
-				# / , _ , - and a blank space as valid, but no crazy chars.
-				match = re.search(mount_point_regex, mount)
-				mount_point = match[1] if match else None
+				self.output(
+					f"{self.connection['url']} is mounted at {self.connection['mount_point']}",
+					verbose_level=3
+				)
 				was_mounted = True
 
-				# Reset the connection's mount point to the discovered value.
-				if mount_point:
+				if mount_point != self.connection["mount_point"]:
+					# Reset the connection's mount point to the discovered value.
 					self.connection["mount_point"] = mount_point
-					self.output(f'{self.connection["url"]} is already mounted at {mount_point}', 
-						verbose_level=3)
 
-				# We found the share, no need to continue.
+				# Found the share, no need to continue.
 				break
 
 		if not was_mounted:
@@ -251,7 +246,7 @@ class MountShare(Processor):
 			# found, increment the name to avoid conflicts.
 			count = 1
 			while os.path.ismount(self.connection["mount_point"]):
-				self.connection["mount_point"] = f'{self.connection["mount_point"]}-{count}'
+				self.connection["mount_point"] = f"{self.connection['mount_point']}-{count}"
 				count += 1
 
 		# Do an inexpensive double check...
@@ -272,7 +267,7 @@ class MountShare(Processor):
 
 	def __contains__(self, filename):
 		"""Magic method to allow constructs similar to:
-			if 'abc.pkg' in dp:
+			`if 'abc.pkg' in dp:`
 		"""
 		##### NOT TESTED --  BUT MAY BE USEFUL IN FUTURE UPDATE TO OfflineApps #####
 		return self.exists(filename)

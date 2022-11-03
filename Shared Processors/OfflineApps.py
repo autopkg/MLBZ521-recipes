@@ -337,71 +337,71 @@ class OfflineApps(URLDownloader):
 			search_path = f"{self.share.connection.get('mount_point')}{search_path}"
 			self.output(f"Mounted Search Path:  {search_path}", verbose_level=2)
 
-		try:
+		# try:
 
-			# Verify the directory exists
-			if not os.path.isdir(search_path):
-				raise ProcessorError("Can't find root path or network share not mounted!")
+		# Verify the directory exists
+		if not os.path.isdir(search_path):
+			raise ProcessorError("Can't find root path or network share not mounted!")
 
-			# Build the directory list of the root of the search_path
-			for root_directory, folders, files in self.walk(search_path, int(max_depth)):
+		# Build the directory list of the root of the search_path
+		for root_directory, folders, files in self.walk(search_path, int(max_depth)):
 
-				items_to_check = folders + files
+			items_to_check = folders + files
 
-				list_of_versions.extend( os.path.join(root_directory, match) for match in 
-					self.check_for_matching( 
-						items_to_check, 
-						contains = contains_search_string, 
-						excludes = not_contain_exception_string, 
-						limitation = must_contain_limitation_string 
-					) 
-				)
-
-			if not list_of_versions:
-				raise ProcessorError("Was not able to find a match!")
-
-			# Get the latest version from the matched results
-			self.env["version"], version_location = self.get_latest_version(
-				list_of_versions, major_version_like, version_separator)
-
-			if "" in { self.env["version"], version_location }:
-				raise ProcessorError("Was not able to match a version!")
-
-			self.env["found_major_version"] = (self.env["version"]).split(".", 1)[0]
-			version_folder = " ".join(
-				filter(None, 
-					[contains_search_string, must_contain_limitation_string, self.env["version"]]
-				)
+			list_of_versions.extend( os.path.join(root_directory, match) for match in 
+				self.check_for_matching( 
+					items_to_check, 
+					contains = contains_search_string, 
+					excludes = not_contain_exception_string, 
+					limitation = must_contain_limitation_string 
+				) 
 			)
 
-			self.output(f"Found major version:  {self.env['found_major_version']}", verbose_level=2)
-			self.output(f"Latest version found:  {self.env['version']}")
-			self.output(f"Source path:  {version_location}", verbose_level=2)
+		if not list_of_versions:
+			raise ProcessorError("Was not able to find a match!")
 
-			# Set the location where version should be cached
-			self.env["cached_path"] = os.path.join(downloads_dir, version_folder)
+		# Get the latest version from the matched results
+		self.env["version"], version_location = self.get_latest_version(
+			list_of_versions, major_version_like, version_separator)
 
-			if os.path.isdir(version_location):
+		if "" in { self.env["version"], version_location }:
+			raise ProcessorError("Was not able to match a version!")
 
-				# Loop over files in version_location and download each one
-				for root_directory, folders, files in self.walk(version_location, 0):
+		self.env["found_major_version"] = (self.env["version"]).split(".", 1)[0]
+		version_folder = " ".join(
+			filter(None, 
+				[contains_search_string, must_contain_limitation_string, self.env["version"]]
+			)
+		)
 
-					for file in files:
+		self.output(f"Found major version:  {self.env['found_major_version']}", verbose_level=2)
+		self.output(f"Latest version found:  {self.env['version']}")
+		self.output(f"Source path:  {version_location}", verbose_level=2)
 
-						# Download each file
-						self.download_local_file(
-							f"{version_location}/{file}", self.env["cached_path"])
+		# Set the location where version should be cached
+		self.env["cached_path"] = os.path.join(downloads_dir, version_folder)
 
-			else:
+		if os.path.isdir(version_location):
 
-				# Download the file
-				self.download_local_file(version_location, self.env["cached_path"])
+			# Loop over files in version_location and download each one
+			for root_directory, folders, files in self.walk(version_location, 0):
 
-		finally:
+				for file in files:
 
-			# Done with share, unmount it.
-			if self.env.get("OFFLINEAPPS_URL"):
-				self.share.unmount()
+					# Download each file
+					self.download_local_file(
+						f"{version_location}/{file}", self.env["cached_path"])
+
+		else:
+
+			# Download the file
+			self.download_local_file(version_location, self.env["cached_path"])
+
+		# Do not unmount -- to support processor concurrency
+		# finally:
+		# 	# Done with share, unmount it.
+		# 	if self.env.get("OFFLINEAPPS_URL"):
+		# 		self.share.unmount()
 
 
 if __name__ == "__main__":

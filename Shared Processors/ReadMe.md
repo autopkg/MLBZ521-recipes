@@ -313,6 +313,17 @@ Used in:
   * com.github.mlbz521.download.SPSSStatistics
 
 
+## RenamePath ##
+
+This processor will rename a file directory.
+
+If the name file name ends with '.pkg', the %pkg_path% variable will 
+be updated with the new full path.
+
+Used in:
+  * Various custom recipes that are not public at the moment
+
+
 ## RicohPrintDriverURLProvider ##
 
 This processor finds the download URL for the latest Driver package based on the override-able parameters.

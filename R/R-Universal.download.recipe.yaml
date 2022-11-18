@@ -1,0 +1,49 @@
+Description: Downloads the latest version of R for macOS. (Also known as "The R Project for Statistical Computing.")
+
+  Downloads both the ARM and Intel builds.
+
+  The Elliot Jordan's `homebysix-recipes` repo will be needed for the `RProjectURLProvider` custom Processor.
+Identifier: com.github.mlbz521.download.R-Universal
+ParentRecipe: com.github.mlbz521.pkg.R-Universal
+MinimumVersion: 2.3
+Input:
+  NAME: R
+  PKG_NAME: R (Universal)
+  ARM_ARCHITECTURE: arm64
+  INTEL_ARCHITECTURE: x86_64
+Process:
+  - Processor: com.github.homebysix.download.R/RProjectURLProvider
+    Arguments:
+      architecture: "%ARM_ARCHITECTURE%"
+  - Processor: URLDownloader
+    Arguments:
+      prefetch_filename: True
+  - Processor: EndOfCheckPhase
+    Arguments:
+      arm_path: "%pathname%"
+      arm_version: "%version%"
+  - Processor: com.github.homebysix.download.R/RProjectURLProvider
+    Arguments:
+      architecture: "%INTEL_ARCHITECTURE%"
+  - Processor: URLDownloader
+    Arguments:
+      prefetch_filename: True
+  - Processor: EndOfCheckPhase
+    Arguments:
+      intel_path: "%pathname%"
+      intel_version: "%version%"
+  - Processor: CodeSignatureVerifier
+    Arguments:
+      input_path: "%arm_path%"
+      expected_authority_names:
+        - "Developer ID Installer: Simon Urbanek (VZLD955F6P"
+        - Developer ID Certification Authority
+        - Apple Root CA
+  - Processor: CodeSignatureVerifier
+    Arguments:
+      input_path: "%intel_path%"
+      expected_authority_names:
+        - "Developer ID Installer: Simon Urbanek (VZLD955F6P"
+        - Developer ID Certification Authority
+        - Apple Root CA
+  - Processor: EndOfCheckPhase

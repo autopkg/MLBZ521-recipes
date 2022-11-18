@@ -1,0 +1,114 @@
+Description: Downloads the latest R Project for both ARM and Intel and creates a package.
+
+  The ARM and Intel version builds **must match** for a package to be created.
+Identifier: com.github.mlbz521.pkg.R-Universal
+ParentRecipe: com.github.homebysix.download.R-Universal
+MinimumVersion: 2.3
+Input:
+  NAME: R
+  PKG_NAME: R (Universal)
+Process:
+  - Processor: StopProcessingIf
+    Arguments:
+      predicate: '"%intel_version%" != "%arm_version%"'
+  - Processor: PkgRootCreator
+    Arguments:
+      pkgroot: "%RECIPE_CACHE_DIR%/pkgroot"
+      pkgdirs: {}
+  - Processor: PkgRootCreator
+    Arguments:
+      pkgroot: "%RECIPE_CACHE_DIR%/scripts"
+      pkgdirs: {}
+  - Processor: FileFinder
+    Arguments:
+      pattern: "%intel_path%"
+  - Processor: EndOfCheckPhase
+    Arguments:
+      intel_pkg: "%found_basename%"
+  - Processor: PkgCopier
+    Arguments:
+      source_pkg: "%intel_path%"
+      pkg_path: "%RECIPE_CACHE_DIR%/scripts/%intel_pkg%"
+  - Processor: FileFinder
+    Arguments:
+      pattern: "%arm_path%"
+  - Processor: EndOfCheckPhase
+    Arguments:
+      arm_pkg: "%found_basename%"
+  - Processor: PkgCopier
+    Arguments:
+      source_pkg: "%arm_path%"
+      pkg_path: "%RECIPE_CACHE_DIR%/scripts/%arm_pkg%"
+  - Processor: FileCreator
+    Arguments:
+      file_path: "%RECIPE_CACHE_DIR%/scripts/preinstall"
+      file_mode: "0755"
+      file_content: |
+        #!/bin/bash
+
+        ###################################################################################################
+        # Script Name:  Install-UniversalPkg.sh
+        # By:  Zack Thompson / Created:  11/7/2022
+        # Version:  1.0.0 / Updated:  11/7/2022 / By:  ZT
+        #
+        # Description:  
+        #
+        ###################################################################################################
+
+        echo -e "*****  Install %NAME% Process:  START  *****\n"
+
+        ##################################################
+        # Define Variables
+
+        # Set working directory
+        pkg_dir=$( /usr/bin/dirname "${0}" )
+
+        if [[ $( /usr/bin/arch ) == "arm64" ]]; then
+            pkg="%arm_pkg%"
+        else
+            pkg="%intel_pkg%"
+        fi
+
+        ##################################################
+        # Bits staged...
+
+        if [[ $3 != "/" ]]; then
+            echo "[ERROR] Target disk is not the startup disk."
+            echo -e "\n*****  Install %NAME% Process:  FAILED  *****"
+            exit 1
+        fi
+
+        # Install pkg
+        echo "Installing..."
+        /usr/sbin/installer -dumplog -verbose -pkg "${pkg_dir}/${pkg}" -target /
+        exitCode=$?
+        /bin/sleep 1
+
+        if [[ $exitCode != 0 ]]; then
+            echo "[ERROR] Install failed!"
+            echo "[Exit Code] ${exitCode}"
+            echo -e "\n*****  Install %NAME% Process:  FAILED  *****"
+            exit 1
+        fi
+
+        echo -e "\n*****  Install %NAME% Process:  COMPLETE  *****"
+        exit 0
+  - Processor: PkgCreator
+    Arguments:
+      pkg_request:
+        id: "org.R-project.R.universal"
+        options: purge_ds_store
+        pkgname: "%NAME%-%version%"
+        pkgroot: "%RECIPE_CACHE_DIR%/pkgroot"
+        pkgtype: flat
+        scripts: "%RECIPE_CACHE_DIR%/scripts"
+        version: "%version%"
+  - Processor: com.github.mlbz521.SharedProcessors/RenamePath
+    Arguments:
+      source_path: "%RECIPE_CACHE_DIR%/%NAME%-%version%.pkg"
+      new_name: "%RECIPE_CACHE_DIR%/%PKG_NAME%-%version%.pkg"
+  - Processor: PathDeleter
+    Arguments:
+      path_list:
+        - "%RECIPE_CACHE_DIR%/pkgroot"
+        - "%RECIPE_CACHE_DIR%/scripts"

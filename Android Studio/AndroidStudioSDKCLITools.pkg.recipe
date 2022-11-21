@@ -80,7 +80,6 @@ The following override variable is available:
 				<string>%match%</string>
 			</dict>
 		</dict>
-		</dict>
 		<dict>
 			<key>Processor</key>
 			<string>PkgCreator</string>

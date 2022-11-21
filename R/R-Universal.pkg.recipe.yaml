@@ -2,7 +2,7 @@ Description: Downloads the latest R Project for both ARM and Intel and creates a
 
   The ARM and Intel version builds **must match** for a package to be created.
 Identifier: com.github.mlbz521.pkg.R-Universal
-ParentRecipe: com.github.homebysix.download.R-Universal
+ParentRecipe: com.github.mlbz521.download.R-Universal
 MinimumVersion: 2.3
 Input:
   NAME: R

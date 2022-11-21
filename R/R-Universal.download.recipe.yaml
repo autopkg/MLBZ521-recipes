@@ -4,7 +4,7 @@ Description: Downloads the latest version of R for macOS. (Also known as "The R 
 
   The Elliot Jordan's `homebysix-recipes` repo will be needed for the `RProjectURLProvider` custom Processor.
 Identifier: com.github.mlbz521.download.R-Universal
-MinimumVersion: 2.3
+MinimumVersion: "2.3"
 Input:
   NAME: R
   PKG_NAME: R (Universal)

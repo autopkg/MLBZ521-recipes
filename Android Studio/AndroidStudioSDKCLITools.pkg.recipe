@@ -19,58 +19,68 @@ The following override variable is available:
 		<key>SHARED_PATH</key>
 		<string>/Users/Shared/Android</string>
 	</dict>
-    <key>ParentRecipe</key>
-    <string>com.github.mlbz521.download.AndroidStudioSDKCLITools</string>
+	<key>ParentRecipe</key>
+	<string>com.github.mlbz521.download.AndroidStudioSDKCLITools</string>
 	<key>Process</key>
 	<array>
-        <dict>
-            <key>Processor</key>
-            <string>PkgRootCreator</string>
-            <key>Arguments</key>
-            <dict>
-                <key>pkgdirs</key>
-                <dict/>
-                <key>pkgroot</key>
-                <string>%RECIPE_CACHE_DIR%/pkgroot</string>
-            </dict>
-        </dict>
-        <dict>
-            <key>Processor</key>
-            <string>Unarchiver</string>
-            <key>Arguments</key>
-            <dict>
-                <key>archive_path</key>
-                <string>%pathname%</string>
-                <key>destination_path</key>
-                <string>%RECIPE_CACHE_DIR%/unpack</string>
-                <key>purge_destination</key>
-                <true />
-            </dict>
-        </dict>
-        <dict>
-            <key>Processor</key>
-            <string>Copier</string>
-            <key>Arguments</key>
-            <dict>
-                <key>source_path</key>
-                <string>%RECIPE_CACHE_DIR%/unpack/cmdline-tools/</string>
-                <key>destination_path</key>
-                <string>%RECIPE_CACHE_DIR%/pkgroot/%SHARED_PATH%/sdk/cmdline-tools/latest/</string>
-                <key>overwrite</key>
-                <true />
-            </dict>
-        </dict>
-        <dict>
-            <key>Processor</key>
-            <string>com.github.mlbz521.SharedProcessors/TextFileReader</string>
-            <key>Arguments</key>
-            <dict>
-                <key>source_path</key>
-                <string>%RECIPE_CACHE_DIR%/pkgroot/%SHARED_PATH%/sdk/cmdline-tools/latest/source.properties</string>
-                <key>pattern</key>
-                <string>Pkg.Revision=</string>
-            </dict>
-        </dict>
+		<dict>
+			<key>Processor</key>
+			<string>PkgRootCreator</string>
+			<key>Arguments</key>
+			<dict>
+				<key>pkgdirs</key>
+				<dict/>
+				<key>pkgroot</key>
+				<string>%RECIPE_CACHE_DIR%/pkgroot</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>Unarchiver</string>
+			<key>Arguments</key>
+			<dict>
+				<key>archive_path</key>
+				<string>%pathname%</string>
+				<key>destination_path</key>
+				<string>%RECIPE_CACHE_DIR%/unpack</string>
+				<key>purge_destination</key>
+				<true />
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>Copier</string>
+			<key>Arguments</key>
+			<dict>
+				<key>source_path</key>
+				<string>%RECIPE_CACHE_DIR%/unpack/cmdline-tools/</string>
+				<key>destination_path</key>
+				<string>%RECIPE_CACHE_DIR%/pkgroot/%SHARED_PATH%/sdk/cmdline-tools/latest/</string>
+				<key>overwrite</key>
+				<true />
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>com.github.mlbz521.SharedProcessors/TextFileReader</string>
+			<key>Arguments</key>
+			<dict>
+				<key>source_path</key>
+				<string>%RECIPE_CACHE_DIR%/pkgroot/%SHARED_PATH%/sdk/cmdline-tools/latest/source.properties</string>
+				<key>pattern</key>
+				<string>Pkg.Revision=</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>EndOfCheckPhase</string>
+			<key>Arguments</key>
+			<dict>
+				<key>version</key>
+				<string>%match%</string>
+			</dict>
+		</dict>
+		</dict>
 		<dict>
 			<key>Processor</key>
 			<string>PkgCreator</string>
@@ -78,29 +88,29 @@ The following override variable is available:
 			<dict>
 				<key>pkg_request</key>
 				<dict>
-                    <key>chown</key>
-                    <array>
-                        <dict>
-                            <key>path</key>
-                            <string>%SHARED_PATH%</string>
-                            <key>user</key>
-                            <string>root</string>
-                            <key>group</key>
-                            <string>staff</string>
-                            <key>mode</key>
-                            <string>0775</string>
-                        </dict>
-                    </array>
+					<key>chown</key>
+					<array>
+						<dict>
+							<key>path</key>
+							<string>%SHARED_PATH%</string>
+							<key>user</key>
+							<string>root</string>
+							<key>group</key>
+							<string>staff</string>
+							<key>mode</key>
+							<string>0775</string>
+						</dict>
+					</array>
 					<key>id</key>
 					<string>com.google.android.sdk.cmdline-tools</string>
 					<key>pkgname</key>
-					<string>%NAME%-%match%</string>
+					<string>%NAME%-%version%</string>
 					<key>pkgroot</key>
 					<string>%RECIPE_CACHE_DIR%/pkgroot</string>
 					<key>pkgtype</key>
 					<string>flat</string>
 					<key>version</key>
-					<string>%match%</string>
+					<string>%version%</string>
 				</dict>
 			</dict>
 		</dict>

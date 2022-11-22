@@ -35,14 +35,14 @@ Process:
     Arguments:
       input_path: "%arm_path%"
       expected_authority_names:
-        - "Developer ID Installer: Simon Urbanek (VZLD955F6P"
+        - "Developer ID Installer: Simon Urbanek (VZLD955F6P)"
         - Developer ID Certification Authority
         - Apple Root CA
   - Processor: CodeSignatureVerifier
     Arguments:
       input_path: "%intel_path%"
       expected_authority_names:
-        - "Developer ID Installer: Simon Urbanek (VZLD955F6P"
+        - "Developer ID Installer: Simon Urbanek (VZLD955F6P)"
         - Developer ID Certification Authority
         - Apple Root CA
   - Processor: EndOfCheckPhase

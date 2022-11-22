@@ -38,9 +38,7 @@ class MountShare(Processor):
 	description = __doc__
 	input_variables = {
 		"url": {
-			"description": (
-				"An SMB URL to mount."
-			),
+			"description": "An SMB URL to mount.",
 			"required": True
 		},
 		"share_name": {
@@ -65,7 +63,7 @@ class MountShare(Processor):
 		},
 		"protocol": {
 			"description": (
-				"The protocol used to connect to the url."
+				"The protocol used to connect to the url.  "
 				"The default and currently only supported protocol is 'smb'."
 			),
 			"default": "smb",
@@ -82,7 +80,7 @@ class MountShare(Processor):
 		"domain": {
 			"description": "Domain, if required, to connect to the SMB server.",
 			"required": False
-		},
+		}
 	}
 	output_variables = {}
 	required_attrs = {
@@ -159,13 +157,12 @@ class MountShare(Processor):
 	def mount(self):
 		"""Mount the SMB Share"""
 
-		# Ensure the mount point directory exists
-		if not os.path.exists(self.connection["mount_point"]):
-			os.mkdir(self.connection["mount_point"])
-
-		self.output(f"Mount point will be:  {self.connection['mount_point']}", verbose_level=3)
-
 		if not self.is_mounted():
+
+			# Ensure the mount point directory exists
+			if not os.path.exists(self.connection["mount_point"]):
+				os.mkdir(self.connection["mount_point"])
+
 			self.output("Mounting share...", verbose_level=2)
 
 			args = [
@@ -177,6 +174,8 @@ class MountShare(Processor):
 
 			self.output(" ".join(args), verbose_level=3)
 			subprocess.check_call(args)
+
+		self.output(f"Mount point is:  {self.connection['mount_point']}", verbose_level=3)
 
 
 	def unmount(self, forced=True):
@@ -200,11 +199,11 @@ class MountShare(Processor):
 		If it is currently mounted, determine the path where it's
 		mounted and update the connection's mount_point accordingly."""
 
-		self.output("Checking if share is mounted", verbose_level=3)
+		self.output("Checking if share is already mounted", verbose_level=3)
 		was_mounted = False
 		mount_check = subprocess.check_output("mount").decode().splitlines()
 
-		for mount in mount_check:
+		for mount in reversed(mount_check):
 
 			# Get the source and mount point string between from the end back to the last "on", but
 			# before the options (wrapped in parenthesis). Considers alphanumerics,
@@ -223,15 +222,12 @@ class MountShare(Processor):
 
 			# Does the mount_string match the mount url?
 			if (
-				mount_url == self.connection["mount_url_passwordless"]
+				mount_url.replace("%24", "$") == self.connection["mount_url_passwordless"]
 				and self.fs_type == fs_type
 				and mount_point
 			):
 
-				self.output(
-					f"{self.connection['url']} is mounted at {self.connection['mount_point']}",
-					verbose_level=3
-				)
+				self.output(f"{self.connection['url']} is already mounted", verbose_level=3)
 				was_mounted = True
 
 				if mount_point != self.connection["mount_point"]:

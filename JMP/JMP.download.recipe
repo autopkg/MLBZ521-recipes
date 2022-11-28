@@ -96,7 +96,7 @@
 			<key>Arguments</key>
 			<dict>
 				<key>input_path</key>
-				<string>%found_filename%/*.pkg</string>
+				<string>%RECIPE_CACHE_DIR%/%NAME%.pkg</string>
 				<key>expected_authority_names</key>
 				<array>
 					<string>Developer ID Installer: SAS Institute Inc. (E828H4LX4D)</string>

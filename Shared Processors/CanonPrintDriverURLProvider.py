@@ -187,15 +187,13 @@ class CanonPrintDriverURLProvider(URLGetter):
             try:
                 web_engine.get(model_url)
                 # Workaround for when the page fails to load new content after interacting with it
-                web_engine.execute_script(
-                    "Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
+                web_engine.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
                 web_engine.delete_all_cookies()
 
             except:
                 raise ProcessorError("Failed to access the model page.")
 
             try:
-                time.sleep(2)
                 # Select Software & Drivers section
                 self.output("Expanding the 'Software & Drivers' section...", verbose_level=3)
                 self.scroll_into_view_and_click(
@@ -207,7 +205,6 @@ class CanonPrintDriverURLProvider(URLGetter):
                 raise ProcessorError("Failed to find and open the 'Software & Drivers' section.")
 
             try:
-                time.sleep(2)
                 # Open the "OS type" dropdown menu
                 web_engine.find_element(By.CSS_SELECTOR, 
                     "div[class='software-downloads'] div[class='os-dropdown os-names ada-clickable'] button[class='dropdown-btn']").click()
@@ -236,7 +233,6 @@ class CanonPrintDriverURLProvider(URLGetter):
                 raise ProcessorError("Failed attempting to select the desired OS type or version")
 
             try:
-                time.sleep(2)
                 # Open the "Sort" dropdown menu
                 self.output(f"Selecting the download type:  {download_type}", verbose_level=3)
                 web_engine.find_element(By.XPATH, 
@@ -255,12 +251,12 @@ class CanonPrintDriverURLProvider(URLGetter):
             except:
                 raise ProcessorError("Failed to sort the list of options.")
 
-            time.sleep(2)
-
             if re.match(download_type, "Recommended", re.IGNORECASE):
+
                 try:
                     download_url = web_engine.find_element(By.XPATH, 
                         "//*/div[@class='software-downloads__container']/div[@recommended='Y']//div[@class='download__cta']//a[@role='button']").get_attribute("href")
+
                 except:
                     raise ProcessorError(
                         "Failed to identify the download url for the Recommended download.")
@@ -276,23 +272,15 @@ class CanonPrintDriverURLProvider(URLGetter):
                 # )
 
                 # This method attempts to scroll the button into the middle of the screen, instead of to the top
-                load_more_section = web_engine.find_element(By.XPATH, 
-                    "//*[contains(@class, 'advisories-load-more-button-container')]")
-                web_engine.execute_script(
-                    'arguments[0].scrollIntoView({"block": "center", "inline": "center"});', 
-                    load_more_section
-                )
+                load_more_section = web_engine.find_element(By.XPATH, "//*[contains(@class, 'advisories-load-more-button-container')]")
+                web_engine.execute_script('arguments[0].scrollIntoView({"block": "center", "inline": "center"});', load_more_section)
                 time.sleep(2)
 
-                load_more = web_engine.find_element(By.XPATH, 
-                    "//*/a[@role='button'][contains(@class, 'softwares-load-more')]")
-                web_engine.execute_script(
-                    'arguments[0].scrollIntoView({"block": "center", "inline": "center"});', 
-                    load_more
-                )
+                load_more = web_engine.find_element(By.XPATH, "//*/a[@role='button'][contains(@class, 'softwares-load-more')]")
+                web_engine.execute_script('arguments[0].scrollIntoView({"block": "center", "inline": "center"});', load_more)
                 time.sleep(2)
+
                 load_more.click()
-                time.sleep(2)
 
                 # Get the downloads container element
                 download_list = web_engine.find_element(By.XPATH, 

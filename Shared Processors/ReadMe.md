@@ -321,10 +321,7 @@ If the name file name ends with '.pkg', the %pkg_path% variable will
 be updated with the new full path.
 
 Used in:
-  * com.github.mlbz521.pkg.JMP
-  * com.github.mlbz521.pkg.MySQLCommunityServer-Universal
-  * com.github.mlbz521.pkg.R-Universal
-  * Various custom recipes that are not public
+  * Various custom recipes that are not public at the moment
 
 
 ## RicohPrintDriverURLProvider ##
@@ -438,6 +435,7 @@ Extracts a single file from an archive using xar.  Archive path can be within a 
 
 Used in:
   * com.github.mlbz521.download.CiscoJabber
+  * com.github.mlbz521.download.JMP
   * com.github.mlbz521.download.SetALight3D
   * com.github.mlbz521.pkg.iManageWork
   * com.github.mlbz521.pkg.RicohPrintDriver
@@ -450,9 +448,9 @@ Parses a XML file to pull the desired info using XPath.
 
 Used in:
   * com.github.mlbz521.download.CiscoJabber
+  * com.github.mlbz521.download.JMP
   * com.github.mlbz521.download.SetALight3D
   * com.github.mlbz521.pkg.iManageWork
-  * com.github.mlbz521.pkg.JMP
   * com.github.mlbz521.pkg.RicohPrintDriver
   * com.github.mlbz521.pkg.XcodeCLITools
 

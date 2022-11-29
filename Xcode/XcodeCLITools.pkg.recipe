@@ -5,13 +5,13 @@
 	<key>Identifier</key>
 	<string>com.github.mlbz521.pkg.XcodeCLITools</string>
 	<key>Description</key>
-	<string>Download the Xcode Command Line Tools from the Apple dev portal and creates a .pkg.  Uses Facebook's "xcode.downloader" recipe.
+	<string>Download the Xcode Command Line Tools from the Apple dev portal and creates a .pkg.
 
 Important Override Variables:
-	* You must override APPLE_ID and ( PASSWORD_FILE or PASSWORD )
+	* You must override APPLE_ID and one of PASSWORD_FILE or PASSWORD
 	* BETA must either be empty for stable releases or set to "Beta" in order to match Xcode betas
 
-See https://github.com/facebook/Recipes-for-AutoPkg/tree/master/Xcode for more information.</string>
+See https://github.com/autopkg/nmcspadden-recipes/tree/master/Xcode for more information.</string>
 	<key>Input</key>
 	<dict>
 		<key>NAME</key>
@@ -20,7 +20,7 @@ See https://github.com/facebook/Recipes-for-AutoPkg/tree/master/Xcode for more i
 		<string>((?!.*beta).*\/Command_Line_Tools_for_Xcode_.*\/Command_Line_Tools_for_Xcode.*.dmg)</string>
 	</dict>
 	<key>ParentRecipe</key>
-	<string>com.facebook.autopkg.xcode.downloader</string>
+	<string>com.github.nmcspadden.download.xcode</string>
 	<key>Process</key>
 	<array>
 		<dict>

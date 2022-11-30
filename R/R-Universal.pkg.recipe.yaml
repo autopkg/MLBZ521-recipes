@@ -106,7 +106,7 @@ Process:
   - Processor: com.github.mlbz521.SharedProcessors/RenamePath
     Arguments:
       source_path: "%RECIPE_CACHE_DIR%/%NAME%-%version%.pkg"
-      new_name: "%RECIPE_CACHE_DIR%/%PKG_NAME%-%version%.pkg"
+      new_name: "%PKG_NAME%-%version%.pkg"
   - Processor: PathDeleter
     Arguments:
       path_list:

@@ -77,13 +77,13 @@ See https://github.com/autopkg/nmcspadden-recipes/tree/master/Xcode for more inf
 		</dict>
 		<dict>
 			<key>Processor</key>
-			<string>FileMover</string>
+			<string>com.github.mlbz521.SharedProcessors/RenamePath</string>
 			<key>Arguments</key>
 			<dict>
-				<key>source</key>
+				<key>source_path</key>
 				<string>%RECIPE_CACHE_DIR%/%NAME%.pkg</string>
-				<key>target</key>
-				<string>%RECIPE_CACHE_DIR%/%NAME%-%version%.pkg</string>
+				<key>new_name</key>
+				<string>%NAME%-%version%.pkg</string>
 			</dict>
 		</dict>
 		<dict>

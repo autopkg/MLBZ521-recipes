@@ -28,3 +28,7 @@ Process:
         - name: "%GROUP_NAME%"
           smart: true
           template_path: "%GROUP_TEMPLATE%"
+
+  - Processor: DeprecationWarning
+    Arguments:
+      warning_message: "All `.jss` recipes have been deprecated and will no longer receive updates due to the sunset of JSSImporter as it will stop working in a future version of Jamf Pro.  Please consider switching your JSSImporter workflows to JamfUploader instead.  Details:  https://grahamrpugh.com/2022/02/16/jssimporter-jamf-pro-api-token-auth.html"

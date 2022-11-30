@@ -4,6 +4,8 @@
 <dict>
 	<key>Identifier</key>
 	<string>com.github.mlbz521.jss.Praat</string>
+	<key>Description</key>
+	<string>Downloads the latest version of Praat, creates a package, and uploads it to the JPS.</string>
 	<key>Input</key>
 	<dict>
 		<key>GROUP_TEMPLATE</key>
@@ -57,6 +59,15 @@
 						<string>%GROUP_TEMPLATE%</string>
 					</dict>
 				</array>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>DeprecationWarning</string>
+			<key>Arguments</key>
+			<dict>
+				<key>warning_message</key>
+				<string>All `.jss` recipes have been deprecated and will no longer receive updates due to the sunset of JSSImporter as it will stop working in a future version of Jamf Pro.  Please consider switching your JSSImporter workflows to JamfUploader instead.  Details:  https://grahamrpugh.com/2022/02/16/jssimporter-jamf-pro-api-token-auth.html</string>
 			</dict>
 		</dict>
 	</array>

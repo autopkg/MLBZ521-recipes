@@ -35,8 +35,8 @@ This package installs the SDK into a shared user space (`%SHARED_PATH%`) so that
 		<key>SELF_SERVICE_ICON</key>
 		<string>AndroidSDK1.png</string>
 	</dict>
-    <key>ParentRecipe</key>
-    <string>com.github.mlbz521.pkg.AndroidStudioSDKCLITools</string>
+	<key>ParentRecipe</key>
+	<string>com.github.mlbz521.pkg.AndroidStudioSDKCLITools</string>
 	<key>Process</key>
 	<array>
 		<dict>
@@ -71,6 +71,15 @@ This package installs the SDK into a shared user space (`%SHARED_PATH%`) so that
 						<string>%GROUP_TEMPLATE%</string>
 					</dict>
 				</array>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>DeprecationWarning</string>
+			<key>Arguments</key>
+			<dict>
+				<key>warning_message</key>
+				<string>All `.jss` recipes have been deprecated and will no longer receive updates due to the sunset of JSSImporter as it will stop working in a future version of Jamf Pro.  Please consider switching your JSSImporter workflows to JamfUploader instead.  Details:  https://grahamrpugh.com/2022/02/16/jssimporter-jamf-pro-api-token-auth.html</string>
 			</dict>
 		</dict>
 	</array>

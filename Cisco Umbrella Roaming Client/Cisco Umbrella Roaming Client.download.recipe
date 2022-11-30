@@ -21,10 +21,12 @@
 		<key>BASE_URL</key>
 		<string>https://support.umbrella.com</string>
 		<key>SEARCH_URL</key>
-		<string>%BASE_URL%/hc/en-us/sections/4404390256788-MacOS</string>
+		<string>/hc/en-us/sections/4404390256788-MacOS</string>
 		<key>SEARCH_PATTERN_1</key>
-		<string>/hc/en\-us/articles/\d+\-(?:Umbrella\-)?Roaming\-Client\-for\-[Mm]acOS\-(?:Version\-)?[0-9\-]+</string>
+		<string>.+action="(?P&lt;redirect_url&gt;%SEARCH_URL%.+)" method=.+</string>
 		<key>SEARCH_PATTERN_2</key>
+		<string>/hc/en\-us/articles/\d+\-(?:Umbrella\-)?Roaming\-Client\-for\-[Mm]acOS\-(?:Version\-)?[0-9\-]+</string>
+		<key>SEARCH_PATTERN_3</key>
 		<string>(?P&lt;download_url&gt;https://disthost.umbrella.com/roaming/upgrade/mac/stage/(?P&lt;filename&gt;RoamingClient_MAC_(?P&lt;version&gt;[0-9\.]+).pkg.zip))</string>
 	</dict>
 	<key>MinimumVersion</key>
@@ -46,7 +48,7 @@
 			<key>Arguments</key>
 			<dict>
 				<key>url</key>
-				<string>%SEARCH_URL%</string>
+				<string>%BASE_URL%%SEARCH_URL%</string>
 				<key>re_pattern</key>
 				<string>%SEARCH_PATTERN_1%</string>
 			</dict>
@@ -57,9 +59,20 @@
 			<key>Arguments</key>
 			<dict>
 				<key>url</key>
-				<string>%BASE_URL%%match%</string>
+				<string>%BASE_URL%%redirect_url%</string>
 				<key>re_pattern</key>
 				<string>%SEARCH_PATTERN_2%</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>URLTextSearcher</string>
+			<key>Arguments</key>
+			<dict>
+				<key>url</key>
+				<string>%BASE_URL%%match%</string>
+				<key>re_pattern</key>
+				<string>%SEARCH_PATTERN_3%</string>
 			</dict>
 		</dict>
 		<dict>
@@ -78,10 +91,10 @@
 			<string>Unarchiver</string>
 			<key>Arguments</key>
 			<dict>
-                <key>archive_path</key>
-                <string>%pathname%</string>
-                <key>destination_path</key>
-                <string>%RECIPE_CACHE_DIR%</string>
+				<key>archive_path</key>
+				<string>%pathname%</string>
+				<key>destination_path</key>
+				<string>%RECIPE_CACHE_DIR%</string>
 			</dict>
 		</dict>
 		<dict>
@@ -91,17 +104,26 @@
 			<dict>
 				<key>input_path</key>
 				<string>%RECIPE_CACHE_DIR%/*.pkg</string>
-                <key>expected_authority_names</key>
-                <array>
-                    <string>Developer ID Installer: OpenDNS (7P7HQ8H646)</string>
-                    <string>Developer ID Certification Authority</string>
-                    <string>Apple Root CA</string>
-                </array>
+				<key>expected_authority_names</key>
+				<array>
+					<string>Developer ID Installer: OpenDNS (7P7HQ8H646)</string>
+					<string>Developer ID Certification Authority</string>
+					<string>Apple Root CA</string>
+				</array>
 			</dict>
 		</dict>
 		<dict>
 			<key>Processor</key>
 			<string>EndOfCheckPhase</string>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>DeprecationWarning</string>
+			<key>Arguments</key>
+			<dict>
+				<key>warning_message</key>
+				<string>My Roaming/OpenDNS Client recipes have been deprecated in favor of the set in rtrouton-recipes.</string>
+			</dict>
 		</dict>
 	</array>
 </dict>

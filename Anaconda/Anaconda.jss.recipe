@@ -69,6 +69,15 @@ Default install path is set to:  "/Users/Shared/anaconda3" -- adjustable via sub
 				</array>
 			</dict>
 		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>DeprecationWarning</string>
+			<key>Arguments</key>
+			<dict>
+				<key>warning_message</key>
+				<string>All `.jss` recipes have been deprecated and will no longer receive updates due to the sunset of JSSImporter as it will stop working in a future version of Jamf Pro.  Please consider switching your JSSImporter workflows to JamfUploader instead.  Details:  https://grahamrpugh.com/2022/02/16/jssimporter-jamf-pro-api-token-auth.html</string>
+			</dict>
+		</dict>
 	</array>
 </dict>
 </plist>

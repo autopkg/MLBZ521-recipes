@@ -84,6 +84,15 @@ Drive File Stream is only usable with G-Suite accounts.</string>
 				</array>
 			</dict>
 		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>DeprecationWarning</string>
+			<key>Arguments</key>
+			<dict>
+				<key>warning_message</key>
+				<string>Replaced with com.github.mlbz521.jss.GoogleDrive</string>
+			</dict>
+		</dict>
 	</array>
 </dict>
 </plist>

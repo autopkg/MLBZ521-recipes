@@ -22,15 +22,13 @@
 		<string>Google Backup and Sync</string>
 		<key>CATEGORY</key>
 		<string>Uilities</string>
-		<key>DESCRIPTION</key>
+		<key>SELF_SERVICE_DESCRIPTION</key>
 		<string>Backup and Sync creates a folder on your computer named Google Drive.  This folder syncs with your My Drive on the web and all your Drive enabled devices.  This is a 2-way sync, so changes you make online are reflected on all your devices, and vice-versa.  With Backup and Sync, you can also:
 * Sync other folders on your computer, such as Documents or Desktop
 * Sync USB devices and SD cards
 * Back up your photos and videos to Google Photos</string>
-		<key>ICON</key>
-		<string>%RECIPE_DIR%/GoogleBackupAndSync.png</string>
-		<key>os_requirements</key>
-		<string>10.13.x,10.12.x,10.11.x,10.10.x,10.9.x,10.8.x</string>
+		<key>SELF_SERVICE_ICON</key>
+		<string>GoogleBackupAndSync.png</string>
 	</dict>
 	<key>ParentRecipe</key>
 	<string>com.github.nstrauss.pkg.BackupandSync</string>
@@ -52,9 +50,9 @@
 				<key>policy_template</key>
 				<string>%POLICY_TEMPLATE%</string>
 				<key>self_service_icon</key>
-				<string>%ICON%</string>
+				<string>%SELF_SERVICE_ICON%</string>
 				<key>self_service_description</key>
-				<string>%DESCRIPTION%</string>
+				<string>%SELF_SERVICE_DESCRIPTION%</string>
 				<key>groups</key>
 				<array>
 					<dict>
@@ -66,6 +64,15 @@
 						<string>%GROUP_TEMPLATE%</string>
 					</dict>
 				</array>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>DeprecationWarning</string>
+			<key>Arguments</key>
+			<dict>
+				<key>warning_message</key>
+				<string>All `.jss` recipes have been deprecated and will no longer receive updates due to the sunset of JSSImporter as it will stop working in a future version of Jamf Pro.  Please consider switching your JSSImporter workflows to JamfUploader instead.  Details:  https://grahamrpugh.com/2022/02/16/jssimporter-jamf-pro-api-token-auth.html</string>
 			</dict>
 		</dict>
 	</array>

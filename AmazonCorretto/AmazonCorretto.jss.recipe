@@ -24,8 +24,8 @@ The JDK Major Version can be specified using the override variable "JDK_MAJOR_VE
 	<key>GROUP_NAME</key>
 	<string>%NAME%-Testing</string>
 
-    <key>JDK_MAJOR_VERSION</key>
-    <string>8</string>
+	<key>JDK_MAJOR_VERSION</key>
+	<string>8</string>
 	<key>DOWNLOAD_URL</key>
 	<string>https://corretto.aws/downloads/latest/amazon-corretto-%JDK_MAJOR_VERSION%-x64-macos-jdk.tar.gz</string>
 	<key>EXTENSION_ATTRIBUTE</key>
@@ -76,6 +76,15 @@ Corretto is certified as compatible with the Java SE standard and is used intern
 						<string>%GROUP_TEMPLATE%</string>
 					</dict>
 				</array>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>DeprecationWarning</string>
+			<key>Arguments</key>
+			<dict>
+				<key>warning_message</key>
+				<string>All `.jss` recipes have been deprecated and will no longer receive updates due to the sunset of JSSImporter as it will stop working in a future version of Jamf Pro.  Please consider switching your JSSImporter workflows to JamfUploader instead.  Details:  https://grahamrpugh.com/2022/02/16/jssimporter-jamf-pro-api-token-auth.html</string>
 			</dict>
 		</dict>
 	</array>

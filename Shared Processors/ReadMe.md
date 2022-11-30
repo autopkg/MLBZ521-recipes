@@ -324,6 +324,7 @@ Used in:
   * com.github.mlbz521.pkg.JMP
   * com.github.mlbz521.pkg.MySQLCommunityServer-Universal
   * com.github.mlbz521.pkg.R-Universal
+  * com.github.mlbz521.pkg.XcodeCLITools
   * Various custom recipes that are not public
 
 

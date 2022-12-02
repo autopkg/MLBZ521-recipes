@@ -16,12 +16,11 @@
 
 import os
 import plistlib
+import re
 import shutil
 import subprocess
-import time
 
 from autopkglib import Processor, ProcessorError
-from SystemConfiguration import SCDynamicStoreCopyConsoleUser
 
 
 __all__ = ["SolsticeProcessor"]
@@ -54,74 +53,88 @@ class SolsticeProcessor(Processor):
     }
 
 
+    def get_console_user(self):
+
+        # Get the Console User
+        results_console_user = self.execute_process(
+            "/usr/sbin/scutil", "show State:/Users/ConsoleUser")
+        return re.sub(
+            "(Name : )|(\n)", "", ( re.search("Name : .*\n", results_console_user["stdout"])[0] ))
+
+
+    def execute_process(self, command, input=None):
+        """
+        A helper function for subprocess.
+
+        Args:
+            command (str):  The command line level syntax that would be
+                written in shell or a terminal window.
+        Returns:
+            Results in a dictionary.
+        """
+
+        # Validate that command is not a string
+        if not isinstance(command, str):
+            raise TypeError('Command must be a str type')
+
+        # Format the command
+        # command = shlex.quote(command)
+
+        # Run the command
+        process = subprocess.Popen(
+            command, shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE)
+
+        if input:
+            (stdout, stderr) = process.communicate(input=bytes(input, "utf-8"))
+        else:
+            (stdout, stderr) = process.communicate()
+
+        return {
+            "stdout": (stdout.decode()).strip(),
+            "stderr": (stderr.decode()).strip() if stderr != None else None,
+            "status": process.returncode,
+            "success": True if process.returncode == 0 else False,
+            "process": process
+        }
+
+
     def main(self):
 
-        def runUtility(command):
-            """A helper function for subprocess.
-            Args:
-                command:  List containing command and arguments in a list
-            Returns:
-                stdout:  output of the command
-            """
-            try:
-                process = subprocess.Popen(command)
-
-            except subprocess.CalledProcessError as error:
-                self.output(f"return code = {error.returncode}")
-                self.output(f"result = {error}")
-
-            return process
-
-
-        # Define some variables.
         bootstrapper_location = self.env.get("bootstrapper_location")
         move_to = self.env.get("move_to")
-        time_counter = 0
 
-        # The final .app is saved to the logged in users home directory, so we get that.
-        username = (SCDynamicStoreCopyConsoleUser(None, None, None) or [None])[0]
-        username = [username,""][username in [u"loginwindow", None, u""]]
+        # The final .app is saved to the logged in users home directory.
+        username = self.get_console_user()
 
         # Run the binary to build the final .app.
-        bootstrapper = [f"{bootstrapper_location}/Contents/MacOS/SolsticeClientInstallerMac"]
-        build = runUtility(bootstrapper)
-
-        # Give it eight seconds to build the app, and then kill the process -- we don't want the app launching.
-        while not os.path.exists(f"/Users/{username}/Desktop/Mersive Solstice.app/Contents/Info.plist"):
-
-            # This method was proposed by @dcoobs (github.com/dcoobs)
-            time.sleep(1)
-            time_counter += 1
-
-            if time_counter > 8:
-                break
-
-        build.kill()
+        bootstrapper = f"{bootstrapper_location}/Contents/MacOS/SolsticeClientInstallerMac"
+        build = self.execute_process(bootstrapper)
+        build.get("process").kill()
 
         if os.path.exists(f"/Users/{username}/Desktop/Mersive Solstice.app"):
 
             # Move the file from the home directory, back into the Autopkg Cache directory.
-            shutil.move(f"/Users/{username}/Desktop/Mersive Solstice.app", f"{move_to}/Mersive Solstice.app")
+            shutil.move(
+                f"/Users/{username}/Desktop/Mersive Solstice.app", 
+                f"{move_to}/Mersive Solstice.app"
+            )
 
         else:
             raise ProcessorError("The Mersive Solstice.app wasn't at the expected location.")
 
-        # Define the plist file.
-        plist = f"{move_to}/Mersive Solstice.app/Contents/Info.plist"
-
         # Get the contents of the plist file.
         try:
+            plist = f"{move_to}/Mersive Solstice.app/Contents/Info.plist"
             with open(plist, "rb") as file:
                 plist_contents = plistlib.load(file)
 
-        except Exception:
-            raise ProcessorError("Unable to locate the specified plist file.")
+        except Exception as error:
+            raise ProcessorError("Unable to locate the specified plist file.") from error
 
         # Get the version and bundle id
         version=plist_contents.get("CFBundleShortVersionString")
         bundle_id=plist_contents.get("CFBundleIdentifier")
-
-        # Output
         self.env["version"] = version
         self.output(f"Version: {self.env['version']}")
         self.env["bundle_id"] = bundle_id

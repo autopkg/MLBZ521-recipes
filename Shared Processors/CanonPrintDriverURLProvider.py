@@ -34,6 +34,7 @@ from selenium.webdriver.support.expected_conditions import (
     element_to_be_clickable, presence_of_element_located, visibility_of_element_located)
 from selenium.webdriver.common.by import By
 from selenium.webdriver import ActionChains
+from selenium.common.exceptions import NoSuchElementException
 
 sys.path.insert(0,
     f"{os.path.dirname(os.path.dirname(os.path.abspath(__file__)))}/Shared Processors")
@@ -94,10 +95,12 @@ class CanonPrintDriverURLProvider(URLGetter):
                 "   - \"Recommended\" will download whatever option is in the "
                 "       \"Recommended Driver(s)\" section.",
                 "       Note:  The \"Recommended\" driver may not be the *_latest_* driver.",
-                "   - \"UFRII\" will download the latest UFRII optional driver",
-                "   - \"PS\" will download the latest PS optional driver",
-                "   - \"FAX\" will download the latest FAX optional driver",
-                "   - \"PPD\" will download the latest PPD optional driver",
+                "   - \"UFRII\" will download the latest UFRII driver",
+                "   - \"PS\" will download the latest PS driver",
+                "   - \"FAX\" will download the latest FAX driver",
+                "   - \"PPD\" will download the latest PPD driver",
+                "   - \"MF\" will download the latest MF driver",
+                "   - \"Scanner\" will download the latest Scanner driver",
                 "Default:  Recommended"
             ),
             "default": "Recommended"
@@ -125,6 +128,7 @@ class CanonPrintDriverURLProvider(URLGetter):
         web_engine.execute_script("arguments[0].scrollIntoView();", element)
         time.sleep(1)
         ActionChains(web_engine).move_to_element(element).click().perform()
+        time.sleep(1)
 
 
     def main(self):
@@ -140,7 +144,7 @@ class CanonPrintDriverURLProvider(URLGetter):
 
         self.output(f"Searching for printer model:  {model}", verbose_level=1)
         # Canon's json product list URL:  https://downloads.canon.com/c16415dev/cusa/ow/support/support-home-products.json
-        # Used to use the above URL for looking up printer, documenting it here for future reference
+        # Used to use the above URL for looking up printer, leaving it documented here for future reference
 
         # Build the required curl switches
         curl_opts = [
@@ -187,7 +191,8 @@ class CanonPrintDriverURLProvider(URLGetter):
             try:
                 web_engine.get(model_url)
                 # Workaround for when the page fails to load new content after interacting with it
-                web_engine.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
+                web_engine.execute_script(
+                    "Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
                 web_engine.delete_all_cookies()
 
             except:
@@ -205,122 +210,148 @@ class CanonPrintDriverURLProvider(URLGetter):
                 raise ProcessorError("Failed to find and open the 'Software & Drivers' section.")
 
             try:
+
                 # Open the "OS type" dropdown menu
-                web_engine.find_element(By.CSS_SELECTOR, 
+                web_engine.find_element(By.CSS_SELECTOR,
                     "div[class='software-downloads'] div[class='os-dropdown os-names ada-clickable'] button[class='dropdown-btn']").click()
+                time.sleep(1)
                 # Select the "OS type"
                 self.output("Selecting the OS type:  Mac", verbose_level=3)
-                web_engine.find_element(By.XPATH, 
+                web_engine.find_element(By.XPATH,
                     "//*/ul[contains(@class, 'dropdown os-names-dropdown')]/li[@class='os-type'][@filtervalue='Mac']").click()
+                time.sleep(1)
 
                 # Open the "OS version" dropdown menu
-                os_version_dropdown = web_engine.find_element(By.CSS_SELECTOR, 
+                os_version_dropdown = web_engine.find_element(By.CSS_SELECTOR,
                     "div[class='software-downloads'] div[class='os-dropdown os-versions ada-clickable'] button[class='dropdown-btn']")
                 os_version_dropdown.click()
+                time.sleep(1)
 
                 # Select the "OS version"
                 self.output(f"Selecting the OS version:  {os_version}", verbose_level=3)
-                # Workaround for a quirk where the first selection does not work if it's the first item in the list
-                # web_engine.find_element(By.XPATH, 
-                #     "//*/ul[contains(@class, 'dropdown os-versions-dropdown')]/li[@osfamily='Mac'][@filtervalue='MACOS_11']/a[@class='os-version__name']").click()
-                # os_version_dropdown.click()
-                # Workaround stopped working, some additional workarounds above resolve this issue now
-                web_engine.find_element(By.XPATH, 
+                web_engine.find_element(By.XPATH,
                     f"//*/ul[contains(@class, 'dropdown os-versions-dropdown')]/li[@osfamily='Mac'][@filtervalue='{os_version}']/a[@class='os-version__name']").click()
                 self.output("The OS Version was selected.", verbose_level=3)
+                time.sleep(1)
 
             except:
                 raise ProcessorError("Failed attempting to select the desired OS type or version")
 
             try:
+
                 # Open the "Sort" dropdown menu
-                self.output(f"Selecting the download type:  {download_type}", verbose_level=3)
-                web_engine.find_element(By.XPATH, 
+                web_engine.find_element(By.XPATH,
                     "//*/div[contains(@class, 'os-dropdown medium downloads_sort ada-clickable')]").click()
+                time.sleep(1)
 
                 if re.match(download_type, "Recommended", re.IGNORECASE):
+                    self.output(f"Sorting by:  {download_type}", verbose_level=3)
                     # Sort by Recommended
-                    web_engine.find_element(By.XPATH, 
+                    web_engine.find_element(By.XPATH,
                         f"//*/ul[@class='dropdown'][@filtertype='sort']/li[@filtervalue='{download_type}']").click()
 
                 else:
                     # Sort by Date
-                    web_engine.find_element(By.XPATH, 
+                    self.output("Sorting by:  Date", verbose_level=3)
+                    web_engine.find_element(By.XPATH,
                         "//*/ul[@class='dropdown'][@filtertype='sort']/li[@filtervalue='Date']").click()
+
+                time.sleep(1)
 
             except:
                 raise ProcessorError("Failed to sort the list of options.")
 
             if re.match(download_type, "Recommended", re.IGNORECASE):
-
                 try:
-                    download_url = web_engine.find_element(By.XPATH, 
+                    download_url = web_engine.find_element(By.XPATH,
                         "//*/div[@class='software-downloads__container']/div[@recommended='Y']//div[@class='download__cta']//a[@role='button']").get_attribute("href")
-
                 except:
                     raise ProcessorError(
                         "Failed to identify the download url for the Recommended download.")
 
             else:
 
-                # Load all options
-
-                # Using the commented out method would scroll _past_ the button...
-                # self.scroll_into_view_and_click(
-                #     web_engine,
-                #     "//*/a[@role='button'][contains(@class, 'softwares-load-more')]/span[contains(text(), 'LOAD MORE')]"
-                # )
-
-                # This method attempts to scroll the button into the middle of the screen, instead of to the top
-                load_more_section = web_engine.find_element(By.XPATH, "//*[contains(@class, 'advisories-load-more-button-container')]")
-                web_engine.execute_script('arguments[0].scrollIntoView({"block": "center", "inline": "center"});', load_more_section)
-                time.sleep(2)
-
-                load_more = web_engine.find_element(By.XPATH, "//*/a[@role='button'][contains(@class, 'softwares-load-more')]")
-                web_engine.execute_script('arguments[0].scrollIntoView({"block": "center", "inline": "center"});', load_more)
-                time.sleep(2)
-
-                load_more.click()
-
-                # Get the downloads container element
-                download_list = web_engine.find_element(By.XPATH, 
-                    "//*/div[@class='software-downloads__container']")
-
                 try:
 
-                    # Find all the DOWNLOAD button elements
-                    links = download_list.find_elements(By.PARTIAL_LINK_TEXT, "DOWNLOAD")
+                    # Click the "Load More" button to display all options _if_ the button is
+                    # visible...it may be there, but it may not be visible...
+                    if load_more_section := web_engine.find_element(By.XPATH,
+                        "//*[contains(@class, 'advisories-load-more-button-container')]"):
 
-                    for link in links:
-                        link.get_attribute("href")
+                        if load_more := web_engine.find_element(By.XPATH,
+                            "//*/a[@role='button'][contains(@class, 'softwares-load-more')][@style='display: inline-block;']"):
 
-                    # Collect all the download links that match the download type
-                    download_version_urls = [
-                        link.get_attribute("href")
-                        for link in links
-                        if re.match(
-                            fr"^{download_type}.+",
-                            os.path.basename(link.get_attribute("href")),
-                            re.IGNORECASE
-                        )
-                    ]
+                            # This attempts to scroll the button into the middle of the screen
+                            web_engine.execute_script(
+                                'arguments[0].scrollIntoView({"block": "center", "inline": "center"});',
+                                load_more_section
+                            )
+                            time.sleep(1)
+                            web_engine.execute_script(
+                                'arguments[0].scrollIntoView({"block": "center", "inline": "center"});',
+                                load_more
+                            )
+                            time.sleep(1)
+                            load_more.click()
+                            time.sleep(1)
 
-                except:
-                    raise ProcessorError("Failed find matches for the selected download_type.")
+                except NoSuchElementException:
+                    self.output("'Load More' button is not visible", verbose_level=2)
+
+                # Get the downloads container element
+                download_list = web_engine.find_element(By.XPATH,
+                    "//*/div[@class='software-downloads__container']")
+
+                if download_type in [ "UFRII", "PS", "FAX", "PPD" ]:
+
+                    try:
+                        # Find all the DOWNLOAD button elements
+                        links = download_list.find_elements(By.PARTIAL_LINK_TEXT, "DOWNLOAD")
+
+                        # Collect all the download links that match the download type
+                        download_version_urls = [
+                            link.get_attribute("href")
+                            for link in links
+                            if re.match(
+                                fr"^{download_type}.+",
+                                os.path.basename(link.get_attribute("href")),
+                                re.IGNORECASE
+                            )
+                        ]
+
+                    except:
+                        raise ProcessorError("Failed find matches for the selected download_type.")
+
+                    try:
+                        # Parse the links by versioning information, build a dictionary of the
+                        # versions, and determine the latest
+                        download_version_urls_dict = {
+                            parse_version(os.path.basename(url)): url for url in download_version_urls}
+
+                    except:
+                        raise ProcessorError(
+                            "Failed to identify the the latest version to download.")
+
+                else:
+
+                    if download_type == "MF":
+                        link_text = "mac-mf-"
+                    elif download_type == "Scanner":
+                        link_text = "mac-scan-"
+
+                    # Find all the link elements
+                    links = download_list.find_elements(By.XPATH,
+                        f"//*/a[contains(@class, 'file-name-link')][contains(text(), '{link_text}')]")
+
+                    # Parse the links by versioning information, build a dictionary of the
+                    # versions, and determine the latest
+                    download_version_urls_dict = {
+                        parse_version(link.text): link.get_attribute("href") for link in links }
 
         try:
-            # Parse the links by versioning information, build a dictionary of the
-            # versions, and determine the latest
-            download_version_urls_dict = {
-                parse_version(os.path.basename(url)): url for url in download_version_urls}
-
             download_url = download_version_urls_dict.get(
                 max(download_version_urls_dict.keys()))
 
-        except:
-            raise ProcessorError("Failed to identify the the latest version to download.")
-
-        try:
             # Return results
             self.env["url"] = download_url
             self.output(f"Download URL: {self.env['url']}", verbose_level=1)

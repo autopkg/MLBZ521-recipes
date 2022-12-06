@@ -49,9 +49,9 @@ Process:
       ###################################################################################################
       # Script Name:  Install-UniversalApp.sh
       # By:  Zack Thompson / Created:  11/10/2022
-      # Version:  1.0.0 / Updated:  11/10/2022 / By:  ZT
+      # Version:  1.1.0 / Updated:  12/5/2022 / By:  ZT
       #
-      # Description:  
+      # Description:  "Installs" the appropriate app bundle based on the systems' architecture.
       #
       ###################################################################################################
 
@@ -90,6 +90,9 @@ Process:
           echo -e "\n*****  Install %NAME% Process:  FAILED  *****"
           exit 1
       fi
+
+      chown -R root:admin "/Applications/${app_name}"
+      chmod -R 0775 "/Applications/${app_name}"
 
       echo -e "\n*****  Install %NAME% Process:  COMPLETE  *****"
       exit 0

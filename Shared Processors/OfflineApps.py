@@ -27,6 +27,7 @@ import os
 import sys
 
 from pkg_resources import parse_version
+from urllib.parse import quote
 
 from autopkglib import ProcessorError, URLDownloader
 
@@ -301,7 +302,7 @@ class OfflineApps(URLDownloader):
 
 			# Build the required curl switches
 			curl_opts = [
-				"--url", f"file://{file_to_download}",
+				"--url", f"file://{quote(file_to_download)}",
 				"--request", "GET",
 				"--output", destination_path,
 				"--create-dirs"

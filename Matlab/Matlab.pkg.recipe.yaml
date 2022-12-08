@@ -8,7 +8,7 @@ Description: |
   I license most software separately in my environment and do not use the installer.input's `licensePath` key.  If you want to use this key, you'll need to fork this recipe and adjust the postinstall script.
 
   An override variable is available to support the installation of Matlab:
-    * INSTALL_INPUT
+    * INSTALLER_INPUT
       * As the name suggests, this is the "installer.input" that allows you to customize the install
         of Matlab.  The available parameters are included; customize for your environment.
 
@@ -54,7 +54,7 @@ Process:
       ###################################################################################################
       # Script Name:  install_MatLab.sh
       # By:  Zack Thompson / Created:  3/6/2017
-      # Version:  1.7.0 / Updated:  7/25/2022 / By:  ZT
+      # Version:  1.8.0 / Updated:  12/8/2022 / By:  ZT
       #
       # Description:  This script installs MatLab.
       #
@@ -89,7 +89,9 @@ Process:
         # Inject dummy location to the installer.input file -- hacky, but works
         LANG=C /usr/bin/sed -Ei '' 's,(#)? ?licensePath=.*,'"licensePath=${pkgDir}/installer_input.txt"',' "${pkgDir}/installer_input.txt"
 
-        exitStatus=$("${pkgDir}/install/InstallForMacOSX.app/Contents/MacOS/InstallForMacOSX" -inputFile "${pkgDir}/installer_input.txt")
+        # Locate the installer app and install it
+        app_installer=$( /usr/bin/find -E "${pkgDir}"" -iregex ".*[/]InstallForMacOSX[.]app" -type d -prune -maxdepth 1 )
+        exitStatus=$("${app_installer}/Contents/MacOS/InstallForMacOSX" -inputFile "${pkgDir}/installer_input.txt")
       fi
       exitCode=$?
 

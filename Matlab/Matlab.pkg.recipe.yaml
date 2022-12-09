@@ -90,7 +90,7 @@ Process:
         LANG=C /usr/bin/sed -Ei '' 's,(#)? ?licensePath=.*,'"licensePath=${pkgDir}/installer_input.txt"',' "${pkgDir}/installer_input.txt"
 
         # Locate the installer app and install it
-        app_installer=$( /usr/bin/find -E "${pkgDir}"" -iregex ".*[/]InstallForMacOSX[.]app" -type d -prune -maxdepth 1 )
+        app_installer=$( /usr/bin/find -E "${pkgDir}" -iregex ".*[/]InstallForMacOSX[.]app" -type d -prune -maxdepth 1 )
         exitStatus=$("${app_installer}/Contents/MacOS/InstallForMacOSX" -inputFile "${pkgDir}/installer_input.txt")
       fi
       exitCode=$?

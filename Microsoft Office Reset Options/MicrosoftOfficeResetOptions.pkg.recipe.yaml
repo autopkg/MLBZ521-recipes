@@ -34,7 +34,7 @@ Process:
         ###################################################################################################
         # Script Name:  Reset-Office.sh
         # By:  Zack Thompson / Created:  10/14/2020
-        # Version:  2.1.0 / Updated:  12/10/2022 / By:  ZT
+        # Version:  2.1.0 / Updated:  12/9/2022 / By:  ZT
         #
         # Description:  Allows for users via a self service option to reset specific and optionally uninstall
         #    all Microsoft apps.  Supports Office 2016 and newer.
@@ -127,30 +127,32 @@ Process:
             exit_check "1" "Target disk is not the startup disk."
         fi
 
-        # Prompt user for choice(s) to take
+        # Prompt user for action(s) to take
         selected_choices=$( /usr/bin/osascript 2>/dev/null << EndOfScript
-            tell application "System Events" 
+            tell application "System Events" to set this_app to (name of (first application process whose frontmost is true))
+            set time_out to 300
+
+            do shell script "osascript -e 'delay " & time_out & " ' -e 'tell application \"System Events\" to tell application process \"" & this_app & "\" to keystroke \".\" using {command down}' > /dev/null 2>&1 & "
+            tell application "System Events"
                 activate
-                choose from list every paragraph of "${available_choices}" ¬
-                with multiple selections allowed ¬
-                with title "%PROMPT_TITLE%" ¬
-                with prompt "Choose from one or more of the available actions:" ¬
-                OK button name "Select" ¬
-                cancel button name "Cancel" ¬
-                giving up after 300
+                set choices to ¬
+                    choose from list every paragraph of "${available_choices}" ¬
+                    with multiple selections allowed ¬
+                    with title "%PROMPT_TITLE%" ¬
+                    with prompt "Choose from one or more of the available actions:" ¬
+                    OK button name "Select" ¬
+                    cancel button name "Cancel"
             end tell
         EndOfScript
         )
 
         if [[ "${selected_choices}" == "false" ]]; then
 
-            echo "[NOTICE] User canceled the prompt."
+            echo "[NOTICE] User canceled the prompt or prompt timed out."
             echo -e "\n*****  %PROMPT_TITLE% Process:  ABORTED  *****"
             exit 0
 
         fi
-
-        osascript_timeout_check "${selected_choices}"
 
         echo "Selected choices:  ${selected_choices}"
 

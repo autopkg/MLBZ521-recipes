@@ -7,10 +7,12 @@ Description: |
 
   I license most software separately in my environment and do not use the installer.input's `licensePath` key.  If you want to use this key, you'll need to fork this recipe and adjust the postinstall script.
 
-  An override variable is available to support the installation of Matlab:
+  The following override variables are available to support the installation of Matlab:
     * INSTALLER_INPUT
       * As the name suggests, this is the "installer.input" that allows you to customize the install
         of Matlab.  The available parameters are included; customize for your environment.
+    * MAX_DEPTH (integer)
+      * This value will be use along with the `find -maxdepth` option to search within directories with the pkg contents
 
   If you want to customize the products that are installed, a copy of an original, albeit old, installer_input.txt is available in the recipe directory.  I've seen people are unable to locate it as it's not included in newer ISO downloads even though the documentation points to it.
 Identifier: com.github.mlbz521.pkg.Matlab
@@ -27,6 +29,7 @@ Input:
     # licensePath=
     # lmgrFiles=
   NAME: Matlab
+  MAX_DEPTH: 3
 ParentRecipe: com.github.mlbz521.download.Matlab
 Process:
 - Arguments:
@@ -90,7 +93,7 @@ Process:
         LANG=C /usr/bin/sed -Ei '' 's,(#)? ?licensePath=.*,'"licensePath=${pkgDir}/installer_input.txt"',' "${pkgDir}/installer_input.txt"
 
         # Locate the installer app and install it
-        app_installer=$( /usr/bin/find -E "${pkgDir}" -iregex ".*[/]InstallForMacOSX[.]app" -type d -prune -maxdepth 1 )
+        app_installer=$( /usr/bin/find -E "${pkgDir}" -iregex ".*[/]InstallForMacOSX[.]app" -type d -prune -maxdepth %MAX_DEPTH% )
         exitStatus=$("${app_installer}/Contents/MacOS/InstallForMacOSX" -inputFile "${pkgDir}/installer_input.txt")
       fi
       exitCode=$?

@@ -479,6 +479,27 @@ Available recipe types:
   ~~* jss~~
 
 
+### Python ###
+
+Downloads the latest or specified version of Python.  Stable builds are checked first, then pre-release builds.
+
+Options:
+  * To download the latest version of Python, use (this is REGEX):  \d+
+  * To download a specific minor version, for example, you can use:  "10" or "3.10"
+  * You can download a pre-release build if the minor version does not yet have a stable release
+  * Technically, you can even download Python2 if you wanted; e.g.:  "2.7"
+
+The recipe will also set the env variable `version_major_minor` that can be used in child recipes.
+
+This recipe defers from the Python3 recipe in scriptingosx-recipes repo by allowing the version to be specified.
+
+Available recipe types:
+  * download
+    * Variable overrides for:  MATCH_VERSION
+      * Default:  `\d+`
+  * pkg
+
+
 ### QGIS ###
 
 Downloads the latest specified major_version of QGIS.

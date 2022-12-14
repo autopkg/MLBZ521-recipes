@@ -317,12 +317,12 @@ Used in:
 
 This processor will rename a file directory.
 
-If the name file name ends with '.pkg', the %pkg_path% variable will 
-be updated with the new full path.
+If the name file name ends with '.pkg', the %pkg_path% variable will be updated with the new full path.
 
 Used in:
   * com.github.mlbz521.pkg.JMP
   * com.github.mlbz521.pkg.MySQLCommunityServer-Universal
+  * com.github.mlbz521.pkg.Python-Version
   * com.github.mlbz521.pkg.R-Universal
   * com.github.mlbz521.pkg.XcodeCLITools
   * Various custom recipes that are not public
@@ -418,7 +418,7 @@ This processor splits a version string into only the 'Major.Minor' numerals.
   * Default behavior example: "3.6.5" --> "3.6"
 
 Used in:
-  * 
+  * com.github.mlbz521.download.Python-Version
 
 
 ## VersionSubstituter ##

@@ -19,7 +19,7 @@
 
 import re
 
-from autopkglib import Processor, ProcessorError
+from autopkglib import Processor
 
 
 __all__ = ["VersionMajorMinor"]
@@ -28,28 +28,27 @@ __all__ = ["VersionMajorMinor"]
 class VersionMajorMinor(Processor):
     """This processor splits a version string into only the 'Major.Minor' numerals.
     Expected format is Semantic Versioning.
-    Default behavior example: "3.6.5" --> "3.6"
+    Default behavior example: "3.10.5" --> "3.10"
     """
 
     description = __doc__
     input_variables = {
         "version": {
             "required": True,
-            "description": "The version string that needs to be edited."
+            "description": "The version string that needs to be parsed."
         },
     }
     output_variables = {
-        "major_minor_version": {
-            "description": "The cleaned up version string."
+        "version_major_minor": {
+            "description": "The formatted up version string."
         }
     }
 
 
     def main(self):
-
-        major_minor_version = re.search(r"\d[.]\d", self.env["version"])
-        self.env["major_minor_version"] = major_minor_version.group()
-        self.output(f"Major.Minor Version: {self.env['major_minor_version']}")
+        version_major_minor = re.search(r"^\d+[.]\d+", self.env["version"])
+        self.env["version_major_minor"] = version_major_minor.group()
+        self.output(f"Major.Minor Version: {self.env['version_major_minor']}")
 
 
 if __name__ == "__main__":

@@ -1,14 +1,18 @@
-Description: Downloads the latest version of the Microsoft Office Reset package.
+Description: |
+  Downloads the latest version of the Microsoft Office Reset package.
   This is the _base_ package with *no options* selected.  Then creates a package
   with a script that checks the available choices in the .pkg and prompts the 
   user for which action(s) they'd like to select.
+
+  An override variables is available:
+    * IGNORE_CHOICES
+      * Provide a comma separated string of choices you do not want to provide to the end user
 Identifier: com.github.mlbz521.pkg.MicrosoftOfficeResetOptions
 ParentRecipe: com.github.mlbz521.download.MicrosoftOfficeResetOptions
 MinimumVersion: "2.3"
 Input:
   NAME: Microsoft Office Reset Options
-  IGNORE_CHOICES: 
-    - "com.microsoft.remove.Office"
+  IGNORE_CHOICES: com.microsoft.remove.Office
   PROMPT_TITLE: "Reset Microsoft Office"
 Process:
   - Processor: PkgRootCreator

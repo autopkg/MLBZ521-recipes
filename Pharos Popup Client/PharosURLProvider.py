@@ -17,6 +17,7 @@
 import re
 import os
 import sys
+import time
 
 from autopkglib import Processor, ProcessorError
 
@@ -108,6 +109,7 @@ class PharosURLProvider(Processor):
 
             try:
                 web_engine.get(downloads_page)
+                time.sleep(2)
             except:
                 raise ProcessorError("Failed to access the download page.")
 

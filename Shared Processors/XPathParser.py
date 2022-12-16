@@ -96,7 +96,7 @@ class XPathParser(Processor):
                 value_two = xml_info.get(attribute_two)
 
         except Exception as error:
-                raise ProcessorError(f"Can't parse xml file {xml_file}: {error.strerror}") from error
+                raise ProcessorError(f"Can't parse xml file {xml_file}: {error}") from error
 
         if not value_one:
             raise ProcessorError(f"Unable to determine a value for:  {attribute_one}")

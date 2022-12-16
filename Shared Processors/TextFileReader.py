@@ -39,7 +39,6 @@ class TextFileReader(DmgMounter):
             "description": "Path to the text file that needs to be read.  "
             "Can point to a path inside a .dmg which will be mounted."
         },
-
         "pattern": {
             "required": True,
             "description": "The regex pattern to look for and return."
@@ -56,7 +55,7 @@ class TextFileReader(DmgMounter):
 
         # Define variables
         source_path = os.path.normpath(self.env["source_path"])
-        file_to_open = self.env.get('file_to_open')
+        # file_to_open = self.env.get('file_to_open')
         pattern = self.env.get('pattern')
 
         # Check to see if the source_path is a dmg
@@ -81,7 +80,7 @@ class TextFileReader(DmgMounter):
                 contents = file.read()
 
         except Exception as error:
-            raise ProcessorError(f"Unable to open '{file_to_open}'") from error
+            raise ProcessorError(f"Unable to open '{source_path}'") from error
 
         finally:
             if dmg:
@@ -94,7 +93,7 @@ class TextFileReader(DmgMounter):
             match = re.split(pattern, line.group())[1]
 
             self.env["match"] = match
-            self.output("match: {self.env['match']}")
+            self.output(f"match: {self.env['match']}")
 
         except Exception as error:
             raise ProcessorError("Unable to find a match based on the pattern provided.") from error

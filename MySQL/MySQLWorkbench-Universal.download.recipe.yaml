@@ -1,119 +1,49 @@
-Description: Downloads the latest MySQL Workbench for both ARM and Intel and creates a package.
+Description: Downloads the latest version of MySQL Workbench for macOS.
 
-  The ARM and Intel version builds **must match** for a package to be created.
+  Downloads both the ARM and Intel builds.
 
-  Based on Elliot Jordan's `homebysix-recipes` download recipe.
-Identifier: com.github.mlbz521.pkg.MySQLWorkbench-Universal
-ParentRecipe: com.github.mlbz521.download.MySQLWorkbench-Universal
-MinimumVersion: '2.3'
+  Based on Elliot Jordan's `homebysix-recipes` recipes.
+Identifier: com.github.mlbz521.download.MySQLWorkbench-Universal
+MinimumVersion: "2.3"
 Input:
   NAME: MySQL Workbench
   PKG_NAME: MySQL Workbench (Universal)
+  USER_AGENT: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.5 Safari/605.1.15
+  ARM_ARCHITECTURE: arm64
+  INTEL_ARCHITECTURE: x86_64
 Process:
-- Processor: AppDmgVersioner
-  Arguments:
-    dmg_path: '%arm_path%'
-- Processor: EndOfCheckPhase
-  Arguments:
-    arm_version: '%version%'
-- Processor: AppDmgVersioner
-  Arguments:
-    dmg_path: '%intel_path%'
-- Processor: EndOfCheckPhase
-  Arguments:
-    intel_version: '%version%'
-- Processor: StopProcessingIf
-  Arguments:
-    predicate: '"%intel_version%" != "%arm_version%"'
-- Processor: PkgRootCreator
-  Arguments:
-    pkgroot: '%RECIPE_CACHE_DIR%/pkgroot'
-    pkgdirs: {}
-- Processor: PkgRootCreator
-  Arguments:
-    pkgroot: '%RECIPE_CACHE_DIR%/scripts'
-    pkgdirs: {}
-- Processor: Copier
-  Arguments:
-    source_path: '%arm_path%/*.app'
-    destination_path: '%RECIPE_CACHE_DIR%/scripts/%ARM_ARCHITECTURE%/%app_name%'
-- Processor: Copier
-  Arguments:
-    source_path: '%intel_path%/*.app'
-    destination_path: '%RECIPE_CACHE_DIR%/scripts/%INTEL_ARCHITECTURE%/%app_name%'
-- Processor: FileCreator
-  Arguments:
-    file_path: '%RECIPE_CACHE_DIR%/scripts/postinstall'
-    file_mode: '0755'
-    file_content: |
-      #!/bin/bash
-
-      ###################################################################################################
-      # Script Name:  Install-UniversalApp.sh
-      # By:  Zack Thompson / Created:  11/10/2022
-      # Version:  1.1.0 / Updated:  12/5/2022 / By:  ZT
-      #
-      # Description:  "Installs" the appropriate app bundle based on the systems' architecture.
-      #
-      ###################################################################################################
-
-      echo -e "*****  Install %NAME% Process:  START  *****\n"
-
-      ##################################################
-      # Define Variables
-
-      # Set working directory
-      pkg_dir=$( /usr/bin/dirname "${0}" )
-
-      if [[ $( /usr/bin/arch ) == "arm64" ]]; then
-          app="%ARM_ARCHITECTURE%/%app_name%"
-      else
-          app="%INTEL_ARCHITECTURE%/%app_name%"
-      fi
-
-      ##################################################
-      # Bits staged...
-
-      if [[ $3 != "/" ]]; then
-          echo "[ERROR] Target disk is not the startup disk."
-          echo -e "\n*****  Install %NAME% Process:  FAILED  *****"
-          exit 1
-      fi
-
-      # Install App
-      echo "Installing..."
-      /bin/mv "${pkg_dir}/${app}" "/Applications/${app_name}"
-      exitCode=$?
-      /bin/sleep 1
-
-      if [[ $exitCode != 0 ]]; then
-          echo "[ERROR] Install failed!"
-          echo "[Exit Code] ${exitCode}"
-          echo -e "\n*****  Install %NAME% Process:  FAILED  *****"
-          exit 1
-      fi
-
-      chown -R root:admin "/Applications/${app_name}"
-      chmod -R 0775 "/Applications/${app_name}"
-
-      echo -e "\n*****  Install %NAME% Process:  COMPLETE  *****"
-      exit 0
-- Processor: PkgCreator
-  Arguments:
-    pkg_request:
-      id: '%bundleid%'
-      options: purge_ds_store
-      pkgname: '%NAME%-%version%'
-      pkgroot: '%RECIPE_CACHE_DIR%/pkgroot'
-      pkgtype: flat
-      scripts: '%RECIPE_CACHE_DIR%/scripts'
-      version: '%version%'
-- Processor: com.github.mlbz521.SharedProcessors/RenamePath
-  Arguments:
-    source_path: '%RECIPE_CACHE_DIR%/%NAME%-%version%.pkg'
-    new_name: '%RECIPE_CACHE_DIR%/%PKG_NAME%-%version%.pkg'
-- Processor: PathDeleter
-  Arguments:
-    path_list: 
-      - '%RECIPE_CACHE_DIR%/pkgroot'
-      - '%RECIPE_CACHE_DIR%/scripts'
+  - Processor: URLTextSearcher
+    Arguments:
+      url: https://dev.mysql.com/downloads/workbench
+      re_pattern: (?P&lt;dmg&gt;mysql-workbench-community-(?P&lt;version&gt;[\d\.]+)-macos-%ARM_ARCHITECTURE%\.dmg)
+      request_headers:
+        user-agent: "%USER_AGENT%"
+  - Processor: URLDownloader
+    Arguments:
+      url: https://dev.mysql.com/get/Downloads/MySQLGUITools/%dmg%
+      prefetch_filename: True
+  - Processor: EndOfCheckPhase
+    Arguments:
+      arm_path: "%pathname%"
+      arm_version: "%version%"
+  - Processor: URLTextSearcher
+    Arguments:
+      url: https://dev.mysql.com/downloads/workbench
+      re_pattern: (?P&lt;dmg&gt;mysql-workbench-community-(?P&lt;version&gt;[\d\.]+)-macos-%INTEL_ARCHITECTURE%\.dmg)
+  - Processor: URLDownloader
+    Arguments:
+      url: https://dev.mysql.com/get/Downloads/MySQLGUITools/%dmg%
+      prefetch_filename: True
+  - Processor: EndOfCheckPhase
+    Arguments:
+      intel_path: "%pathname%"
+      intel_version: "%version%"
+  - Processor: CodeSignatureVerifier
+    Arguments:
+      input_path: "%arm_path%/MySQLWorkbench.app"
+      requirement: identifier "com.oracle.workbench.MySQLWorkbench" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = VB5E2TV963
+  - Processor: CodeSignatureVerifier
+    Arguments:
+      input_path: "%intel_path%/MySQLWorkbench.app"
+      requirement: identifier "com.oracle.workbench.MySQLWorkbench" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = VB5E2TV963
+  - Processor: EndOfCheckPhase

@@ -15,7 +15,7 @@ Process:
   - Processor: URLTextSearcher
     Arguments:
       url: https://dev.mysql.com/downloads/workbench
-      re_pattern: (?P&lt;dmg&gt;mysql-workbench-community-(?P&lt;version&gt;[\d\.]+)-macos-%ARM_ARCHITECTURE%\.dmg)
+      re_pattern: (?P<dmg>mysql-workbench-community-(?P<version>[\d\.]+)-macos-%ARM_ARCHITECTURE%\.dmg)
       request_headers:
         user-agent: "%USER_AGENT%"
   - Processor: URLDownloader
@@ -29,7 +29,7 @@ Process:
   - Processor: URLTextSearcher
     Arguments:
       url: https://dev.mysql.com/downloads/workbench
-      re_pattern: (?P&lt;dmg&gt;mysql-workbench-community-(?P&lt;version&gt;[\d\.]+)-macos-%INTEL_ARCHITECTURE%\.dmg)
+      re_pattern: (?P<dmg>mysql-workbench-community-(?P<version>[\d\.]+)-macos-%INTEL_ARCHITECTURE%\.dmg)
   - Processor: URLDownloader
     Arguments:
       url: https://dev.mysql.com/get/Downloads/MySQLGUITools/%dmg%

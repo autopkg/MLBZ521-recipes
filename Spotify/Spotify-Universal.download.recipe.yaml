@@ -1,0 +1,36 @@
+Description: Downloads the latest version of Spotify for macOS.
+
+  Downloads both the ARM and Intel builds.
+
+  Based on the recipes in `autopkg-recipes`.
+Identifier: com.github.mlbz521.download.Spotify-Universal
+MinimumVersion: "2.3"
+Input:
+  NAME: Spotify
+  PKG_NAME: Spotify (Universal)
+  ARM_ARCHITECTURE: ARM64
+  INTEL_ARCHITECTURE: x86_64
+Process:
+  - Processor: URLDownloader
+    Arguments:
+      url: https://download.scdn.co/Spotify%ARM_ARCHITECTURE%.dmg
+      prefetch_filename: True
+  - Processor: EndOfCheckPhase
+    Arguments:
+      arm_path: "%pathname%"
+  - Processor: URLDownloader
+    Arguments:
+      url: https://download.scdn.co/Spotify.dmg
+      prefetch_filename: True
+  - Processor: EndOfCheckPhase
+    Arguments:
+      intel_path: "%pathname%"
+  - Processor: CodeSignatureVerifier
+    Arguments:
+      input_path: "%arm_path%/Spotify.app"
+      requirement: identifier "com.spotify.client" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "2FNC3A47ZF"
+  - Processor: CodeSignatureVerifier
+    Arguments:
+      input_path: "%intel_path%/Spotify.app"
+      requirement: identifier "com.spotify.client" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "2FNC3A47ZF"
+  - Processor: EndOfCheckPhase

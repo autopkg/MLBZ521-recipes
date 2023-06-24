@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>Description</key>
-	<string>Downloads the latest verison of the Jamf Pro Tools from a local file share.
+	<string>Downloads the latest version of the Jamf Pro Tools from a local file share.
 	
 Only Composer is checked for code sign verified and packaged.  Is this is the only app that our Site Admins use, which is what this recipe is written for.</string>
 	<key>Identifier</key>
@@ -29,6 +29,15 @@ Only Composer is checked for code sign verified and packaged.  Is this is the on
 	</dict>
 	<key>Process</key>
 	<array>
+		<dict>
+			<key>Processor</key>
+			<string>DeprecationWarning</string>
+			<key>Arguments</key>
+			<dict>
+				<key>warning_message</key>
+				<string>Deprecating this recipe and replacing with 'com.github.mlbz521.download.JamfProTools.Composer'.</string>
+			</dict>
+		</dict>
 		<dict>
 			<key>Processor</key>
 			<string>com.github.mlbz521.SharedProcessors/OfflineApps</string>

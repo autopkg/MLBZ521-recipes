@@ -1,0 +1,20 @@
+Description: Downloads and packages the latest version of Composer from the Jamf Pro Tools dmg from a local file share.
+Identifier: com.github.mlbz521.pkg.JamfProTools.Composer
+ParentRecipe: com.github.mlbz521.download.JamfProTools.Composer
+MinimumVersion: "2.3"
+Input:
+  NAME: Composer
+  PKG_NAME: Composer (Universal)
+  SEARCH_STRING: Jamf Pro
+  MAJOR_VERSION: null
+  NAME_LIMITATION: null
+  NAME_EXCEPTION: testing
+  FILE_SHARE: /path/to/offline/repository
+  VERSION_STRING_SEPARATOR: -
+  MAX_FOLDER_DEPTH: 1
+Process:
+  - Processor: AppPkgCreator
+    Arguments:
+      app_path: "%found_filename%/Jamf Pro/Composer.app"
+      bundleid: "com.jamfsoftware.jamfprotools.composer-%version%"
+      pkg_path: "%RECIPE_CACHE_DIR%/%PKG_NAME%-%version%.pkg"

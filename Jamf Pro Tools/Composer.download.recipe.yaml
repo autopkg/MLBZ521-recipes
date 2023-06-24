@@ -1,0 +1,33 @@
+Description: Downloads the latest version of Composer from the Jamf Pro Tools dmg from a local file share.
+Identifier: com.github.mlbz521.download.JamfProTools.Composer
+MinimumVersion: "2.3"
+Input:
+  NAME: Composer
+  SEARCH_STRING: Jamf Pro
+  MAJOR_VERSION: null
+  NAME_LIMITATION: null
+  NAME_EXCEPTION: testing
+  FILE_SHARE: /path/to/offline/repository
+  VERSION_STRING_SEPARATOR: -
+  MAX_FOLDER_DEPTH: 1
+Process:
+  - Processor: com.github.mlbz521.SharedProcessors/OfflineApps
+    Arguments:
+      search_path<: "%FILE_SHARE%"
+      search_string<: "%SEARCH_STRING%"
+      major_version<: "%MAJOR_VERSION%"
+      exception_string<: "%NAME_EXCEPTION%"
+      limitation_string<: "%NAME_LIMITATION%"
+      version_separator<: "%VERSION_STRING_SEPARATOR%"
+      max_depth<: "%MAX_FOLDER_DEPTH%"
+  - Processor: FileFinder
+    Arguments:
+      pattern: "%cached_path%/*.dmg"
+  - Processor: Versioner
+    Arguments:
+      input_plist_path: "%found_filename%/Jamf Pro/Composer.app/Contents/Info.plist"
+  - Processor: CodeSignatureVerifier
+    Arguments:
+      input_path: "%found_filename%/Jamf Pro/Composer.app"
+      requirement: anchor apple generic and identifier "com.jamfsoftware.Composer" and (certificate leaf[field.1.2.840.113635.100.6.1.9] /* exists */ or certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "483DWKW443")
+  - Processor: EndOfCheckPhase

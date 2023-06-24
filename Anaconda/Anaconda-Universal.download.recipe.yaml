@@ -1,0 +1,41 @@
+Description: Downloads the latest version of Anaconda for macOS.
+
+  Downloads both the ARM and Intel builds and creates a "custom" Universal package.
+
+  Based on Anaconda recipes in autopkg/hansen-m-recipes.
+Identifier: com.github.mlbz521.download.Anaconda-Universal
+MinimumVersion: "2.3"
+Input:
+  NAME: Anaconda
+  PKG_NAME: Anaconda (Universal)
+  ARM_ARCHITECTURE: arm64
+  INTEL_ARCHITECTURE: x86_64
+  INSTALLER_TYPE: sh
+  PYTHON_MAJOR_VERSION: 3
+  SEARCH_URL: https://www.anaconda.com/download/#macos
+  # Just to note, for future reference, incase it breaks, the above page is being redirected to:  https://www.anaconda.com/products/individual
+  SEARCH_PATTERN_ARM: (?P&lt;url&gt;https\://repo\.(anaconda\.com|continuum\.io)/archive/Anaconda%PYTHON_MAJOR_VERSION%-(?P&lt;version&gt;[0-9.|-]+)-MacOSX-%ARM_ARCHITECTURE%\.%INSTALLER_TYPE%)</string>
+  SEARCH_PATTERN_INTEL: (?P&lt;url&gt;https\://repo\.(anaconda\.com|continuum\.io)/archive/Anaconda%PYTHON_MAJOR_VERSION%-(?P&lt;version&gt;[0-9.|-]+)-MacOSX-%INTEL_ARCHITECTURE%\.%INSTALLER_TYPE%)</string>
+Process:
+  - Processor: URLTextSearcher
+    Arguments:
+      url: "%SEARCH_URL%"
+      re_pattern: "%SEARCH_PATTERN_ARM%"
+  - Processor: URLDownloader
+    Arguments:
+      prefetch_filename: True
+  - Processor: EndOfCheckPhase
+    Arguments:
+      arm_path: "%pathname%"
+      arm_version: "%version%"
+  - Processor: URLTextSearcher
+    Arguments:
+      url: "%SEARCH_URL%"
+      re_pattern: "%SEARCH_PATTERN_INTEL%"
+  - Processor: URLDownloader
+    Arguments:
+      prefetch_filename: True
+  - Processor: EndOfCheckPhase
+    Arguments:
+      intel_path: "%pathname%"
+      intel_version: "%version%"

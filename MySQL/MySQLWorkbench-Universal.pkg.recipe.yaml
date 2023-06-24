@@ -1,0 +1,49 @@
+Description: Downloads the latest version of MySQL Workbench for macOS.
+
+  Downloads both the ARM and Intel builds.
+
+  Based on Elliot Jordan's `homebysix-recipes` recipes.
+Identifier: com.github.mlbz521.download.MySQLWorkbench-Universal
+MinimumVersion: "2.3"
+Input:
+  NAME: MySQL Workbench
+  PKG_NAME: MySQL Workbench (Universal)
+  USER_AGENT: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.5 Safari/605.1.15
+  ARM_ARCHITECTURE: arm64
+  INTEL_ARCHITECTURE: x86_64
+Process:
+  - Processor: URLTextSearcher
+    Arguments:
+      url: https://dev.mysql.com/downloads/workbench
+      re_pattern: (?P&lt;dmg&gt;mysql-workbench-community-(?P&lt;version&gt;[\d\.]+)-macos-%ARM_ARCHITECTURE%\.dmg)
+      request_headers:
+        user-agent: "%USER_AGENT%"
+  - Processor: URLDownloader
+    Arguments:
+      url: https://dev.mysql.com/get/Downloads/MySQLGUITools/%dmg%
+      prefetch_filename: True
+  - Processor: EndOfCheckPhase
+    Arguments:
+      arm_path: "%pathname%"
+      arm_version: "%version%"
+  - Processor: URLTextSearcher
+    Arguments:
+      url: https://dev.mysql.com/downloads/workbench
+      re_pattern: (?P&lt;dmg&gt;mysql-workbench-community-(?P&lt;version&gt;[\d\.]+)-macos-%INTEL_ARCHITECTURE%\.dmg)
+  - Processor: URLDownloader
+    Arguments:
+      url: https://dev.mysql.com/get/Downloads/MySQLGUITools/%dmg%
+      prefetch_filename: True
+  - Processor: EndOfCheckPhase
+    Arguments:
+      intel_path: "%pathname%"
+      intel_version: "%version%"
+  - Processor: CodeSignatureVerifier
+    Arguments:
+      input_path: "%arm_path%/MySQLWorkbench.app"
+      requirement: identifier "com.oracle.workbench.MySQLWorkbench" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = VB5E2TV963
+  - Processor: CodeSignatureVerifier
+    Arguments:
+      input_path: "%intel_path%/MySQLWorkbench.app"
+      requirement: identifier "com.oracle.workbench.MySQLWorkbench" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = VB5E2TV963
+  - Processor: EndOfCheckPhase

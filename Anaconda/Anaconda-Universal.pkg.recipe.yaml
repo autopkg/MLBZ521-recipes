@@ -1,0 +1,143 @@
+Description: Downloads the latest Anaconda for both ARM and Intel and creates a package.
+
+  The ARM and Intel version builds **must match** for a package to be created.
+Identifier: com.github.mlbz521.pkg.Anaconda-Universal
+ParentRecipe: com.github.mlbz521.download.Anaconda-Universal
+MinimumVersion: "2.3"
+Input:
+  NAME: Anaconda%PYTHON_MAJOR_VERSION%
+  PKG_NAME: Anaconda (Universal)
+  PKG_ID_PREFIX: com.continuum.anaconda.universal
+  PKG_INSTALL_LOCATION: /Users/Shared/anaconda3
+Process:
+  - Processor: StopProcessingIf
+    Arguments:
+      predicate: '"%intel_version%" != "%arm_version%"'
+  - Processor: PkgRootCreator
+    Arguments:
+      pkgroot: "%RECIPE_CACHE_DIR%/pkgroot"
+      pkgdirs: {}
+  - Processor: PkgRootCreator
+    Arguments:
+      pkgroot: "%RECIPE_CACHE_DIR%/scripts"
+      pkgdirs: {}
+  - Processor: FileFinder
+    Arguments:
+      pattern: "%arm_path%"
+  - Processor: EndOfCheckPhase
+    Arguments:
+      arm_installer: "%found_basename%"
+  - Processor: Copier
+    Arguments:
+      source_path: "%arm_path%"
+      destination_path: "%RECIPE_CACHE_DIR%/scripts/%arm_installer%"
+  - Processor: com.github.mlbz521.SharedProcessors/FileMode
+    Arguments:
+      file_mode: 0755
+      file_path: "%RECIPE_CACHE_DIR%/scripts/%arm_installer%"
+  - Processor: FileFinder
+    Arguments:
+      pattern: "%intel_path%"
+  - Processor: EndOfCheckPhase
+    Arguments:
+      intel_installer: "%found_basename%"
+  - Processor: Copier
+    Arguments:
+      source_path: "%intel_path%"
+      destination_path: "%RECIPE_CACHE_DIR%/scripts/%intel_installer%"
+  - Processor: com.github.mlbz521.SharedProcessors/FileMode
+    Arguments:
+      file_mode: 0755
+      file_path: "%RECIPE_CACHE_DIR%/scripts/%intel_installer%"
+  - Processor: FileCreator
+    Arguments:
+      file_path: "%RECIPE_CACHE_DIR%/scripts/preinstall"
+      file_mode: "0755"
+      file_content: |
+        #!/bin/bash
+
+        ###################################################################################################
+        # Script Name:  Install-Universal_Anaconda.sh
+        # By:  Zack Thompson / Created:  6/13/2023
+        # Version:  1.0.0 / Updated:  6/13/2023 / By:  ZT
+        #
+        # Description:  "Installs" the appropriate installer type based on the systems' architecture.
+        #
+        ###################################################################################################
+
+        echo -e "*****  Install %NAME% Process:  START  *****\n"
+
+        ##################################################
+        # Define Variables
+
+        # Set working directory
+        pkg_dir=$( /usr/bin/dirname "${0}" )
+        installer_type="%INSTALLER_TYPE%"
+
+        if [[ $( /usr/bin/arch ) == "arm64" ]]; then
+            installer="%arm_installer%"
+        else
+            installer="%intel_installer%"
+        fi
+
+        ##################################################
+        # Bits staged...
+
+        if [[ $3 != "/" ]]; then
+            echo "[ERROR] Target disk is not the startup disk."
+            echo -e "\n*****  Install %NAME% Process:  FAILED  *****"
+            exit 1
+        fi
+
+        if [[ "${installer_type}" == "sh" ]]; then
+            # Install using CLI installer
+            echo "Running %NAME% CLI install script..."
+            exitStatus=$( "${pkg_dir}/${installer}" -b -u -p "%PKG_INSTALL_LOCATION%" )
+            exitCode=$?
+
+          if [[ $exitStatus == *"installation finished"* ]]; then
+            echo "%NAME% has been installed!"
+          else
+            echo "ERROR:  Failed to install %NAME%"
+            echo "ERROR Contents:  $(echo ${exitStatus} | /usr/bin/xargs)"
+            echo "*****  Install %NAME% process:  FAILED  *****"
+            exit 2
+          fi
+
+        elif [[ "${installer_type}" == "pkg" ]]; then
+            # Install pkg
+            echo "Installing %NAME% pkg..."
+            /usr/sbin/installer -dumplog -verbose -installer "${pkg_dir}/${installer}" -target /
+            exitCode=$?
+            /bin/sleep 1
+
+            if [[ $exitCode != 0 ]]; then
+                echo "[ERROR] Install failed!"
+                echo "[Exit Code] ${exitCode}"
+                echo -e "\n*****  Install %NAME% Process:  FAILED  *****"
+                exit 3
+            fi
+
+        fi
+
+        echo -e "\n*****  Install %NAME% Process:  COMPLETE  *****"
+        exit 0
+  - Processor: PkgCreator
+    Arguments:
+      pkg_request:
+        id: "%PKG_ID_PREFIX%.%version%.pkg"
+        options: purge_ds_store
+        pkgname: "%NAME%-%version%"
+        pkgroot: "%RECIPE_CACHE_DIR%/pkgroot"
+        pkgtype: flat
+        scripts: "%RECIPE_CACHE_DIR%/scripts"
+        version: "%version%"
+  - Processor: com.github.mlbz521.SharedProcessors/RenamePath
+    Arguments:
+      source_path: "%RECIPE_CACHE_DIR%/%NAME%-%version%.pkg"
+      new_name: "%PKG_NAME%-%version%.pkg"
+  - Processor: PathDeleter
+    Arguments:
+      path_list:
+        - "%RECIPE_CACHE_DIR%/pkgroot"
+        - "%RECIPE_CACHE_DIR%/scripts"

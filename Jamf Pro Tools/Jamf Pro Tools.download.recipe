@@ -5,7 +5,7 @@
 	<key>Description</key>
 	<string>Downloads the latest verison of the Jamf Pro Tools from a local file share.
 	
-Only the Composer and Recon applications are checked for code sign verified.  These are the only apps that our Site Admins use, which is what this recipe is written for.</string>
+Only Composer is checked for code sign verified and packaged.  Is this is the only app that our Site Admins use, which is what this recipe is written for.</string>
 	<key>Identifier</key>
 	<string>com.github.mlbz521.download.JamfProTools</string>
 	<key>Input</key>
@@ -77,17 +77,6 @@ Only the Composer and Recon applications are checked for code sign verified.  Th
 				<string>%found_filename%/Jamf Pro/Composer.app</string>
 				<key>requirement</key>
 				<string>anchor apple generic and identifier "com.jamfsoftware.Composer" and (certificate leaf[field.1.2.840.113635.100.6.1.9] /* exists */ or certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "483DWKW443")</string>
-			</dict>
-		</dict>
-		<dict>
-			<key>Processor</key>
-			<string>CodeSignatureVerifier</string>
-			<key>Arguments</key>
-			<dict>
-				<key>input_path</key>
-				<string>%found_filename%/Jamf Pro/Recon.app</string>
-				<key>requirement</key>
-				<string>anchor apple generic and identifier "com.jamfsoftware.Recon" and (certificate leaf[field.1.2.840.113635.100.6.1.9] /* exists */ or certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "483DWKW443")</string>
 			</dict>
 		</dict>
 		<dict>

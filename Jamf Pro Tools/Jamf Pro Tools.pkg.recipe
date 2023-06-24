@@ -5,7 +5,7 @@
 	<key>Description</key>
 	<string>Downloads and packages the latest verison of the Jamf Pro Tools from a local file share for use by Site Admins.
 
-Only the Composer and Recon applications are checked for code sign verified and packaged.  These are the only apps that our Site Admins use, which is what this recipe is written for.
+Only Composer is checked for code sign verified and packaged.  Is this is the only app that our Site Admins use, which is what this recipe is written for.
 
 The name of the folder name in /Applications and the package will be named based on the NAME Input variable.</string>
 	<key>Identifier</key>
@@ -53,17 +53,6 @@ The name of the folder name in /Applications and the package will be named based
 				<string>%found_filename%/Jamf Pro/Composer.app</string>
 				<key>destination_path</key>
 				<string>%pkgroot%/Applications/%NAME%/Composer.app</string>
-			</dict>
-		</dict>
-		<dict>
-			<key>Processor</key>
-			<string>Copier</string>
-			<key>Arguments</key>
-			<dict>
-				<key>source_path</key>
-				<string>%found_filename%/Jamf Pro/Recon.app</string>
-				<key>destination_path</key>
-				<string>%pkgroot%/Applications/%NAME%/Recon.app</string>
 			</dict>
 		</dict>
 		<dict>

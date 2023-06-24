@@ -26,7 +26,7 @@ Process:
   - Processor: CodeSignatureVerifier
     Arguments:
       expected_authority_names:
-        - "Developer ID Installer: Ned Deily (DJ3H93M7VJ)"
+        - "Developer ID Installer: Python Software Foundation (BMM5U3QVKW)"
         - Developer ID Certification Authority
         - Apple Root CA
       input_path: "%pathname%"

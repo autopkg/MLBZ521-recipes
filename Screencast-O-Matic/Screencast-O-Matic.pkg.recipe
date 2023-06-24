@@ -18,6 +18,15 @@ So....that said...That means only one user on any system can actually use this a
 	<key>ParentRecipe</key>
 	<string>com.github.mlbz521.download.Screencast-O-Matic</string>
     <key>Process</key>
+    <dict>
+        <key>Processor</key>
+        <string>DeprecationWarning</string>
+        <key>Arguments</key>
+        <dict>
+            <key>warning_message</key>
+            <string>Screencast-O-Matic has been rebranded as Screen Pal.  dataJAR has created a .download reciepe for the new app, you can find it here:  github.com/autopkg/dataJAR-recipes/tree/master/Screen%20Pal%203.  I've also created a new .pkg recipe that's available in my repo under ../ScreenPal</string>
+        </dict>
+    </dict>
     <array>
         <dict>
             <key>Processor</key>

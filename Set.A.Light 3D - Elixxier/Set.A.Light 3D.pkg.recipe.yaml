@@ -6,11 +6,12 @@ ParentRecipe: com.github.mlbz521.download.SetALight3D
 MinimumVersion: "2.3"
 Input:
   NAME: Set.A.Light 3D
+  PKG_NAME: Set.A.Light 3D (Universal)
 Process:
   - Processor: PkgCopier
     Arguments:
       source_pkg: "%pathname%"
-      pkg_path: "%RECIPE_CACHE_DIR%/%NAME%-%version%.pkg"
+      pkg_path: "%RECIPE_CACHE_DIR%/%PKG_NAME%-%version%.pkg"
   - Processor: PathDeleter
     Arguments:
       path_list: "%RECIPE_CACHE_DIR%/extractedfile"

@@ -1,0 +1,85 @@
+Description: Downloads the latest release of Set.A.Light 3D from Elixxier.
+
+  I have not attempted to license this in an programmatic way yet, so the result will need to be licensed manually.
+Identifier: com.github.mlbz521.download.SetALight3D
+MinimumVersion: "2.3"
+Input:
+  NAME: Set.A.Light 3D
+  SEARCH_URL: https://www.elixxier.com/en/downloads/
+  SEARCH_PATTERN: .+(https:\/\/elixxier\-download\-usa\-[a-z\-]+\.s3\.amazonaws\.com\/downloads\/Install\+set\.a\.light\+3D\+v(?P<version>[\d\.]+)\.pkg).+
+Process:
+  - Processor: URLTextSearcher
+    Arguments:
+      url: "%SEARCH_URL%"
+      re_pattern: "%SEARCH_PATTERN%"
+  - Processor: URLDownloader
+    Arguments:
+      url: "%match%"
+      prefetch_filename: True
+  - Processor: CodeSignatureVerifier
+    Arguments:
+      input_path: "%pathname%"
+      expected_authority_names: 
+        - "Developer ID Installer: elixxier Software GmbH (7UZEFDC862)"
+        - Developer ID Certification Authority
+        - Apple Root CA
+  - Processor: EndOfCheckPhase
+    # <dict>
+    #   <key>Processor</key>
+    #   <string>FlatPkgUnpacker</string>
+    #   <key>Arguments</key>
+    #   <dict>
+    #     <key>flat_pkg_path</key>
+    #     <string>%pathname%</string>
+    #     <key>destination_path</key>
+    #     <string>%RECIPE_CACHE_DIR%/unpack</string>
+    #     <key>purge_destination</key>
+    #     <string>True</string>
+    #   </dict>
+    # </dict>
+    # <dict>
+    #   <key>Processor</key>
+    #   <string>PkgPayloadUnpacker</string>
+    #   <key>Arguments</key>
+    #   <dict>
+    #     <key>pkg_payload_path</key>
+    #     <string>%RECIPE_CACHE_DIR%/unpack/set.a.light.pkg/Payload</string>
+    #     <key>destination_path</key>
+    #     <string>%RECIPE_CACHE_DIR%/payload_unpack</string>
+    #     <key>purge_destination</key>
+    #     <string>True</string>
+    #   </dict>
+    # </dict>
+    # <dict>
+    #   <key>Processor</key>
+    #   <string>FileFinder</string>
+    #   <key>Arguments</key>
+    #   <dict>
+    #     <key>pattern</key>
+    #     <string>%RECIPE_CACHE_DIR%/payload_unpack/*.app</string>
+    #   </dict>
+    # </dict>
+    # <dict>
+    #   <key>Processor</key>
+    #   <string>Versioner</string>
+    #   <key>Arguments</key>
+    #   <dict>
+    #     <key>input_plist_path</key>
+    #     <string>%found_filename%/Contents/Info.plist</string>
+    #     <key>plist_version_key</key>
+    #     <string>CFBundleShortVersionString</string>
+    #   </dict>
+    # </dict>
+    # The above code block is slower than the below, 
+    # but if the below breaks again, use the above steps.
+    # Would need to update the PathDeleter step in the .pkg recipe.
+  - Processor: com.github.mlbz521.SharedProcessors/XarExtractSingleFile
+    Arguments:
+      archive_path: "%pathname%"
+      file_to_extract: "*PackageInfo"
+  - Processor: com.github.mlbz521.SharedProcessors/XPathParser
+    Arguments:
+      xml_file: "%extracted_file%"
+      xpath: .//bundle
+      attribute_one: CFBundleShortVersionString
+      return_variable_attribute_one: version

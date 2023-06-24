@@ -8,6 +8,8 @@
 	<dict>
 		<key>NAME</key>
 		<string>RealVNC Viewer</string>
+		<key>PKG_NAME</key>
+		<string>RealVNC Viewer (Universal)</string>
 	</dict>
 	<key>ParentRecipe</key>
 	<string>com.github.foigus.download.RealVNCViewer</string>
@@ -76,6 +78,17 @@
 						</dict>
 					</array>
 				</dict>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>com.github.mlbz521.SharedProcessors/RenamePath</string>
+			<key>Arguments</key>
+			<dict>
+				<key>source_path</key>
+				<string>%RECIPE_CACHE_DIR%/%NAME%-%version%.pkg</string>
+				<key>new_name</key>
+				<string>%PKG_NAME%-%version%.pkg</string>
 			</dict>
 		</dict>
 		<dict>

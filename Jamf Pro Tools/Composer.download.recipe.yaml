@@ -8,7 +8,7 @@ Input:
   NAME_LIMITATION: null
   NAME_EXCEPTION: testing
   FILE_SHARE: /path/to/offline/repository
-  VERSION_STRING_SEPARATOR: -
+  VERSION_STRING_SEPARATOR: "-"
   MAX_FOLDER_DEPTH: 1
 Process:
   - Processor: com.github.mlbz521.SharedProcessors/OfflineApps

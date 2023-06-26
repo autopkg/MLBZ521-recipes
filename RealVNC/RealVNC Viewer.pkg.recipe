@@ -40,17 +40,17 @@
 				<string>%pkgroot%/Applications/VNC Viewer.app</string>
 			</dict>
 		</dict>
-        <dict>
-            <key>Processor</key>
-            <string>com.github.mlbz521.SharedProcessors/CFBundleInfo</string>
+		<dict>
+			<key>Processor</key>
+			<string>com.github.mlbz521.SharedProcessors/CFBundleInfo</string>
 			<key>Comment</key>
 			<string>This may be hacky, but I'm doing it to be able to retain the "version" (ShortVersionString) that will be reported in Jamf Pro.  The ShortVersionString format is '6.20.113 (r42303)' which isn't accepted by pkgbuild when building the package.  So return a version string that will be accepted along with the original.</string>
-            <key>Arguments</key>
-            <dict>
-                <key>input_plist_path</key>
+			<key>Arguments</key>
+			<dict>
+				<key>input_plist_path</key>
 				<string>%pkgroot%/Applications/VNC Viewer.app/Contents/Info.plist</string>
-            </dict>
-        </dict>
+			</dict>
+		</dict>
 		<dict>
 			<key>Processor</key>
 			<string>PkgCreator</string>
@@ -86,7 +86,7 @@
 			<key>Arguments</key>
 			<dict>
 				<key>source_path</key>
-				<string>%RECIPE_CACHE_DIR%/%NAME%-%version%.pkg</string>
+				<string>%pkg_path%</string>
 				<key>new_name</key>
 				<string>%PKG_NAME%-%version%.pkg</string>
 			</dict>

@@ -9,3 +9,4 @@ Process:
     Arguments:
       app_path: "%pathname%/ScreenPal Setup.app/Contents/ScreenPal v3.0.app"
       bundleid: "com.screenpal.app.ScreenPal-Setup"
+      pkg_path: "%RECIPE_CACHE_DIR%/%NAME%-%version%.pkg"

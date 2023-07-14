@@ -14,8 +14,8 @@ Input:
   PYTHON_MAJOR_VERSION: 3
   SEARCH_URL: https://www.anaconda.com/download/#macos
   # Just to note, for future reference, incase it breaks, the above page is being redirected to:  https://www.anaconda.com/products/individual
-  SEARCH_PATTERN_ARM: (?P&lt;url&gt;https\://repo\.(anaconda\.com|continuum\.io)/archive/Anaconda%PYTHON_MAJOR_VERSION%-(?P&lt;version&gt;[0-9.|-]+)-MacOSX-%ARM_ARCHITECTURE%\.%INSTALLER_TYPE%)</string>
-  SEARCH_PATTERN_INTEL: (?P&lt;url&gt;https\://repo\.(anaconda\.com|continuum\.io)/archive/Anaconda%PYTHON_MAJOR_VERSION%-(?P&lt;version&gt;[0-9.|-]+)-MacOSX-%INTEL_ARCHITECTURE%\.%INSTALLER_TYPE%)</string>
+  SEARCH_PATTERN_ARM: (?P<url>https\://repo\.(anaconda\.com|continuum\.io)/archive/Anaconda%PYTHON_MAJOR_VERSION%-(?P<version>[0-9.|-]+)-MacOSX-%ARM_ARCHITECTURE%\.%INSTALLER_TYPE%)</string>
+  SEARCH_PATTERN_INTEL: (?P<url>https\://repo\.(anaconda\.com|continuum\.io)/archive/Anaconda%PYTHON_MAJOR_VERSION%-(?P<version>[0-9.|-]+)-MacOSX-%INTEL_ARCHITECTURE%\.%INSTALLER_TYPE%)</string>
 Process:
   - Processor: URLTextSearcher
     Arguments:

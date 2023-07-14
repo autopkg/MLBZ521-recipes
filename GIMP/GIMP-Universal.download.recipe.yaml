@@ -14,10 +14,10 @@ Process:
   - Processor: URLTextSearcher
     Arguments:
       url: https://www.gimp.org/downloads/
-      re_pattern: //download\.gimp\.org/gimp/v[0-9\.]*/macos/gimp-(?P<version>[0-9\.\-]+)-%ARM_ARCHITECTURE%\.dmg
+      re_pattern: -(?P<url>//download\.gimp\.org/gimp/v[0-9\.]*/macos/gimp-(?P<version>[0-9\.\-]+)-%ARM_ARCHITECTURE%\.dmg)
   - Processor: URLDownloader
     Arguments:
-      url: https:%match%
+      url: https:%url%
       prefetch_filename: True
   - Processor: EndOfCheckPhase
     Arguments:
@@ -26,10 +26,10 @@ Process:
   - Processor: URLTextSearcher
     Arguments:
       url: https://www.gimp.org/downloads/
-      re_pattern: //download\.gimp\.org/gimp/v[0-9\.]*/macos/gimp-(?P<version>[0-9\.\-]+)-%INTEL_ARCHITECTURE%\.dmg
+      re_pattern: -(?P<url>//download\.gimp\.org/gimp/v[0-9\.]*/macos/gimp-(?P<version>[0-9\.\-]+)-%INTEL_ARCHITECTURE%\.dmg)
   - Processor: URLDownloader
     Arguments:
-      url: https:%match%
+      url: https:%url%
       prefetch_filename: True
   - Processor: EndOfCheckPhase
     Arguments:

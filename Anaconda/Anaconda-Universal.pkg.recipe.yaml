@@ -47,7 +47,7 @@ Process:
       destination_path: "%RECIPE_CACHE_DIR%/scripts/%intel_installer%"
   - Processor: com.github.mlbz521.SharedProcessors/FileMode
     Arguments:
-      file_mode: 0755
+      file_mode: "0755"
       file_path: "%RECIPE_CACHE_DIR%/scripts/%intel_installer%"
   - Processor: FileCreator
     Arguments:

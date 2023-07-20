@@ -1,0 +1,24 @@
+Description: Downloads and packages the latest version of Gauss from a local file share.
+Identifier: com.github.mlbz521.pkg.Gauss
+ParentRecipe: com.github.mlbz521.download.Gauss
+MinimumVersion: "2.3"
+Input:
+  NAME: Gauss
+Process:
+  - Processor: com.github.mlbz521.SharedProcessors/XarExtractSingleFile
+    Arguments:
+      archive_path: "%found_filename%"
+      file_to_extract: Distribution
+  - Processor: com.github.mlbz521.SharedProcessors/XPathParser
+    Arguments:
+      xml_file: "%extracted_file%"
+      xpath: .//bundle
+      attribute_one: CFBundleShortVersionString
+      return_variable_attribute_one: version
+  - Processor: PkgCopier
+    Arguments:
+      source_pkg: "%found_filename%"
+      pkg_path: "%RECIPE_CACHE_DIR%/%NAME%-%version%.pkg"
+  - Processor: PathDeleter
+    Arguments:
+      path_list: "%RECIPE_CACHE_DIR%/extractedfile"

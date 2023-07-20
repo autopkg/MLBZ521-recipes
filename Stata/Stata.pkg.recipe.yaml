@@ -1,0 +1,24 @@
+Description: Downloads and packages the latest version of Stata from a local file share.
+Identifier: com.github.mlbz521.pkg.Stata
+ParentRecipe: com.github.mlbz521.download.Stata
+MinimumVersion: "2.3"
+Input:
+  NAME: Stata
+Process:
+  - Processor: com.github.mlbz521.SharedProcessors/XarExtractSingleFile
+    Arguments:
+      archive_path: "%found_filename%/*.pkg"
+      file_to_extract: Distribution
+  - Processor: com.github.mlbz521.SharedProcessors/XPathParser
+    Arguments:
+      xml_file: "%extracted_file%"
+      xpath: .//pkg-ref[@id="com.stata.pkg.stata%found_major_version%.StataBase"][@version]
+      attribute_one: version
+      return_variable_attribute_one: version
+  - Processor: PkgCopier
+    Arguments:
+      source_pkg: "%found_filename%/*.pkg"
+      pkg_path: "%RECIPE_CACHE_DIR%/%NAME%-%version%.pkg"
+  - Processor: PathDeleter
+    Arguments:
+      path_list: "%RECIPE_CACHE_DIR%/extractedfile"

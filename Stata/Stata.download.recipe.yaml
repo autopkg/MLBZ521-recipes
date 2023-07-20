@@ -1,0 +1,33 @@
+Description: Downloads the latest version of Stata from a local file share.
+Identifier: com.github.mlbz521.download.Stata
+MinimumVersion: "2.3"
+Input:
+  NAME: Stata
+  SEARCH_STRING: Stata
+  MAJOR_VERSION: null
+  NAME_LIMITATION: null
+  NAME_EXCEPTION: testing
+  FILE_SHARE: /path/to/offline/repository
+  VERSION_STRING_SEPARATOR: "-"
+  MAX_FOLDER_DEPTH: "1"
+Process:
+  - Processor: com.github.mlbz521.SharedProcessors/OfflineApps
+    Arguments:
+      search_path: "%FILE_SHARE%"
+      search_string: "%SEARCH_STRING%"
+      major_version: "%MAJOR_VERSION%"
+      exception_string: "%NAME_EXCEPTION%"
+      limitation_string: "%NAME_LIMITATION%"
+      version_separator: "%VERSION_STRING_SEPARATOR%"
+      max_depth: "%MAX_FOLDER_DEPTH%"
+  - Processor: FileFinder
+    Arguments:
+      pattern: "%cached_path%/*.dmg"
+  - Processor: CodeSignatureVerifier
+    Arguments:
+      input_path: "%found_filename%/*.pkg"
+      expected_authority_names:
+        - "Developer ID Installer: StataCorp (BH46GBF9RW)"
+        - Developer ID Certification Authority
+        - Apple Root CA
+  - Processor: EndOfCheckPhase

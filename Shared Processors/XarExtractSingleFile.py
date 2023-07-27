@@ -139,6 +139,8 @@ class XarExtractSingleFile(DmgMounter):
 
             except Exception as error:
                 raise ProcessorError("Failed matching path with glob.") from error
+        else:
+            matched_archive_path = archive_path
 
         # Wrap in a try/finally so if a dmg is mounted, it will always be unmounted
         try:

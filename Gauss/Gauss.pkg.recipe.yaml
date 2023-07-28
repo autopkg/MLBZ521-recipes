@@ -1,9 +1,9 @@
-Description: Downloads and packages the latest version of Gauss from a local file share.
-Identifier: com.github.mlbz521.pkg.Gauss
-ParentRecipe: com.github.mlbz521.download.Gauss
+Description: Downloads and packages the latest version of GAUSS from a local file share.
+Identifier: com.github.mlbz521.pkg.GAUSS
+ParentRecipe: com.github.mlbz521.download.GAUSS
 MinimumVersion: "2.3"
 Input:
-  NAME: Gauss
+  NAME: GAUSS
 Process:
   - Processor: com.github.mlbz521.SharedProcessors/XarExtractSingleFile
     Arguments:

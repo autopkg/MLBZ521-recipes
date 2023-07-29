@@ -5,6 +5,9 @@ ParentRecipe: com.github.dataJAR-recipes.download.ScreenPal 3
 Input:
   NAME: ScreenPal 3
 Process:
+  - Processor: Versioner
+    Arguments:
+      input_plist_path: "%pathname%/ScreenPal Setup.app/Contents/ScreenPal v3.0.app/Contents/Info.plist"
   - Processor: AppPkgCreator
     Arguments:
       app_path: "%pathname%/ScreenPal Setup.app/Contents/ScreenPal v3.0.app"

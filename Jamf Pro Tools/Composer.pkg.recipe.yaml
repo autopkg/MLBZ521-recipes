@@ -95,9 +95,9 @@ Process:
         scripts: scripts
         version: "%version%"
         chown:
-          path: Applications
-          user: root
-          group: admin
+          - path: Applications
+            user: root
+            group: admin
   - Processor: PathDeleter
     Arguments:
       path_list:

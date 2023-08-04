@@ -82,7 +82,7 @@ Process:
 
       # Install App
       echo "Installing..."
-      /bin/mv "${pkg_dir}/${app}" "/Applications/${app_name}"
+      /bin/mv -f "${pkg_dir}/${app}" "/Applications/${app_name}"
       exitCode=$?
       /bin/sleep 1
 

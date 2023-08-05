@@ -4,9 +4,9 @@ Description: |
   The vendor package defaults to installing nothing, so you must select the edition to installed...
 
   The edition is based on the license type.  This recipe allows you specify the license type to install, which can be one of:
-    * StataBE
-    * StataMP
-    * StataSE
+    * BE (Base Edition)
+    * SE (Standard Edition)
+    * MP (Parallel-Processing Edition)
 
   Assign the desired edition to the input variable "EDITION".
 
@@ -16,8 +16,7 @@ ParentRecipe: com.github.mlbz521.download.Stata
 MinimumVersion: "2.3"
 Input:
   NAME: Stata
-  EDITION: StataMP
-  PKG_NAME: Stata (Universal)
+  EDITION: MP
 Process:
   - Processor: PkgRootCreator
     Arguments:
@@ -163,7 +162,7 @@ Process:
   - Processor: com.github.mlbz521.SharedProcessors/RenamePath
     Arguments:
       source_path: "%RECIPE_CACHE_DIR%/%NAME%-%version%.pkg"
-      new_name: "%RECIPE_CACHE_DIR%/%PKG_NAME%-%version%.pkg"
+      new_name: "%RECIPE_CACHE_DIR%/%NAME% %EDITION% (Universal)-%version%.pkg"
   - Processor: PathDeleter
     Arguments:
       path_list: 

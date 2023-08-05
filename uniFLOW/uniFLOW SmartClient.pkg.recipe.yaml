@@ -1,0 +1,111 @@
+Description: Downloads and packages the latest version of uniFLOW SmartClient from a local file share.
+Identifier: com.github.mlbz521.pkg.uniFLOWSmartClient
+Input:
+  NAME: uniFLOW SmartClient
+  DISK_IMAGE_TYPE: iso
+ParentRecipe: com.github.mlbz521.download.uniFLOWSmartClient
+Process:
+- Processor: PkgRootCreator
+  Arguments:
+    pkgroot: '%RECIPE_CACHE_DIR%/pkgroot'
+    pkgdirs: {}
+- Processor: PkgRootCreator
+  Arguments:
+    pkgroot: '%RECIPE_CACHE_DIR%/Scripts'
+    pkgdirs: {}
+- Processor: Copier
+  Arguments:
+    source_path: '%cached_path%/SmartClientMac.iso'
+    destination_path: '%RECIPE_CACHE_DIR%/Scripts/SmartClientMac.iso'
+- Processor: FileCreator
+  Arguments:
+    file_content: |
+      #!/bin/bash
+
+      ###################################################################################################
+      # Script Name:  Mount-AndInstall.sh
+      # By:  Zack Thompson / Created:  8/04/2023
+      # Version:  1.0.0 / Updated:  8/04/2023 / By:  ZT
+      #
+      # Description:  This script installs a package found in a disk image.
+      #
+      ###################################################################################################
+
+      echo "*****  Install %NAME% Process:  START  *****"
+
+      ##################################################
+      # Define Variables
+
+      # Set working directory
+      pkg_dir=$( /usr/bin/dirname $0 )
+      # Get the filename of the disk image file
+      disk_image=$( /bin/ls "${pkg_dir}" | /usr/bin/grep %DISK_IMAGE_TYPE%  )
+
+      ##################################################
+      # Define Functions
+
+      exit_check() {
+        # Handles checking the exit code of tasks.
+        exit_code="${1}"
+        error_text="${2}"
+
+        if [[ "${exit_code}" != 0 ]]; then
+          # Ejecting the disk image...
+          /usr/bin/hdiutil eject "${mounted_image}"
+          echo -e "[ERROR] ${error_text}\nExit Code:  ${exit_code}"
+          echo -e "\n*****  %NAME% Process:  FAILED  *****"
+          exit "${exit_code}"
+        fi
+      }
+
+      ##################################################
+      # Bits staged...
+
+      # Check the installation target.
+      if [[ $3 != "/" ]]; then
+        exit_check "1" "Target disk is not the startup disk."
+      fi
+
+      # Mounting the disk image found...
+      echo "Mounting ${disk_image}..."
+      attached=$( /usr/bin/hdiutil attach "${pkg_dir}/${disk_image}" -nobrowse -noverify -noautoopen )
+      /bin/sleep 2
+
+      # Prase the name of the mount.
+      mounted_image=$( echo "${attached}" | /usr/bin/awk -F " " '{print $2}' )
+
+      # Get the pkg.
+      echo "Searching for a package..."
+      pkg=$( /bin/ls "${mounted_image}/" | /usr/bin/grep .pkg )
+
+      echo "Installing ${pkg}..."
+      results=$( /usr/sbin/installer -dumplog -verbose -pkg "${mounted_image}/${pkg}" -allowUntrusted -target / )
+      exitCode=$?
+
+      # Function exit_check
+      exit_check $exitCode "${results}"
+
+      echo "Package was successfully installed!"
+
+      # Ejecting the disk image...
+      /usr/bin/hdiutil eject "${mounted_image}"
+
+      echo "*****  Install %NAME% Process:  COMPLETE  *****"
+      exit 0
+    file_mode: '0755'
+    file_path: '%RECIPE_CACHE_DIR%/Scripts/postinstall'
+- Processor: PkgCreator
+  Arguments:
+    pkg_request:
+      id: com.ntware.pkg.SmartClientForMacInstaller
+      pkgname: '%NAME%-%version%'
+      pkgroot: '%RECIPE_CACHE_DIR%/pkgroot'
+      pkgtype: flat
+      scripts: Scripts
+      version: '%version%'
+- Processor: PathDeleter
+  Arguments:
+    path_list:
+    - '%RECIPE_CACHE_DIR%/unpacked'
+    - '%RECIPE_CACHE_DIR%/pkgroot'
+    - '%RECIPE_CACHE_DIR%/Scripts'

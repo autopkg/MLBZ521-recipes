@@ -1,0 +1,38 @@
+Description: Downloads the latest version of uniFLOW SmartClient from a local file share.
+Identifier: com.github.mlbz521.download.uniFLOWSmartClient
+Input:
+  FILE_SHARE: /path/to/offline/repository
+  MAJOR_VERSION: ''
+  MAX_FOLDER_DEPTH: '1'
+  NAME: uniFLOW SmartClient
+  NAME_EXCEPTION: ''
+  NAME_LIMITATION: ''
+  SEARCH_STRING: uniFLOW SmartClient
+  VERSION_STRING_SEPARATOR: '-'
+Process:
+  - Processor: com.github.mlbz521.SharedProcessors/OfflineApps
+    Arguments:
+      exception_string: '%NAME_EXCEPTION%'
+      limitation_string: '%NAME_LIMITATION%'
+      major_version: '%MAJOR_VERSION%'
+      max_depth: '%MAX_FOLDER_DEPTH%'
+      search_path: '%FILE_SHARE%'
+      search_string: '%SEARCH_STRING%'
+      version_separator: '%VERSION_STRING_SEPARATOR%'
+  - Processor: FlatPkgUnpacker
+    Arguments:
+      flat_pkg_path: '%cached_path%/SmartClientMac.iso/*.pkg'
+      destination_path: '%RECIPE_CACHE_DIR%/unpacked'
+      purge_destination: true
+      skip_payload: true
+  - Processor: com.github.mlbz521.SharedProcessors/XPathParser
+    Arguments:
+      xml_file: "%RECIPE_CACHE_DIR%/unpacked/SmartClientForMac.pkg/PackageInfo"
+      xpath: .//bundle[@path="./Applications/uniFLOW SmartClient.app"]
+      attribute_one: CFBundleShortVersionString
+      return_variable_attribute_one: version
+  - Processor: CodeSignatureVerifier
+    Arguments:
+      input_path: '%cached_path%/SmartClientMac.iso/SmartClientForMac.pkg'
+      requirement: identifier "com.nt-ware.SmartClient" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "4M6FV5A8E6"
+  - Processor: EndOfCheckPhase

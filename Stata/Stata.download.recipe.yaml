@@ -4,8 +4,8 @@ MinimumVersion: "2.3"
 Input:
   NAME: Stata
   SEARCH_STRING: Stata
-  MAJOR_VERSION: null
-  NAME_LIMITATION: null
+  MAJOR_VERSION: ""
+  NAME_LIMITATION: ""
   NAME_EXCEPTION: testing
   FILE_SHARE: /path/to/offline/repository
   VERSION_STRING_SEPARATOR: "-"

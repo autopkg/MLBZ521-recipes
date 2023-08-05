@@ -41,6 +41,57 @@ Process:
     destination_path: '%RECIPE_CACHE_DIR%/scripts/%INTEL_ARCHITECTURE%/%app_name%'
 - Processor: FileCreator
   Arguments:
+    file_path: '%RECIPE_CACHE_DIR%/scripts/preinstall'
+    file_mode: '0755'
+    file_content: |
+      #!/bin/bash
+
+      ###################################################################################################
+      # Script Name:  Uninstall-UniversalApp.sh
+      # By:  Zack Thompson / Created:  08/05/2023
+      # Version:  1.0.0 / Updated:  08/05/2023 / By:  ZT
+      #
+      # Description:  "Uninstalls" the app bundle.
+      #
+      ###################################################################################################
+
+      echo -e "*****  Uninstall %NAME% Process:  START  *****\n"
+
+      ##################################################
+      # Bits staged...
+
+      if [[ $3 != "/" ]]; then
+          echo "[ERROR] Target disk is not the startup disk."
+          echo -e "\n*****  Install %NAME% Process:  FAILED  *****"
+          exit 1
+      fi
+
+      # Check if %app_name% is currently installed...
+      if [[ -e /Applications/%app_name% ]]; then
+
+        echo "%app_name% is currently installed; removing this instance before continuing..."
+        rm -rf /Applications/%app_name%
+        echo "%app_name% has been removed."
+
+        exitCode=$?
+        /bin/sleep 1
+
+        if [[ $exitCode != 0 ]]; then
+            echo "[ERROR] Uninstall failed!"
+            echo "[Exit Code] ${exitCode}"
+            echo -e "\n*****  Install %NAME% Process:  FAILED  *****"
+            exit 1
+        fi
+
+      fi
+
+      chown -R root:admin "/Applications/%app_name%"
+      chmod -R 0775 "/Applications/%app_name%"
+
+      echo -e "\n*****  Uninstall %NAME% Process:  COMPLETE  *****"
+      exit 0
+- Processor: FileCreator
+  Arguments:
     file_path: '%RECIPE_CACHE_DIR%/scripts/postinstall'
     file_mode: '0755'
     file_content: |
@@ -80,7 +131,7 @@ Process:
 
       # Install App
       echo "Installing..."
-      /bin/mv -f "${pkg_dir}/${app}" "/Applications/${app_name}"
+      /bin/mv "${pkg_dir}/${app}" "/Applications/%app_name%"
       exitCode=$?
       /bin/sleep 1
 
@@ -91,8 +142,8 @@ Process:
           exit 1
       fi
 
-      chown -R root:admin "/Applications/${app_name}"
-      chmod -R 0775 "/Applications/${app_name}"
+      chown -R root:admin "/Applications/%app_name%"
+      chmod -R 0775 "/Applications/%app_name%"
 
       echo -e "\n*****  Install %NAME% Process:  COMPLETE  *****"
       exit 0

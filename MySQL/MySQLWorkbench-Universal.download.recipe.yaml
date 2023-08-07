@@ -15,7 +15,7 @@ Process:
   - Processor: URLTextSearcher
     Arguments:
       url: https://dev.mysql.com/downloads/workbench
-      re_pattern: (?P<dmg>mysql-workbench-community-(?P<version>[\d\.]+)-macos-%ARM_ARCHITECTURE%\.dmg)
+      re_pattern: (?P<dmg>mysql-workbench-community-(?P<base_version>[\d\.]+)-macos-%ARM_ARCHITECTURE%\.dmg)
       request_headers:
         user-agent: "%USER_AGENT%"
   - Processor: URLDownloader
@@ -25,11 +25,11 @@ Process:
   - Processor: EndOfCheckPhase
     Arguments:
       arm_path: "%pathname%"
-      arm_version: "%version%"
+      arm_version: "%base_version%"
   - Processor: URLTextSearcher
     Arguments:
       url: https://dev.mysql.com/downloads/workbench
-      re_pattern: (?P<dmg>mysql-workbench-community-(?P<version>[\d\.]+)-macos-%INTEL_ARCHITECTURE%\.dmg)
+      re_pattern: (?P<dmg>mysql-workbench-community-(?P<base_version>[\d\.]+)-macos-%INTEL_ARCHITECTURE%\.dmg)
   - Processor: URLDownloader
     Arguments:
       url: https://dev.mysql.com/get/Downloads/MySQLGUITools/%dmg%
@@ -37,7 +37,7 @@ Process:
   - Processor: EndOfCheckPhase
     Arguments:
       intel_path: "%pathname%"
-      intel_version: "%version%"
+      intel_version: "%base_version%"
   - Processor: CodeSignatureVerifier
     Arguments:
       input_path: "%arm_path%/MySQLWorkbench.app"

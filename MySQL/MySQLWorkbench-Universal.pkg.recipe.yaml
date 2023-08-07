@@ -158,15 +158,15 @@ Process:
     pkg_request:
       id: '%bundleid%'
       options: purge_ds_store
-      pkgname: '%NAME%-%version%'
+      pkgname: '%NAME%-%base_version%'
       pkgroot: '%RECIPE_CACHE_DIR%/pkgroot'
       pkgtype: flat
       scripts: '%RECIPE_CACHE_DIR%/scripts'
-      version: '%version%'
+      version: '%base_version%'
 - Processor: com.github.mlbz521.SharedProcessors/RenamePath
   Arguments:
-    source_path: '%RECIPE_CACHE_DIR%/%NAME%-%version%.pkg'
-    new_name: '%RECIPE_CACHE_DIR%/%PKG_NAME%-%version%.pkg'
+    source_path: '%RECIPE_CACHE_DIR%/%NAME%-%base_version%.pkg'
+    new_name: '%RECIPE_CACHE_DIR%/%PKG_NAME%-%arm_version%.pkg'
 - Processor: PathDeleter
   Arguments:
     path_list: 

@@ -58,6 +58,11 @@ Process:
       echo -e "*****  Uninstall %NAME% Process:  START  *****\n"
 
       ##################################################
+      # Define Variables
+
+      app_name="%app_name%"
+
+      ##################################################
       # Bits staged...
 
       if [[ $3 != "/" ]]; then
@@ -66,12 +71,12 @@ Process:
           exit 1
       fi
 
-      # Check if %app_name% is currently installed...
-      if [[ -e /Applications/%app_name% ]]; then
+      # Check if app is currently installed...
+      if [[ -e "/Applications/${app_name}" ]]; then
 
-        echo "%app_name% is currently installed; removing this instance before continuing..."
-        rm -rf /Applications/%app_name%
-        echo "%app_name% has been removed."
+        echo "`${app_name}` is currently installed; removing this instance before continuing..."
+        rm -rf "/Applications/${app_name}
+        echo "`${app_name}` has been removed."
 
         exitCode=$?
         /bin/sleep 1
@@ -84,9 +89,6 @@ Process:
         fi
 
       fi
-
-      chown -R root:admin "/Applications/%app_name%"
-      chmod -R 0775 "/Applications/%app_name%"
 
       echo -e "\n*****  Uninstall %NAME% Process:  COMPLETE  *****"
       exit 0
@@ -111,13 +113,15 @@ Process:
       ##################################################
       # Define Variables
 
+      app_name="%app_name%"
+
       # Set working directory
       pkg_dir=$( /usr/bin/dirname "${0}" )
 
       if [[ $( /usr/bin/arch ) == "arm64" ]]; then
-          app="%ARM_ARCHITECTURE%/%app_name%"
+          app="%ARM_ARCHITECTURE%/${app_name}"
       else
-          app="%INTEL_ARCHITECTURE%/%app_name%"
+          app="%INTEL_ARCHITECTURE%/${app_name}"
       fi
 
       ##################################################
@@ -131,7 +135,7 @@ Process:
 
       # Install App
       echo "Installing..."
-      /bin/mv "${pkg_dir}/${app}" "/Applications/%app_name%"
+      /bin/mv -f "${pkg_dir}/${app}" "/Applications/${app_name}"
       exitCode=$?
       /bin/sleep 1
 
@@ -142,8 +146,8 @@ Process:
           exit 1
       fi
 
-      chown -R root:admin "/Applications/%app_name%"
-      chmod -R 0775 "/Applications/%app_name%"
+      chown -R root:admin "/Applications/${app_name}"
+      chmod -R 0775 "/Applications/${app_name}"
 
       echo -e "\n*****  Install %NAME% Process:  COMPLETE  *****"
       exit 0

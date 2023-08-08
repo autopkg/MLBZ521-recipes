@@ -1,0 +1,105 @@
+Description: Downloads and packages the latest version of Jamf Admin from the Jamf Pro Tools dmg from a local file share.
+Identifier: com.github.mlbz521.pkg.JamfProTools.JamfAdmin
+ParentRecipe: com.github.mlbz521.download.JamfProTools.JamfAdmin
+MinimumVersion: "2.3"
+Input:
+  NAME: Jamf Admin
+  FOLDER_NAME: Jamf Pro Tools
+  PKG_NAME: Jamf Admin (Universal)
+  SEARCH_STRING: Jamf Pro
+  MAJOR_VERSION: ""
+  NAME_LIMITATION: ""
+  NAME_EXCEPTION: ""
+  FILE_SHARE: /path/to/offline/repository
+  VERSION_STRING_SEPARATOR: "-"
+  MAX_FOLDER_DEPTH: "1"
+Process:
+  - Processor: PkgRootCreator
+    Arguments:
+      pkgroot: "%RECIPE_CACHE_DIR%/pkgroot"
+      pkgdirs:
+        Applications: "0775"
+  - Processor: PkgRootCreator
+    Arguments:
+      pkgroot: "%RECIPE_CACHE_DIR%/scripts"
+      pkgdirs: {}
+  - Processor: Copier
+    Arguments:
+      source_path: "%found_filename%/Jamf Pro/Jamf Admin.app"
+      destination_path: "%RECIPE_CACHE_DIR%/pkgroot/Applications/%FOLDER_NAME%/Jamf Admin.app"
+  - Processor: com.github.mlbz521.SharedProcessors/FindFileInSearchPath
+    Arguments:
+      find_file: fileicon
+  - Processor: Copier
+    Arguments:
+      source_path: "%path_to_found_file%"
+      destination_path: "%RECIPE_CACHE_DIR%/scripts/fileicon"
+  - Processor: com.github.mlbz521.SharedProcessors/FindFileInSearchPath
+    Arguments:
+      find_file: Jamf Pro Tools.icns
+  - Processor: Copier
+    Arguments:
+      source_path: "%path_to_found_file%"
+      destination_path: "%RECIPE_CACHE_DIR%/scripts/Jamf Pro Tools.icns"
+  - Processor: FileCreator
+    Arguments:
+      file_path: "%RECIPE_CACHE_DIR%/scripts/postinstall"
+      file_mode: "0755"
+      file_content: |
+        #!/bin/bash
+
+        ###################################################################################################
+        # Script Name:  set_JamfProToolsFolderIcon.sh
+        # By:  Zack Thompson / Created:  4/17/2020
+        # Version:  1.1.0 / Updated:  7/28/2023 / By:  ZT
+        #
+        # Description:  This script sets an icon on the %FOLDER_NAME% folder.
+        #
+        #   Utilizing the tool fileicon by Michael Klement
+        #       https://github.com/mklement0/fileicon
+        #
+        ###################################################################################################
+
+        echo "*****  Set Folder Icon Process:  START  *****"
+
+        ##################################################
+        # Define Variables
+
+        # Set working directory
+        pkgDir=$( /usr/bin/dirname "${0}" )
+        # Find fileicon
+        fileiconTool=$( /bin/ls "${pkgDir}" | /usr/bin/grep fileicon )
+        # Get the .icns file
+        iconFile=$( /bin/ls "${pkgDir}" | /usr/bin/grep "Jamf Pro Tools.icns" )
+
+        ##################################################
+        # Bits staged...
+
+        # Make sure the fileicon tool is executable
+        /bin/chmod +x "${pkgDir}/${fileiconTool}"
+
+        # Set the icon
+        "${pkgDir}/${fileiconTool}" set "/Applications/%FOLDER_NAME%/" "${iconFile}"
+
+        echo "*****  Set Folder Icon Process:  COMPLETE  *****"
+
+        exit 0
+  - Processor: PkgCreator
+    Arguments:
+      pkg_request:
+        id: "com.jamfsoftware.JamfAdmin"
+        options: purge_ds_store
+        pkgname: "%NAME%-%version%"
+        pkgroot: "%RECIPE_CACHE_DIR%/pkgroot"
+        pkgtype: flat
+        scripts: scripts
+        version: "%version%"
+        chown:
+          - path: Applications
+            user: root
+            group: admin
+  - Processor: PathDeleter
+    Arguments:
+      path_list:
+        - "%RECIPE_CACHE_DIR%/pkgroot"
+        - "%RECIPE_CACHE_DIR%/scripts"

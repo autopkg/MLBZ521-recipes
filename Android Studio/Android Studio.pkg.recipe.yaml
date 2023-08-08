@@ -74,19 +74,19 @@ Process:
       # Check if app is currently installed...
       if [[ -e "/Applications/${app_name}" ]]; then
 
-        echo "`${app_name}` is currently installed; removing this instance before continuing..."
-        rm -rf "/Applications/${app_name}
-        echo "`${app_name}` has been removed."
+          echo "\`${app_name}\` is currently installed; removing this instance before continuing..."
+          /bin/rm -rf "/Applications/${app_name}"
+          exitCode=$?
+          /bin/sleep 1
 
-        exitCode=$?
-        /bin/sleep 1
+          if [[ $exitCode != 0 ]]; then
+              echo "[ERROR] Uninstall failed!"
+              echo "[Exit Code] ${exitCode}"
+              echo -e "\n*****  Install %NAME% Process:  FAILED  *****"
+              exit 1
+          fi
 
-        if [[ $exitCode != 0 ]]; then
-            echo "[ERROR] Uninstall failed!"
-            echo "[Exit Code] ${exitCode}"
-            echo -e "\n*****  Install %NAME% Process:  FAILED  *****"
-            exit 1
-        fi
+          echo "\`${app_name}\` has been removed."
 
       fi
 

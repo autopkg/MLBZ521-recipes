@@ -5,7 +5,7 @@
     <key>Description</key>
 	<string>Downloads and packages the latest or a specified verison of a SPSS Statistics Patch from a local file share.
 
-Two override variables are avilable to support the installation of SPSS:
+Two override variables are available to support the installation of SPSS:
 	* INSTALL_JDK_CLI
 		* A JDK is required to install SPSS silently; if one is not installed, you can provide a command 
 			line command to acquire one through any method that is support in your environemnt
@@ -210,10 +210,11 @@ if [[ $exitCode != 0 &amp;&amp; $exitCode != 208 ]]; then
 	echo "Exit Status:  ${exitStatus}"
 	echo "*****  Upgrade SPSS process:  FAILED  *****"
 	exit 2
-elif [[ $( /usr/bin/defaults read "${appPath}/Contents/Info.plist" CFBundleShortVersionString ) != "${version}" ]]; then
-	echo "Injecting the proper version string into SPSS's Info.plist"
-	# Inject the proper version into the Info.plist file -- this may not be required for every version; specifically for v24.0.0.2, it was needed
-	/usr/bin/sed -Ei '' 's/'"${majorVersion}.0.0.[0-9]"'/'"${version}"'/g' "${appPath}/Contents/Info.plist"
+# This is no longer supported on macOS Ventura and breaks the application bundle.
+# elif [[ $( /usr/bin/defaults read "${appPath}/Contents/Info.plist" CFBundleShortVersionString ) != "${version}" ]]; then
+# 	echo "Injecting the proper version string into SPSS's Info.plist"
+# 	# Inject the proper version into the Info.plist file -- this may not be required for every version; specifically for v24.0.0.2, it was needed
+# 	/usr/bin/sed -Ei '' 's/'"${majorVersion}.0.0.[0-9]"'/'"${version}"'/g' "${appPath}/Contents/Info.plist"
 fi
 
 # Setting permissions to resolve issues seen in:  https://www-01.ibm.com/support/docview.wss?uid=swg21966637

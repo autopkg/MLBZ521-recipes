@@ -81,7 +81,6 @@ Process:
 
           if [[ "${exit_code}" != 0 ]]; then
             # Ejecting the disk image...
-            /usr/bin/hdiutil eject "${mounted_image}"
             echo -e "[ERROR] ${error_text}\nExit Code:  ${exit_code}"
             echo -e "\n*****  %NAME% Process:  FAILED  *****"
             exit "${exit_code}"
@@ -143,7 +142,7 @@ Process:
         add_choices_helper "${array_item}" "${choices_plist}" "${install_choice}"
 
         # Install the .pkg with the choices plist
-        /usr/sbin/installer -applyChoiceChangesXML "${choices_plist}" -pkg "${pkg}" -target "/"
+        /usr/sbin/installer -applyChoiceChangesXML "${choices_plist}" -pkg "${temp_pkg_dir}/${pkg}" -target "/"
         exit_check $? "Failed to apply choices to the installer."
 
         echo "*****  Install %NAME% Process:  COMPLETE  *****"

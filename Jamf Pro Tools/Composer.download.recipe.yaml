@@ -4,9 +4,9 @@ MinimumVersion: "2.3"
 Input:
   NAME: Composer
   SEARCH_STRING: Jamf Pro
-  MAJOR_VERSION: null
-  NAME_LIMITATION: null
-  NAME_EXCEPTION: testing
+  MAJOR_VERSION: ""
+  NAME_LIMITATION: ""
+  NAME_EXCEPTION: ""
   FILE_SHARE: /path/to/offline/repository
   VERSION_STRING_SEPARATOR: "-"
   MAX_FOLDER_DEPTH: "1"

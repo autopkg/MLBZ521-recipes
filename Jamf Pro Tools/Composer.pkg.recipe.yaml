@@ -7,9 +7,9 @@ Input:
   FOLDER_NAME: Jamf Pro Tools
   PKG_NAME: Composer (Universal)
   SEARCH_STRING: Jamf Pro
-  MAJOR_VERSION: null
-  NAME_LIMITATION: null
-  NAME_EXCEPTION: testing
+  MAJOR_VERSION: ""
+  NAME_LIMITATION: ""
+  NAME_EXCEPTION: ""
   FILE_SHARE: /path/to/offline/repository
   VERSION_STRING_SEPARATOR: "-"
   MAX_FOLDER_DEPTH: "1"
@@ -26,7 +26,7 @@ Process:
   - Processor: Copier
     Arguments:
       source_path: "%found_filename%/Jamf Pro/Composer.app"
-      destination_path: "%pkgroot%/Applications/%NAME%/Composer.app"
+      destination_path: "%RECIPE_CACHE_DIR%/pkgroot/Applications/%FOLDER_NAME%/Composer.app"
   - Processor: com.github.mlbz521.SharedProcessors/FindFileInSearchPath
     Arguments:
       find_file: fileicon

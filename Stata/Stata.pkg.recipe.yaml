@@ -43,6 +43,25 @@ Process:
   - Processor: FileCreator
     Arguments:
       file_content: |
+        <?xml version="1.0" encoding="UTF-8"?>
+        <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+        <plist version="1.0">
+        <array>
+            <dict>
+                <key>attributeSetting</key>
+                <integer>1</integer>
+                <key>choiceAttribute</key>
+                <string>selected</string>
+                <key>choiceIdentifier</key>
+                <string>Stata%EDITION%</string>
+            </dict>
+        </array>
+        </plist>
+      file_mode: "0755"
+      file_path: "%RECIPE_CACHE_DIR%/Scripts/choices.plist"
+  - Processor: FileCreator
+    Arguments:
+      file_content: |
         #!/bin/bash
 
         ###################################################################################################
@@ -50,7 +69,7 @@ Process:
         # By:  Zack Thompson / Created:  8/05/2023
         # Version:  1.0.0 / Updated:  8/05/2023 / By:  ZT
         #
-        # Description:  This script defines a choice plist and installs a package.
+        # Description:  This script installs a package with a choice plist.
         #
         ###################################################################################################
 
@@ -65,12 +84,6 @@ Process:
         # Get the filename of the .pkg file
         pkg=$( /bin/ls "${temp_pkg_dir}" | /usr/bin/grep .pkg )
 
-        # Available options discovered in the .pkg
-        install_choice="%EDITION%"
-
-        # Define location of the choices plist
-        choices_plist="${temp_pkg_dir}/choices.plist"
-
         ##################################################
         # Define Functions
 
@@ -80,48 +93,10 @@ Process:
           error_text="${2}"
 
           if [[ "${exit_code}" != 0 ]]; then
-            # Ejecting the disk image...
             echo -e "[ERROR] ${error_text}\nExit Code:  ${exit_code}"
             echo -e "\n*****  %NAME% Process:  FAILED  *****"
             exit "${exit_code}"
           fi
-        }
-
-        PlistBuddy_helper() {
-            # This is a helper function to interact with plists.
-            key="${1}"
-            type="${2}"
-            value="${3}"
-            plist="${4}"
-            action="${5}"
-
-            if [[ "${action}" = "delete"  ]]; then
-
-                # Delete existing values
-                /usr/libexec/PlistBuddy -c "Delete :${key} ${type}" "${plist}" > /dev/null 2>&1
-
-            elif [[ "${action}" = "clear"  ]]; then
-
-                # Clear existing values
-                /usr/libexec/PlistBuddy -c "clear ${type}" "${plist}" > /dev/null 2>&1
-
-            else
-
-                # Configure values
-                /usr/libexec/PlistBuddy -c "Add :${key} ${type} ${value}" "${plist}"  > /dev/null 2>&1 || /usr/libexec/PlistBuddy -c "Set :${key} ${value}" "${plist}" > /dev/null 2>&1
-
-            fi
-        }
-
-        add_choices_helper() {
-            # This is a helper function to add installer choices to a Plist.
-            array_index="${1}"
-            plist="${2}"
-            choice_identifier="${3}"
-
-            PlistBuddy_helper ":${array_index}:attributeSetting" "integer" "1" "${plist}"
-            PlistBuddy_helper ":${array_index}:choiceAttribute" "string" "selected" "${plist}"
-            PlistBuddy_helper ":${array_index}:choiceIdentifier" "string" "${choice_identifier}" "${plist}"
         }
 
         ##################################################
@@ -132,17 +107,8 @@ Process:
           exit_check "1" "Target disk is not the startup disk."
         fi
 
-        # Create an empty array
-        PlistBuddy_helper "" "array" "" "${choices_plist}" "clear"
-
-        # Setting starting point for the array
-        array_item=0
-
-        # Set the choice
-        add_choices_helper "${array_item}" "${choices_plist}" "${install_choice}"
-
         # Install the .pkg with the choices plist
-        /usr/sbin/installer -applyChoiceChangesXML "${choices_plist}" -pkg "${temp_pkg_dir}/${pkg}" -target "/"
+        /usr/sbin/installer -applyChoiceChangesXML "${temp_pkg_dir}/choices.plist" -pkg "${temp_pkg_dir}/${pkg}" -target "/"
         exit_check $? "Failed to apply choices to the installer."
 
         echo "*****  Install %NAME% Process:  COMPLETE  *****"

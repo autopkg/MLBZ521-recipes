@@ -87,13 +87,13 @@ class RicohPrintDriverURLProvider(URLGetter):
 
         # Define variables
         if not (model := self.env.get('model')):
-            raise ProcessorError(
-                "Expected an 'model' input variable but one was not set!")        
+            raise ProcessorError("Expected a 'model' input variable but one was not set!")
+        self.output(f'Searching for printer model:  {model}')
+
         os_version = self.env.get("os_version", "latest")
         web_driver = self.env.get("web_driver", "Chrome")
         web_driver_path = self.env.get("web_driver_path")
         web_driver_binary_location = self.env.get("web_driver_binary_location")
-        self.output(f'Searching for printer model:  {model}')
 
         if os_version in ["Ventura", "latest", "", None]:
             os_version_keycode="122825"
@@ -123,6 +123,13 @@ class RicohPrintDriverURLProvider(URLGetter):
                         "sortDirection":"","sortField":"","sortList":[]
                     },
                     "queryConfig":{
+                        "filters": [
+                            {
+                                "field": "locale",
+                                "values": ["en-US"],
+                                "type": "all"
+                            }
+                        ],
                         "result_fields":
                             {"Gen_Linked_Driver_Drivers":{"raw":{}}}
                     }
@@ -139,8 +146,11 @@ class RicohPrintDriverURLProvider(URLGetter):
         except:
             raise ProcessorError("Failed to query the Ricoh API.")
 
-        drive_page_url = json.loads(
-            result).get("results")[0].get("Gen_Linked_Driver_Drivers").get("raw")
+        try:
+            drive_page_url = json.loads(
+                result).get("results")[0].get("Gen_Linked_Driver_Drivers").get("raw")
+        except json.JSONDecodeError as error:
+            raise ProcessorError("Failed to parse the response from the Ricoh API.") from error
 
         with WebEngine(
             engine=web_driver, binary=web_driver_binary_location, path=web_driver_path, parent=self) as web_engine:

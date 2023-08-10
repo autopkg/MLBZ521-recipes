@@ -1,0 +1,28 @@
+Description: Downloads the latest version of Mist (GUI App flavor) and creates a .pkg.
+Identifier: com.github.mlbz521.pkg.Mist
+MinimumVersion: "2.3"
+ParentRecipe: com.github.zentralpro.download.mist
+Input:
+  NAME: Mist
+Process:
+  - Processor: FlatPkgUnpacker
+    Arguments:
+      destination_path: "%RECIPE_CACHE_DIR%/expanded"
+      flat_pkg_path: "%pathname%"
+  - Processor: PkgPayloadUnpacker
+    Arguments:
+      destination_path: "%RECIPE_CACHE_DIR%/unpack"
+      pkg_payload_path: "%RECIPE_CACHE_DIR%/expanded/Payload"
+      purge_destination: true
+  - Processor: PlistReader
+    Arguments:
+      info_path: "%RECIPE_CACHE_DIR%/unpack/Applications/Mist.app/Contents/Info.plist"
+  - Processor: PkgCopier
+    Arguments:
+      source_pkg: "%pathname%"
+      pkg_path: "%RECIPE_CACHE_DIR%/%NAME%-%version%.pkg"
+  - Processor: PathDeleter
+    Arguments:
+      path_list: 
+        - "%RECIPE_CACHE_DIR%/expanded"
+        - "%RECIPE_CACHE_DIR%/unpack"

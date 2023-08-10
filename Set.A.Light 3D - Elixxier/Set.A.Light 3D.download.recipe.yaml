@@ -1,12 +1,17 @@
 Description: Downloads the latest release of Set.A.Light 3D from Elixxier.
 
   I have not attempted to license this in an programmatic way yet, so the result will need to be licensed manually.
+
+  Elixxier's website defaults to a Hong Kong based CDN and then has some JavaScript that replaces the URL after the page loads....which breaks this for AutoPkg's web scraping methods...
+
+  This fixes it for me and allows you to update the download URL to your locale if desired.  You'll have to check Elixxier's website to determine this.
 Identifier: com.github.mlbz521.download.SetALight3D
 MinimumVersion: "2.3"
 Input:
   NAME: Set.A.Light 3D
   SEARCH_URL: https://www.elixxier.com/en/downloads/
-  SEARCH_PATTERN: .+(https:\/\/elixxier\-download\-usa\-[a-z\-]+\.s3\.amazonaws\.com\/downloads\/Install\+set\.a\.light\+3D\+v(?P<version>[\d\.]+)\.pkg).+
+  SEARCH_PATTERN: .+https:\/\/elixxier\-download\-.+\/(Install(\+|%20)set\.a\.light(\+|%20)3D(\+|%20)v[a-z\d\.]+\.pkg).+
+  BASE_LOCALE_DOWNLOAD_URL: https://elixxier-download-usa-ost-virginia.s3.amazonaws.com/downloads/
 Process:
   - Processor: URLTextSearcher
     Arguments:
@@ -14,7 +19,7 @@ Process:
       re_pattern: "%SEARCH_PATTERN%"
   - Processor: URLDownloader
     Arguments:
-      url: "%match%"
+      url: "%BASE_LOCALE_DOWNLOAD_URL%%match%"
       prefetch_filename: True
   - Processor: CodeSignatureVerifier
     Arguments:

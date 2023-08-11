@@ -9,7 +9,7 @@ The download recipe requires you to set your Institution ID and this recipe requ
 
 Because Respondus does silly things by expecting the licensing information in the file name, this does package inception so that the package name is a standard format.
 
-This pkg recipe differs from nstrauss-recipes's pkg recipe by not installing the LDB on the AutoPkg runner/system and simply performing the above steps to get the desired results (tl/dr:  less steps, similar result).</string>
+This pkg recipe differs from nstrauss-recipes's pkg recipe by not installing the LDB on the AutoPkg runner/system which is no longer required and no longer results in a licensed app due to changes in LDB.</string>
 		<key>Identifier</key>
 		<string>com.github.mlbz521.pkg.RespondusLockDownBrowserLabEdition</string>
 		<key>Input</key>

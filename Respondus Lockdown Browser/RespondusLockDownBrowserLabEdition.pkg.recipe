@@ -1,75 +1,64 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
-<dict>
-    <key>Description</key>
-	<string>Downloads and packages the latest verison Respondus' LockDown Browser and configures the install package for the Lab Edition.
+	<dict>
+		<key>Description</key>
+		<string>Downloads and packages the latest verison Respondus' LockDown Browser and configures the install package for the Lab Edition.
 
 The download recipe requires you to set your Institution ID and this recipe requires your Lab Hash.
 
 Because Respondus does silly things by expecting the licensing information in the file name, this does package inception so that the package name is a standard format.
 
 This pkg recipe differs from nstrauss-recipes's pkg recipe by not installing the LDB on the AutoPkg runner/system and simply performing the above steps to get the desired results (tl/dr:  less steps, similar result).</string>
-	<key>Identifier</key>
-	<string>com.github.mlbz521.pkg.RespondusLockDownBrowserLabEdition</string>
-	<key>Input</key>
-	<dict>
-		<key>NAME</key>
-		<string>Respondus LockDown Browser Lab Edition</string>
-	</dict>
-	<key>ParentRecipe</key>
-	<string>com.github.nstrauss.download.RespondusLockDownBrowser</string>
-    <key>Process</key>
-    <array>
-        <dict>
-            <key>Processor</key>
-            <string>FileFinder</string>
-            <key>Arguments</key>
-            <dict>
-                <key>pattern</key>
-                <string>%RECIPE_CACHE_DIR%/%NAME%/*.pkg</string>
-            </dict>
-        </dict>
-        <dict>
-            <key>Processor</key>
-            <string>PkgRootCreator</string>
-            <key>Arguments</key>
-            <dict>
-                <key>pkgdirs</key>
-                <dict/>
-                <key>pkgroot</key>
-                <string>%RECIPE_CACHE_DIR%/pkgroot</string>
-            </dict>
-        </dict>
-        <dict>
-            <key>Processor</key>
-            <string>PkgRootCreator</string>
-            <key>Arguments</key>
-            <dict>
-                <key>pkgdirs</key>
-                <dict/>
-                <key>pkgroot</key>
-                <string>%RECIPE_CACHE_DIR%/Scripts</string>
-            </dict>
-        </dict>
+		<key>Identifier</key>
+		<string>com.github.mlbz521.pkg.RespondusLockDownBrowserLabEdition</string>
+		<key>Input</key>
 		<dict>
-			<key>Processor</key>
-			<string>Copier</string>
-			<key>Arguments</key>
-			<dict>
-				<key>source_path</key>
-				<string>%found_filename%</string>
-				<key>destination_path</key>
-				<string>%RECIPE_CACHE_DIR%/Scripts/Respondus LockDown Browser Lab (x64c) %INSTITUTION_ID%{%LAB_HASH%}.pkg</string>
-			</dict>
+			<key>NAME</key>
+			<string>Respondus LockDown Browser Lab Edition</string>
 		</dict>
-        <dict>
-            <key>Processor</key>
-            <string>FileCreator</string>
-            <key>Arguments</key>
-            <dict>
-                <key>file_content</key>
-                <string>#!/bin/bash
+		<key>ParentRecipe</key>
+		<string>com.github.nstrauss.download.RespondusLockDownBrowser</string>
+		<key>Process</key>
+		<array>
+			<dict>
+				<key>Processor</key>
+				<string>PkgRootCreator</string>
+				<key>Arguments</key>
+				<dict>
+					<key>pkgdirs</key>
+					<dict/>
+					<key>pkgroot</key>
+					<string>%RECIPE_CACHE_DIR%/Scripts</string>
+				</dict>
+			</dict>
+			<dict>
+				<key>Processor</key>
+				<string>FileFinder</string>
+				<key>Arguments</key>
+				<dict>
+					<key>pattern</key>
+					<string>%RECIPE_CACHE_DIR%/%NAME%/*.pkg</string>
+				</dict>
+			</dict>
+			<dict>
+				<key>Processor</key>
+				<string>Copier</string>
+				<key>Arguments</key>
+				<dict>
+					<key>source_path</key>
+					<string>%found_filename%</string>
+					<key>destination_path</key>
+					<string>%RECIPE_CACHE_DIR%/Scripts/Respondus LockDown Browser Lab (x64c) %INSTITUTION_ID%{%LAB_HASH%}.pkg</string>
+				</dict>
+			</dict>
+			<dict>
+				<key>Processor</key>
+				<string>FileCreator</string>
+				<key>Arguments</key>
+				<dict>
+					<key>file_content</key>
+					<string>#!/bin/bash
 
 ###################################################################################################
 # Script Name:  install_pkg.sh
@@ -86,16 +75,16 @@ echo "*****  Install %NAME% Process:  START  *****"
 # Define Variables
 
 # Set working directory
-pkgDir=$( /usr/bin/dirname "${0}" )
+pkg_dir=$( /usr/bin/dirname "${0}" )
 # Get the filename of the .pkg file
-pkg=$( /bin/ls "${pkgDir}" | /usr/bin/grep .pkg )
+pkg=$( /bin/ls "${pkg_dir}" | /usr/bin/grep .pkg )
 
 ##################################################
 # Bits staged...
 
 # Install pkg
-echo "Installing..."
-/usr/sbin/installer -dumplog -verbose -pkg "${pkgDir}/${pkg}" -target /
+echo "Installing:  ${pkg}"
+/usr/sbin/installer -dumplog -verbose -pkg "${pkg_dir}/${pkg}" -target /
 exitCode=$?
 /bin/sleep 2
 
@@ -107,48 +96,45 @@ if [[ $exitCode != 0 ]]; then
 fi
 
 echo "*****  Install %NAME% Process:  COMPLETE  *****"
-
 exit 0</string>
-                <key>file_mode</key>
-                <string>0755</string>
-                <key>file_path</key>
-                <string>%RECIPE_CACHE_DIR%/Scripts/postinstall</string>
-            </dict>
-        </dict>
-		<dict>
-			<key>Processor</key>
-			<string>PkgCreator</string>
-			<key>Arguments</key>
-			<dict>
-				<key>pkg_request</key>
-				<dict>
-					<key>id</key>
-					<string>com.Respondus.LockDownBrowser</string>
-					<key>pkgname</key>
-					<string>%NAME%-%version%</string>
-                    <key>pkgroot</key>
-                    <string>%RECIPE_CACHE_DIR%/pkgroot</string>
-					<key>pkgtype</key>
-					<string>flat</string>
-					<key>scripts</key>
-					<string>Scripts</string>
-					<key>version</key>
-					<string>%version%</string>
+					<key>file_mode</key>
+					<string>0755</string>
+					<key>file_path</key>
+					<string>%RECIPE_CACHE_DIR%/Scripts/postinstall</string>
 				</dict>
 			</dict>
-		</dict>
-		<dict>
-			<key>Processor</key>
-			<string>PathDeleter</string>
-			<key>Arguments</key>
 			<dict>
-				<key>path_list</key>
-				<array>
-					<string>%RECIPE_CACHE_DIR%/Scripts</string>
-					<string>%RECIPE_CACHE_DIR%/%NAME%</string>
-				</array>
+				<key>Processor</key>
+				<string>PkgCreator</string>
+				<key>Arguments</key>
+				<dict>
+					<key>pkg_request</key>
+					<dict>
+						<key>id</key>
+						<string>com.Respondus.LockDownBrowser</string>
+						<key>pkgname</key>
+						<string>%NAME%-%version%</string>
+						<key>pkgtype</key>
+						<string>flat</string>
+						<key>scripts</key>
+						<string>Scripts</string>
+						<key>version</key>
+						<string>%version%</string>
+					</dict>
+				</dict>
 			</dict>
-		</dict>
-	</array>
-</dict>
+			<dict>
+				<key>Processor</key>
+				<string>PathDeleter</string>
+				<key>Arguments</key>
+				<dict>
+					<key>path_list</key>
+					<array>
+						<string>%RECIPE_CACHE_DIR%/Scripts</string>
+						<string>%RECIPE_CACHE_DIR%/%NAME%</string>
+					</array>
+				</dict>
+			</dict>
+		</array>
+	</dict>
 </plist>

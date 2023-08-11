@@ -1,0 +1,35 @@
+Description: Downloads the latest version of Cytoscape for both ARM and Intel.
+
+  Java is *REQUIRED* to install Cytoscape.  If Java is not pre-installed, the Cytoscape installer process should download and install Java itself.
+Identifier: com.github.mlbz521.download.Cytoscape-Universal
+MinimumVersion: "2.3"
+Input:
+  NAME: Cytoscape
+  PKG_NAME: Cytoscape (Universal)
+  ARM_ARCHITECTURE: aarch64
+  INTEL_ARCHITECTURE: x64
+Process:
+  - Processor: GitHubReleasesInfoProvider
+    Arguments:
+      github_repo: cytoscape/cytoscape
+      asset_regex: .+macos_%ARM_ARCHITECTURE%.dmg
+  - Processor: URLDownloader
+    Arguments:
+      url: "%url%"
+      prefetch_filename: True
+  - Processor: EndOfCheckPhase
+    Arguments:
+      arm_path: "%pathname%"
+      arm_version: "%version%"
+  - Processor: GitHubReleasesInfoProvider
+    Arguments:
+      github_repo: cytoscape/cytoscape
+      asset_regex: .+macos_%INTEL_ARCHITECTURE%.dmg
+  - Processor: URLDownloader
+    Arguments:
+      url: "%url%"
+      prefetch_filename: True
+  - Processor: EndOfCheckPhase
+    Arguments:
+      intel_path: "%pathname%"
+      intel_version: "%version%"

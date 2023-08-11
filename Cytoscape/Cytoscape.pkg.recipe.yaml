@@ -1,0 +1,192 @@
+Description: Downloads the latest version of Cytoscape for both ARM and Intel and creates a package.
+
+  Java is *REQUIRED* to install Cytoscape.  If Java is not pre-installed, the Cytoscape installer process should download and install Java itself.
+Identifier: com.github.mlbz521.pkg.Cytoscape-Universal
+ParentRecipe: com.github.mlbz521.download.Cytoscape-Universal
+MinimumVersion: '2.3'
+Input:
+  NAME: Cytoscape
+  PKG_NAME: Cytoscape (Universal)
+Process:
+- Processor: StopProcessingIf
+  Arguments:
+    predicate: '"%intel_version%" != "%arm_version%"'
+- Processor: PkgRootCreator
+  Arguments:
+    pkgroot: '%RECIPE_CACHE_DIR%/pkgroot'
+    pkgdirs: {}
+- Processor: PkgRootCreator
+  Arguments:
+    pkgroot: '%RECIPE_CACHE_DIR%/scripts'
+    pkgdirs: {}
+- Processor: Copier
+  Arguments:
+    source_path: '%arm_path%/*.app'
+    destination_path: '%RECIPE_CACHE_DIR%/scripts/%ARM_ARCHITECTURE%/Cytoscape Installer.app'
+- Processor: Copier
+  Arguments:
+    source_path: '%intel_path%/*.app'
+    destination_path: '%RECIPE_CACHE_DIR%/scripts/%INTEL_ARCHITECTURE%/Cytoscape Installer.app'
+- Processor: FileCreator
+  Arguments:
+    file_path: '%RECIPE_CACHE_DIR%/scripts/preinstall'
+    file_mode: '0755'
+    file_content: |
+      #!/bin/bash
+
+      ###################################################################################################
+      # Script Name:  Uninstall-Cytoscape.sh
+      # By:  Zack Thompson / Created:  08/10/2023
+      # Version:  1.0.0 / Updated:  08/10/2023 / By:  ZT
+      #
+      # Description:  Uninstalls all versions of Cytoscape.
+      #
+      ###################################################################################################
+
+      echo -e "*****  Uninstall Cytoscape Process:  START  *****\n"
+
+      ##################################################
+      # Define Functions
+
+      exit_check() {
+          # Handles checking the exit code of tasks.
+          exit_code="${1}"
+          app="${2}"
+          error="${3}"
+
+          if [[ "${exit_code}" == 0 ]]; then
+              echo "\`${app}\` has been uninstalled."
+          else
+              echo -e "[ERROR] Failed to uninstall ${app}\nExit Code:  ${exit_code}\nError:  ${error}"
+          fi
+      }
+
+      ##################################################
+      # Bits staged...
+
+      if [[ $3 != "/" ]]; then
+          echo "[ERROR] Target disk is not the startup disk."
+          echo -e "\n*****  Uninstall Cytoscape Process:  FAILED  *****"
+          exit 1
+      fi
+
+      echo "Searching for existing Cytoscape instances..."
+      app_paths=$( /usr/bin/find "/Applications" -name "Cytoscape*" -type d -maxdepth 1 -prune )
+
+      # Verify that a version was found.
+      if [[ -z "${app_paths}" ]]; then
+        echo "Did not find an instance of Cytoscape!"
+      else
+          echo "Uninstalling previous versions of Cytoscape..."
+
+        # If the machine has multiple Cytoscape Applications, loop through them...
+        while IFS=$'\n' read -r app_path; do
+
+              echo "Uninstalling:  ${app_path}"
+              uninstaller="${app_path}/Cytoscape Uninstaller.app/Contents/MacOS/JavaApplicationStub"
+
+              if [[ -e "${uninstaller}" ]]; then
+                  # Uninstall using the uninstall application
+                  results=$( "${uninstaller}" -q )
+              else
+                  # Delete the old version
+                  results=$( /bin/rm -rf "${app_path}" )
+              fi
+
+              exit_code=$?
+              /bin/sleep 1
+              exit_check "${exit_code}" "${app_path}" "${results}"
+
+        done < <(echo "${app_paths}")
+
+      fi
+
+      echo -e "\n*****  Uninstall Cytoscape Process:  COMPLETE  *****"
+      exit 0
+- Processor: FileCreator
+  Arguments:
+    file_path: '%RECIPE_CACHE_DIR%/scripts/postinstall'
+    file_mode: '0755'
+    file_content: |
+      #!/bin/bash
+
+      ###################################################################################################
+      # Script Name:  Install-CytoscapeUniversalApp.sh
+      # By:  Zack Thompson / Created:  08/10/2023
+      # Version:  1.0.0 / Updated:  08/10/2023 / By:  ZT
+      #
+      # Description:  "Installs" the appropriate app bundle based on the systems' architecture.
+      #
+      ###################################################################################################
+
+      echo -e "*****  Install Cytoscape Process:  START  *****\n"
+
+      ##################################################
+      # Define Variables
+
+      # Set working directory
+      pkg_dir=$( /usr/bin/dirname "${0}" )
+
+      if [[ $( /usr/bin/arch ) == "arm64" ]]; then
+          arch="%ARM_ARCHITECTURE%"
+      else
+          arch="%INTEL_ARCHITECTURE%"
+      fi
+
+      # Get the name of the install .app in the directory
+      install_app=$( /bin/ls "${pkg_dir}/${arch}" | /usr/bin/grep .app )
+
+      ##################################################
+      # Define Functions
+
+      exit_check() {
+          # Handles checking the exit code of tasks.
+          exit_code="${1}"
+          error="${3}"
+
+          if [[ "${exit_code}" == 0 ]]; then
+              echo "Cytoscape has been installed!"
+          else
+              echo -e "[ERROR] Failed to install Cytoscape\nExit Code:  ${exit_code}\nError:  ${error}"
+            echo "*****  Install Cytoscape process:  FAILED  *****"
+              exit 2
+          fi
+      }
+
+      ##################################################
+      # Bits staged...
+
+      if [[ $3 != "/" ]]; then
+          echo "[ERROR] Target disk is not the startup disk."
+          echo -e "\n*****  Install Cytoscape Process:  FAILED  *****"
+          exit 1
+      fi
+
+      # Install
+      echo "Installing Cytoscape..."
+      exit_status=$( "${pkg_dir}/${arch}/${install_app}/Contents/MacOS/JavaApplicationStub" -q )
+      exit_code=$?
+      /bin/sleep 1
+      exit_check "${exit_code}" "${exit_status}"
+
+      echo -e "\n*****  Install Cytoscape Process:  COMPLETE  *****"
+      exit 0
+- Processor: PkgCreator
+  Arguments:
+    pkg_request:
+      id: org.cytoscape.installer
+      options: purge_ds_store
+      pkgname: '%NAME%-%version%'
+      pkgroot: '%RECIPE_CACHE_DIR%/pkgroot'
+      pkgtype: flat
+      scripts: '%RECIPE_CACHE_DIR%/scripts'
+      version: '%version%'
+- Processor: com.github.mlbz521.SharedProcessors/RenamePath
+  Arguments:
+    source_path: '%RECIPE_CACHE_DIR%/%NAME%-%version%.pkg'
+    new_name: '%RECIPE_CACHE_DIR%/%PKG_NAME%-%version%.pkg'
+- Processor: PathDeleter
+  Arguments:
+    path_list: 
+      - '%RECIPE_CACHE_DIR%/pkgroot'
+      - '%RECIPE_CACHE_DIR%/scripts'

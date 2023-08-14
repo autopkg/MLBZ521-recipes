@@ -102,7 +102,7 @@ class WebEngine(Processor):
                         }
                     )
 
-                if self.path:
+                if self.path and float(selenium.__version__.rsplit(".", 1)[0]) < 4.10:
                     self.web_engine = webdriver.Chrome(executable_path=self.path, options=options)
 
                 else:

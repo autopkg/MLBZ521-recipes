@@ -62,11 +62,13 @@ class WebEngine(Processor):
     }
 
 
-    def __init__(self, engine, binary, parent=None, path=None):
+    def __init__(self, engine, binary, parent=None, path=None, headless=True):
         self.binary = binary
         self.engine = engine
+        self.headless = self.str2bool(headless)
         self.path = path
         self.parent = parent
+
 
     def __enter__(self):
         """Creates a Web Engine instance to interact with."""
@@ -82,13 +84,23 @@ class WebEngine(Processor):
         try:
 
             if self.engine == "Chrome":
-
                 options = webdriver.ChromeOptions()
-                options.add_argument("headless")
+                options.binary_location = self.binary
                 options.add_argument("window-size=1920,1080")
                 options.add_argument("start-maximized")
                 options.add_argument("user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102 Safari/537.36")
-                options.binary_location = self.binary
+
+                if self.headless:
+                    options.add_argument("headless")
+
+                if self.parent.env.get("tmp_dl_dir"):
+                    options.add_experimental_option(
+                        "prefs",
+                        {
+                            "download.default_directory": self.parent.env.get("tmp_dl_dir"),
+                            "download.prompt_for_download": False
+                        }
+                    )
 
                 if self.path:
                     self.web_engine = webdriver.Chrome(executable_path=self.path, options=options)
@@ -105,6 +117,10 @@ class WebEngine(Processor):
     def __exit__(self, exc_type, exc_value, exc_traceback):
         """Closes the web engine instance."""
         self.web_engine.close
+
+
+    def str2bool(self, value):
+        return str(value).lower() in {"true", "t", "yes", "1"}
 
 
     def main(self):

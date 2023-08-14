@@ -14,9 +14,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import re
+import glob
 import os
+import re
 import sys
+import tempfile
 import time
 
 from autopkglib import Processor, ProcessorError
@@ -77,71 +79,176 @@ class PharosURLProvider(Processor):
                 "The path to the browser's binary.  Defaults to using Chromium.",
                 "Default:  /Applications/Chromium.app/Contents/MacOS/Chromium"
             )
+        },
+        "HEADLESS_WEB_DRIVER": {
+            "required": False,
+            "type": bool,
+            "description": (
+                "Wether to start the web engine in headless mode or not; mainly for testing.",
+                "Default:  False"
+            )
         }
     }
     output_variables = {
-        "url": {
-            "description": "Returns the url to download."
-        }
+        "pathname": {"description": "Path to the downloaded file."},
+        "download_changed": {
+            "description": (
+                "Boolean indicating if the download has changed since the "
+                "last time it was downloaded."
+            )
+        },
+        "url_downloader_summary_result": {
+            "description": "Description of interesting results."
+        },
     }
 
     description = __doc__
+
+
+    def make_tmp_dir(self, tmp_dir):
+        """make the tmp directory"""
+        return tempfile.mkdtemp(prefix="tmp_", dir=tmp_dir)
 
 
     def main(self):
         """Do the main thing."""
 
         # Define variables
-        downloads_page = self.env.get("downloads_page", 
+        downloads_page = self.env.get("downloads_page",
             "https://community.pharos.com/s/article/Macintosh-Updates-For-Uniprint")
-        prefix_dl_url = self.env.get("prefix_dl_url", 
-            "https://pharos.com/support/downloads/mac/Mac OS X Popup")
+        prefix_dl_url = self.env.get("prefix_dl_url",
+            "https://private.filesanywhere.com/PHAROS/")
         prefix_dl_url = re.sub(r"\s", "%20", prefix_dl_url)
         web_driver = self.env.get("web_driver", "Chrome")
         web_driver_path = self.env.get("web_driver_path")
         web_driver_binary_location = self.env.get("web_driver_binary_location")
+        web_driver_headless = self.env.get("HEADLESS_WEB_DRIVER", True)
 
-        # self.output(f"downloads_page:  {downloads_page}", verbose_level=3)
-        # self.output(f"prefix_dl_url:  {prefix_dl_url}", verbose_level=3)
+        RECIPE_DL_DIR = f"{self.env.get('RECIPE_CACHE_DIR')}/downloads"
+        if not os.path.exists(RECIPE_DL_DIR):
+            os.mkdir(path=RECIPE_DL_DIR)
+        tmp_dl_dir = self.make_tmp_dir(RECIPE_DL_DIR)
+        self.env["tmp_dl_dir"] = tmp_dl_dir
 
-        with WebEngine(
-            engine=web_driver, binary=web_driver_binary_location, path=web_driver_path, parent=self) as web_engine:
+        get_download_links = None
+
+        with WebEngine(engine=web_driver, binary=web_driver_binary_location, path=web_driver_path,
+            parent=self, headless=web_driver_headless) as web_engine:
 
             try:
                 web_engine.get(downloads_page)
-                time.sleep(2)
+                get_download_links = WebDriverWait(web_engine, timeout=10).until(
+                    lambda d: d.find_elements(By.LINK_TEXT, "Download")
+                )
             except:
                 raise ProcessorError("Failed to access the download page.")
 
-            try:
-                WebDriverWait(web_engine, timeout=10).until(
-                    lambda d: d.find_elements(By.LINK_TEXT, "Download")
-                )
-                download_links = web_engine.find_elements(By.LINK_TEXT, "Download")
-            except:
-                raise ProcessorError("Failed to find and open the operating "
-                    "system section labeled \"Mac OS X\".")
+            if not get_download_links:
+                raise ProcessorError(
+                    f"Unable to find link to the download page:  {self.env.get('downloads_page')}")
 
             try:
-                for link in download_links:
+                for link in get_download_links:
+                    self.output(f"Found possible download page:  {link.get_attribute('href')}", verbose_level=3)
+
                     if re.match(prefix_dl_url, link.get_attribute("href")):
-                        download_url = link.get_attribute("href")
-                        version = re.match(r".+(\d+\.\d+\.\d+).+", download_url)[1]
-
+                        download_host = link.get_attribute("href")
+                        self.output("  * Matching Link", verbose_level=3)
+                        break
             except:
                 raise ProcessorError(
                     "Failed to find and collect the download url from the download link.")
 
-        if not download_url:
-            raise ProcessorError("Failed to find a matching download type for the provided model.")
+            if not download_host:
+                raise ProcessorError(
+                    f"Unable to find matching download link on:  {self.env.get('downloads_page')}")
 
-        if not version:
-            raise ProcessorError("Failed to identify the version of the download.")
+            try:
+                web_engine.get(download_host)
+                email_box = WebDriverWait(web_engine, timeout=10).until(
+                    lambda d: d.find_elements(By.ID, "txtVerification")
+                )
+                # Enter an email address
+                email_box[0].click()
+                email_box[0].send_keys("anon@anonymous.anon")
+                # Click the I Agree button
+                agree_checkbox = web_engine.find_elements(By.ID, "uniform-chkAgree")
+                agree_checkbox[0].click()
+                # Click the Continue button
+                continue_button = web_engine.find_elements(By.ID, "lblContinue")
+                continue_button[0].click()
 
-        self.env["url"] = download_url
-        self.output(f"Download URL: {self.env['url']}", verbose_level=1)
-        self.env["version"] = version
-        self.output(f"Version: {self.env['version']}", verbose_level=1)
+            except:
+                raise ProcessorError(
+                    "Something went wrong attempting to fill out the 'Export Administration Regulations' form.")
+
+            try:
+
+                folder_links = WebDriverWait(web_engine, timeout=10).until(
+                    lambda d: d.find_elements(By.PARTIAL_LINK_TEXT, "Mac OS X Popups")
+                )
+
+                for folder_link in folder_links:
+                    self.output(f"Found folder a link:  {folder_link.get_attribute('href')}", verbose_level=3)
+
+                    if re.match("javascript:openFolderElink", folder_link.get_attribute("href")):
+                        self.output("  * Guessing this is the link...", verbose_level=3)
+                        break
+
+                folder_link.click()
+                time.sleep(1)
+
+            except:
+                raise ProcessorError(
+                    "Something went wrong attempting to find the folder link.")
+
+            try:
+                download_links = WebDriverWait(web_engine, timeout=10).until(
+                    lambda d: d.find_elements(By.PARTIAL_LINK_TEXT, "Mac OS X Popups")
+                )
+
+                for download_link in download_links:
+                    self.output(f"Found a download link:  {download_link.get_attribute('href')}", verbose_level=3)
+
+                    if re.match("javascript:DownloadItem\(0\);", download_link.get_attribute("href")):
+                        self.output("  * Guessing this is the link...", verbose_level=3)
+                        break
+
+                download_link.click()
+
+            except:
+                raise ProcessorError(
+                    "Something went wrong attempting to find the download link.")
+
+        # Hack to monitor for download start and completion
+        # Wait for a temporary download file to exist and then no longer exist
+        self.output("Waiting for download to start...")
+        started = lambda x: len(x(f"{tmp_dl_dir}/*.crdownload")) > 0
+        WebDriverWait(glob.glob, 300).until(started)
+        self.output("Download has started...")
+
+        completed = lambda x: len(x(f"{tmp_dl_dir}/*.crdownload")) == 0
+        WebDriverWait(glob.glob, 300).until(completed)
+        self.output("Download has completed!")
+
+        # Get the name of the download file
+        file = os.listdir(path=tmp_dl_dir)[0]
+
+        # Move the file to the standard download directory
+        os.rename(src=f"{tmp_dl_dir}/{file}", dst=f"{RECIPE_DL_DIR}/{file}")
+
+        # Delete the temporary download directory
+        os.rmdir(path=tmp_dl_dir)
+
+        self.env["pathname"] = f"{RECIPE_DL_DIR}/{file}"
+        self.env["download_changed"] = True
+
+        # Generate output messages and variables
+        self.output(f"Downloaded {self.env['pathname']}")
+        self.env["url_downloader_summary_result"] = {
+            "summary_text": "The following new items were downloaded:",
+            "data": {"download_path": self.env["pathname"]},
+        }
 
 
 if __name__ == "__main__":

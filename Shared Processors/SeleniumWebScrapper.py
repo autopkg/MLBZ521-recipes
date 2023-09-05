@@ -25,6 +25,7 @@ if not os.path.exists("/Library/AutoPkg/Selenium"):
 
 sys.path.insert(0, "/Library/AutoPkg/Selenium")
 
+import selenium
 from selenium import webdriver
 
 
@@ -73,19 +74,13 @@ class WebEngine(Processor):
     def __enter__(self):
         """Creates a Web Engine instance to interact with."""
 
+        self.parent.output(f"Selenium Version:  {selenium.__version__}", verbose_level=2)
         self.parent.output(f"Using Web Driver:  {self.engine}", verbose_level=3)
-        self.parent.output(f"Web Driver Binary Location:  {self.binary}", verbose_level=3)
-
-        if self.path:
-            self.parent.output(f"Path to Web Driver Engine:  {self.path}", verbose_level=3)
-        else:
-            self.parent.output("The Web Driver Engine is assumed to be in the $PATH.", verbose_level=3)
 
         try:
 
             if self.engine == "Chrome":
                 options = webdriver.ChromeOptions()
-                options.binary_location = self.binary
                 options.add_argument("window-size=1920,1080")
                 options.add_argument("start-maximized")
                 options.add_argument("user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102 Safari/537.36")
@@ -103,6 +98,14 @@ class WebEngine(Processor):
                     )
 
                 if self.path and float(selenium.__version__.rsplit(".", 1)[0]) < 4.10:
+                    self.parent.output(f"Web Driver Binary Location:  {self.binary}", verbose_level=3)
+                    options.binary_location = self.binary
+
+                    if self.path:
+                        self.parent.output(f"Path to Web Driver Engine:  {self.path}", verbose_level=3)
+                    else:
+                        self.parent.output("The Web Driver Engine is assumed to be in the $PATH.", verbose_level=3)
+
                     self.web_engine = webdriver.Chrome(executable_path=self.path, options=options)
 
                 else:

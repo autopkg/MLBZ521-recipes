@@ -1,0 +1,42 @@
+Description: Downloads the latest version of Arduino for both ARM and Intel.
+Identifier: com.github.mlbz521.download.Arduino-Universal
+MinimumVersion: "2.3"
+Input:
+  NAME: Arduino
+  PKG_NAME: Arduino (Universal)
+  ARM_ARCHITECTURE: arm64
+  INTEL_ARCHITECTURE: 64bit
+Process:
+  - Processor: GitHubReleasesInfoProvider
+    Arguments:
+      github_repo: arduino/arduino-ide
+      asset_regex: .+macOS_%ARM_ARCHITECTURE%.dmg
+  - Processor: URLDownloader
+    Arguments:
+      url: "%url%"
+      prefetch_filename: True
+  - Processor: EndOfCheckPhase
+    Arguments:
+      arm_path: "%pathname%"
+      arm_version: "%version%"
+  - Processor: GitHubReleasesInfoProvider
+    Arguments:
+      github_repo: arduino/arduino-ide
+      asset_regex: .+macOS_%INTEL_ARCHITECTURE%.dmg
+  - Processor: URLDownloader
+    Arguments:
+      url: "%url%"
+      prefetch_filename: True
+  - Processor: EndOfCheckPhase
+    Arguments:
+      intel_path: "%pathname%"
+      intel_version: "%version%"
+  - Processor: CodeSignatureVerifier
+    Arguments:
+      input_path: "%arm_path%/Arduino IDE.app"
+      requirement: identifier "cc.arduino.IDE2" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "7KT7ZWMCJT"
+  - Processor: CodeSignatureVerifier
+    Arguments:
+      input_path: "%intel_path%/Arduino IDE.app"
+      requirement: identifier "cc.arduino.IDE2" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "7KT7ZWMCJT"
+  - Processor: EndOfCheckPhase

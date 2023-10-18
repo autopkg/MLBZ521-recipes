@@ -1,0 +1,48 @@
+Description: |
+  Downloads the latest Amazon Corretto OpenJDK for both ARM and Intel.
+
+  The JDK Major Version can be specified using the override variable "JDK_MAJOR_VERSION".
+
+  Tested to support the following major JDK versions available from Amazon:
+    * 8
+    * 11
+    * 17``
+    * 21
+Identifier: com.github.mlbz521.download.AmazonCorrettoOpenJDK-Universal
+MinimumVersion: '2.3'
+Input:
+  NAME: Amazon Corretto JDK
+  PKG_NAME: Amazon Corretto JDK (Universal)
+  JDK_MAJOR_VERSION: '8'
+  ARM_ARCHITECTURE: aarch64
+  INTEL_ARCHITECTURE: x64
+Process:
+  - Processor: URLDownloader
+    Arguments:
+      url: https://corretto.aws/downloads/latest/amazon-corretto-%JDK_MAJOR_VERSION%-%ARM_ARCHITECTURE%-macos-jdk.pkg
+      prefetch_filename: True
+  - Processor: EndOfCheckPhase
+    Arguments:
+      arm_path: '%pathname%'
+  - Processor: URLDownloader
+    Arguments:
+      url: https://corretto.aws/downloads/latest/amazon-corretto-%JDK_MAJOR_VERSION%-%INTEL_ARCHITECTURE%-macos-jdk.pkg
+      prefetch_filename: True
+  - Processor: EndOfCheckPhase
+    Arguments:
+      intel_path: '%pathname%'
+  - Processor: CodeSignatureVerifier
+    Arguments:
+      input_path: '%arm_path%'
+      expected_authority_names:
+        - 'Developer ID Installer: AMZN Mobile LLC (94KV3E626L)'
+        - Developer ID Certification Authority
+        - Apple Root CA
+  - Processor: CodeSignatureVerifier
+    Arguments:
+      input_path: '%intel_path%'
+      expected_authority_names:
+        - 'Developer ID Installer: AMZN Mobile LLC (94KV3E626L)'
+        - Developer ID Certification Authority
+        - Apple Root CA
+  - Processor: EndOfCheckPhase

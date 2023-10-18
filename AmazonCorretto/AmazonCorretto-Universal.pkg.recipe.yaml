@@ -10,7 +10,7 @@ Description: |
     * 11
     * 17
     * 21
-Identifier: com.github.mlbz521.PKG.AmazonCorrettoOpenJDK-Universal
+Identifier: com.github.mlbz521.pkg.AmazonCorrettoOpenJDK-Universal
 ParentRecipe: com.github.mlbz521.download.AmazonCorrettoOpenJDK-Universal
 MinimumVersion: '2.3'
 Input:

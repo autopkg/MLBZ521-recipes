@@ -1,0 +1,49 @@
+Description: Downloads the latest Keybase for both ARM and Intel.
+Identifier: com.github.mlbz521.download.Keybase-Universal
+MinimumVersion: '2.3'
+Input:
+  NAME: Keybase
+  DOWNLOAD_ARM: https://prerelease.keybase.io/Keybase-arm64.dmg
+  DOWNLOAD_INTEL: https://prerelease.keybase.io/Keybase.dmg
+  ARM_ARCHITECTURE: arm64
+  INTEL_ARCHITECTURE: x86_64
+Process:
+  - Processor: URLDownloader
+    Arguments:
+      url: '%DOWNLOAD_ARM%'
+      prefetch_filename: True
+  - Processor: AppDmgVersioner
+    Arguments:
+      dmg_path: '%pathname%'
+  - Processor: com.github.homebysix.VersionSplitter/VersionSplitter
+    Arguments:
+      split_on: '-'
+      version: '%version%'
+  - Processor: EndOfCheckPhase
+    Arguments:
+      arm_path: '%pathname%'
+      arm_version: '%version%'
+  - Processor: URLDownloader
+    Arguments:
+      url: '%DOWNLOAD_INTEL%'
+      prefetch_filename: True
+  - Processor: AppDmgVersioner
+    Arguments:
+      dmg_path: '%pathname%'
+  - Processor: com.github.homebysix.VersionSplitter/VersionSplitter
+    Arguments:
+      split_on: '-'
+      version: '%version%'
+  - Processor: EndOfCheckPhase
+    Arguments:
+      intel_path: '%pathname%'
+      intel_version: '%version%'
+  - Processor: CodeSignatureVerifier
+    Arguments:
+      input_path: '%arm_path%/Keybase.app'
+      requirement: identifier "keybase.Electron" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "99229SGT5K"
+  - Processor: CodeSignatureVerifier
+    Arguments:
+      input_path: '%intel_path%/Keybase.app'
+      requirement: identifier "keybase.Electron" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "99229SGT5K"
+  - Processor: EndOfCheckPhase

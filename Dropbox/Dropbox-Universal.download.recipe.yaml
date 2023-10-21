@@ -1,0 +1,41 @@
+Description: Downloads the latest Dropbox for both ARM and Intel.
+Identifier: com.github.mlbz521.download.Dropbox-Universal
+MinimumVersion: '2.3'
+Input:
+  NAME: Dropbox
+  DOWNLOAD_URL: https://www.dropbox.com/download?plat=mac&full=1
+  DOWNLOAD_ARM: '&arch=arm64'
+  ARM_ARCHITECTURE: arm64
+  INTEL_ARCHITECTURE: x86_64
+Process:
+  - Processor: URLDownloader
+    Arguments:
+      url: '%DOWNLOAD_URL%%DOWNLOAD_ARM%'
+      prefetch_filename: True
+  - Processor: AppDmgVersioner
+    Arguments:
+      dmg_path: '%pathname%'
+  - Processor: EndOfCheckPhase
+    Arguments:
+      arm_path: '%pathname%'
+      arm_version: '%version%'
+  - Processor: URLDownloader
+    Arguments:
+      url: '%DOWNLOAD_URL%'
+      prefetch_filename: True
+  - Processor: AppDmgVersioner
+    Arguments:
+      dmg_path: '%pathname%'
+  - Processor: EndOfCheckPhase
+    Arguments:
+      intel_path: '%pathname%'
+      intel_version: '%version%'
+  - Processor: CodeSignatureVerifier
+    Arguments:
+      input_path: '%arm_path%/Dropbox.app'
+      requirement: identifier "com.getdropbox.dropbox" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = G7HH3F8CAK
+  - Processor: CodeSignatureVerifier
+    Arguments:
+      input_path: '%intel_path%/Dropbox.app'
+      requirement: identifier "com.getdropbox.dropbox" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = G7HH3F8CAK
+  - Processor: EndOfCheckPhase

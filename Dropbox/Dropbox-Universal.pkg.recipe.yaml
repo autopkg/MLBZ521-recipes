@@ -1,0 +1,107 @@
+Description: Downloads the latest Dropbox for both ARM and Intel and creates a package.
+
+  The ARM and Intel version builds **must match** for a package to be created.
+Identifier: com.github.mlbz521.pkg.Dropbox-Universal
+ParentRecipe: com.github.mlbz521.download.Dropbox-Universal
+MinimumVersion: '2.3'
+Input:
+  NAME: Dropbox
+  PKG_NAME: Dropbox (Universal)
+Process:
+  - Processor: StopProcessingIf
+    Arguments:
+      predicate: '"%intel_version%" != "%arm_version%"'
+  - Processor: PkgRootCreator
+    Arguments:
+      pkgroot: '%RECIPE_CACHE_DIR%/pkgroot'
+      pkgdirs: {}
+  - Processor: PkgRootCreator
+    Arguments:
+      pkgroot: '%RECIPE_CACHE_DIR%/scripts'
+      pkgdirs: {}
+  - Processor: Copier
+    Arguments:
+      source_path: '%arm_path%/*.app'
+      destination_path: '%RECIPE_CACHE_DIR%/scripts/%ARM_ARCHITECTURE%/%app_name%'
+  - Processor: Copier
+    Arguments:
+      source_path: '%intel_path%/*.app'
+      destination_path: '%RECIPE_CACHE_DIR%/scripts/%INTEL_ARCHITECTURE%/%app_name%'
+  - Processor: FileCreator
+    Arguments:
+      file_path: '%RECIPE_CACHE_DIR%/scripts/postinstall'
+      file_mode: '0755'
+      file_content: |
+        #!/bin/bash
+
+        ###################################################################################################
+        # Script Name:  Install-UniversalApp.sh
+        # By:  Zack Thompson / Created:  11/10/2022
+        # Version:  1.1.0 / Updated:  12/5/2022 / By:  ZT
+        #
+        # Description:  "Installs" the appropriate app bundle based on the systems' architecture.
+        #
+        ###################################################################################################
+
+        echo -e "*****  Install %NAME% Process:  START  *****\n"
+
+        ##################################################
+        # Define Variables
+
+        app_name="%app_name%"
+
+        # Set working directory
+        pkg_dir=$( /usr/bin/dirname "${0}" )
+
+        if [[ $( /usr/bin/arch ) == "arm64" ]]; then
+            app="%ARM_ARCHITECTURE%/${app_name}"
+        else
+            app="%INTEL_ARCHITECTURE%/${app_name}"
+        fi
+
+        ##################################################
+        # Bits staged...
+
+        if [[ $3 != "/" ]]; then
+            echo "[ERROR] Target disk is not the startup disk."
+            echo -e "\n*****  Install %NAME% Process:  FAILED  *****"
+            exit 1
+        fi
+
+        # Install App
+        echo "Installing..."
+        /bin/mv -f "${pkg_dir}/${app}" "/Applications/${app_name}"
+        exitCode=$?
+        /bin/sleep 1
+
+        if [[ $exitCode != 0 ]]; then
+            echo "[ERROR] Install failed!"
+            echo "[Exit Code] ${exitCode}"
+            echo -e "\n*****  Install %NAME% Process:  FAILED  *****"
+            exit 1
+        fi
+
+        chown -R root:admin "/Applications/${app_name}"
+        chmod -R 0775 "/Applications/${app_name}"
+
+        echo -e "\n*****  Install %NAME% Process:  COMPLETE  *****"
+        exit 0
+  - Processor: PkgCreator
+    Arguments:
+      pkg_request:
+        id: '%bundleid%'
+        options: purge_ds_store
+        pkgname: '%NAME%-%version%'
+        pkgroot: '%RECIPE_CACHE_DIR%/pkgroot'
+        pkgtype: flat
+        scripts: '%RECIPE_CACHE_DIR%/scripts'
+        version: '%version%'
+  - Processor: com.github.mlbz521.SharedProcessors/RenamePath
+    Arguments:
+      source_path: '%RECIPE_CACHE_DIR%/%NAME%-%version%.pkg'
+      new_name: '%RECIPE_CACHE_DIR%/%PKG_NAME%-%version%.pkg'
+  - Processor: PathDeleter
+    Arguments:
+      path_list:
+        - '%RECIPE_CACHE_DIR%/pkgroot'
+        - '%RECIPE_CACHE_DIR%/scripts'

@@ -1,0 +1,10 @@
+Description: Downloads Mersive's Solstice Client and creates a package.
+Identifier: com.github.mlbz521.pkg.SolsticeClient
+ParentRecipe: com.github.joshua-d-miller.download.solsticeclient
+MinimumVersion: "2.3"
+Input:
+  NAME: Solstice
+Process:
+  - Processor: AppPkgCreator
+    Arguments:
+      app_path: "%pathname%/Mersive Solstice.app"

@@ -60,7 +60,9 @@ class MaplePatchURLProvider(URLGetter):
         # The UUID is listed in the url variable
         # Do note that each release/upgrade for each major version has a different UUID, but shouldn't be a big deal
 
-        if major_version == "2022":
+        if major_version == "2023":
+            uuid = "43bfbe2d-5d49-4158-867b-82fd10ec8911"
+        elif major_version == "2022":
             uuid = "17b89e08-f3f1-4f53-b58b-e73d0c030d25" # This is technically 2022.1
         elif major_version == "2021":
             uuid = "1281b851-d7ce-4c6d-af1f-81d4549db8fc" # This is technically 2021.1

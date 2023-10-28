@@ -48,7 +48,7 @@
 				<string>%MAX_FOLDER_DEPTH%</string>
 			</dict>
 		</dict>
-		<dict>
+		<!-- <dict>
 			<key>Processor</key>
 			<string>FileFinder</string>
 			<key>Arguments</key>
@@ -69,14 +69,15 @@
 				<key>purge_destination</key>
 				<true />
 			</dict>
-		</dict>
+		</dict> -->
 		<dict>
 			<key>Processor</key>
 			<string>FileFinder</string>
 			<key>Arguments</key>
 			<dict>
 				<key>pattern</key>
-				<string>%RECIPE_CACHE_DIR%/unpack/JMP*/JMP*/*/Macintosh/*.dmg</string>
+				<!-- <string>%RECIPE_CACHE_DIR%/unpack/JMP*/JMP*/*/Macintosh/*.dmg</string> -->
+				<string>%cached_path%/*.dmg</string>
 			</dict>
 		</dict>
 		<dict>

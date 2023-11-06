@@ -11,41 +11,37 @@ You must provide a Client ID and Secret along with the Policy ID to determine wh
 	<string>com.github.mlbz521.download.CrowdStrikeFalcon</string>
 	<key>Input</key>
 	<dict>
-		<key>NAME</key>
-		<string>CrowdStrike Falcon</string>
+		<key>CS_API_URL</key>
+		<string>https://api.crowdstrike.com</string>
 		<key>CS_CLIENT_ID</key>
 		<string>09d09ufa0sdfh03abcoiy3ba98weyxas</string>
 		<key>CS_CLIENT_SECRET</key>
 		<string>093Uhd093HqGAH309h309fa3j0H3AsdFJ0AIH3iQ</string>
 		<key>CS_POLICY_ID</key>
 		<string>20983aunw039ufapsuf03u0a0sudfna0</string>
-		<key>CS_API_URL</key>
-		<string>https://api.crowdstrike.com</string>
+		<key>NAME</key>
+		<string>CrowdStrike Falcon</string>
 	</dict>
 	<key>Process</key>
 	<array>
 		<dict>
-			<key>Processor</key>
-			<string>CrowdStrikeURLProvider</string>
 			<key>Arguments</key>
 			<dict>
+				<key>api_region_url</key>
+				<string>%CS_API_URL%</string>
 				<key>client_id</key>
 				<string>%CS_CLIENT_ID%</string>
 				<key>client_secret</key>
 				<string>%CS_CLIENT_SECRET%</string>
 				<key>policy_id</key>
 				<string>%CS_POLICY_ID%</string>
-				<key>api_region_url</key>
-				<string>%CS_API_URL%</string>
 			</dict>
+			<key>Processor</key>
+			<string>CrowdStrikeURLProvider</string>
 		</dict>
 		<dict>
-			<key>Processor</key>
-			<string>URLDownloader</string>
 			<key>Arguments</key>
 			<dict>
-				<key>url</key>
-				<string>%download_url%</string>
 				<key>filename</key>
 				<string>%NAME%-%version%.pkg</string>
 				<key>request_headers</key>
@@ -55,22 +51,26 @@ You must provide a Client ID and Secret along with the Policy ID to determine wh
 					<key>authorization</key>
 					<string>bearer %access_token%</string>
 				</dict>
+				<key>url</key>
+				<string>%download_url%</string>
 			</dict>
+			<key>Processor</key>
+			<string>URLDownloader</string>
 		</dict>
 		<dict>
-			<key>Processor</key>
-			<string>CodeSignatureVerifier</string>
 			<key>Arguments</key>
 			<dict>
-				<key>input_path</key>
-				<string>%pathname%</string>
 				<key>expected_authority_names</key>
 				<array>
 					<string>Developer ID Installer: CrowdStrike Inc. (X9E956P446)</string>
 					<string>Developer ID Certification Authority</string>
 					<string>Apple Root CA</string>
 				</array>
+				<key>input_path</key>
+				<string>%pathname%</string>
 			</dict>
+			<key>Processor</key>
+			<string>CodeSignatureVerifier</string>
 		</dict>
 		<dict>
 			<key>Processor</key>

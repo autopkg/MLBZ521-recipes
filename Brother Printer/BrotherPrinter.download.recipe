@@ -5,7 +5,15 @@
 	<key>Identifier</key>
 	<string>com.github.mlbz521.download.BrotherPrinter</string>
 	<key>Description</key>
-	<string>Downloads the Brother Printer Driver, Software Package, Utility, or Firmware specified.  Obviously some packages are compatible with different models, but I haven't been able to think of a way to specify this in the name without it being extremely long.  You will need to specify the model specifically for this to work, take a look at the examples below.
+	<string>Downloads the Brother Printer Driver, Software Package, Utility, or Firmware specified.
+
+Obviously some packages are compatible with different models, but I haven't been able to think of a way to specify this in the name without it being extremely long.
+
+You will need to specify the model specifically for this to work, take a look at the examples below.
+
+NEW INPUT VARIABLE:  DMG_SUB_PATH_TO_PKG
+  * Use this variable if the .pkg is not in the root of the .dmg
+  * This will allow support for more "types" described below
 
 How to specify the Model:
  - MFC-J6935DW = mfcj6935dw
@@ -13,6 +21,10 @@ How to specify the Model:
  - HL-L9310CDW = hll9310cdw
 
 Specify which OS Version:
+ - Sonoma = 10080
+ - Ventura = 10077
+ - Monterey = 10072
+ - Big Sur = 10065
  - Catalina = 10060
  - Mojave = 10052
  - High Sierra = 10045
@@ -54,6 +66,8 @@ This probably isn't the best way to do it, but it works...</string>
 		<string>&lt;dt&gt;Version (?P&lt;version&gt;.*)&lt;/dt&gt;&lt;dd&gt;</string>
 		<key>SEARCH_PATTERN_3</key>
 		<string>&lt;a id="downloadfile" href="(?P&lt;url&gt;https://download.brother.com/welcome/.*.dmg)"</string>
+		<key>DMG_SUB_PATH_TO_PKG</key>
+		<string>*/</string>
 	</dict>
 	<key>Process</key>
 	<array>
@@ -129,7 +143,7 @@ This probably isn't the best way to do it, but it works...</string>
 			<key>Arguments</key>
 			<dict>
 				<key>input_path</key>
-				<string>%pathname%/MacPkg/*.pkg</string>
+				<string>%pathname%/%DMG_SUB_PATH_TO_PKG%*.pkg</string>
 				<key>expected_authority_names</key>
 				<array>
 					<string>Developer ID Installer: Brother Industries, LTD. (5HCL85FLGW)</string>

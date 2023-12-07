@@ -1,0 +1,9 @@
+Description: Downloads the latest version of ScreenPal 3 and creates a .pkg.
+Identifier: com.github.mlbz521.pkg.NVivo14
+MinimumVersion: "2.3"
+ParentRecipe: com.github.dataJAR-recipes.download.NVivo 14
+# Input:
+  # No input values required
+  # NAME: NVivo14
+Process:
+  - Processor: AppPkgCreator

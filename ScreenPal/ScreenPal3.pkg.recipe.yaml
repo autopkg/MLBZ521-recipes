@@ -5,11 +5,20 @@ ParentRecipe: com.github.dataJAR-recipes.download.ScreenPal 3
 Input:
   NAME: ScreenPal 3
 Process:
+  - Processor: FlatPkgUnpacker
+    Arguments:
+      flat_pkg_path: "%pathname%"
+      destination_path: "%RECIPE_CACHE_DIR%/extracted"
+      purge_destination: "true"
+  - Processor: PkgPayloadUnpacker
+    Arguments:
+      pkg_payload_path: "%RECIPE_CACHE_DIR%/extracted/ScreenPal-app.pkg/Payload"
+      destination_path: "%RECIPE_CACHE_DIR%/payload"
+      purge_destination: "true"
   - Processor: Versioner
     Arguments:
-      input_plist_path: "%pathname%/ScreenPal Setup.app/Contents/ScreenPal v3.0.app/Contents/Info.plist"
-  - Processor: AppPkgCreator
+      input_plist_path: "%RECIPE_CACHE_DIR%/payload/ScreenPal.app/Contents/Info.plist"
+  - Processor: PkgCopier
     Arguments:
-      app_path: "%pathname%/ScreenPal Setup.app/Contents/ScreenPal v3.0.app"
-      bundleid: "com.screenpal.app.ScreenPal-Setup"
+      source_pkg: "%pathname%"
       pkg_path: "%RECIPE_CACHE_DIR%/%NAME%-%version%.pkg"

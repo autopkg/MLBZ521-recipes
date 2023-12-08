@@ -100,7 +100,7 @@
 				<string>%RECIPE_CACHE_DIR%/%NAME%.pkg</string>
 				<key>expected_authority_names</key>
 				<array>
-					<string>Developer ID Installer: SAS Institute Inc. (E828H4LX4D)</string>
+					<string>Developer ID Installer: JMP Statistical Discovery LLC (VAJ88789K3)</string>
 					<string>Developer ID Certification Authority</string>
 					<string>Apple Root CA</string>
 				</array>

@@ -57,7 +57,7 @@ This probably isn't the best way to do it, but it works...</string>
 			<key>Arguments</key>
 			<dict>
 				<key>source_pkg</key>
-				<string>%pathname%/MacPkg/*.pkg</string>
+				<string>%pathname%/%DMG_SUB_PATH_TO_PKG%*.pkg</string>
 				<key>pkg_path</key>
 				<string>%RECIPE_CACHE_DIR%/%NAME%-%version%.pkg</string>
 			</dict>

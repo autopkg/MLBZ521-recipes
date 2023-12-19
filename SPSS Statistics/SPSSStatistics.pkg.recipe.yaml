@@ -1,0 +1,34 @@
+Description: |
+  Downloads and packages the latest or a specified version of SPSS Statistics from a local file share.
+
+  Supports the new format found with SPSS v27.
+Identifier: com.github.mlbz521.pkg.SPSSStatistics
+Input:
+  NAME: SPSS Statistics
+ParentRecipe: com.github.mlbz521.download.SPSSStatistics
+Process:
+- Processor: FlatPkgUnpacker
+  Arguments:
+    destination_path: '%RECIPE_CACHE_DIR%/expanded'
+    flat_pkg_path: '%pathname%'
+- Processor: PkgPayloadUnpacker
+  Arguments:
+    destination_path: '%RECIPE_CACHE_DIR%/unpack'
+    pkg_payload_path: '%RECIPE_CACHE_DIR%/expanded/SPSSStatistics.pkg/Payload'
+    purge_destination: 'true'
+- Processor: FileFinder
+  Arguments:
+    pattern: '%RECIPE_CACHE_DIR%/unpack/IBM*/SPSS Statistics.app/Contents/Info.plist'
+- Processor: Versioner
+  Arguments:
+    input_plist_path: '%found_filename%'
+    plist_version_key: CFBundleShortVersionString
+- Processor: PkgCopier
+  Arguments:
+    pkg_path: '%RECIPE_CACHE_DIR%/%NAME%-%version%.pkg'
+    source_pkg: '%pathname%'
+- Processor: PathDeleter
+  Arguments:
+    path_list:
+    - '%RECIPE_CACHE_DIR%/expanded'
+    - '%RECIPE_CACHE_DIR%/unpack'

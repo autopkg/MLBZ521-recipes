@@ -1,0 +1,37 @@
+Description: |
+  Downloads the latest or a specified version of SPSS Statistics from a local file share.
+
+  Supports the new format found with SPSS v27.
+Identifier: com.github.mlbz521.download.SPSSStatistics
+Input:
+  FILE_SHARE: /path/to/offline/repository
+  MAJOR_VERSION: ''
+  MAX_FOLDER_DEPTH: '1'
+  NAME: SPSS Statistics
+  NAME_EXCEPTION: ''
+  NAME_LIMITATION: ''
+  SEARCH_STRING: SPSS
+  VERSION_STRING_SEPARATOR: '-'
+Process:
+- Processor: com.github.mlbz521.SharedProcessors/OfflineApps
+  Arguments:
+    exception_string: '%NAME_EXCEPTION%'
+    limitation_string: '%NAME_LIMITATION%'
+    major_version: '%MAJOR_VERSION%'
+    max_depth: '%MAX_FOLDER_DEPTH%'
+    search_path: '%FILE_SHARE%'
+    search_string: '%SEARCH_STRING%'
+    version_separator: '%VERSION_STRING_SEPARATOR%'
+- Processor: FileFinder
+  Arguments:
+    pattern: '%cached_path%/*.pkg'
+- Processor: CodeSignatureVerifier
+  Arguments:
+    expected_authority_names:
+    - 'Developer ID Installer: International  Business Machines Corp (PETKK2G752)'
+    - Developer ID Certification Authority
+    - Apple Root CA
+    input_path: '%found_filename%'
+- Processor: EndOfCheckPhase
+  Arguments:
+    pathname: '%found_filename%'

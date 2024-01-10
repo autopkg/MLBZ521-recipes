@@ -1,0 +1,10 @@
+Description: Downloads TwoCanoes's DFU Blaster and creates a package.
+Identifier: com.github.mlbz521.pkg.DFUBlaster
+ParentRecipe: com.github.kevinmcox.download.DFUBlaster
+MinimumVersion: "2.3"
+Input:
+  NAME: DFUBlaster
+Process:
+  - Processor: PkgCopier
+    Arguments:
+      source_pkg: "%pathname%/DFU Blaster.pkg"

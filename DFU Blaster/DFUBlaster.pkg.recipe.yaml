@@ -5,6 +5,24 @@ MinimumVersion: "2.3"
 Input:
   NAME: DFUBlaster
 Process:
+  - Processor: FlatPkgUnpacker
+    Arguments:
+      destination_path: "%RECIPE_CACHE_DIR%/expanded"
+      flat_pkg_path: "%pathname%/*.pkg"
+  - Processor: PkgPayloadUnpacker
+    Arguments:
+      destination_path: "%RECIPE_CACHE_DIR%/unpack"
+      pkg_payload_path: "%RECIPE_CACHE_DIR%/expanded/DFU_Blaster.pkg/Payload"
+      purge_destination: true
+  - Processor: PlistReader
+    Arguments:
+      info_path: "%RECIPE_CACHE_DIR%/unpack/Applications/DFU Blaster.app/Contents/Info.plist"
   - Processor: PkgCopier
     Arguments:
-      source_pkg: "%pathname%/DFU Blaster.pkg"
+      source_pkg: "%pathname%/*.pkg"
+      pkg_path: "%RECIPE_CACHE_DIR%/%NAME%-%version%.pkg"
+  - Processor: PathDeleter
+    Arguments:
+      path_list: 
+        - "%RECIPE_CACHE_DIR%/expanded"
+        - "%RECIPE_CACHE_DIR%/unpack"

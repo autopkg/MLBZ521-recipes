@@ -8,7 +8,9 @@
 MODEL:
 	- example:  'imageRUNNER ADVANCE C7565i III'
 OS_VERSION options:  
-	- macOS Monterey v12.0:  MACOS_12 (default)
+	- macOS Sonoma v14.0:  MACOS_14 (default)
+	- macOS Ventura v13.0:  MACOS_13
+	- macOS Monterey v12.0:  MACOS_12
 	- macOS Big Sur v11.0:  MACOS_11_0
 	- macOS Catalina v10.15:  MACOS_10_15
 	- macOS Mojave v10.14:  MACOS_10_14
@@ -34,7 +36,7 @@ See the CanonPrintDriverURLProvider section (https://github.com/autopkg/MLBZ521-
 			<key>MODEL</key>
 			<string>imageRUNNER ADVANCE C7565i III</string>
 			<key>OS_VERSION</key>
-			<string>MACOS_12</string>
+			<string>MACOS_14</string>
 			<key>WEB_DRIVER</key>
 			<string>Chrome</string>
 			<key>WEB_DRIVER_PATH</key>

@@ -60,9 +60,9 @@ class CanonPrintDriverURLProvider(URLGetter):
             "required": False,
             "description": (
                 "The OS version to search against.",
-                "Default:  'MACOS_12' (i.e. Monterey)",
+                "Default:  'MACOS_14' (i.e. Sonoma)",
             ),
-            "default": "MACOS_12"
+            "default": "MACOS_14"
         },
         "web_driver": {
             "required": False,
@@ -136,7 +136,7 @@ class CanonPrintDriverURLProvider(URLGetter):
 
         # Define variables
         model = self.env.get("model")
-        os_version = self.env.get("os_version", "MACOS_12")
+        os_version = self.env.get("os_version", "MACOS_14")
         web_driver = self.env.get("web_driver", "Chrome")
         web_driver_path = self.env.get("web_driver_path")
         web_driver_binary_location = self.env.get("web_driver_binary_location")

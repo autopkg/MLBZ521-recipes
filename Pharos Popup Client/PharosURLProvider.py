@@ -80,11 +80,12 @@ class PharosURLProvider(Processor):
                 "Default:  /Applications/Chromium.app/Contents/MacOS/Chromium"
             )
         },
-        "HEADLESS_WEB_DRIVER": {
+        "WEB_ENGINE_HEADLESS": {
             "required": False,
             "type": bool,
             "description": (
-                "Wether to start the web engine in headless mode or not; mainly for testing.",
+                "Whether to run the web engine headless or not.  ",
+                "This is specifically for troubleshooting purposes.",
                 "Default:  False"
             )
         }
@@ -122,7 +123,8 @@ class PharosURLProvider(Processor):
         web_driver = self.env.get("web_driver", "Chrome")
         web_driver_path = self.env.get("web_driver_path")
         web_driver_binary_location = self.env.get("web_driver_binary_location")
-        web_driver_headless = self.env.get("HEADLESS_WEB_DRIVER", True)
+        web_engine_headless = bool(self.env.get("WEB_ENGINE_HEADLESS"))
+
 
         RECIPE_DL_DIR = f"{self.env.get('RECIPE_CACHE_DIR')}/downloads"
         if not os.path.exists(RECIPE_DL_DIR):
@@ -133,7 +135,7 @@ class PharosURLProvider(Processor):
         get_download_links = None
 
         with WebEngine(engine=web_driver, binary=web_driver_binary_location, path=web_driver_path,
-            parent=self, headless=web_driver_headless) as web_engine:
+            headless=web_engine_headless, parent=self) as web_engine:
 
             try:
                 web_engine.get(downloads_page)

@@ -72,6 +72,15 @@ class RicohPrintDriverURLProvider(URLGetter):
                 "The path to the browser's binary.  Defaults to using Chromium.",
                 "Default:  /Applications/Chromium.app/Contents/MacOS/Chromium"
             )
+        },
+        "WEB_ENGINE_HEADLESS": {
+            "required": False,
+            "type": bool,
+            "description": (
+                "Whether to run the web engine headless or not.  ",
+                "This is specifically for troubleshooting purposes.",
+                "Default:  False"
+            )
         }
     }
     output_variables = {
@@ -94,6 +103,7 @@ class RicohPrintDriverURLProvider(URLGetter):
         web_driver = self.env.get("web_driver", "Chrome")
         web_driver_path = self.env.get("web_driver_path")
         web_driver_binary_location = self.env.get("web_driver_binary_location")
+        web_engine_headless = bool(self.env.get("WEB_ENGINE_HEADLESS"))
 
         if os_version in ["Ventura", "latest", "", None]:
             os_version_keycode="122825"
@@ -153,7 +163,9 @@ class RicohPrintDriverURLProvider(URLGetter):
             raise ProcessorError("Failed to parse the response from the Ricoh API.") from error
 
         with WebEngine(
-            engine=web_driver, binary=web_driver_binary_location, path=web_driver_path, parent=self) as web_engine:
+            engine=web_driver, binary=web_driver_binary_location, 
+            path=web_driver_path, headless=web_engine_headless, parent=self
+        ) as web_engine:
 
             try:
                 web_engine.get(drive_page_url)

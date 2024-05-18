@@ -86,6 +86,7 @@ class WebEngine(Processor):
                 options.add_argument("user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102 Safari/537.36")
 
                 if self.headless:
+                    self.parent.output(f"Enabling Headless Mode...", verbose_level=3)
                     options.add_argument("headless")
 
                 if self.parent.env.get("tmp_dl_dir"):

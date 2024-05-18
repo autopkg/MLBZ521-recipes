@@ -104,6 +104,15 @@ class CanonPrintDriverURLProvider(URLGetter):
                 "Default:  Recommended"
             ),
             "default": "Recommended"
+        },
+        "WEB_ENGINE_HEADLESS": {
+            "required": False,
+            "type": bool,
+            "description": (
+                "Whether to run the web engine headless or not.  ",
+                "This is specifically for troubleshooting purposes.",
+                "Default:  False"
+            )
         }
     }
     output_variables = {
@@ -140,6 +149,7 @@ class CanonPrintDriverURLProvider(URLGetter):
         web_driver = self.env.get("web_driver", "Chrome")
         web_driver_path = self.env.get("web_driver_path")
         web_driver_binary_location = self.env.get("web_driver_binary_location")
+        web_engine_headless = bool(self.env.get("WEB_ENGINE_HEADLESS"))
         download_type = self.env.get("download_type", "Recommended")
 
         self.output(f"Searching for printer model:  {model}", verbose_level=1)
@@ -183,7 +193,8 @@ class CanonPrintDriverURLProvider(URLGetter):
             raise ProcessorError("Failed to find a matching model!")
 
         with WebEngine(
-            engine=web_driver, binary=web_driver_binary_location, path=web_driver_path, parent=self
+            engine=web_driver, binary=web_driver_binary_location, 
+            path=web_driver_path, headless=web_engine_headless, parent=self
         ) as web_engine:
 
             try:

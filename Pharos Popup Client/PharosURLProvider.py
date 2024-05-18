@@ -166,16 +166,16 @@ class PharosURLProvider(Processor):
             try:
                 web_engine.get(download_host)
                 email_box = WebDriverWait(web_engine, timeout=10).until(
-                    lambda d: d.find_elements(By.ID, "txtVerification")
+                    lambda d: d.find_elements(By.NAME, "verificationText")
                 )
                 # Enter an email address
                 email_box[0].click()
                 email_box[0].send_keys("anon@anonymous.anon")
                 # Click the I Agree button
-                agree_checkbox = web_engine.find_elements(By.ID, "uniform-chkAgree")
+                agree_checkbox = web_engine.find_elements(By.NAME, "checkboxApproval")
                 agree_checkbox[0].click()
                 # Click the Continue button
-                continue_button = web_engine.find_elements(By.ID, "lblContinue")
+                continue_button = web_engine.find_elements(By.ID, "btnContinue")
                 continue_button[0].click()
 
             except:
@@ -185,13 +185,13 @@ class PharosURLProvider(Processor):
             try:
 
                 folder_links = WebDriverWait(web_engine, timeout=10).until(
-                    lambda d: d.find_elements(By.PARTIAL_LINK_TEXT, "Mac OS X Popups")
+                    lambda d: d.find_elements(By.XPATH, "//*[contains(@title, 'Mac OS X Popups')]")
                 )
 
                 for folder_link in folder_links:
-                    self.output(f"Found folder a link:  {folder_link.get_attribute('href')}", verbose_level=3)
+                    self.output(f"Found folder the title:  {folder_link.get_attribute('title')}", verbose_level=3)
 
-                    if re.match("javascript:openFolderElink", folder_link.get_attribute("href")):
+                    if re.match("Mac OS X Popups", folder_link.get_attribute("title")):
                         self.output("  * Guessing this is the link...", verbose_level=3)
                         break
 
@@ -204,13 +204,13 @@ class PharosURLProvider(Processor):
 
             try:
                 download_links = WebDriverWait(web_engine, timeout=10).until(
-                    lambda d: d.find_elements(By.PARTIAL_LINK_TEXT, "Mac OS X Popups")
+                    lambda d: d.find_elements(By.XPATH, "//*[contains(@onclick, 'Mac OS X Popups')]")
                 )
 
                 for download_link in download_links:
-                    self.output(f"Found a download link:  {download_link.get_attribute('href')}", verbose_level=3)
+                    self.output(f"Found a download link:  {download_link.get_attribute('onclick')}", verbose_level=3)
 
-                    if re.match("javascript:DownloadItem\(0\);", download_link.get_attribute("href")):
+                    if re.match(r".*Mac OS X Popups.*", download_link.get_attribute("onclick")):
                         self.output("  * Guessing this is the link...", verbose_level=3)
                         break
 

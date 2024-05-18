@@ -148,17 +148,15 @@ class CanonPrintDriverURLProvider(URLGetter):
 
         # Build the required curl switches
         curl_opts = [
-            "--url", "https://platform.cloud.coveo.com/rest/search/v2?organizationId=canonusaproductionw69lguud",
+            "--url", "https://onewebsearch.usa.canon.com/rest/search/v2?organizationId=canonusaproductionw69lguud",
             "--data-raw",
-            '{{ "locale": "en-US", "debug": false, "tab": "default", "referrer": "default", "timezone": "America/Phoenix", "visitorId": "", "context": {{ "environment": "PROD", "contentType": "productSupport", "website": "CanonProductFinder" }}, "fieldsToInclude": [ "author", "language", "urihash", "objecttype", "collection", "source", "permanentid", "filetype", "commoncontenttype", "aem_contenttype", "aem_author", "aem_thumbnail", "aem_description", "aem_instructor", "aem_length", "aem_price", "article_type", "aem_skilllevel", "aem_type", "article_description", "commonsupportcontenttype", "aem_videourl", "ineturl", "size", "aem_startdate", "aem_enddate", "clickableuri", "aem_damsize", "aem_tc", "aem_contenttypevalue", "ec_thumbnails", "out_of_support_life", "bv_product_rating", "bv_avg_product_rating", "bv_number_of_reviews", "product_url", "spdp_url", "product_badges", "ec_store_id", "base_price", "final_price", "price", "bestsellers", "aem_sortdate", "sku", "thumbnail", "description", "color", "title", "product_id", "eight_digits_sku", "merchandise_type", "aem_advisories_flag", "aem_apps_flag", "aem_error_codes_flag", "aem_faqs_flag", "aem_fax_help_flag", "aem_how_to_videos_flag", "aem_manuals_flag", "aem_operating_system_compatibility_flag", "aem_service_upgrades_flag", "aem_technical_specifications_flag", "aem_warranty_info_flag", "aem_wireless_help_flag", "aem_software_drivers_flag", "aem_supplies_accessories_flag", "aem_software_development_kit_flag", "aem_out_of_support_life_flag", "inetdescription", "retired_product", "ec_category", "okb_categories_hierarchy", "aem_producttype" ], "pipeline": "Canon Product Finder", "q": "{}", "enableQuerySyntax": false, "searchHub": "CanonProductFinder", "enableDidYouMean": false, "numberOfResults": 1, "firstResult": 0}}'.format(model),
+            '{{"context":{{"environment":"PROD","website":"CanonProductFinderSearch","softwareDrivers":"softwareDrivers"}},"pipeline":"Canon Product Finder Search","q":"{}","enableQuerySyntax":false,"searchHub":"CanonProductFinderSearch_support-software-and-drivers-page","numberOfResults":1,"firstResult":0}}'.format(model),
         ]
         headers = {
-            "authority": "platform.cloud.coveo.com",
-            "authorization": "Bearer xxd7e4a0fb-bf17-4db6-bf06-0411bb13f96e",
+            "authorization": "Bearer productFinderAccessToken",
             "content-type": "application/json",
             "origin": "https://www.usa.canon.com",
-            "referer": "https://www.usa.canon.com/",
-            # "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36",
+            "referer": "https://www.usa.canon.com/"
         }
 
         try:

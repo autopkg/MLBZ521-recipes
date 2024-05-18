@@ -42,7 +42,7 @@ See the CanonPrintDriverURLProvider section (https://github.com/autopkg/MLBZ521-
 			<key>WEB_DRIVER_PATH</key>
 			<string>/Library/AutoPkg/chromedriver</string>
 			<key>WEB_DRIVER_BINARY_LOCATION</key>
-			<string>/Applications/Chromium.app/Contents/MacOS/Chromium</string>
+			<string>/Applications/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing</string>
 			<key>XPATH_PARSER_STRING</key>
 			<string>jp.co.canon.CUPS(MF|PS|FAX\.)?(Printer|Installer).pkg</string>
 			<key>DOWNLOAD_TYPE</key>

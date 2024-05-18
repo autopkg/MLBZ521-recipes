@@ -56,8 +56,8 @@ class WebEngine(Processor):
         "web_driver_binary_location": {
             "required": False,
             "description": (
-                "The path to the browser's binary.  Defaults to using Chromium.",
-                "Default:  /Applications/Chromium.app/Contents/MacOS/Chromium"
+                "The path to the browser's binary.  Defaults to using Google Chrome for Testing.",
+                "Default:  /Applications/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing"
             )
         }
     }

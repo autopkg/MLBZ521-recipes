@@ -17,6 +17,8 @@ My install script can be found here:  https://github.com/MLBZ521/MacAdmin/blob/m
 		<string>AutoCAD</string>
 		<key>PKG_NAME_POSTFIX</key>
 		<string></string>
+		<key>PKG_NAME</key>
+		<string>AutoCAD #MAJOR_VERSION#</string>
 	</dict>
 	<key>ParentRecipe</key>
 	<string>com.github.mlbz521.download.AutoCAD</string>
@@ -91,6 +93,32 @@ My install script can be found here:  https://github.com/MLBZ521/MacAdmin/blob/m
 					<key>version</key>
 					<string>%version%</string>
 				</dict>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>com.github.mlbz521.SharedProcessors/InputVariableTextSubstituter</string>
+			<key>Arguments</key>
+			<dict>
+				<key>original_string</key>
+				<string>%PKG_NAME%</string>
+				<key>return_variable</key>
+				<string>PKG_NAME</string>
+				<key>string_to_replace</key>
+				<string>#MAJOR_VERSION#</string>
+				<key>variable_to_use</key>
+				<string>major_version</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>com.github.mlbz521.SharedProcessors/RenamePath</string>
+			<key>Arguments</key>
+			<dict>
+				<key>source_path</key>
+				<string>%RECIPE_CACHE_DIR%/%NAME%-%version%.pkg</string>
+				<key>new_name</key>
+				<string>%RECIPE_CACHE_DIR%/%PKG_NAME%-%version%.pkg</string>
 			</dict>
 		</dict>
 		<dict>

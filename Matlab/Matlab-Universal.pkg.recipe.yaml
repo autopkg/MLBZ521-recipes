@@ -28,6 +28,7 @@ Input:
     # licensePath=
     # lmgrFiles=
   NAME: Matlab
+  PKG_NAME: "Matlab #MAJOR_VERSION# (Universal)"
 ParentRecipe: com.github.mlbz521.download.Matlab
 Process:
 - Processor: StopProcessingIf
@@ -92,7 +93,7 @@ Process:
         arch_type="IntelProcessor"
       fi
 
-      app_installer=$( /usr/bin/find -E "${pkg_dir}" -iregex ".*[/]InstallForMacOS${arch_type}[.]app" -type d -prune )
+      app_installer=$( /usr/bin/find -E "${pkg_dir}" -iregex ".*[/]InstallForMacOS${arch_type}[.]app" -type d -maxdepth 1 -prune )
       echo "Installing:  ${app_installer}/Contents/MacOS/InstallForMacOS${arch_type}"
       exit_status=$(
         "${app_installer}/Contents/MacOS/InstallForMacOS${arch_type}" \
@@ -119,6 +120,16 @@ Process:
       scripts: Scripts
       version: "%version%"
   Processor: PkgCreator
+- Arguments:
+    original_string: '%PKG_NAME%'
+    return_variable: PKG_NAME
+    string_to_replace: '#MAJOR_VERSION#'
+    variable_to_use: major_version
+  Processor: com.github.mlbz521.SharedProcessors/InputVariableTextSubstituter
+- Arguments:
+    source_path: '%RECIPE_CACHE_DIR%/%NAME%-%version%.pkg'
+    new_name: '%RECIPE_CACHE_DIR%/%PKG_NAME%-%version%.pkg'
+  Processor: com.github.mlbz521.SharedProcessors/RenamePath
 - Arguments:
     path_list:
     - "%RECIPE_CACHE_DIR%/pkgroot"

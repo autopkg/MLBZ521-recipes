@@ -118,7 +118,7 @@ My install script can be found here:  https://github.com/MLBZ521/MacAdmin/blob/m
 				<key>source_path</key>
 				<string>%RECIPE_CACHE_DIR%/%NAME%%PKG_NAME_POSTFIX%-%version%.pkg</string>
 				<key>new_name</key>
-				<string>%RECIPE_CACHE_DIR%/%PKG_NAME%-%version%.pkg</string>
+				<string>%RECIPE_CACHE_DIR%/%PKG_NAME%%PKG_NAME_POSTFIX%-%version%.pkg</string>
 			</dict>
 		</dict>
 		<dict>

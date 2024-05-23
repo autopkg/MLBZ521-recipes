@@ -127,7 +127,7 @@ Process:
     variable_to_use: major_version
   Processor: com.github.mlbz521.SharedProcessors/InputVariableTextSubstituter
 - Arguments:
-    source_path: '%RECIPE_CACHE_DIR%/%NAME%-%version%.pkg'
+    source_path: '%pkg_path%'
     new_name: '%RECIPE_CACHE_DIR%/%PKG_NAME%-%version%.pkg'
   Processor: com.github.mlbz521.SharedProcessors/RenamePath
 - Arguments:

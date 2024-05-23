@@ -5,7 +5,10 @@
 	<key>Description</key>
 	<string>Downloads and packages the latest verison of AutoCAD from a local file share.
 
-Supports the new format found with AutoCAD 2021.</string>
+Supports the new format found with AutoCAD 2021.
+
+An external script is used to install AutoCAD as the slient install method fails when executed from a postinstall script.
+My install script can be found here:  https://github.com/MLBZ521/MacAdmin/blob/master/Software/AutoCAD/install_AutoCAD.sh</string>
 	<key>Identifier</key>
 	<string>com.github.mlbz521.pkg.AutoCAD</string>
 	<key>Input</key>
@@ -24,10 +27,13 @@ Supports the new format found with AutoCAD 2021.</string>
 			<string>PkgRootCreator</string>
 			<key>Arguments</key>
 			<dict>
-				<key>pkgdirs</key>
-				<dict/>
 				<key>pkgroot</key>
 				<string>%RECIPE_CACHE_DIR%/pkgroot</string>
+				<key>pkgdirs</key>
+				<dict>
+					<key>tmp</key>
+					<string>0755</string>
+				</dict>
 			</dict>
 		</dict>
 		<dict>
@@ -49,119 +55,7 @@ Supports the new format found with AutoCAD 2021.</string>
 				<key>source</key>
 				<string>%RECIPE_CACHE_DIR%/%app_name%</string>
 				<key>target</key>
-				<string>%RECIPE_CACHE_DIR%/scripts/%app_name%</string>
-			</dict>
-		</dict>
-		<dict>
-			<key>Processor</key>
-			<string>FileCreator</string>
-			<key>Arguments</key>
-			<dict>
-				<key>file_content</key>
-				<string>#!/bin/bash
-
-###################################################################################################
-# Script Name:  install_AutoCAD.sh
-# By:  Zack Thompson / Created:  9/2/2020
-# Version:  1.2.0 / Updated:  8/24/2021 / By:  ZT
-#
-# Description:  This script silently installs AutoCAD 2021 and newer.
-#
-###################################################################################################
-
-echo -e "*****  Install AutoCAD Process:  START  *****\n"
-
-# Check the installation target.
-if [[ $3 != "/" ]]; then
-	echo "ERROR:  Target disk is not the startup disk."
-	echo "*****  Install AutoCAD process:  FAILED  *****"
-	exit 1
-fi
-
-##################################################
-# Define Variables
-
-# Set working directory
-pkgDir=$( /usr/bin/dirname "${0}" )
-
-# Get the filename of the .app file
-AutoCADinstaller=$( /bin/ls "${pkgDir}" | /usr/bin/grep .app )
-
-##################################################
-# Define Functions
-
-exitCheck() {
-	if [[ $1 != 0 ]]; then
-
-		echo "Failed to install:  ${2}"
-		echo "Exit Code:  ${1}"
-		echo "Reason:  ${3}"
-		echo "*****  Install AutoCAD process:  FAILED  *****"
-		exit 2
-
-	else
-
-		echo "${2} has been installed!"
-
-	fi
-}
-
-##################################################
-# Bits staged...
-
-# "New" silent install method...that does not work when run in a cli installed .pkg (but does seem to work when installing that .pkg via GUI...)
-# installResult=$( "${pkgDir}/${AutoCADinstaller}/Contents/Helper/Setup.app/Contents/MacOS/Setup" --silent --install_mode install --hide_eula  )
-
-# Credit to Onkston for this install method.
-# https://www.jamf.com/jamf-nation/discussions/35944/autocad-2021-deployment-with-network-server
-pkgArray=$( /usr/bin/find -E "${pkgDir}/${AutoCADinstaller}/Contents/Helper" -iregex ".*[/].*[.]pkg" -prune )
-
-# Verify at least one version of SPSS was found.
-if [[ -z "${pkgArray}" ]]; then
-
-	exitCheck 3 "ERROR:  Unable to locate .pkgs in the expected location!"
-
-else
-
-	# Loop through each .pkg in the array.
-	while IFS=$'\n' read -r pkg; do
-
-		echo "Installing ${pkg}..."
-		installResult=$( /usr/sbin/installer -dumplog -verbose -pkg "${pkg}" -allowUntrusted -target / )
-		exitCode=$?
-
-		# Function exitCheck
-		exitCheck $exitCode "${pkg}" "${installResult}"
-
-	done &lt; &lt;( echo "${pkgArray}" )
-
-fi
-
-echo "All components have been installed."
-echo "AutoCAD has been installed!"
-echo -e "\n*****  Install AutoCAD Process:  COMPLETE  *****"
-exit 0</string>
-				<key>file_mode</key>
-				<string>0755</string>
-				<key>file_path</key>
-				<string>%RECIPE_CACHE_DIR%/scripts/postinstall</string>
-			</dict>
-		</dict>
-		<dict>
-			<key>Processor</key>
-			<string>com.github.mlbz521.SharedProcessors/InputVariableTextSubstituter</string>
-			<key>Arguments</key>
-			<dict>
-				<key>original_string</key>
-				<string>%NAME%</string>
-				<key>return_variable</key>
-				<string>NAME</string>
-				<key>string_to_replace</key>
-				<string>%STRING_TO_REPLACE%</string>
-				<key>variable_to_use</key>
-				<string>found_major_version</string>
-				<key>append_space</key>
-				<true />
+				<string>%RECIPE_CACHE_DIR%/pkgroot/tmp/%app_name%</string>
 			</dict>
 		</dict>
 		<dict>
@@ -173,6 +67,17 @@ exit 0</string>
 				<dict>
 					<key>chown</key>
 					<array/>
+					<key>chown</key>
+					<array>
+						<dict>
+							<key>path</key>
+							<string>tmp</string>
+							<key>user</key>
+							<string>root</string>
+							<key>group</key>
+							<string>wheel</string>
+						</dict>
+					</array>
 					<key>id</key>
 					<string>%bundleid%</string>
 					<key>pkgname</key>

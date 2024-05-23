@@ -1,0 +1,126 @@
+Description: |
+  Downloads and packages the latest version of Matlab from a local file share.
+
+  This recipe version uses the offline media created with the "MathWorks Installer" described in the guide here:  https://www.mathworks.com/matlabcentral/answers/259632-how-can-i-get-matlab-installation-files-for-use-on-an-offline-machine
+
+  For information on how this recipe works, please see the README in my repo (https://github.com/autopkg/MLBZ521-recipes/blob/master/ReadMe.md).
+
+  I license most software separately in my environment and do not use the installer.input's `licensePath` key.  If you want to use this key, you'll need to fork this recipe and adjust the postinstall script.
+
+  The following override variables are available to support the installation of Matlab:
+    * INSTALLER_INPUT
+      * As the name suggests, this is the "installer.input" that allows you to customize the install
+        of Matlab.  The available parameters are included; customize for your environment.
+
+  If you want to customize the products that are installed, a copy of an original, albeit old, installer_input.txt is available in the recipe directory.  I've seen people are unable to locate it as it's not included in newer ISO downloads even though the documentation points to it.
+Identifier: com.github.mlbz521.pkg.Matlab-Universal
+Input:
+  FILE_INSTALLATION_KEY: ""
+  INSTALLER_INPUT: |
+    destinationFolder=/Applications
+    fileInstallationKey=%FILE_INSTALLATION_KEY%
+    agreeToLicense=yes
+    outputFile=/var/log/matlab_installation.log
+    mode=silent
+    # automatedModeTimeout=
+    # activationPropertiesFile=
+    # The "licensePath" is handled in another step in my environment
+    # licensePath=
+    # lmgrFiles=
+  NAME: Matlab
+ParentRecipe: com.github.mlbz521.download.Matlab
+Process:
+- Processor: StopProcessingIf
+  Arguments:
+    predicate: '(FILE_INSTALLATION_KEY == nil)'
+- Arguments:
+    pkgdirs: {}
+    pkgroot: "%RECIPE_CACHE_DIR%/pkgroot"
+  Processor: PkgRootCreator
+- Arguments:
+    pkgdirs: {}
+    pkgroot: "%RECIPE_CACHE_DIR%/scripts"
+  Processor: PkgRootCreator
+- Arguments:
+    overwrite: true
+    source: "%RECIPE_CACHE_DIR%/unpack"
+    target: "%RECIPE_CACHE_DIR%/scripts"
+  Processor: FileMover
+- Arguments:
+    file_content: "%INSTALLER_INPUT%"
+    file_mode: "0755"
+    file_path: "%RECIPE_CACHE_DIR%/scripts/installer_input.txt"
+  Processor: FileCreator
+- Arguments:
+    file_content: |
+      #!/bin/bash
+
+      ###################################################################################################
+      # Script Name:  Install-MatLabUniversal.sh
+      # By:  Zack Thompson / Created:  5/20/2024
+      # Version:  1.0.0 / Updated:  5/20/2024 / By:  ZT
+      #
+      # Description:  "Installs" the appropriate installer type based on the systems' architecture.
+      #
+      ###################################################################################################
+
+      echo -e "*****  Install MatLab Process:  START  *****\n"
+
+      ##################################################
+      # Define Variables
+
+      # Set working directory
+      pkg_dir=$( /usr/bin/dirname "${0}" )
+
+      ##################################################
+      # Bits staged...
+
+      if [[ $3 != "/" ]]; then
+        echo "[Error] Target disk is not the startup disk."
+        echo -e "\n*****  Install MatLab Process:  FAILED  *****"
+        exit 1
+      fi
+
+      # Install MatLab with option file.
+      # Inject dummy location to the installer.input file -- hacky, but works
+      LANG=C /usr/bin/sed -Ei '' 's,(#)? ?licensePath=.*,'"licensePath=${pkg_dir}/installer_input.txt"',' "${pkg_dir}/installer_input.txt"
+
+      # Determine which architecture type should be installed
+      if [[ $( /usr/bin/arch ) == "arm64" ]]; then
+        arch_type="AppleSilicon"
+      else
+        arch_type="IntelProcessor"
+      fi
+
+      app_installer=$( /usr/bin/find -E "${pkg_dir}" -iregex ".*[/]InstallForMacOS${arch_type}[.]app" -type d -prune )
+      echo "Installing:  ${app_installer}/Contents/MacOS/InstallForMacOS${arch_type}"
+      exit_status=$(
+        "${app_installer}/Contents/MacOS/InstallForMacOS${arch_type}" \
+          -inputFile "${pkg_dir}/installer_input.txt" )
+      exit_code=$?
+
+      if [[ $exit_code != 0 || $exit_status == *"End - Unsuccessful"* ]]; then
+        echo -e "[Error]  Install failed!\nExit Code:  ${exit_code}\nResults:  ${exit_status}"
+        echo -e "\n*****  Install Matlab process:  FAILED  *****"
+        exit 2
+      fi
+
+      echo -e "\n*****  Install MatLab Process:  COMPLETE  *****"
+      exit 0
+    file_mode: "0755"
+    file_path: "%RECIPE_CACHE_DIR%/scripts/postinstall"
+  Processor: FileCreator
+- Arguments:
+    pkg_request:
+      id: com.mathworks.installer
+      options: purge_ds_store
+      pkgname: "%NAME%-%version%"
+      pkgroot: "%RECIPE_CACHE_DIR%/pkgroot"
+      scripts: Scripts
+      version: "%version%"
+  Processor: PkgCreator
+- Arguments:
+    path_list:
+    - "%RECIPE_CACHE_DIR%/pkgroot"
+    - "%RECIPE_CACHE_DIR%/scripts"
+  Processor: PathDeleter

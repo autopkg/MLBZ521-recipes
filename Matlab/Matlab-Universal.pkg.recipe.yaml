@@ -93,7 +93,7 @@ Process:
         arch_type="IntelProcessor"
       fi
 
-      app_installer=$( /usr/bin/find -E "${pkg_dir}" -iregex ".*[/]InstallForMacOS${arch_type}[.]app" -type d -maxdepth 1 -prune )
+      app_installer=$( /usr/bin/find -E "${pkg_dir}" -iregex ".*[/]InstallForMacOS${arch_type}[.]app" -type d -maxdepth 2 -prune )
       echo "Installing:  ${app_installer}/Contents/MacOS/InstallForMacOS${arch_type}"
       exit_status=$(
         "${app_installer}/Contents/MacOS/InstallForMacOS${arch_type}" \

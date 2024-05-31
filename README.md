@@ -29,7 +29,7 @@ Available recipe types:
     * Variable overrides for:  JDK_MAJOR_VERSION
     * Uses custom processor to download
   * pkg
-  * ~~jss~~  All `.jss` recipes have been deprecated
+  * EA template is available for use in Jamf Pro
     * Use the EXTENSION_ATTRIBUTE override variable to use your current EA.
 
 
@@ -42,7 +42,6 @@ Available recipe types:
     * Variable overrides for version
     * Create a deployable `.pkg` from the `.sh` script installer
     * Default install path is set to:  /Users/Shared/anaconda3 -- adjustable via substitution variable in an override (for use in lab environments)
-  * ~~jss~~  All `.jss` recipes have been deprecated
 
 
 ### Android Studio SDK CLI Tools ###
@@ -70,15 +69,6 @@ Available recipe types:
         * This is the path to where you want to "install" the sdk (`/path/to/sdk/location/`)
           * e.g. Default install path is set to:  `/Users/Shared/Android`
             * Great for use in multi-user, lab, and non-admin environments
-  * ~~jss~~  All `.jss` recipes have been deprecated
-
-
-### Apache Ant ###
-
-Parent Recipe:  com.github.n8felton.pkg.Ant
-
-Available recipe types:
-  * ~~jss~~  All `.jss` recipes have been deprecated
 
 
 ### ARCHICAD ###
@@ -95,7 +85,6 @@ Available recipe types:
     * `ARCHICAD.pkg`
       * Variable overrides for:  EDUSERIALNUMBER and EDUUSERID
     * Multiple custom processors used to create packages
-  * ~~jss~~  All `.jss` recipes have been deprecated
 
 
 ### AutoCAD for Mac ###
@@ -111,7 +100,6 @@ Available recipe types:
       * Variable overrides for:  major_version
       * Uses custom processor to obtain download url
   * pkg
-  * ~~jss~~  All `.jss` recipes have been deprecated
 
 
 ### Bomgar ###
@@ -124,7 +112,6 @@ Available recipe types:
     * `BomgarConsole.download`
       * Variable overrides for:  CODE_SIGN_IDENTIFIER
   * pkg
-  * ~~jss~~  All `.jss` recipes have been deprecated
 
 
 ### Brother Print Drivers ###
@@ -135,7 +122,6 @@ Available recipe types:
   * download
     * Variable overrides for:  MODEL, TYPE_REQUEST, and OS_VERSION
   * pkg
-  * ~~jss~~  All `.jss` recipes have been deprecated
 
 
 ### Canon Print Driver ###
@@ -175,7 +161,6 @@ Available recipe types:
           * macOS High Sierra v10.13:  MACOS_10_13
           - (older OS Versions, including Windows and Linux should be supported by the processor as well, see my Shared Processors README)
   * pkg
-  * ~~jss~~  All `.jss` recipes have been deprecated
 
 
 ### Cisco Jabber ###
@@ -186,21 +171,6 @@ Available recipe types:
   * download
     * will "download" from a offline repository
   * pkg
-  * ~~jss~~  All `.jss` recipes have been deprecated
-
-
-### Cisco Umbrella Roaming Client ###
-
-#### **DEPRECATED** ####
-
-My Roaming/OpenDNS Client recipes have been deprecated in favor of the set in rtrouton-recipes.
-
-~~Downloads the latest release of Cisco Umbrella Roaming Client.~~
-
-~~Available recipe types:~~
-  ~~* download~~
-  ~~* pkg~~
-  ~~* jss~~
 
 
 ### CoreShell Helper ###
@@ -212,7 +182,6 @@ Please note:  if CoreShell Helper has been installed from the vendor’s install
 Available recipe types:
   * download
   * pkg
-  * ~~jss~~  All `.jss` recipes have been deprecated
 
 
 ### CrowdStrike Falcon ###
@@ -244,7 +213,6 @@ Available recipe types:
             * description:  CrowdStrike Region your instance is associated with
   * pkg
     * Input Variable for:  LICENSE_ID
-  * ~~jss~~  All `.jss` recipes have been deprecated
 
 
 ### CXone Softphone ###
@@ -255,7 +223,6 @@ Available recipe types:
   * download
     * will "download" from a offline repository
   * pkg
-  * ~~jss~~  All `.jss` recipes have been deprecated
 
 
 ### Cytoscape ###
@@ -269,27 +236,6 @@ Be aware the installation .app is NOT SIGNED.
 Available recipe types:
   * download
   * pkg
-  * ~~jss~~  All `.jss` recipes have been deprecated
-
-
-### Google Backup and Sync ###
-
-Parent Recipe:  com.github.nstrauss.pkg.BackupandSync
-
-Available recipe types:
-  * ~~jss~~  All `.jss` recipes have been deprecated
-
-
-### Google Drive ###
-
-Downloads the current release of Google Drive.
-
-This recipe differs from the recipe available in wardsparadox-recipes as it uses the static URL instead of the DriveFSURLProvider Processor which redirects to mirrored servers and causes the recipe to register false-positive new versions and download them.
-
-Available recipe types:
-  * download
-  * pkg
-  * ~~jss~~  All `.jss` recipes have been deprecated
 
 
 ### iManage Work ###
@@ -300,18 +246,6 @@ Available recipe types:
   * download
     * will "download" from a offline repository
   * pkg
-  * ~~jss~~  All `.jss` recipes have been deprecated
-
-
-### Jamf Pro Tools ###
-
-Download recipe expects the installer is available in an "offline repository".  This is designed for our "Site Admins" and doesn't include the `Jamf Admin.app` nor `Jamf Imaging.app`.
-
-Available recipe types:
-  * download
-    * will "download" from a offline repository
-  * pkg
-  * ~~jss~~  All `.jss` recipes have been deprecated
 
 
 ### JMP/JMP Pro ###
@@ -322,7 +256,6 @@ Available recipe types:
   * download
     * will "download" from a offline repository
   * pkg
-  * ~~jss~~  All `.jss` recipes have been deprecated
 
 
 ### Maple ###
@@ -336,7 +269,6 @@ Available recipe types:
       * Variable overrides for:  major_version
       * Uses custom processor to obtain download url
   * pkg
-  * ~~jss~~  All `.jss` recipes have been deprecated
 
 
 ### Mathematica ###
@@ -347,7 +279,6 @@ Available recipe types:
   * download
     * will "download" from a offline repository
   * pkg
-  * ~~jss~~  All `.jss` recipes have been deprecated
 
 
 ### Matlab ###
@@ -380,15 +311,6 @@ Available recipe types:
     * Two versions
       * (non-specified)
       * ISO
-  * ~~jss~~  All `.jss` recipes have been deprecated
-
-
-### Mendeley ###
-
-Parent Recipe:  com.github.hansen-m.pkg.Mendeley
-
-Available recipe types:
-  * ~~jss~~  All `.jss` recipes have been deprecated
 
 
 ### MiKTeX ###
@@ -398,15 +320,6 @@ Downloads the latest release of MiKTeX.
 Available recipe types:
   * download
   * pkg
-  * ~~jss~~  All `.jss` recipes have been deprecated
-
-
-### MirrorOp ###
-
-Parent Recipe:  com.github.moofit-recipes.pkg.MirrorOp
-
-Available recipe types:
-  * ~~jss~~  All `.jss` recipes have been deprecated
 
 
 ### MySQL Community Server ###
@@ -415,19 +328,9 @@ Parent Recipe:  com.github.gerardkok.download.MySQLCommunityServer
 
 Available recipe types:
   * pkg
-  * ~~jss~~  All `.jss` recipes have been deprecated
 
 
 ### NoMAD Login AD ###
-
-Parent Recipe:  com.github.peetinc.download.NoMADLoginAD
-
-The pkg recipe differs from the recipe available in nstrauss-recipes in that it downloads NoLoAD from source and performs no customizations.
-
-Available recipe types:
-  * pkg
-  * ~~jss~~  All `.jss` recipes have been deprecated
-
 
 ### NVivo ###
 
@@ -439,44 +342,18 @@ My NVivo recipes are deprecated in favor of the set in jazzace-recipes.
 
 ~~Available recipe types:~~
   * ~~pkg~~
-  * ~~jss~~  All `.jss` recipes have been deprecated
 
 
-### Pharos Popup Client ###
 
-Added `download` and `pkg` recipes originally created by @asemak (asemak-recipes) after his repo was deprecated and archived.
 
 Available recipe types:
   * download
   * pkg
-  * ~~jss~~  All `.jss` recipes have been deprecated
 
 
-### Praat ###
 
-Parent Recipe:  com.github.autopkg.pkg.Praat
 
 Available recipe types:
-  * ~~jss~~  All `.jss` recipes have been deprecated
-
-
-### PhET Lab Simulations ###
-
-#### **DEPRECATED** ####
-
-~~Downloads the latest version of a specified PhET Lab Simulation and creates a pseudo macOS application wrapper around the .jar Java executable.  Which allows it to be fully inventoried into Jamf Pro like a standard app.  I did my best to create an 'App' that looks half was decent with icons and what not...  Not a graphics person, so that could be improved.~~
-
-~~Currently supported:~~
-  ~~* Balloons and Buoyancy~~
-
-~~Additional simulation can be added, only what has been requested in my organization, have I added so far.~~
-
-~~Available recipe types:~~
-  ~~* download~~
-    ~~* Variable overrides for:  LAB_SIM~~
-    ~~* Uses custom processor to obtain download url and set other environment information used by child recipes~~
-  ~~* pkg~~
-  ~~* jss~~
 
 
 ### Python ###
@@ -511,7 +388,6 @@ Available recipe types:
     * Variable overrides for:  QGIS_Major_Version
   * pkg
     * The created .pkg will "uninstall" previous versions of QGIS.
-  * ~~jss~~  All `.jss` recipes have been deprecated
 
 
 ### RealVNC ###
@@ -524,7 +400,6 @@ So I wrote a hacky solution to supply an accept version string to pkgbuild and s
 
 Available recipe types:
   * pkg
-  * ~~jss~~  All `.jss` recipes have been deprecated
 
 
 ### Respondus Lockdown Browser ###
@@ -541,7 +416,6 @@ My pkg recipe differs from nstrauss-recipes's pkg recipe by not installing the L
 
 Available recipe types:
   * pkg
-  * ~~jss~~  All `.jss` recipes have been deprecated
 
 
 ### Ricoh Print Driver ###
@@ -567,25 +441,6 @@ Available recipe types:
           * Sierra
             - (Windows and Linux could be supported by the processor with some tweaks, see my Shared Processors README)
   * pkg
-  * ~~jss~~  All `.jss` recipes have been deprecated
-
-
-### Safe Exam Browser ###
-
-Parent Recipe:  com.github.aanklewicz.pkg.SEB
-
-Available recipe types:
-  * ~~jss~~  All `.jss` recipes have been deprecated
-
-
-### Screencast-O-Matic ###
-
-The Screencast-O-Matic application (in my opinion) is poorly designed.  The user has to own .app for them to be able to launch it.  So....that said...That means only one user on any system can actually use this app.  I'm trying to get in contact them to figure this out.  This recipe will account for that (i.e. it changes the permissions on the app to the currently logged in user)...so I highly recommend this is used as a Self Service deployment -- if you require it and their is no user logged it, it will fail, or produce undesirable results.
-
-Available recipe types:
-  * download
-  * pkg
-  * ~~jss~~  All `.jss` recipes have been deprecated
 
 
 ### Set.A.Light 3D ###
@@ -595,31 +450,19 @@ Downloads the latest release of Set.A.Light 3D from Elixxier.  I have not attemp
 Available recipe types:
   * download
   * pkg
-  * ~~jss~~  All `.jss` recipes have been deprecated
 
 
 ### Solstice ###
 
-Modified from the original author:  [@joshua-d-miller](https://github.com/autopkg/joshua-d-miller-recipes)
-This was removed from his recipe list, but I wanted to use it.  The way Mersive creates the distribution package for Solstice is very wacky (a zip, with an .app that creates another .app).
-
-This is v2 of my hack-ish way of being able to deploy this application, but it works. ¯\\_(ツ)_/¯
-
-v1 would do all the work to get the final .app on the client machine, which wasn't exactly desired, while this version will get the final .app on the system running autopkg.
-\*\*\*Note this likely requires a user to be logged in when this is ran, as the stupid Solstice bootstrap .app, creates the final .app on the desktop of the user that ran it.
-It's dumb, I know.  I've contacted Mersive about it and they claim they're looking at improving macOS deployment in the future, but no ETA.
-
-Hopefully this overhaul will help with the false positives.
 
 Available recipe types:
   * download
   * pkg
-  * ~~jss~~  All `.jss` recipes have been deprecated
 
 
 ### SPSS Statistics ###
 
-Recipes for both base and patch installers are available.  Download recipe expects the installer is available in an "offline repository".  The download recipe can be used for either the base or patch installers and unique pkg and jss recipes are needed for additional steps.
+Recipes for both base and patch installers are available.  Download recipe expects the installer is available in an "offline repository".  The download recipe can be used for either the base or patch installers and a unique pkg recipe is needed for additional steps.
 
 There is a **LEGACY** version of the recipes for the v26 and older installer type.
 
@@ -634,15 +477,6 @@ Available recipe types:
         * As the name suggests, this the "installer.properties" that allows you to customize the install of SPSS.  The available parameters are included; customize for your environment.
       * INSTALL_JDK_CLI
         * A JDK is required to install SPSS silently; if one is not installed, you can provide a command line command to acquire one through any method that is support in your environment
-  * ~~jss~~  All `.jss` recipes have been deprecated
-
-
-### Steam ###
-
-Parent Recipe:  com.github.moofit-recipes.pkg.Steam
-
-Available recipe types:
-  * ~~jss~~  All `.jss` recipes have been deprecated
 
 
 ### Tableau Public ###
@@ -651,15 +485,6 @@ Parent Recipe:  com.github.foigus.download.tableau-public
 
 Available recipe types:
   * pkg
-  * ~~jss~~  All `.jss` recipes have been deprecated
-
-
-### Twine2 ###
-
-Parent Recipe:  com.github.denmoff.pkg.Twine2
-
-Available recipe types:
-  * ~~jss~~  All `.jss` recipes have been deprecated
 
 
 ### VOSviewer ###
@@ -673,40 +498,6 @@ Be aware the .app is NOT SIGNED.
 Available recipe types:
   * download
   * pkg
-  * ~~jss~~  All `.jss` recipes have been deprecated
-
-
-### Xcode IDE ###
-
-Download the Xcode IDE from the Apple dev portal, creates a .pkg, and uploads it to the JPS.
-
-The Policy will be named "%NAME% %Major Version%", e.g. "Xcode 12"
-
-Important Override Variables:
-  * You must override APPLE_ID and ( PASSWORD_FILE or PASSWORD )
-  * BETA must either be empty for stable releases or set to "Beta" in order to match Xcode betas
-
-See [Facebook's README](https://github.com/facebook/Recipes-for-AutoPkg/tree/master/Xcode) for more information.
-
-To provide additional configuration options, my [Setup-Xcode.sh script](https://github.com/MLBZ521/MacAdmin/blob/master/Software/Setup-Xcode.sh) is available.
-  * Great for use in multi-user, lab, and non-admin environments
-  * It can perform the following initial setup/configuration options:
-    * Specify whether or not to rename the Xcode.app bundle
-    * Specify setting developer permissions
-      * Optional configurations available
-    * Specify whether or not to allow any member of the _developer group to install Apple-provided software
-    * Specifies the version of Xcode to use
-    * Enables _developer group members to be able to use the debugger or performance analysis tools without authenticating
-    * Accept licenses
-    * Perform first launch actions
-
-Parent Recipes:
-  * com.facebook.autopkg.xcode.downloader
-  * com.facebook.autopkg.xcode.extract
-  * com.github.moofit-recipes.pkg.Xcode
-
-Available recipe types:
-  * ~~jss~~  All `.jss` recipes have been deprecated
 
 
 ### Xcode Command Line Tools ###
@@ -726,7 +517,6 @@ Parent Recipes:
 
 Available recipe types:
   * pkg
-  * ~~jss~~  All `.jss` recipes have been deprecated
 
 
 ### Xerox Print Drivers ###
@@ -745,7 +535,6 @@ Available recipe types:
   * download
     * Variable overrides for:  model, downloadType, and osVersion
   * pkg
-  * ~~jss~~  All `.jss` recipes have been deprecated
 
 
 ### Zoom for IT ###
@@ -758,7 +547,6 @@ Available recipe types:
     * Variable overrides for: 
       * CONFIG_PLIST
         * Configure Zoom for your organization with the CONFIG_PLIST Key
-  * ~~jss~~  All `.jss` recipes have been deprecated
 
 
 ### Zoom Outlook Plugin ###
@@ -768,4 +556,3 @@ Recipes for the Zoom Outlook Plugin for macOS.
 Available recipe types:
   * download
   * pkg
-  * ~~jss~~  All `.jss` recipes have been deprecated

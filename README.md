@@ -173,6 +173,16 @@ Available recipe types:
   * pkg
 
 
+### Composer ###
+
+Download recipe expects the installer is available in an "offline repository".  This is designed for our "Site Admins".
+
+Available recipe types:
+  * download
+    * will "download" from a offline repository
+  * pkg
+
+
 ### CoreShell Helper ###
 
 Downloads the latest release of the CoreShell Helper.
@@ -250,7 +260,7 @@ Available recipe types:
 
 ### JMP/JMP Pro ###
 
-Download recipe expects the installer is available in an "offline repository".  The download and pkg recipes can be used for either JMP or JMP Pro and a unique jss recipe is available for each.
+Download recipe expects the installer is available in an "offline repository".  The download and pkg recipes can be used for either JMP or JMP Pro.
 
 Available recipe types:
   * download
@@ -332,28 +342,33 @@ Available recipe types:
 
 ### NoMAD Login AD ###
 
-### NVivo ###
-
 #### **DEPRECATED** ####
 
-My NVivo recipes are deprecated in favor of the set in jazzace-recipes.
+Deprecating this recipe as Jamf has EOL'd NoMAD.
 
-~~Parent Recipe:  com.github.jazzace.pkg.NVivo~~
+~~Parent Recipe:  com.github.peetinc.download.NoMADLoginAD~~
+
+~~The pkg recipe differs from the recipe available in nstrauss-recipes in that it downloads NoLoAD from source and performs no customizations.~~
 
 ~~Available recipe types:~~
   * ~~pkg~~
 
 
+### NVivo ###
 
+Parent Recipe:  com.github.dataJAR-recipes.download.NVivo 14
+
+Available recipe types:
+  * pkg
+
+
+### Pharos Popup Client ###
+
+Added `download` and `pkg` recipes originally created by @asemak (asemak-recipes) after his repo was deprecated and archived.
 
 Available recipe types:
   * download
   * pkg
-
-
-
-
-Available recipe types:
 
 
 ### Python ###
@@ -454,9 +469,9 @@ Available recipe types:
 
 ### Solstice ###
 
+Parent Recipe:  com.github.joshua-d-miller.download.solsticeclient
 
 Available recipe types:
-  * download
   * pkg
 
 
@@ -502,7 +517,7 @@ Available recipe types:
 
 ### Xcode Command Line Tools ###
 
-Downloads the Xcode Command Line Tools from the Apple dev portal, creates a .pkg, and uploads it to the JPS.  Uses Facebook's "xcode.downloader" recipe.
+Downloads the Xcode Command Line Tools from the Apple dev portal, creates a .pkg, and uploads it to the JPS.  Uses Nick McSpadden's "xcode.downloader" recipe.
 
 The Policy will be named "%NAME% %Major Version%", e.g. "Xcode Command Line Tools 12"
 
@@ -510,10 +525,10 @@ Important Override Variables:
   * You must override APPLE_ID and ( PASSWORD_FILE or PASSWORD )
   * BETA must either be empty for stable releases or set to "Beta" in order to match Xcode betas
 
-See [Facebook's README](https://github.com/facebook/Recipes-for-AutoPkg/tree/master/Xcode) for more information.
+See [Nick McSpadden's README](https://github.com/autopkg/nmcspadden-recipes/tree/master/Xcode) for more information.
 
 Parent Recipes:
-  * com.facebook.autopkg.xcode.downloader
+  * com.github.nmcspadden.download.xcode
 
 Available recipe types:
   * pkg

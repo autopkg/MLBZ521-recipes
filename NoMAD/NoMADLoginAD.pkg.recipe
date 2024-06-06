@@ -17,7 +17,16 @@ This recipe differs from nstrauss-recipes in that it downloads NoLoAD from sourc
 	<string>com.github.peetinc.download.NoMADLoginAD</string>
 	<key>Process</key>
 	<array>
-	  <dict>
+		<dict>
+			<key>Processor</key>
+			<string>DeprecationWarning</string>
+			<key>Arguments</key>
+			<dict>
+				<key>warning_message</key>
+				<string>Deprecating this recipe as Jamf has EOL'd it.</string>
+			</dict>
+		</dict>
+		<dict>
 			<key>Processor</key>
 			<string>FlatPkgUnpacker</string>
 			<key>Arguments</key>

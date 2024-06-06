@@ -14,6 +14,9 @@ Input:
   VERSION_STRING_SEPARATOR: "-"
   MAX_FOLDER_DEPTH: "1"
 Process:
+  - Processor: DeprecationWarning
+    Arguments:
+      warning_message: Deprecating this recipe as Jamf Admin is now EOL
   - Processor: PkgRootCreator
     Arguments:
       pkgroot: "%RECIPE_CACHE_DIR%/pkgroot"

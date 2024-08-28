@@ -1,0 +1,50 @@
+Description: Downloads the latest version of UltiMaker Cura for both ARM and Intel for macOS.
+
+  Based on dataJAR's 'com.github.dataJAR-recipes.download.UltiMaker Cura' recipe.
+Identifier: com.github.mlbz521.download.UltiMakerCura-Universal
+MinimumVersion: "2.3"
+Input:
+  NAME: UltiMaker Cura
+  PKG_NAME: UltiMaker Cura (Universal)
+  ARM_ARCHITECTURE: ARM64
+  INTEL_ARCHITECTURE: X64
+Process:
+  - Processor: GitHubReleasesInfoProvider
+    Arguments:
+      github_repo: UltiMaker/Cura
+      include_prereleases: '%PRERELEASE%'
+      asset_regex: '[\S]+-%ARM_ARCHITECTURE%\.dmg'
+  - Processor: URLDownloader
+    Arguments:
+      prefetch_filename: True
+  - Processor: AppDmgVersioner
+    Arguments:
+      dmg_path: "%pathname%"
+  - Processor: EndOfCheckPhase
+    Arguments:
+      arm_path: "%pathname%"
+      arm_version: "%version%"
+  - Processor: GitHubReleasesInfoProvider
+    Arguments:
+      github_repo: UltiMaker/Cura
+      include_prereleases: '%PRERELEASE%'
+      asset_regex: '[\S]+-%INTEL_ARCHITECTURE%\.dmg'
+  - Processor: URLDownloader
+    Arguments:
+      prefetch_filename: True
+  - Processor: AppDmgVersioner
+    Arguments:
+      dmg_path: "%pathname%"
+  - Processor: EndOfCheckPhase
+    Arguments:
+      intel_path: "%pathname%"
+      intel_version: "%version%"
+  - Processor: CodeSignatureVerifier
+    Arguments:
+      input_path: "%arm_path%/UltiMaker Cura.app"
+      requirement: identifier "nl.ultimaker.cura_UltiMaker_Cura_%version%" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = V4B3JXRRQS
+  - Processor: CodeSignatureVerifier
+    Arguments:
+      input_path: "%intel_path%/UltiMaker Cura.app"
+      requirement: identifier "nl.ultimaker.cura_UltiMaker_Cura_%version%" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = V4B3JXRRQS
+  - Processor: EndOfCheckPhase

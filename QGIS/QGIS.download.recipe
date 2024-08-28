@@ -16,10 +16,8 @@ Long Term (support) Release = "ltr"</string>
         <string>QGIS</string>
         <key>RELEASE_TYPE</key>
         <string>pr</string>
-        <key>SEARCH_URL</key>
-        <string>https://www.qgis.org/en/site/forusers/download.html</string>
-        <key>SEARCH_PATTERN</key>
-        <string>(?P&lt;url&gt;https\://qgis\.org/downloads/macos/qgis-macos-%RELEASE_TYPE%\.dmg)</string>
+        <key>URL</key>
+        <string>https://qgis.org/downloads/macos/qgis-macos-%RELEASE_TYPE%.dmg</string>
     </dict>
     <key>MinimumVersion</key>
     <string>0.4.0</string>
@@ -27,22 +25,11 @@ Long Term (support) Release = "ltr"</string>
     <array>
         <dict>
             <key>Processor</key>
-            <string>URLTextSearcher</string>
-            <key>Arguments</key>
-            <dict>
-                <key>url</key>
-                <string>%SEARCH_URL%</string>
-                <key>re_pattern</key>
-                <string>%SEARCH_PATTERN%</string>
-            </dict>
-        </dict>
-        <dict>
-            <key>Processor</key>
             <string>URLDownloader</string>
             <key>Arguments</key>
             <dict>
                 <key>url</key>
-                <string>%url%</string>
+                <string>%URL%</string>
             </dict>
         </dict>
 		<dict>

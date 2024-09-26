@@ -1,0 +1,85 @@
+Description: Downloads the latest version of Tableau Reader for both ARM and Intel for macOS.
+
+  Based on Elliot's 'com.github.homebysix.download.TableauReader' recipe.
+Identifier: com.github.mlbz521.download.TableauReader-Universal
+MinimumVersion: "2.3"
+Input:
+  NAME: Tableau Reader
+  PKG_NAME: Tableau Reader (Universal)
+  ARM_ARCHITECTURE: mac-arm64
+  INTEL_ARCHITECTURE: mac
+Process:
+  - Processor: URLDownloader
+    Arguments:
+      filename:  '%NAME%-Intel.dmg'
+      url:  'https://www.tableau.com/downloads/reader/%INTEL_ARCHITECTURE%'
+  - Processor: EndOfCheckPhase
+    Arguments:
+      intel_path: "%pathname%"
+  - Processor: URLDownloader
+    Arguments:
+      filename:  '%NAME%-ARM.dmg'
+      url:  'https://www.tableau.com/downloads/reader/%ARM_ARCHITECTURE%'
+  - Processor: EndOfCheckPhase
+    Arguments:
+      arm_path: "%pathname%"
+  - Processor: CodeSignatureVerifier
+    Arguments:
+      input_path: "%arm_path%/*.pkg"
+      expected_authority_names:
+        - 'Developer ID Installer: Tableau Software, LLC (QJ4XPRK37C)'
+        - Developer ID Certification Authority
+        - Apple Root CA
+  - Processor: CodeSignatureVerifier
+    Arguments:
+      input_path: "%intel_path%/*.pkg"
+      expected_authority_names:
+        - 'Developer ID Installer: Tableau Software, LLC (QJ4XPRK37C)'
+        - Developer ID Certification Authority
+        - Apple Root CA
+  - Processor: FlatPkgUnpacker
+    Arguments:
+      destination_path: '%RECIPE_CACHE_DIR%/expanded'
+      flat_pkg_path: '%intel_path%/*.pkg'
+  - Processor: PkgPayloadUnpacker
+    Arguments:
+      destination_path: '%RECIPE_CACHE_DIR%/unpack'
+      pkg_payload_path: '%RECIPE_CACHE_DIR%/expanded/Tableau App.pkg/Payload'
+      purge_destination: true
+  - Processor: FileFinder
+    Arguments:
+      pattern: "%RECIPE_CACHE_DIR%/unpack/*.app"
+  - Processor: Versioner
+    Arguments:
+      input_plist_path: '%RECIPE_CACHE_DIR%/unpack/%found_basename%/Contents/Info.plist'
+      plist_version_key: CFBundleShortVersionString
+  - Processor: EndOfCheckPhase
+    Arguments:
+      intel_version: '%version%'
+      intel_pkg: '%found_basename%'
+  - Processor: FlatPkgUnpacker
+    Arguments:
+      destination_path: '%RECIPE_CACHE_DIR%/expanded'
+      flat_pkg_path: '%arm_path%/*.pkg'
+  - Processor: PkgPayloadUnpacker
+    Arguments:
+      destination_path: '%RECIPE_CACHE_DIR%/unpack'
+      pkg_payload_path: '%RECIPE_CACHE_DIR%/expanded/Tableau App.pkg/Payload'
+      purge_destination: true
+  - Processor: FileFinder
+    Arguments:
+      pattern: "%RECIPE_CACHE_DIR%/unpack/*.app"
+  - Processor: Versioner
+    Arguments:
+      input_plist_path: '%RECIPE_CACHE_DIR%/unpack/%found_basename%/Contents/Info.plist'
+      plist_version_key: CFBundleShortVersionString
+  - Processor: EndOfCheckPhase
+    Arguments:
+      arm_version: '%version%'
+      arm_pkg: '%found_basename%'
+  - Processor: EndOfCheckPhase
+  - Processor: PathDeleter
+    Arguments:
+      path_list:
+        - '%RECIPE_CACHE_DIR%/expanded'
+        - '%RECIPE_CACHE_DIR%/unpack'

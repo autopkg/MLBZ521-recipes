@@ -1,0 +1,8 @@
+Description: Downloads the latest version of NVivo 15 for macOS and creates a .pkg.
+Identifier: com.github.mlbz521.pkg.NVivo15
+MinimumVersion: '2.3'
+ParentRecipe: com.github.mlbz521.download.NVivo15
+Input:
+  NAME: NVivo 15
+Process:
+  - Processor: AppPkgCreator

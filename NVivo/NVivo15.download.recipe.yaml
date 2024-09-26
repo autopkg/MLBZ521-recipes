@@ -1,0 +1,19 @@
+Description: Downloads the latest version of NVivo 15 for macOS.
+Identifier: com.github.mlbz521.download.NVivo15
+MinimumVersion: '2.3'
+Input:
+  NAME: NVivo 15
+  DOWNLOAD_URL: https://download.qsrinternational.com/Software/NVivo15forMac/NVivo15.dmg
+Process:
+  - Processor: URLDownloader
+    Arguments:
+      url: '%DOWNLOAD_URL%'
+      filename: NVivo15.dmg
+  - Processor: CodeSignatureVerifier
+    Arguments:
+      input_path: '%pathname%/NVivo 15.app'
+      requirement: identifier "com.lumivero.nvivo-15" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "8F4S7H8S59"
+  - Processor: AppDmgVersioner
+    Arguments:
+      dmg_path: '%pathname%'
+  - Processor: EndOfCheckPhase

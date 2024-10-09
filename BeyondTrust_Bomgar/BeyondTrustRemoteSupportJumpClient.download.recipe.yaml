@@ -1,0 +1,69 @@
+Description: |
+  Downloads the latest version of BeyondTrust Remote Support Jump Client from your appliance using the Remote Support API.
+
+  You must override the following keys:
+    * BEYOND_TRUST_URL
+    * BEYOND_TRUST_CLIENT_ID
+    * BEYOND_TRUST_CLIENT_SECRET
+    * JUMP_GROUP
+      * Can be the Group "name" or "ID"
+
+  Optionally, you can override:
+    * JUMP_CLIENT_PLATFORM (Processor supports this, but this recipe obviously does not)
+    * JUMP_CLIENT_CONFIG
+      * An example config is provided, but if it's not provided, the minimum will be used which 
+        will generated a Jump Client Key using the default values.
+
+Identifier: com.github.mlbz521.download.BeyondTrustRemoteSupportJumpClient
+MinimumVersion: '2.3'
+Input:
+  NAME: Remote Support Jump Client
+  BEYOND_TRUST_URL: <your appliance URL>
+  BEYOND_TRUST_CLIENT_ID: <API OAuth Client ID>
+  BEYOND_TRUST_CLIENT_SECRET: <API OAuth Client Secret>
+  JUMP_GROUP: <Jump Group Name or ID>
+  JUMP_CLIENT_PLATFORM: mac-dmg
+  JUMP_CLIENT_CONFIG: | # Example is provided
+    {
+      "name": "",
+      "jump_policy_id": null,
+      "jump_group_type": "shared",
+      "tag": null,
+      "connection_type": "active",
+      "attended_session_policy_id": 1,
+      "unattended_session_policy_id": 2,
+      "comments": null,
+      "valid_duration": "525600",
+      "elevate_install": true,
+      "elevate_prompt": true,
+      "is_quiet": true,
+      "allow_override_jump_group": true,
+      "allow_override_jump_policy": true,
+      "allow_override_name": true,
+      "allow_override_tag": true,
+      "allow_override_comments": true
+    }
+Process:
+  - Processor: BeyondTrustURLProvider
+    Arguments:
+      beyond_trust_url: '%BEYOND_TRUST_URL%'
+      beyond_trust_client_id: '%BEYOND_TRUST_CLIENT_ID%'
+      beyond_trust_client_secret: '%BEYOND_TRUST_CLIENT_SECRET%'
+      jump_group: '%JUMP_GROUP%'
+      jump_client_config: '%JUMP_CLIENT_CONFIG%'
+      jump_client_platform: '%JUMP_CLIENT_PLATFORM%'
+  - Processor: URLDownloader
+    Arguments:
+      filename:  'bomgar-scc-%key_info%.dmg'
+      url: '%download_url%'
+      request_headers:
+        Accept: application/json
+        Authorization: Bearer %access_token%
+  - Processor: AppDmgVersioner
+    Arguments:
+      dmg_path: '%pathname%'
+  - Processor: CodeSignatureVerifier
+    Arguments:
+      input_path: '%pathname%/*.app'
+      requirement: identifier "com.bomgar.bomgar-scc" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = B65TM49E24
+  - Processor: EndOfCheckPhase

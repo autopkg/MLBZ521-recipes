@@ -1,0 +1,85 @@
+Description: |
+  Downloads and packages the latest version of BeyondTrust Remote Support Jump Client from your appliance using the Remote Support API.
+
+  At this time, the created .pkg simply stages the Jump Client installer in /tmp as I install the client via a customized process via a script in Jamf Pro.
+    *  Script is here:  https://github.com/MLBZ521/MacAdmin/blob/master/Software/Beyond%20Trust%20Bomgar/Install-BomgarJumpClient.py
+  If you would like to see the recipe create a package that will actually install the client, submit feedback and I'll considering adding a postinstall script to this recipe.
+
+  You must override the following keys:
+    * BEYOND_TRUST_URL
+    * BEYOND_TRUST_CLIENT_ID
+    * BEYOND_TRUST_CLIENT_SECRET
+    * JUMP_GROUP
+      * Can be the Group "name" or "ID"
+
+  Optionally, you can override:
+    * JUMP_CLIENT_PLATFORM (Processor supports this, but this recipe obviously does not)
+    * JUMP_CLIENT_CONFIG
+      * An example config is provided, but if it's not provided, the minimum will be used which 
+        will generated a Jump Client Key using the default values.
+
+Identifier: com.github.mlbz521.pkg.BeyondTrustRemoteSupportJumpClient
+ParentRecipe: com.github.mlbz521.download.BeyondTrustRemoteSupportJumpClient
+MinimumVersion: '2.3'
+Input:
+  NAME: Remote Support Jump Client
+  PKG_NAME: Remote Support Jump Client
+  BEYOND_TRUST_URL: <your appliance URL>
+  BEYOND_TRUST_CLIENT_ID: <API OAuth Client ID>
+  BEYOND_TRUST_CLIENT_SECRET: <API OAuth Client Secret>
+  JUMP_GROUP: <Jump Group Name or ID>
+  JUMP_CLIENT_PLATFORM: mac-dmg
+  JUMP_CLIENT_CONFIG: | # Example is provided
+    {
+      "jump_policy_id": null,
+      "jump_group_type": "shared",
+      "connection_type": "active",
+      "attended_session_policy_id": 1,
+      "unattended_session_policy_id": 2,
+      "valid_duration": "365",
+      "elevate_install": true,
+      "elevate_prompt": true,
+      "is_quiet": true,
+      "allow_override_jump_group": true,
+      "allow_override_jump_policy": true,
+      "allow_override_name": true,
+      "allow_override_comments": true
+    }
+Process:
+  - Processor: PkgRootCreator
+    Arguments:
+      pkgroot: '%RECIPE_CACHE_DIR%/pkgroot'
+      pkgdirs:
+        tmp: 0755
+  - Processor: Copier
+    Arguments:
+      source_path: '%pathname%'
+      destination_path: '%pkgroot%/tmp/%filename%'
+  - Processor: com.github.mlbz521.SharedProcessors/StringRightSplitter
+    Arguments:
+      string_to_split: '%version%'
+      split_on: .
+      occurrence: 1
+      index: 0
+      return_variable: version
+  - Processor: PkgCreator
+    Arguments:
+      pkg_request:
+        id: '%bundleid%'
+        options: purge_ds_store
+        pkgname: '%NAME%-%version%'
+        pkgroot: '%RECIPE_CACHE_DIR%/pkgroot'
+        pkgtype: flat
+        version: '%version%'
+        chown:
+          - path: tmp
+            user: root
+            group: admin
+  - Processor: com.github.mlbz521.SharedProcessors/RenamePath
+    Arguments:
+      source_path: '%RECIPE_CACHE_DIR%/%NAME%-%version%.pkg'
+      new_name: '%PKG_NAME%-%version%.pkg'
+  - Processor: PathDeleter
+    Arguments:
+      path_list:
+        - '%RECIPE_CACHE_DIR%/pkgroot'

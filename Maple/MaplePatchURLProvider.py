@@ -50,7 +50,7 @@ class MaplePatchURLProvider(URLGetter):
         major_version = self.env.get("major_version")
 
         if not major_version:
-            raise ProcessorError("Expected an 'major_version' input variable but none is set!")
+            raise ProcessorError("Expected the 'major_version' input variable but none is set!")
         else:
             self.output(f"Searching for patches for major version:  {major_version}", verbose_level=1)
 
@@ -60,7 +60,9 @@ class MaplePatchURLProvider(URLGetter):
         # The UUID is listed in the url variable
         # Do note that each release/upgrade for each major version has a different UUID, but shouldn't be a big deal
 
-        if major_version == "2023":
+        if major_version == "2024":
+            uuid = "a0dd86b6-41ea-42e2-a103-2c2a3401f933"
+        elif major_version == "2023":
             uuid = "43bfbe2d-5d49-4158-867b-82fd10ec8911"
         elif major_version == "2022":
             uuid = "17b89e08-f3f1-4f53-b58b-e73d0c030d25" # This is technically 2022.1

@@ -124,6 +124,15 @@
 			<key>Processor</key>
 			<string>EndOfCheckPhase</string>
 		</dict>
+		<dict>
+			<key>Processor</key>
+			<string>DeprecationWarning</string>
+			<key>Arguments</key>
+			<dict>
+				<key>warning_message</key>
+				<string>Deprecating in favor of "joshua-d-miller-recipes/CiscoJabber.download.recipe."</string>
+			</dict>
+		</dict>
 	</array>
 </dict>
 </plist>

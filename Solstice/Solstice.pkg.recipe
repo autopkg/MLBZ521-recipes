@@ -25,6 +25,15 @@ Download recipe's original author was @joshua-d-miller (https://github.com/autop
 	<array>
 		<dict>
 			<key>Processor</key>
+			<string>DeprecationWarning</string>
+			<key>Arguments</key>
+			<dict>
+				<key>warning_message</key>
+				<string>The download format change (which I didn't realize) and other download recipes have since been created.  Switching to use:  github.com/autopkg/joshua-d-miller-recipes/blob/master/Mersive/SolsticeClient.download.recipe</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Processor</key>
 			<string>PkgRootCreator</string>
 			<key>Arguments</key>
 			<dict>

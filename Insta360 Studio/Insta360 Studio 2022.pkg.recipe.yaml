@@ -5,6 +5,9 @@ ParentRecipe: com.github.dataJAR-recipes.download.insta360studio2022
 Input:
   NAME: Insta360 Studio 2022
 Process:
+  - Processor: DeprecationWarning
+    Arguments:
+      warning_message: Deprecating this recipe as the parent has been deprecated.
   - Processor: FlatPkgUnpacker
     Arguments:
       destination_path: "%RECIPE_CACHE_DIR%/expanded"

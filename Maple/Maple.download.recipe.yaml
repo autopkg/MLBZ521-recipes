@@ -1,0 +1,37 @@
+Description: |
+  Downloads the latest version of Maple.
+
+  You must override the following keys:
+    * MAPLE_PURCHASE_CODE
+      * Your Maple Purchase Code that is emailed to you
+    * INSTALL_TYPE
+      * dmg (macOS)
+      * exe (Windows)
+      * run (Linux)
+      * (Other install types are included as an example as they could be supported, but this recipe obviously does not.)
+Identifier: com.github.mlbz521.download.Maple
+MinimumVersion: '2.3'
+Input:
+  NAME: Maple
+  MAPLE_PURCHASE_CODE: <your Maple Purchase Code>
+  INSTALL_TYPE: dmg
+Process:
+  - Processor: MapleURLProvider
+    Arguments:
+      purchase_code: '%MAPLE_PURCHASE_CODE%'
+  - Processor: URLTextSearcher
+    Arguments:
+      url: '%url%'
+      re_pattern: (?P<url>https://www[.]maplesoft[.]com/downloads/\?d=[A-F0-9].+[.]%INSTALL_TYPE%)
+  - Processor: URLDownloader
+    Arguments:
+      url: '%url%'
+      prefetch_filename: True
+  - Processor: AppDmgVersioner
+    Arguments:
+      dmg_path: '%pathname%'
+  - Processor: CodeSignatureVerifier
+    Arguments:
+      input_path: '%pathname%/*.app'
+      requirement: identifier "com.installbuilder.appinstaller" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = NZQTWY25Y5
+  - Processor: EndOfCheckPhase

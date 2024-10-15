@@ -2,19 +2,19 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-    <key>Description</key>
-	<string>Downloads and packages the latest verison of Maple from a local file share.</string>
-    <key>Identifier</key>
-    <string>com.github.mlbz521.pkg.Maple</string>
-    <key>Input</key>
-    <dict>
-        <key>NAME</key>
-        <string>Maple</string>
-    </dict>
+	<key>Description</key>
+	<string>Downloads and packages the latest version of Maple from a local file share.</string>
+	<key>Identifier</key>
+	<string>com.github.mlbz521.pkg.offline.Maple</string>
+	<key>Input</key>
+	<dict>
+		<key>NAME</key>
+		<string>Maple</string>
+	</dict>
 	<key>ParentRecipe</key>
-	<string>com.github.mlbz521.download.Maple</string>
-    <key>Process</key>
-    <array>
+	<string>com.github.mlbz521.download.offline.Maple</string>
+	<key>Process</key>
+	<array>
 		<dict>
 			<key>Processor</key>
 			<string>PkgRootCreator</string>
@@ -53,15 +53,15 @@
 				<string>%found_filename%/%dmg_found_filename%</string>
 				<key>destination_path</key>
 				<string>%RECIPE_CACHE_DIR%/scripts/%dmg_found_filename%</string>
-                <key>overwrite</key>
-                <true/>
+				<key>overwrite</key>
+				<true/>
 			</dict>
 		</dict>
-        <dict>
-            <key>Processor</key>
-            <string>FileCreator</string>
-            <key>Arguments</key>
-            <dict>
+		<dict>
+			<key>Processor</key>
+			<string>FileCreator</string>
+			<key>Arguments</key>
+			<dict>
 				<key>file_content</key>
 				<string>#!/bin/bash
 
@@ -104,12 +104,12 @@ echo "Install complete!"
 echo "*****  Install Maple process:  COMPLETE  *****"
 
 exit 0</string>
-                <key>file_mode</key>
-                <string>0755</string>
-                <key>file_path</key>
-                <string>%RECIPE_CACHE_DIR%/scripts/postinstall</string>
-            </dict>
-        </dict>
+				<key>file_mode</key>
+				<string>0755</string>
+				<key>file_path</key>
+				<string>%RECIPE_CACHE_DIR%/scripts/postinstall</string>
+			</dict>
+		</dict>
 		<dict>
 			<key>Processor</key>
 			<string>PkgCreator</string>
@@ -144,6 +144,6 @@ exit 0</string>
 				</array>
 			</dict>
 		</dict>
-    </array>
+	</array>
 </dict>
 </plist>

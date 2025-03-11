@@ -90,8 +90,9 @@ Process:
         LANG=C /usr/bin/sed -Ei '' 's,(#)? ?licensePath=.*,'"licensePath=${pkgDir}/installer_input.txt"',' "${pkgDir}/installer_input.txt"
 
         # Locate the installer app and install it
-        app_installer=$(/usr/bin/find -E "${pkgDir}" -iregex ".*[/]InstallForMacOSX[.]app" -type d -prune)
-        exitStatus=$("${app_installer}/Contents/MacOS/InstallForMacOSX" -inputFile "${pkgDir}/installer_input.txt")
+        app_installer=$(/usr/bin/find -E "${pkgDir}" -iregex ".*[/]InstallForMacOS[X]{0,1}.*[.]app" -type d -prune)
+        app_executable=`defaults read "${app_installer}/Contents/Info.plist" CFBundleExecutable`
+        exitStatus=$("${app_installer}/Contents/MacOS/${app_executable}" -inputFile "${pkgDir}/installer_input.txt")
       fi
       exitCode=$?
 

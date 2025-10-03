@@ -1,0 +1,112 @@
+Description: |
+  Downloads and packages the latest version of MATLAB using the "MATLAB Package Manager" (mpm) CLI utility.
+  (See:  https://www.mathworks.com/help/install/ug/get-mpm-os-command-line.html)
+
+  * Notables:
+    * As is this recipe creates a universal MATLAB installer; if you want to create architecture specific packages, you'll need to adjust the required variables.
+    * You will need to license this software separately from the installation package that is created with this recipe.
+
+  For information on how this recipe works, please see the README in my repo (https://github.com/autopkg/MLBZ521-recipes/blob/master/ReadMe.md).
+Identifier: com.github.mlbz521.pkg.MATLAB_MPM
+Input:
+  NAME: MATLAB
+  PKG_NAME: "MATLAB #MAJOR_VERSION# (Universal)"
+  COMMENT: ""
+ParentRecipe: com.github.mlbz521.download.MATLAB_MPM
+Process:
+  - Processor: PkgRootCreator
+    Arguments:
+      pkgdirs: {}
+      pkgroot: "%RECIPE_CACHE_DIR%/pkgroot"
+  - Processor: PkgRootCreator
+    Arguments:
+      pkgdirs: {}
+      pkgroot: "%RECIPE_CACHE_DIR%/scripts"
+  - Processor: FileMover
+    Arguments:
+      overwrite: true
+      source: "%pathname%"
+      target: "%RECIPE_CACHE_DIR%/scripts/"
+  - Processor: FileCreator
+    Arguments:
+      file_content: |
+        #!/bin/bash
+
+        ###################################################################################################
+        # Script Name:  Install-MATLAB_MPM.sh
+        # By:  Zack Thompson / Created:  5/20/2024
+        # Version:  1.1.0 / Updated: 8/29/2025 / By:  ZT
+        #
+        # Description:  "Installs" the appropriate installer type based on the systems' architecture.
+        #
+        ###################################################################################################
+
+        echo -e "*****  Install MATLAB Process:  START  *****\n"
+
+        ##################################################
+        # Define Variables
+
+        # Set working directory
+        pkg_dir=$( /usr/bin/dirname "${0}" )
+
+        ##################################################
+        # Bits staged...
+
+        if [[ $3 != "/" ]]; then
+          echo "[Error] Target disk is not the startup disk."
+          echo -e "\n*****  Install MATLAB Process:  FAILED  *****"
+          exit 1
+        fi
+
+        # Determine which architecture type should be installed
+        if [[ $( /usr/bin/arch ) == "arm64" ]]; then
+          arch_type="maca64"
+        else
+          arch_type="maci64"
+        fi
+
+        echo "Installing using:  ${pkg_dir}/mpm/${arch_type}/mpm"
+
+        # Enable execution
+        /bin/chmod +x "${pkg_dir}/mpm/${arch_type}/mpm"
+
+        exit_status=$( "${pkg_dir}/mpm/${arch_type}/mpm" install --source="${pkg_dir}" \
+          --products=%products_to_install% )
+        exit_code=$?
+
+        if [[ $exit_code != 0 || $exit_status == *"End - Unsuccessful"* ]]; then
+          echo -e "[Error]  Install failed!\nExit Code:  ${exit_code}\nResults:  ${exit_status}"
+          echo -e "\n*****  Install MATLAB process:  FAILED  *****"
+          exit 2
+        else
+          echo -e "Install Results:\n${exit_status}"
+        fi
+
+        echo -e "\n*****  Install MATLAB Process:  COMPLETE  *****"
+        exit 0
+      file_mode: "0755"
+      file_path: "%RECIPE_CACHE_DIR%/scripts/postinstall"
+  - Processor: PkgCreator
+    Arguments:
+      pkg_request:
+        id: com.mathworks.mpm.installer
+        options: purge_ds_store
+        pkgname: "%NAME%-%version%"
+        pkgroot: "%RECIPE_CACHE_DIR%/pkgroot"
+        scripts: Scripts
+        version: "%version%"
+  - Processor: com.github.mlbz521.SharedProcessors/InputVariableTextSubstituter
+    Arguments:
+      original_string: '%PKG_NAME%'
+      return_variable: PKG_NAME
+      string_to_replace: '#MAJOR_VERSION#'
+      variable_to_use: major_version
+  - Processor: com.github.mlbz521.SharedProcessors/RenamePath
+    Arguments:
+      source_path: '%pkg_path%'
+      new_name: '%RECIPE_CACHE_DIR%/%PKG_NAME%-%version%.pkg'
+  - Processor: PathDeleter
+    Arguments:
+      path_list:
+      - "%RECIPE_CACHE_DIR%/pkgroot"
+      - "%RECIPE_CACHE_DIR%/scripts"

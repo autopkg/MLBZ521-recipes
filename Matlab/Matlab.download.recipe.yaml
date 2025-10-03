@@ -4,7 +4,7 @@ Description: |
   This recipe version uses the offline media created with the "MathWorks Installer" described in the guide here:  https://www.mathworks.com/matlabcentral/answers/259632-how-can-i-get-matlab-installation-files-for-use-on-an-offline-machine
 
   For information on how this recipe works, please see the README in my repo (https://github.com/autopkg/MLBZ521-recipes/blob/master/ReadMe.md).
-Identifier: com.github.mlbz521.download.Matlab
+Identifier: com.github.mlbz521.download.Matlab-Offline_DL
 Input:
   FILE_SHARE: /path/to/offline/repository
   MAJOR_VERSION: ""

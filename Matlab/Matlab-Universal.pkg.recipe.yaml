@@ -13,7 +13,7 @@ Description: |
         of Matlab.  The available parameters are included; customize for your environment.
 
   If you want to customize the products that are installed, a copy of an original, albeit old, installer_input.txt is available in the recipe directory.  I've seen people are unable to locate it as it's not included in newer ISO downloads even though the documentation points to it.
-Identifier: com.github.mlbz521.pkg.Matlab-Universal
+Identifier: com.github.mlbz521.pkg.Matlab-Universal-Offline_DL
 Input:
   FILE_INSTALLATION_KEY: ""
   INSTALLER_INPUT: |

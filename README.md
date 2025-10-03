@@ -291,36 +291,49 @@ Available recipe types:
   * pkg
 
 
-### Matlab ###
+### MATLAB ###
 
-Recipes for both base and patch installers are available.  Download recipe expects the installer is available in an "offline repository".
+I have three different sets of MATLAB recipes.  These depend on the source you want to use.
 
-For the Patch recipe, I attempted to reverse the built-in update mechanism, however, have not yet determined how the process works.  So offline recipes will have to be used for now.
+Recipes for both base and patch installers are also available.  For the Patch recipe, I attempted to reverse the built-in update mechanism, however, have not yet determined how the process works.  So offline recipes will have to be used for now.
 
-I now have _two_ different recipes for the base installer, each depend on which source you use.
-  * ISO Image (aka Offline Media)
-    * This method was the "original" method the recipe used, but it has not worked since 2019b, I'm leaving it here in case MathWorks ever decides to resolve the issue.
-    * I've opened two ticket with MathWorks, back in 2020 and again in 2022, both times they've acknowledge and confirmed the issue, but provided no indication that it will be fixed
-  * Download Only (download only, but do not install)
-    * This recipe version uses the offline media created with the "MathWorks Installer" described in [this guide](https://www.mathworks.com/matlabcentral/answers/259632-how-can-i-get-matlab-installation-files-for-use-on-an-offline-machine).
-    * This is the "new" method that the non-specified recipe will be using
-
-I license most software separately in my environment and do not use the installer.input's `licensePath` key.  If you want to use this key, you'll need to fork this recipe and adjust the postinstall script.
-
-If you want to customize the products that are installed, a copy of an original, albeit old, `installer_input.txt` is available in the recipe directory.  I've seen people are unable to locate it as it's not included in newer versions even though the documentation points to it.
+For the Offline recipes, please note:
+  * These recipes except the installed media to be available on a local file share accessible to the autopkg process.  It utilizes my "OfflineApps" Processor.
+  * I license most software separately in my environment and do not use the `installer.input`'s `licensePath` key.  If you want to use this key, you'll need to fork this recipe and adjust the postinstall script.
+  * If you want to customize the products that are installed, a copy of an original, albeit old, `installer_input.txt` is available in the recipe directory.  I've seen people are unable to locate it as it's not included in newer versions even though the documentation references it.
+  * The `INSTALL_INPUT` override variable is used to create a "installer.input" file  that you can use to customize the install of Matlab.  The available parameters are included in the sample `installer_input.txt` file included in the repo; customize as needed for your environment.
 
 Available recipe types:
   * download
-    * Will "download" from a offline repository
-    * Two versions
-      * (non-specified)
-      * ISO
+    * MATLAB_MPM
+    * Offline_DL
+    * ISO
+    * MatlabUpdate
   * pkg
-    * Variable override for:  INSTALL_INPUT
-      * As the name suggests, this the "installer.input" that allows you to customize the install of Matlab.  The available parameters are included in the sample `installer_input.txt` file; customize for your environment.
-    * Two versions
-      * (non-specified)
-      * ISO
+    * MATLAB_MPM
+    * Offline_DL
+    * ISO
+    * MatlabUpdate
+
+#### MATLAB_MPM ####
+
+This the latest recipe/method that I've written to acquire and package MATLAB.  It utilizes the "MATLAB Package Manager" (mpm) CLI utility to download MATLAB and later install it.  (See:  https://www.mathworks.com/help/install/ug/get-mpm-os-command-line.html)
+
+#### MatlabUpdate (Offline) ####
+
+The download recipe expects the installer is available in an "offline repository".  You must acquire the update files from MathWorks's website.
+
+#### MATLAB-ISO (Offline) ####
+
+The MATLAB-ISO recipes utilize the downloadable ISO (dmg) that can be acquired from MathWorks's website.
+  * This method was the "original" method the recipe used, but it has not worked since 2019b, I'm leaving it here in case MathWorks ever decides to resolve the issue with the silent installation mechanism that was originally supported.
+  * I've opened two ticket with MathWorks, back in 2020 and again in 2022, both times they've acknowledge and confirmed the issue, but provided no indication that it will be fixed
+
+#### MATLAB-Offline_DL (Offline) ####
+
+The method replaced the ISO method above.
+  * This recipe version uses the offline media created with the "MathWorks Installer" described in [this guide](https://www.mathworks.com/matlabcentral/answers/259632-how-can-i-get-matlab-installation-files-for-use-on-an-offline-machine).
+
 
 
 ### MiKTeX ###

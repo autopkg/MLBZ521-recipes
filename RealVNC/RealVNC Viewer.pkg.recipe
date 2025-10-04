@@ -64,8 +64,6 @@
 					<string>%cfbundle_version%</string>
 					<key>id</key>
 					<string>%cfbundle_identifier%</string>
-					<key>options</key>
-					<string>purge_ds_store</string>
 					<key>chown</key>
 					<array>
 						<dict>

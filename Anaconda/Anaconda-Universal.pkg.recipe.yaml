@@ -126,7 +126,6 @@ Process:
     Arguments:
       pkg_request:
         id: "%PKG_ID_PREFIX%.%version%.pkg"
-        options: purge_ds_store
         pkgname: "%NAME%-%version%"
         pkgroot: "%RECIPE_CACHE_DIR%/pkgroot"
         pkgtype: flat

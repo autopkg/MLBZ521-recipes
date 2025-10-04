@@ -114,7 +114,6 @@ Process:
 - Arguments:
     pkg_request:
       id: com.mathworks.installer
-      options: purge_ds_store
       pkgname: "%NAME%-%version%"
       pkgroot: "%RECIPE_CACHE_DIR%/pkgroot"
       scripts: Scripts

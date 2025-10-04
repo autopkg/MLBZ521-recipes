@@ -145,7 +145,6 @@ Process:
   Arguments:
     pkg_request:
       id: 'nl.ultimaker.cura'
-      options: purge_ds_store
       pkgname: '%NAME%-%version%'
       pkgroot: '%RECIPE_CACHE_DIR%/pkgroot'
       pkgtype: flat

@@ -125,8 +125,6 @@ exit 0</string>
 					<string>%version%</string>
 					<key>id</key>
 					<string>com.bitrock.appinstaller</string>
-					<key>options</key>
-					<string>purge_ds_store</string>
 					<key>scripts</key>
 					<string>Scripts</string>
 				</dict>

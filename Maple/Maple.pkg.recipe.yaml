@@ -84,7 +84,6 @@ Process:
     Arguments:
       pkg_request:
         id: '%BUNDLE_ID%'
-        options: purge_ds_store
         pkgname: '%NAME%-%installed_version%'
         pkgroot: '%RECIPE_CACHE_DIR%/pkgroot'
         pkgtype: flat

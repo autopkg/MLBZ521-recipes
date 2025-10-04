@@ -90,8 +90,6 @@ The name of the bundled application and the package will be named based on the N
 					<string>%version%</string>
 					<key>id</key>
 					<string>%bundleid%</string>
-					<key>options</key>
-					<string>purge_ds_store</string>
 					<key>chown</key>
 					<array>
 						<dict>

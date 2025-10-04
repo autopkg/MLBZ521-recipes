@@ -319,8 +319,6 @@ exit 0</string>
                     <string>flat</string>
                     <key>version</key>
                     <string>%version%</string>
-                    <key>options</key>
-                    <string>purge_ds_store</string>
                     <key>scripts</key>
                     <string>Scripts</string>
                     <key>chown</key>

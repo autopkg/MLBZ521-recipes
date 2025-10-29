@@ -58,15 +58,14 @@ class MapleURLProvider(URLGetter):
 
 		# Look up the purchase code
 		response = self.download(lookup_url)
-		self.output(f"Results:  \n{response.decode()}", verbose_level=3)
 
 		if response:
 			response_object = json.loads(response.decode())
+			self.output(f"Results:  \n{response_object}", verbose_level=3)
 			if response_object.get("status") == "OK":
 				for product in response_object.get("products"):
-					if product.get("current") == "True":
-						url = product.get("download")
-						version = product.get("product").split("Maple ")[1]
+					url = product.get("download")
+					version = product.get("product").split("Maple ")[1]
 			else:
 				raise ProcessorError(f"Error looking up purchase code:  \n{response_object}")
 

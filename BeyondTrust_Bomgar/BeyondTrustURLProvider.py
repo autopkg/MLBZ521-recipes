@@ -121,7 +121,8 @@ class BeyondTrustURLProvider(URLGetter):
         )
 
         if request_token.status_code != 200:
-            raise ProcessorError("Failed to obtain a bearer token from the API!")
+            raise ProcessorError("Failed to obtain a bearer token from the API!"
+                f"\nError:  {request_token.json()}"
 
         # Extract the Bearer "Access" Token
         access_token = request_token.json().get("access_token")
@@ -143,7 +144,8 @@ class BeyondTrustURLProvider(URLGetter):
             )
 
             if request_jump_groups.status_code != 200:
-                raise ProcessorError("API lookup for the Jump Group ID failed!")
+                raise ProcessorError("API lookup for the Jump Group ID failed!"
+                f"\nError:  {request_jump_groups.json()}"
 
             # Find the Jump Group and get it's ID
             for jump_group_object in request_jump_groups.json():
@@ -169,7 +171,8 @@ class BeyondTrustURLProvider(URLGetter):
         )
 
         if request_installer_id.status_code != 200:
-            raise ProcessorError("Failed to generate a Jump Client Key and Installer ID!")
+            raise ProcessorError("Failed to generate a Jump Client Key and Installer ID!"
+                f"\nError:  {request_installer_id.json()}")
 
         # Extract the bits
         installer_id = request_installer_id.json().get("installer_id")

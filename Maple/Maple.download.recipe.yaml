@@ -26,7 +26,8 @@ Process:
   - Processor: URLDownloader
     Arguments:
       url: '%url%'
-      prefetch_filename: True
+      # prefetch_filename: True
+      filename: Maple-%installed_version%.dmg
   - Processor: AppDmgVersioner
     Arguments:
       dmg_path: '%pathname%'

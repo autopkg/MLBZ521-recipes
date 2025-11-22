@@ -52,6 +52,10 @@ Supports the installer format found with AutoCAD 2020 and older.</string>
         </dict>
 		<dict>
 			<key>Processor</key>
+			<string>EndOfCheckPhase</string>
+		</dict>
+		<dict>
+			<key>Processor</key>
 			<string>FileFinder</string>
 			<key>Arguments</key>
 			<dict>
@@ -85,10 +89,6 @@ Supports the installer format found with AutoCAD 2020 and older.</string>
 				</array>
 			</dict>
 		</dict>
-        <dict>
-            <key>Processor</key>
-            <string>EndOfCheckPhase</string>
-        </dict>
     </array>
 </dict>
 </plist>

@@ -6,7 +6,7 @@
 		<string>Downloads the latest Ricoh Driver package based on the override-able parameters:  model and OS Version.
 
 model example:  'SP C830DN'
-OS version options:  
+OS version options:
 	- latest
 		- Setting the OS_VERSION key to latest will default to the latest version of macOS *supported by the Processor*
 	- Ventura
@@ -69,6 +69,10 @@ The download recipe requires the Selenium Library (https://www.selenium.dev/docu
 			</dict>
 			<dict>
 				<key>Processor</key>
+				<string>EndOfCheckPhase</string>
+			</dict>
+			<dict>
+				<key>Processor</key>
 				<string>CodeSignatureVerifier</string>
 				<key>Arguments</key>
 				<dict>
@@ -81,10 +85,6 @@ The download recipe requires the Selenium Library (https://www.selenium.dev/docu
 						<string>Apple Root CA</string>
 					</array>
 				</dict>
-			</dict>
-			<dict>
-				<key>Processor</key>
-				<string>EndOfCheckPhase</string>
 			</dict>
 		</array>
 	</dict>

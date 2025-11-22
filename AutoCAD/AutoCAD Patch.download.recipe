@@ -52,6 +52,10 @@ major_version examples:  2021, 2020, 2019, 2018, etc</string>
 		</dict>
 		<dict>
 			<key>Processor</key>
+			<string>EndOfCheckPhase</string>
+		</dict>
+		<dict>
+			<key>Processor</key>
 			<string>CodeSignatureVerifier</string>
 			<key>Arguments</key>
 			<dict>
@@ -64,10 +68,6 @@ major_version examples:  2021, 2020, 2019, 2018, etc</string>
 					<string>Apple Root CA</string>
 				</array>
 			</dict>
-		</dict>
-		<dict>
-			<key>Processor</key>
-			<string>EndOfCheckPhase</string>
 		</dict>
 	</array>
 </dict>

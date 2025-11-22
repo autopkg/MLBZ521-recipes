@@ -77,7 +77,6 @@ Process:
     Arguments:
       arm_version: '%version%'
       arm_pkg: '%found_basename%'
-  - Processor: EndOfCheckPhase
   - Processor: PathDeleter
     Arguments:
       path_list:

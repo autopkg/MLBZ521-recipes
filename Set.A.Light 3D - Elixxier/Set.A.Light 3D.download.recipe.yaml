@@ -21,14 +21,14 @@ Process:
     Arguments:
       url: "%BASE_LOCALE_DOWNLOAD_URL%%match%"
       prefetch_filename: True
+  - Processor: EndOfCheckPhase
   - Processor: CodeSignatureVerifier
     Arguments:
       input_path: "%pathname%"
-      expected_authority_names: 
+      expected_authority_names:
         - "Developer ID Installer: elixxier Software GmbH (7UZEFDC862)"
         - Developer ID Certification Authority
         - Apple Root CA
-  - Processor: EndOfCheckPhase
     # <dict>
     #   <key>Processor</key>
     #   <string>FlatPkgUnpacker</string>
@@ -75,7 +75,7 @@ Process:
     #     <string>CFBundleShortVersionString</string>
     #   </dict>
     # </dict>
-    # The above code block is slower than the below, 
+    # The above code block is slower than the below,
     # but if the below breaks again, use the above steps.
     # Would need to update the PathDeleter step in the .pkg recipe.
   - Processor: com.github.mlbz521.SharedProcessors/XarExtractSingleFile

@@ -19,6 +19,7 @@ Process:
       search_path: '%FILE_SHARE%'
       search_string: '%SEARCH_STRING%'
       version_separator: '%VERSION_STRING_SEPARATOR%'
+  - Processor: EndOfCheckPhase
   - Processor: FlatPkgUnpacker
     Arguments:
       flat_pkg_path: '%cached_path%/SmartClientMac.iso/*.pkg'
@@ -35,4 +36,3 @@ Process:
     Arguments:
       input_path: '%cached_path%/SmartClientMac.iso/SmartClientForMac.pkg'
       requirement: identifier "com.nt-ware.SmartClient" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "4M6FV5A8E6"
-  - Processor: EndOfCheckPhase

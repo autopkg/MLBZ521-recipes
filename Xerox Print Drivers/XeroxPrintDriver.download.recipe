@@ -11,7 +11,7 @@ download types:  The download type desired; the provided string is searched in t
     - "ICA Scan USB Driver"
     - "IMAC CA Scan USB Driver"
     - "TWAIN Scan Driver"
-OS version:  
+OS version:
     - x11 (default)
     - 10_15
     - 10_14
@@ -58,6 +58,10 @@ Tested both "macOS Print and Scan Driver Installer" and "ICA Scan USB Driver" to
                 <key>filename</key>
                 <string>Xerox %DOWNLOAD_TYPE% %MODEL%.dmg</string>
             </dict>
+        </dict>
+        <dict>
+            <key>Processor</key>
+            <string>EndOfCheckPhase</string>
         </dict>
         <dict>
             <key>Processor</key>
@@ -140,10 +144,6 @@ Tested both "macOS Print and Scan Driver Installer" and "ICA Scan USB Driver" to
                     <string>%RECIPE_CACHE_DIR%/unpackpayload</string>
                 </array>
             </dict>
-        </dict>
-        <dict>
-            <key>Processor</key>
-            <string>EndOfCheckPhase</string>
         </dict>
     </array>
 </dict>

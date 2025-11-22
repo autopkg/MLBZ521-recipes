@@ -58,6 +58,10 @@ You must provide a Client ID and Secret along with the Policy ID to determine wh
 			<string>URLDownloader</string>
 		</dict>
 		<dict>
+			<key>Processor</key>
+			<string>EndOfCheckPhase</string>
+		</dict>
+		<dict>
 			<key>Arguments</key>
 			<dict>
 				<key>expected_authority_names</key>
@@ -71,10 +75,6 @@ You must provide a Client ID and Secret along with the Policy ID to determine wh
 			</dict>
 			<key>Processor</key>
 			<string>CodeSignatureVerifier</string>
-		</dict>
-		<dict>
-			<key>Processor</key>
-			<string>EndOfCheckPhase</string>
 		</dict>
 	</array>
 </dict>

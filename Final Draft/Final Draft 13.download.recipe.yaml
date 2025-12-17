@@ -1,5 +1,5 @@
 Description: Downloads and packages the latest version of Final Draft 13.
-Identifier: com.github.mlbz521.pkg.FinalDraft
+Identifier: com.github.mlbz521.pkg.FinalDraft13
 ParentRecipe: com.github.dataJAR-recipes.download.Final Draft 13
 MinimumVersion: "2.3"
 Input:

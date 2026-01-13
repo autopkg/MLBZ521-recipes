@@ -23,6 +23,7 @@ Process:
     Arguments:
       version: "%version%"
   - Processor: URLDownloader
+  - Processor: EndOfCheckPhase
   - Processor: CodeSignatureVerifier
     Arguments:
       expected_authority_names:
@@ -30,4 +31,3 @@ Process:
         - Developer ID Certification Authority
         - Apple Root CA
       input_path: "%pathname%"
-  - Processor: EndOfCheckPhase

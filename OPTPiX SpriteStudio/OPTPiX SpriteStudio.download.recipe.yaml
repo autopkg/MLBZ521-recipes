@@ -13,6 +13,7 @@ Process:
   - Processor: URLDownloader
     Arguments:
       url: "%url%"
+  - Processor: EndOfCheckPhase
   - Processor: FlatPkgUnpacker
     Arguments:
       destination_path: "%RECIPE_CACHE_DIR%/expanded"
@@ -33,4 +34,3 @@ Process:
         - "Developer ID Installer: CRI Middleware Co., Ltd. (24UK89WELY)"
         - Developer ID Certification Authority
         - Apple Root CA
-  - Processor: EndOfCheckPhase

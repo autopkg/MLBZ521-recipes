@@ -4,7 +4,7 @@
 <dict>
     <key>Description</key>
     <string>Downloads the latest Full version of ARCHICAD from a local file share.  Please note, there is likely a newer 'patch' available.
-    
+
 The full installer has been hidden behind a login now.</string>
     <key>Identifier</key>
     <string>com.github.mlbz521.download.ARCHICAD</string>
@@ -52,6 +52,10 @@ The full installer has been hidden behind a login now.</string>
         </dict>
 		<dict>
 			<key>Processor</key>
+			<string>EndOfCheckPhase</string>
+		</dict>
+		<dict>
+			<key>Processor</key>
 			<string>FileFinder</string>
 			<key>Arguments</key>
 			<dict>
@@ -79,10 +83,6 @@ The full installer has been hidden behind a login now.</string>
 				<string>identifier "com.graphisoft.installer" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "3E9E9FN277"</string>
 			</dict>
 		</dict>
-        <dict>
-            <key>Processor</key>
-            <string>EndOfCheckPhase</string>
-        </dict>
     </array>
 </dict>
 </plist>

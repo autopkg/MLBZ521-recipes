@@ -11,7 +11,7 @@ Description: |
   Optionally, you can override:
     * JUMP_CLIENT_PLATFORM (Processor supports this, but this recipe obviously does not)
     * JUMP_CLIENT_CONFIG
-      * An example config is provided, but if it's not provided, the minimum will be used which 
+      * An example config is provided, but if it's not provided, the minimum will be used which
         will generated a Jump Client Key using the default values.
 
 Identifier: com.github.mlbz521.download.BeyondTrustRemoteSupportJumpClient
@@ -59,6 +59,7 @@ Process:
       request_headers:
         Accept: application/json
         Authorization: Bearer %access_token%
+  - Processor: EndOfCheckPhase
   - Processor: AppDmgVersioner
     Arguments:
       dmg_path: '%pathname%'
@@ -66,4 +67,3 @@ Process:
     Arguments:
       input_path: '%pathname%/*.app'
       requirement: identifier "com.bomgar.bomgar-scc" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = B65TM49E24
-  - Processor: EndOfCheckPhase

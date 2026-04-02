@@ -17,7 +17,7 @@ Long Term (support) Release = "ltr"</string>
         <key>RELEASE_TYPE</key>
         <string>pr</string>
         <key>URL</key>
-        <string>https://qgis.org/downloads/macos/qgis-macos-%RELEASE_TYPE%.dmg</string>
+        <string>https://download.qgis.org/downloads/macos/qgis-macos-%RELEASE_TYPE%.dmg</string>
     </dict>
     <key>MinimumVersion</key>
     <string>0.4.0</string>

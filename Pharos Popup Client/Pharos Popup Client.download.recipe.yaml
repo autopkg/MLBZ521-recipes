@@ -16,6 +16,7 @@ Process:
       web_driver: "%WEB_DRIVER%"
       web_driver_path: "%WEB_DRIVER_PATH%"
       web_driver_binary_location: "%WEB_DRIVER_BINARY_LOCATION%"
+  - Processor: EndOfCheckPhase
   - Processor: Unarchiver
     Arguments:
       archive_path: "%pathname%"
@@ -28,4 +29,3 @@ Process:
         - "Developer ID Installer: Pharos Systems International (QMY9322U6D)"
         - Developer ID Certification Authority
         - Apple Root CA
-  - Processor: EndOfCheckPhase

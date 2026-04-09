@@ -20,6 +20,7 @@ Process:
       limitation_string: "%NAME_LIMITATION%"
       version_separator: "%VERSION_STRING_SEPARATOR%"
       max_depth: "%MAX_FOLDER_DEPTH%"
+  - Processor: EndOfCheckPhase
   - Processor: FileFinder
     Arguments:
       pattern: "%cached_path%/*.pkg"
@@ -30,4 +31,3 @@ Process:
         - "Developer ID Installer: Aptech Systems, Inc. (45URX5B6JY)"
         - Developer ID Certification Authority
         - Apple Root CA
-  - Processor: EndOfCheckPhase

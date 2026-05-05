@@ -139,6 +139,10 @@ This probably isn't the best way to do it, but it works...</string>
 		</dict>
 		<dict>
 			<key>Processor</key>
+			<string>EndOfCheckPhase</string>
+		</dict>
+		<dict>
+			<key>Processor</key>
 			<string>CodeSignatureVerifier</string>
 			<key>Arguments</key>
 			<dict>
@@ -151,10 +155,6 @@ This probably isn't the best way to do it, but it works...</string>
 					<string>Apple Root CA</string>
 				</array>
 			</dict>
-		</dict>
-		<dict>
-			<key>Processor</key>
-			<string>EndOfCheckPhase</string>
 		</dict>
 	</array>
 </dict>

@@ -50,6 +50,10 @@
         </dict>
 		<dict>
 			<key>Processor</key>
+			<string>EndOfCheckPhase</string>
+		</dict>
+		<dict>
+			<key>Processor</key>
 			<string>FileFinder</string>
 			<key>Arguments</key>
 			<dict>
@@ -165,10 +169,6 @@
 				</array>
 			</dict>
 		</dict>
-        <dict>
-            <key>Processor</key>
-            <string>EndOfCheckPhase</string>
-        </dict>
     </array>
 </dict>
 </plist>

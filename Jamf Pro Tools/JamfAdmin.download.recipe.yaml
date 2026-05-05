@@ -23,6 +23,7 @@ Process:
       limitation_string: "%NAME_LIMITATION%"
       version_separator: "%VERSION_STRING_SEPARATOR%"
       max_depth: "%MAX_FOLDER_DEPTH%"
+  - Processor: EndOfCheckPhase
   - Processor: FileFinder
     Arguments:
       pattern: "%cached_path%/*.dmg"
@@ -33,4 +34,3 @@ Process:
     Arguments:
       input_path: "%found_filename%/Jamf Pro/Jamf Admin.app"
       requirement: anchor apple generic and identifier "com.jamfsoftware.JamfAdmin" and (certificate leaf[field.1.2.840.113635.100.6.1.9] /* exists */ or certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "483DWKW443")
-  - Processor: EndOfCheckPhase

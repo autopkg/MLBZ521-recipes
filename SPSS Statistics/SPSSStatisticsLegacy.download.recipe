@@ -52,6 +52,10 @@ Tested on versions of SPSS 26 and older.</string>
         </dict>
 		<dict>
 			<key>Processor</key>
+			<string>EndOfCheckPhase</string>
+		</dict>
+		<dict>
+			<key>Processor</key>
 			<string>FileFinder</string>
 			<key>Arguments</key>
 			<dict>
@@ -59,10 +63,6 @@ Tested on versions of SPSS 26 and older.</string>
 				<string>%cached_path%/*.dmg</string>
 			</dict>
 		</dict>
-        <dict>
-            <key>Processor</key>
-            <string>EndOfCheckPhase</string>
-        </dict>
     </array>
 </dict>
 </plist>

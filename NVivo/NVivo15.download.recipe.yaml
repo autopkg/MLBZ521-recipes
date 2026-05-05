@@ -9,6 +9,7 @@ Process:
     Arguments:
       url: '%DOWNLOAD_URL%'
       filename: NVivo15.dmg
+  - Processor: EndOfCheckPhase
   - Processor: CodeSignatureVerifier
     Arguments:
       input_path: '%pathname%/NVivo 15.app'
@@ -16,4 +17,3 @@ Process:
   - Processor: AppDmgVersioner
     Arguments:
       dmg_path: '%pathname%'
-  - Processor: EndOfCheckPhase

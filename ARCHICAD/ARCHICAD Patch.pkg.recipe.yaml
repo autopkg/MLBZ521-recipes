@@ -1,0 +1,116 @@
+Description: |
+  Downloads and packages the latest updated build of ARCHICAD based on the override-able parameters for both ARM and Intel.
+
+  PRODUCT:  Archicad, BIMx, DDScad Viewer, BIMcloud, DDScad, Archicad Library, MEP Designer
+  MAJOR_VERSION tested options are:  20, 21, 22, 23, 24, 25 (newer are expected to work)
+  LOCALIZATION options include:  INT (international english, part of many other licenses), AUS, AUT, BRA, CHE, CHI, CZE, FIN, FRA, GER, GRE, HUN, ITA, JPN, KOR, NED, NOR, NZE, POL, POR, RUS, SPA, SWE, TAI, TUR, UKI, UKR, and USA
+  EDITION options include:  FULL, SOLO, and START
+  PLATFORM options are:  macOS_Universal, macOS_ARM, macOS_intel, Windows
+Identifier: com.github.mlbz521.pkg.ARCHICADPatch-Test
+ParentRecipe: com.github.mlbz521.download.ARCHICADPatch-Test
+MinimumVersion: "2.3"
+Input:
+  NAME: ARCHICAD Patch
+  PKG_NAME: "ARCHICAD #MAJOR_VERSION# Patch (#ARCH#)"
+  PRODUCT: Archicad
+  MAJOR_VERSION: 29
+  LOCALIZATION: USA
+  EDITION: FULL
+  PLATFORM: macOS_ARM
+Process:
+  - Processor: PkgRootCreator
+    Arguments:
+      pkgroot: '%RECIPE_CACHE_DIR%/pkgroot'
+      pkgdirs: {}
+  - Processor: PkgRootCreator
+    Arguments:
+      pkgroot: '%RECIPE_CACHE_DIR%/scripts'
+      pkgdirs: {}
+  - Processor: FileFinder
+    Arguments:
+      pattern: '%pathname%/*.app'
+  - Processor: PkgCopier
+    Arguments:
+      source_pkg: '%pathname%/*.app'
+      pkg_path: '%RECIPE_CACHE_DIR%/scripts/%found_basename%'
+  - Processor: FileCreator
+    Arguments:
+      file_path: '%RECIPE_CACHE_DIR%/scripts/postinstall'
+      file_mode: '0755'
+      file_content: |
+        #!/bin/bash
+
+        ###################################################################################################
+        # Script Name:  Install-UniversalPkg.sh
+        # By:  Zack Thompson / Created:  11/7/2022
+        # Version:  1.0.0 / Updated:  11/7/2022 / By:  ZT
+        #
+        # Description:  Installs the appropriate pkg based on the systems' architecture.
+        #
+        ###################################################################################################
+
+        echo -e "*****  Install %NAME% Process:  START  *****\n"
+
+        ##################################################
+        # Define Variables
+
+        # Set working directory
+        pkg_dir=$( /usr/bin/dirname "${0}" )
+
+        ARCHICADinstaller="%found_basename%"
+
+        ##################################################
+        # Bits staged...
+
+        if [[ $3 != "/" ]]; then
+            echo "[ERROR] Target disk is not the startup disk."
+            echo -e "\n*****  Install %NAME% Process:  FAILED  *****"
+            exit 1
+        fi
+
+        echo "Installing: " $( "${pkgDir}/${ARCHICADinstaller}/Contents/MacOS/installbuilder.sh" --version --mode unattended )
+
+        installResult=$( "${pkgDir}/${ARCHICADinstaller}/Contents/MacOS/installbuilder.sh" --mode unattended --unattendedmodeui none )
+        exitCode=$?
+
+        if [[ $exitCode != 0 ]]; then
+            echo "[ERROR] Install failed!"
+            echo "[Exit Code] ${exitCode}"
+            echo "Reason:  ${installResult}"
+            echo -e "\n*****  Install %NAME% Process:  FAILED  *****"
+            exit 1
+        fi
+
+        echo -e "\n*****  Install %NAME% Process:  COMPLETE  *****"
+        exit 0
+  - Processor: PkgCreator
+    Arguments:
+      pkg_request:
+        id: 'com.graphisoft.archicad.%version%'
+        options: purge_ds_store
+        pkgname: '%NAME%-%version%'
+        pkgroot: '%RECIPE_CACHE_DIR%/pkgroot'
+        pkgtype: flat
+        scripts: '%RECIPE_CACHE_DIR%/scripts'
+        version: '%version%'
+  - Processor: com.github.mlbz521.SharedProcessors/InputVariableTextSubstituter
+    Arguments:
+      original_string: '%PKG_NAME%'
+      return_variable: PKG_NAME
+      string_to_replace: '#MAJOR_VERSION#'
+      variable_to_use: major_version
+  - Processor: com.github.mlbz521.SharedProcessors/InputVariableTextSubstituter
+    Arguments:
+      original_string: '%PKG_NAME%'
+      return_variable: PKG_NAME
+      string_to_replace: '#ARCH#'
+      variable_to_use: arch
+  - Processor: com.github.mlbz521.SharedProcessors/RenamePath
+    Arguments:
+      source_path: '%RECIPE_CACHE_DIR%/%NAME%-%version%.pkg'
+      new_name: '%PKG_NAME%-%version%.pkg'
+  - Processor: PathDeleter
+    Arguments:
+      path_list: 
+        - '%RECIPE_CACHE_DIR%/pkgroot'
+        - '%RECIPE_CACHE_DIR%/scripts'

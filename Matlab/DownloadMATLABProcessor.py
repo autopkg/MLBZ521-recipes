@@ -2,16 +2,48 @@
 
 """See docstring for DownloadMATLABProcessor class"""
 
+import json
 import os.path
 import re
 import subprocess
 
+from html.parser import HTMLParser
 from xml.etree import ElementTree
+
+import requests
 
 from autopkglib import Processor, ProcessorError
 
 
 __all__ = ["DownloadMATLABProcessor"]
+
+
+class TargetTextExtractor(HTMLParser):
+	def __init__(self, target_tag, attr_key, attr_value):
+		super().__init__()
+		self.target_tag = target_tag
+		self.in_target_tag = False
+		self.extracted_content = []
+		self.attr_key = attr_key
+		self.attr_value = attr_value
+	def handle_starttag(self, tag, attributes):
+		if tag == self.target_tag:
+			if self.attr_key and self.attr_value:
+				for key, value in attributes:
+					if key == self.attr_key and value == self.attr_value :
+						self.in_target_tag = True
+			else:
+				self.in_target_tag = True
+	def handle_endtag(self, tag):
+		# Turn off flag when the target tag closes
+		if tag == self.target_tag:
+			self.in_target_tag = False
+	def handle_data(self, data):
+		# Capture the text if we are currently inside the target tag
+		if self.in_target_tag:
+			self.extracted_content.append(data)
+	def get_results(self):
+		return self.extracted_content
 
 
 class DownloadMATLABProcessor(Processor):
@@ -22,7 +54,10 @@ class DownloadMATLABProcessor(Processor):
 	input_variables = {
 		"mpm_path": {
 			"required": False,
-			"description": "The path to the MATLAB `mpm` CLI utility.",
+			"description": (
+				"Optionally specify version of MATLAB to download, "
+				"otherwise the latest release will be downloaded."
+			)
 		},
 		"dl_version": {
 			"required": False,
@@ -31,23 +66,9 @@ class DownloadMATLABProcessor(Processor):
 				"otherwise the latest release will be downloaded."
 			)
 		},
-		"dl_products": {
+		"installer_input_config": {
 			"required": False,
-			"description": (
-				"The MATLAB 'products' to download.  "
-				"This can include MATLAB, additional products, and support packages."
-			),
-		},
-		"dl_archs": {
-			"required": False,
-			"description": (
-				"The architecture to download for.  Technically, in addition to "
-				"macOS Intel/ARM, this can support Windows and Linux as well."
-			),
-		},
-		"installer_input_file": {
-			"required": False,
-			"description": "A variable file used instead of the `dl_<...>` variables.",
+			"description": "A dictionary describing `mpm` arguments and values.",
 		}
 	}
 	output_variables = {
@@ -103,33 +124,146 @@ class DownloadMATLABProcessor(Processor):
 
 	def main(self):
 
-		if not (mpm_path := self.env.get("mpm_path")):
-			raise ProcessorError("The path to `mpm` was not provided.")
-
 		# Get environment variables
-		dl_version = self.env.get("dl_version", "MATLAB")
-		dl_products = self.env.get("dl_products", "MATLAB")
-		dl_archs = self.env.get("dl_archs", "maca64 maci64")
-		installer_input = self.env.get("INSTALLER_INPUT")
-		installer_input_file = self.env.get("installer_input_file")
+		mpm_path = self.env.get("mpm_path")
+		dl_version = self.env.get("dl_version")
+		installer_input_config = self.env.get("INSTALLER_INPUT_CONFIG")
+		remove_unsupported_pkgs = self.env.get("remove_unsupported_pkgs")
 		RECIPE_CACHE_DIR = self.env.get("RECIPE_CACHE_DIR")
 
 		# Define local variables
 		recipe_cache_download_dir = os.path.join(RECIPE_CACHE_DIR, "downloads")
+		installer_input_file = f"{recipe_cache_download_dir}/installer_input.txt"
 
-		self.output(f"Downloading MATLAB content:\n\tRelease:  {dl_version}\n\tProducts:  {dl_products}\n\tPlatforms:  {dl_archs}", verbose_level=1)
+		if not dl_version:
+			# If a version wasn't provided to download, then get the latest from
+			# the available list of input_files on GitHub
+			github_input_files_url = "https://github.com/mathworks-ref-arch/matlab-dockerfile/tree/main/mpm-input-files"
+			github_input_files = requests.get(github_input_files_url)
 
-		if installer_input_file:
+			parser = TargetTextExtractor(
+				target_tag="script", attr_key="data-target", attr_value="react-app.embeddedData")
+			parser.feed(github_input_files.text)
+			parser.get_results()
+
+			versions = json.loads(
+				parser.get_results()[0]).get("payload").get("codeViewTreeRoute").get("tree").get("items")
+
+			# Get the latest from the list
+			dl_version = versions[-1].get("name")
+
+		# Get the input_file itself
+		input_file_url = f"https://raw.githubusercontent.com/mathworks-ref-arch/matlab-dockerfile/refs/heads/main/mpm-input-files/{dl_version}/mpm_input_{dl_version.lower()}.txt"
+		input_file_text = (requests.get(input_file_url).text)
+		self.output(f"MPM Input File:  {input_file_text}", verbose_level=4)
+
+		search_pattern = ".*?download\.(.*?)(?=\n+#{72})"
+
+		# Get the available "Products" from the input file
+		if products := re.search("## PRODUCTS" + search_pattern, input_file_text, re.DOTALL):
+			available_products = products.group(1)
+			self.output(f"Available Products:  {available_products}", verbose_level=4)
+
+		# Get the available "Support Packages" from the input file
+		if packages := re.search("## SUPPORT PACKAGES" + search_pattern, input_file_text, re.DOTALL):
+			available_support_packages = packages.group(1)
+			self.output(f"Available Support Packages:  {available_support_packages}",
+				verbose_level=4)
+
+		if features := re.search("## OPTIONAL FEATURES" + search_pattern, input_file_text, re.DOTALL):
+			available_optional_features = features.group(1)
+			self.output(f"Available Optional Features:  {available_optional_features}",
+				verbose_level=4)
+
+		# Get the version specific checksum
+		checksum = re.search("\?checksum=.*\w", input_file_text, re.DOTALL).group(0)
+
+		# Build the input_file that will be needed in next steps
+		final_installer_input_config = f"{checksum}\ndestinationFolder={recipe_cache_download_dir}/installer_content\n"
+		products = ""
+		support_packages = ""
+		optional_features = ""
+
+		# Loop through the user provided items and set the
+		# values if defined, otherwise use the defaults
+		for key, value in installer_input_config.items():
+
+			if key == "platforms":
+				if isinstance(value, list):
+					platforms = " ".join(value)
+					final_installer_input_config += "\n".join("platform." + item for item in value)
+				else:
+					platforms = value
+					final_installer_input_config += f"\nplatform.{value}"
+
+				final_installer_input_config += "\n"
+
+			elif key == "products" and value:
+				if value == "all":
+					products = re.sub("\n?# ?product\.", " ", available_products)
+					final_installer_input_config += re.sub("# ?", "", available_products)
+				elif value:
+					products += value
+					final_installer_input_config += value
+
+			elif key == "support_packages":
+				if value == "all":
+					final_installer_input_config += re.sub("# ?", "", available_support_packages)
+					support_packages += re.sub("# ?product\.", "", available_support_packages)
+				elif value:
+					final_installer_input_config += value
+					support_packages += value
+
+			elif key == "optional_features":
+				if value == "all":
+					final_installer_input_config += re.sub("# ?", "", available_optional_features)
+					optional_features += re.sub("# ?product\.", "", available_support_packages)
+				elif value:
+					final_installer_input_config += value
+					optional_features += value
+
+			else:
+				final_installer_input_config += f"{key}={value}\n"
+
+		# Write the file to disk
+		with open(installer_input_file, "w", encoding="utf-8") as f:
+			f.write(final_installer_input_config)
+
+		products = products.strip()
+		support_packages = support_packages.strip()
+		optional_features = optional_features.strip()
+
+		self.output(
+			f"Downloading MATLAB content:\n\tRelease:  {dl_version}\n\tPlatforms:  {platforms}\n"
+			f"\tProducts:  {products}\n\tSupport Packages:  {support_packages}\n"
+			f"\tOptional Features:  {optional_features}\n",
+			verbose_level=1)
+
+		# if installer_input_file:
+		if dl_version and platforms and products:
 			mpm_cmd = f"{mpm_path} download --inputfile={installer_input_file}"
-			products = re.findall(r"\n(?<![#])\s*product\.(.+)", installer_input)
-			self.output(f"{products = }", verbose_level=3)
-		elif dl_version and dl_archs and dl_products:
-			mpm_cmd = f"{mpm_path} download --release='{dl_version}' --destination='{recipe_cache_download_dir}/installer_content' --platforms={dl_archs} --products={dl_products}"
 		else:
 			raise ProcessorError("Required arguments were not provided.")
 
 		self.output(f"Executing cmd:  {mpm_cmd}", verbose_level=1)
 		mpm_download_results = self.execute_process(mpm_cmd)
+
+		if remove_unsupported_pkgs and \
+			"Error: The following products are not supported on the specified platforms:" in mpm_download_results['stderr']:
+
+			self.output(f"Removing unsupported packages...", verbose_level=1)
+			unsupported_pkgs = mpm_download_results['stderr'].split("\n")
+
+			for unsupported_pkg in unsupported_pkgs:
+				final_installer_input_config = re.sub(f"product.{unsupported_pkg}\n", "", final_installer_input_config, re.DOTALL)
+				products = re.sub(f"{unsupported_pkg}", "", products, re.DOTALL)
+
+			# Write the file to disk
+			with open(installer_input_file, "w", encoding="utf-8") as f:
+				f.write(final_installer_input_config)
+
+			self.output(f"Executing cmd:  {mpm_cmd}", verbose_level=1)
+			mpm_download_results = self.execute_process(mpm_cmd)
 
 		self.output(f"Results:\n\tExit Code:  {mpm_download_results['status']}\n\tOutput:\n```\n{mpm_download_results['stdout']}\n```", verbose_level=3)
 
@@ -164,7 +298,7 @@ class DownloadMATLABProcessor(Processor):
 			self.env["version"] = f"{dl_version}_u{update_level}"
 
 		self.env["major_version"] = release
-		self.env["products_to_install"] = " ".join(products)
+		self.env["products_to_install"] = products
 		self.env["pathname"] = installer_app
 		self.env["download_changed"] = True
 

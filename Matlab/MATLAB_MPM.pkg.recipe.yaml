@@ -1,17 +1,18 @@
 Description: |
-  Downloads and packages the latest version of MATLAB using the "MATLAB Package Manager" (mpm) CLI utility.
+  Downloads and packages the latest version using the "MATLAB Package Manager" (mpm) CLI utility.
   (See:  https://www.mathworks.com/help/install/ug/get-mpm-os-command-line.html)
 
   * Notables:
-    * As is this recipe creates a universal MATLAB installer; if you want to create architecture specific packages, you'll need to adjust the required variables.
-    * You will need to license this software separately from the installation package that is created with this recipe.
+    * See the download recipe for info on the available overridable Input Variables
+    * You will need to license this software separately from the installation 
+        package that is created with this recipe.
 
-  For information on how this recipe works, please see the README in my repo (https://github.com/autopkg/MLBZ521-recipes/blob/master/ReadMe.md).
+  For information on how this recipe works, please see the README
+    in my repo (https://github.com/autopkg/MLBZ521-recipes/blob/master/ReadMe.md).
 Identifier: com.github.mlbz521.pkg.MATLAB_MPM
 Input:
   NAME: MATLAB
-  PKG_NAME: "MATLAB #MAJOR_VERSION# (Universal)"
-  COMMENT: ""
+  PKG_NAME: "MATLAB #MAJOR_VERSION#"
 ParentRecipe: com.github.mlbz521.download.MATLAB_MPM
 Process:
   - Processor: PkgRootCreator
@@ -35,7 +36,7 @@ Process:
         ###################################################################################################
         # Script Name:  Install-MATLAB_MPM.sh
         # By:  Zack Thompson / Created:  5/20/2024
-        # Version:  1.1.0 / Updated: 8/29/2025 / By:  ZT
+        # Version:  1.2.0 / Updated: 8/26/2026 / By:  ZT
         #
         # Description:  "Installs" the appropriate installer type based on the systems' architecture.
         #
@@ -49,20 +50,37 @@ Process:
         # Set working directory
         pkg_dir=$( /usr/bin/dirname "${0}" )
 
+        # Products to install
+        products_to_install="%products_to_install%"
+
+        ##################################################
+        # Functions
+
+        # Source:  https://stackoverflow.com/a/59592881
+        # SYNTAX:
+        #   catch STDOUT_VARIABLE STDERR_VARIABLE COMMAND [ARG1[ ARG2[ ...[ ARGN]]]]
+        catch() {
+            {
+                IFS=$'\n' read -r -d '' "${1}";
+                IFS=$'\n' read -r -d '' "${2}";
+                (IFS=$'\n' read -r -d '' _ERRNO_; return ${_ERRNO_});
+            } < <((printf '\0%s\0%d\0' "$(((({ shift 2; "${@}"; echo "${?}" 1>&3-; } | tr -d '\0' 1>&4-) 4>&2- 2>&1- | tr -d '\0' 1>&4-) 3>&1- | exit "$(cat)") 4>&1-)" "${?}" 1>&2) 2>&1)
+        }
+
         ##################################################
         # Bits staged...
 
         if [[ $3 != "/" ]]; then
-          echo "[Error] Target disk is not the startup disk."
-          echo -e "\n*****  Install MATLAB Process:  FAILED  *****"
-          exit 1
+            echo "[Error] Target disk is not the startup disk."
+           echo -e "\n*****  Install MATLAB Process:  FAILED  *****"
+           exit 1
         fi
 
         # Determine which architecture type should be installed
         if [[ $( /usr/bin/arch ) == "arm64" ]]; then
-          arch_type="maca64"
+            arch_type="maca64"
         else
-          arch_type="maci64"
+           arch_type="maci64"
         fi
 
         echo "Installing using:  ${pkg_dir}/mpm/${arch_type}/mpm"
@@ -70,16 +88,34 @@ Process:
         # Enable execution
         /bin/chmod +x "${pkg_dir}/mpm/${arch_type}/mpm"
 
-        exit_status=$( "${pkg_dir}/mpm/${arch_type}/mpm" install --source="${pkg_dir}" \
-          --products=%products_to_install% )
+        # ***No quotes*** around $products_to_install or it will fail
+        catch cmd_stdout cmd_stderr "${pkg_dir}/mpm/${arch_type}/mpm" install --source="${pkg_dir}" \
+            --products=$products_to_install
         exit_code=$?
 
-        if [[ $exit_code != 0 || $exit_status == *"End - Unsuccessful"* ]]; then
-          echo -e "[Error]  Install failed!\nExit Code:  ${exit_code}\nResults:  ${exit_status}"
-          echo -e "\n*****  Install MATLAB process:  FAILED  *****"
-          exit 2
+        if [[ "${cmd_stderr}" == *"Error: The following products are not supported on the specified platforms:"* ]]; then
+
+            echo "Removing unsupported packages..."
+            while IFS= read -r line; do
+                if [[ "${line}" != "Error: The following products are not supported on the specified platforms:" ]]; then
+                    echo "Removing: ${line}"
+                    products_to_install="${products_to_install//${line}/}"
+                fi
+            done <<< "${cmd_stderr}"
+
+            echo "Attempting install again..."
+            catch cmd_stdout cmd_stderr "${pkg_dir}/mpm/${arch_type}/mpm" install --source="${pkg_dir}" \
+                --products=$products_to_install
+            exit_code=$?
+
+        fi
+
+        if [[ $exit_code != 0 ]]; then
+            echo -e "[Error]  Install failed!\nExit Code:  ${exit_code}\nResults:  ${cmd_stderr}"
+            echo -e "\n*****  Install MATLAB process:  FAILED  *****"
+            exit 2
         else
-          echo -e "Install Results:\n${exit_status}"
+            echo -e "Install Results:\n${exit_status}"
         fi
 
         echo -e "\n*****  Install MATLAB Process:  COMPLETE  *****"

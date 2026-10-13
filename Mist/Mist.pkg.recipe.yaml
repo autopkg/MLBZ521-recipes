@@ -1,7 +1,7 @@
 Description: Downloads the latest version of Mist (GUI App flavor) and creates a .pkg.
 Identifier: com.github.mlbz521.pkg.Mist
 MinimumVersion: "2.3"
-ParentRecipe: com.github.zentralpro.download.mist
+ParentRecipe: com.github.aanklewicz.download.mist
 Input:
   NAME: Mist
 Process:

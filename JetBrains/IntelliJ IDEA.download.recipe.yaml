@@ -1,0 +1,59 @@
+Description: |
+  Downloads the latest Intellij IDEA disk image.
+
+  Downloads both the ARM and Intel builds.
+
+  Based on:  com.github.bnpl.autopkg.download.intellijidea
+Identifier: com.github.mlbz521.download.IntelliJ-IDEA-Universal
+MinimumVersion: "2.3"
+Input:
+  NAME: Intellij IDEA
+  APP_NAME: IntelliJ IDEA.app
+  ARM_ARCHITECTURE: macM1
+  INTEL_ARCHITECTURE: mac
+  PROD_CODE: IIU
+  CSV_REQ: identifier "com.jetbrains.intellij" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "2ZEFAR8TH3"
+Process:
+  - Processor: URLTextSearcher
+    Arguments:
+      url: 'https://data.services.jetbrains.com/products/releases?code=%PROD_CODE%&latest=true&type=release'
+      re_pattern: '"%ARM_ARCHITECTURE%":{"link":"(https://download.jetbrains.com/.*?.dmg)'
+      result_output_var_name: arm_url
+      request_headers:
+        user-agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11; rv:46.0) Gecko/20100101 Firefox/46.0
+  - Processor: URLTextSearcher
+    Arguments:
+      url: 'https://data.services.jetbrains.com/products/releases?code=%PROD_CODE%&latest=true&type=release'
+      re_pattern: '"%INTEL_ARCHITECTURE%":{"link":"(https://download.jetbrains.com/.*?.dmg)'
+      result_output_var_name: intel_url
+      request_headers:
+        user-agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11; rv:46.0) Gecko/20100101 Firefox/46.0
+  - Processor: URLDownloader
+    Arguments:
+      filename: "%NAME% (ARM).dmg"
+      url: "%arm_url%"
+  - Processor: URLDownloader
+    Arguments:
+      filename: "%NAME% (Intel).dmg"
+      url: "%intel_url%"
+  - Processor: EndOfCheckPhase
+  - Processor: PlistReader
+    Arguments:
+      info_path: "%RECIPE_CACHE_DIR%/downloads/%NAME% (ARM).dmg/%APP_NAME%"
+      plist_keys:
+        CFBundleShortVersionString: arm_version
+        LSMinimumSystemVersion: arm_min_os_vers
+  - Processor: PlistReader
+    Arguments:
+      info_path: "%RECIPE_CACHE_DIR%/downloads/%NAME% (Intel).dmg/%APP_NAME%"
+      plist_keys:
+        CFBundleShortVersionString: intel_version
+        LSMinimumSystemVersion: intel_min_os_vers
+  - Processor: CodeSignatureVerifier
+    Arguments:
+      input_path: "%RECIPE_CACHE_DIR%/downloads/%NAME% (ARM).dmg/%APP_NAME%"
+      requirement: "%CSV_REQ%"
+  - Processor: CodeSignatureVerifier
+    Arguments:
+      input_path: "%RECIPE_CACHE_DIR%/downloads/%NAME% (Intel).dmg/%APP_NAME%"
+      requirement: "%CSV_REQ%"

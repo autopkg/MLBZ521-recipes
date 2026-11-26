@@ -1,0 +1,25 @@
+Description: Downloads the latest version of VH Dissector Pro.
+Identifier: com.github.mlbz521.download.VHDissectorPro
+MinimumVersion: "2.3"
+Input:
+  NAME: VH Dissector Pro
+  SEARCH_URL: https://www.toltech.net/downloads/vh-dissector-pro-6
+  SEARCH_PATTERN: (?P<url>https\://cdn\.toltech\.net/sds/downloads/vh-dissector-pro/(?P<version>[0-9.|-]+)/vh-dissector-pro.zip)
+Process:
+  - Processor: URLTextSearcher
+    Arguments:
+      url: "%SEARCH_URL%"
+      re_pattern: "%SEARCH_PATTERN%"
+  - Processor: URLDownloader
+    Arguments:
+      prefetch_filename: "true"
+  - Processor: EndOfCheckPhase
+  - Processor: Unarchiver
+    Arguments:
+      archive_path: "%pathname%"
+      destination_path: "%RECIPE_CACHE_DIR%/unzipped"
+      purge_destination: "true"
+  - Processor: CodeSignatureVerifier
+    Arguments:
+      input_path: "%RECIPE_CACHE_DIR%/unzipped/*.app"
+      requirement: anchor apple generic and identifier "net.toltech.VH-Dissector-Pro" and (certificate leaf[field.1.2.840.113635.100.6.1.9] /* exists */ or certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "963GM397VE")
